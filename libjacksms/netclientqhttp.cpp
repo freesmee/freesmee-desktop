@@ -114,7 +114,11 @@ namespace libJackSMS{
 
         }
         bool netClientQHttp::insertFormData(const QString &_field,const QString &_value){
-            queryStringFields.push_back(QPair<QString,QString>(_field,_value));
+            QByteArray v=QByteArray::fromPercentEncoding(_value.toAscii());
+            v=v.toPercentEncoding();
+
+
+            queryStringFields.push_back(QPair<QString,QString>(_field,QString(v)));
             return true;
         }
 
@@ -186,6 +190,7 @@ namespace libJackSMS{
         QString netClientQHttp::submitGet(const QUrl &_url,bool _ret){
             url=_url;
             url.setQueryItems(queryStringFields);
+
             QNetworkRequest r(url);
             if (proxyConfigured)
                 request.setProxy(proxy);

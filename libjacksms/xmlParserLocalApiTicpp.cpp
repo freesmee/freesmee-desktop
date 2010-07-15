@@ -41,7 +41,7 @@ namespace libJackSMS{
         }
         xmlParserLocalApiTicpp::~xmlParserLocalApiTicpp(){
         }
-        bool xmlParserLocalApiTicpp::appendSmsToLogfile(const dataTypes::logSmsMessage &_msg ){
+        bool xmlParserLocalApiTicpp::appendSmsToLogfile(dataTypes::logSmsMessage &_msg ){
             try{
                 ticpp::Document log;
                 QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),userDirectory);
@@ -49,6 +49,24 @@ namespace libJackSMS{
                 log.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
 
                 ticpp::Node *subRoot=log.FirstChild("log");
+                int id=0;
+                {
+                    ticpp::Node *child=NULL;
+                    while( child = subRoot->IterateChildren( child ) ){
+                        ticpp::Element * curElem= child->ToElement();
+                        std::string strId=curElem->GetAttribute("id");
+                        bool ok;
+
+                        int intId=QString::fromStdString(strId).toInt(&ok,10);
+                        if (id<intId)
+                            id=intId;
+                    }
+                    id++;
+
+
+                }
+                _msg.setId(QString::number(id));
+
                 ticpp::Element *elemToInsert=new ticpp::Element("msg");
                 elemToInsert->SetAttribute("dest",_msg.getPhoneNumber().toString().toStdString());
                 elemToInsert->SetAttribute("account",_msg.getAccount().toStdString());

@@ -47,6 +47,8 @@ public:
     libJackSMS::dataTypes::phoneBookType Rubrica;
     types::QMessageListType Messaggi;
     types::QMessageListType MessaggiRicevuti;
+    /*types::QMessageListType nuoviMessaggiRicevuti;*/
+
     void DisabilitaUi();
     void AbilitaUi();
     void ReloadConfiguredServices();
@@ -59,6 +61,7 @@ public:
     void ReWriteConfiguredServicesToGui();
 
 private:
+    void appendImToGui();
     bool imServiceActive;
     void setTrayIcon();
     int countReceivedUnreaded;
@@ -72,7 +75,9 @@ private:
     int currentSingleLength;
     threadCheckUpdates *checkUpdatesThread;
     QMultiMap<QDateTime,SmsWidget*> mapWidgets;
+    QMultiMap<QDateTime,SmsWidget*> mapWidgetsNew;
     QMultiMap<QDateTime,SmsWidget*> mapWidgetsReceived;
+    QMultiMap<QDateTime,SmsWidget*> mapWidgetsReceivedNew;
     threadDeleteContactOnline *deleterThread;
     threadDeleteAccountOnline *accountDeleterThread;
     threadPingServer *pingator;
@@ -87,6 +92,7 @@ private:
     ThreadLogin * loginThread;
     threadSaveSmsOnline *onlineSmsSaver;
     libJackSMS::dataTypes::logImType messaggiRicevuti;
+    libJackSMS::dataTypes::logImType nuoviMessaggiRicevuti;
     threadInstantMessenger *imChecker;
     QMyMessage ultimoSms;
     QSystemTrayIcon *trayIco;

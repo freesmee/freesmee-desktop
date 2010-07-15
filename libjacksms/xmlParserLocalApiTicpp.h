@@ -36,7 +36,7 @@ namespace libJackSMS{
             public:
                 xmlParserLocalApiTicpp(const QString &_userDirectory);
                 ~xmlParserLocalApiTicpp();
-                bool appendSmsToLogfile(const dataTypes::logSmsMessage &_msg);
+                bool appendSmsToLogfile(dataTypes::logSmsMessage &_msg);
                 bool appendImToLogfile(dataTypes::logImMessage &_msg );
                 bool saveAllSmsToLogFile(const dataTypes::logSmsType &_smsContainer);
                 bool saveAllImToLogFile(const dataTypes::logImType &_smsContainer);

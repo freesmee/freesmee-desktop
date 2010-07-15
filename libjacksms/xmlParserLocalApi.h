@@ -36,7 +36,7 @@ namespace libJackSMS{
             public:
                 xmlParserLocalApiGeneric(const QString &){}
                 virtual ~xmlParserLocalApiGeneric(){}
-                virtual bool appendSmsToLogfile(const dataTypes::logSmsMessage &_msg)=0;
+                virtual bool appendSmsToLogfile(dataTypes::logSmsMessage &_msg)=0;
                 virtual bool appendImToLogfile(dataTypes::logImMessage &_msg )=0;
                 virtual bool saveAllSmsToLogFile(const dataTypes::logSmsType &_smsContainer)=0;
                 virtual bool saveAllImToLogFile(const dataTypes::logImType &_smsContainer)=0;

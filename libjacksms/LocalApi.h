@@ -54,6 +54,7 @@ namespace libJackSMS{
                 smsLogSaver(const QString & _currentUserDirectory);
                 void setMessage(const dataTypes::logSmsMessage &_msg);
                 bool appendToLogFile();
+                QString getSavedId() const;
                 bool saveAllToFile(const dataTypes::logSmsType &_smsContainer);
                 bool deleteSms(const QString  &_id);
                 bool deleteSms(const QList<QString>  &_idList);

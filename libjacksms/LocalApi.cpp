@@ -54,6 +54,9 @@ namespace libJackSMS{
         bool smsLogSaver::appendToLogFile(){
             return xmlDocument->appendSmsToLogfile(msg);
         }
+        QString smsLogSaver::getSavedId() const{
+            return msg.getId();
+        }
         bool smsLogSaver::saveAllToFile(const dataTypes::logSmsType &_smsContainer){
             return xmlDocument->saveAllSmsToLogFile(_smsContainer);
 

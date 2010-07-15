@@ -478,6 +478,7 @@ void MainJackSMS::WriteImToGui(){
     types::QMessageListType::const_iterator i_end=MessaggiRicevuti.end();
     for(;i!=i_end;++i){
         QString user_num_name=phone2name(i->getPhone());
+
         SmsWidget *wid=new SmsWidget(
                                      i->getMessage(),
                                      icon_jack,
@@ -580,6 +581,7 @@ void MainJackSMS::popupInvio(){
 
 
 }
+
 void MainJackSMS::invioSuccesso(const QString & _text){
 
     if (!_text.isEmpty()){
@@ -604,7 +606,7 @@ void MainJackSMS::invioSuccesso(const QString & _text){
 
     semaforoGui->release(1);
 
-    AbilitaUi();
+
     invioInCorso=false;
     QString a=ultimoSms.getData().toString("dd/MM/yyyy");
     QString b=ultimoSms.getData().toString("HH:mm:ss");
@@ -617,31 +619,40 @@ void MainJackSMS::invioSuccesso(const QString & _text){
                                            "",
                                            ultimoSms.getMessage()
                                            );
-    int id=0;
-    {
-        types::QMessageListType::const_iterator i=Messaggi.begin();
-        types::QMessageListType::const_iterator i_end=Messaggi.end();
-        for(;i!=i_end;++i){
-            if (!i->getIsReceived()){
-            bool ok;
-
-            int tid=i->getId().toInt(&ok,10);
-            if (tid>id)
-                id=tid;
-            }
-        }
-
-    }
-    ultimoSms.setId(QString::number(id));
 
     libJackSMS::dataTypes::optionsType::const_iterator iter=Opzioni.find("save-local");
 
     if (iter!=Opzioni.end())
         if ("yes"==iter.value()){
+            libJackSMS::localApi::smsLogSaver sav(current_user_directory);
+            sav.setMessage(us);
+            sav.appendToLogFile();
+            ultimoSms.setId(sav.getSavedId());
+            //std::cout<<"[SAVE] messaggio sms salvato in locale"<<sav.getSavedId()<<std::endl;
             Messaggi.push_back(ultimoSms);
-            ReWriteMessagesToGui();
-        }
 
+            //ReWriteMessagesToGui();
+            QString user_num_name=phone2name(ultimoSms.getPhone());
+            QPixmap icona=ElencoServizi[ultimoSms.getServiceId()].getIcon().pixmap(16,16);
+            SmsWidget *wid=new SmsWidget(
+                                         ultimoSms.getMessage(),
+                                         icona,
+                                         false,
+                                         ultimoSms.getData(),
+
+                                         user_num_name,
+                                         ultimoSms.getAccountName(),
+                                         ultimoSms.getId(),
+                                         ultimoSms.getPhone(),
+                                         true
+                                         );
+            mapWidgets.insert(ultimoSms.getData(),wid);
+            QListWidgetItem *item = new QListWidgetItem;
+            item->setSizeHint(wid->size());
+            ui->smsListWidget->insertItem(0,item);
+            ui->smsListWidget->setItemWidget(item, wid);
+        }
+    AbilitaUi();
 
     ElencoServiziConfigurati[ultimoSms.getAccountId()].increaseStatValue("sent");
     //QString v=ElencoServiziConfigurati[ultimoSms.getAccountId()].getStat("sent");
@@ -649,6 +660,8 @@ void MainJackSMS::invioSuccesso(const QString & _text){
     man.increaseSentStat(ElencoServiziConfigurati[ultimoSms.getAccountId()]);
     libJackSMS::localApi::optionManager man2(current_user_directory,Opzioni);
     man2.increaseTotalSent();
+
+
 
     if (onlineLogin){
         onlineSmsSaver=new threadSaveSmsOnline(signin->getSessionId(),us,Opzioni,current_user_directory,ultimoSms.getAccountId());
@@ -1507,7 +1520,7 @@ void MainJackSMS::startIm(){
         imServiceActive=false;
 
 
-        imChecker=new threadInstantMessenger(messaggiRicevuti,this->current_user_username,ui->password->text(),Opzioni,current_user_directory);
+        imChecker=new threadInstantMessenger(nuoviMessaggiRicevuti,this->current_user_username,ui->password->text(),Opzioni,current_user_directory);
         connect(imChecker,SIGNAL(newMessages()),this,SLOT(checkInstantMessengerReceived()));
         connect(imChecker,SIGNAL(serviceActive()),this,SLOT(jmsActive()));
         connect(imChecker,SIGNAL(serviceNotActive(bool)),this,SLOT(jmsNotActive(bool)));
@@ -1592,17 +1605,76 @@ void MainJackSMS::endLogin(){
 void MainJackSMS::updatesAvailable(){
     QMessageBox::information(this,"Aggiornamenti JackSMS",checkUpdatesThread->getResult());
 }
+
+void MainJackSMS::appendImToGui(){
+    mapWidgetsReceivedNew.clear();
+    mapWidgetsNew.clear();
+    QPixmap icon_jack=ElencoServizi["40"].getIcon().pixmap(16,16);
+    libJackSMS::dataTypes::logImType::const_iterator i=nuoviMessaggiRicevuti.begin();
+    libJackSMS::dataTypes::logImType::const_iterator i_end=nuoviMessaggiRicevuti.end();
+    for(;i!=i_end;++i){
+        QString user_num_name=phone2name(i.value().getPhoneNumber());
+        SmsWidget *wid=new SmsWidget(
+                                     i.value().getText(),
+                                     icon_jack,
+                                     true,
+                                     i.value().getDate().getData(),
+                                     user_num_name,
+                                     QString("JackSMS Messenger"),
+                                     i.value().getId(),
+                                     i.value().getPhoneNumber(),
+                                     false
+                                     );
+        mapWidgetsReceived.insert(i.value().getDate().getData(),wid);
+        mapWidgetsReceivedNew.insert(i.value().getDate().getData(),wid);
+
+        SmsWidget *wid2=new SmsWidget(
+                                     i.value().getText(),
+                                     icon_jack,
+                                     true,
+                                     i.value().getDate().getData(),
+                                     user_num_name,
+                                     QString("JackSMS Messenger"),
+                                     i.value().getId(),
+                                     i.value().getPhoneNumber(),
+                                     true
+                                     );
+        mapWidgets.insert(i.value().getDate().getData(),wid2);
+        mapWidgetsNew.insert(i.value().getDate().getData(),wid2);
+    }
+
+    if (mapWidgetsReceivedNew.size()>0){
+        QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx=mapWidgetsReceivedNew.begin();
+        QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx_end=mapWidgetsReceivedNew.end();
+        for(;xx!=xx_end;++xx){
+
+            QListWidgetItem *item = new QListWidgetItem;
+            item->setSizeHint(xx.value()->size());
+            ui->imRicevutiWidget->insertItem(0,item);
+            ui->imRicevutiWidget->setItemWidget(item, xx.value());
+        }
+    }
+    if (mapWidgetsNew.size()>0){
+        QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx=mapWidgetsNew.begin();
+        QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx_end=mapWidgetsNew.end();
+        for(;xx!=xx_end;++xx){
+
+            QListWidgetItem *item = new QListWidgetItem;
+            item->setSizeHint(xx.value()->size());
+            ui->smsListWidget->insertItem(0,item);
+            ui->smsListWidget->setItemWidget(item, xx.value());
+        }
+    }
+}
 void MainJackSMS::checkInstantMessengerReceived(){
 
-        libJackSMS::dataTypes::logImType::const_iterator i=messaggiRicevuti.begin();
-        libJackSMS::dataTypes::logImType::const_iterator i_end=messaggiRicevuti.end();
+        libJackSMS::dataTypes::logImType::const_iterator i=nuoviMessaggiRicevuti.begin();
+        libJackSMS::dataTypes::logImType::const_iterator i_end=nuoviMessaggiRicevuti.end();
         for(;i!=i_end;++i){
 
                 QMyMessage msg;
                 msg.setAccountId(QString::number(0));
                 msg.setData( i.value().getDate().getData());
-
-
                 msg.setMessage(i.value().getText());
                 msg.setId(i.value().getId());
                 msg.setIsReceived(true);
@@ -1614,15 +1686,18 @@ void MainJackSMS::checkInstantMessengerReceived(){
 
         }
 
-        ReWriteMessagesToGui();
-        ReWriteImToGui();
+        appendImToGui();
+
+
+
         setTrayIcon();
 
-        if (messaggiRicevuti.size()==1)
+        if (nuoviMessaggiRicevuti.size()==1)
             trayIco->showMessage("JackSMS Messenger","Ricevuto un nuovo JMS");
         else
-            trayIco->showMessage("JackSMS Messenger","Ricevuti "+QString::number(messaggiRicevuti.size())+" nuovi JMS");
-        messaggiRicevuti.clear();
+            trayIco->showMessage("JackSMS Messenger","Ricevuti "+QString::number(nuoviMessaggiRicevuti.size())+" nuovi JMS");
+        nuoviMessaggiRicevuti.clear();
+        //messaggiRicevuti.clear();
 
 
 }
