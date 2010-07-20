@@ -70,8 +70,8 @@ namespace libJackSMS{
             _strToEnc=_strToEnc.append("control");
 
 
-
-            return utilities::Base64Encode(base(utilities::Base64Encode(_strToEnc),"internalpassword"));
+            QString res=utilities::Base64Encode(base(utilities::Base64Encode(_strToEnc),"internalpassword"));
+            return res;
 
         }
         QString Encrypter::decrypt(const QString &_strToDec){
@@ -80,12 +80,12 @@ namespace libJackSMS{
                 return _strToDec;
             QString r=utilities::Base64Decode(base(utilities::Base64Decode(_strToDec),"internalpassword"));
             if (r.length()<7)
-                return _strToDec;
+                return "";
             QString control=r.mid(r.length()-7,7);
             if (control=="control")
                 return r.left(r.length()-7);
             else
-                return _strToDec;
+                return "";
 
         }
 

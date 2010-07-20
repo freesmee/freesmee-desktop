@@ -57,8 +57,8 @@ namespace libJackSMS{
             useCookies=_useCookie;
             return false;
         }
-        bool netClientQHttp::setUrl(const QUrl &_url){
-            url=_url;
+        bool netClientQHttp::setUrl(const QString &_url){
+            url=QUrl(QString::fromUtf8(_url.toStdString().c_str(),_url.length()));
             return true;
         }
         void netClientQHttp::setUserAgent(const QString &_useragent){
@@ -122,8 +122,8 @@ namespace libJackSMS{
             return true;
         }
 
-        QString netClientQHttp::submitPost(const QUrl &_url,bool _ret){
-            url=_url;
+        QString netClientQHttp::submitPost(const QString &_url,bool _ret){
+            url=QUrl(QString::fromUtf8(_url.toStdString().c_str(),_url.length()));
             QNetworkRequest r(url);
             if (proxyConfigured)
                 request.setProxy(proxy);
@@ -187,11 +187,17 @@ namespace libJackSMS{
             queryStringFields.clear();
 
         }
-        QString netClientQHttp::submitGet(const QUrl &_url,bool _ret){
-            url=_url;
-            url.setQueryItems(queryStringFields);
+        QString netClientQHttp::submitGet(const QString &_url,bool _ret){
+
+
+            QUrl _url2=QUrl(QString::fromUtf8(_url.toStdString().c_str(),_url.length()));
+            QList<QPair <QString,QString> > fields=_url2.queryItems();
+            fields.append(queryStringFields);
+            url=_url2;
+            url.setQueryItems(fields);
 
             QNetworkRequest r(url);
+
             if (proxyConfigured)
                 request.setProxy(proxy);
             if (useCookies && cookies!=NULL){

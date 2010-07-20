@@ -51,12 +51,12 @@ namespace libJackSMS{
             void IncludeHeaders();
             bool setCookieFile(const QString &_filename,bool savecookiefile=true);
             bool setUseCookie(bool _useCookie);
-            bool setUrl(const QUrl &_url);
+            bool setUrl(const QString &_url);
             void setUserAgent(const QString &_useragent);
             QString readPage(bool _ret=false);
             bool insertFormData(const QString &_field,const QString &_value);
-            QString submitPost(const QUrl &_url,bool _ret=false);
-            QString submitGet(const QUrl &_url,bool _ret=false);
+            QString submitPost(const QString &_url,bool _ret=false);
+            QString submitGet(const QString &_url,bool _ret=false);
             QString currentUrl();
             bool findCaptcha(const QString &_left,const QString &_right);
             bool getFile(const QString &_url,QByteArray &_fileBytes);

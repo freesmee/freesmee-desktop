@@ -29,11 +29,7 @@ namespace libJackSMS{
     /*the input string _text is supposed to be in utf*/
     QString encodingUrl::getEncodedString(QString _text){
         QByteArray _t=_text.toLocal8Bit().toPercentEncoding();
-        //_t=QByteArray::toPercentEncoding()
-        QString _s(_t);
-        return QString(_s);
-
-
+        return QString(_t);
     }
 }
 

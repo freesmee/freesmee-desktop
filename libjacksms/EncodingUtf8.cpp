@@ -27,6 +27,7 @@ namespace libJackSMS{
     }
     /*the input string _text is supposed to be in utf*/
     QString encodingUtf8::getEncodedString(QString _text){
+
         return QString(_text.toUtf8());
     }
 }

@@ -1503,14 +1503,14 @@ void MainJackSMS::jmsNotActive(bool err){
 
 
     //ui->buttonStatusJms->setText(lm->getString(30));
-    ui->buttonStatusJms->setText("Disttivo");
+    ui->buttonStatusJms->setText("Disattivo");
     ui->buttonStatusJms->setIcon(QIcon(":/resource/jms-not-active.png"));
     imServiceActive=false;
 }
 void MainJackSMS::jmsActiving(){
     //libJackSMS::LanguageManager *lm=libJackSMS::LanguageManager::getIstance();
     //ui->buttonStatusJms->setText(lm->getString(29));
-    ui->buttonStatusJms->setText("Connessione...");
+    ui->buttonStatusJms->setText("Connessione");
     ui->buttonStatusJms->setIcon(QIcon(":/resource/jms-activing.png"));
     imServiceActive=false;
 }
@@ -1559,37 +1559,24 @@ void MainJackSMS::endLogin(){
        checkUpdatesThread=new threadCheckUpdates(ElencoServizi,Opzioni,signin->getSessionId());
        connect(checkUpdatesThread,SIGNAL(updatesAvailable()),this,SLOT(updatesAvailable()));
        checkUpdatesThread->start();
-       libJackSMS::dataTypes::optionsType::iterator iter=GlobalOptions.find("save-passwd");
+
        if (ui->ricordaPassword->isChecked()){
-           if (iter==GlobalOptions.end()){
 
-                GlobalOptions["save-passwd"]="yes";
+           GlobalOptions["save-passwd"]="yes";
+           libJackSMS::localApi::optionManager man("",GlobalOptions);
+           man.save();
+           Opzioni["password"]=ui->password->text();
+           libJackSMS::localApi::optionManager man2(current_user_directory,Opzioni);
+           man2.save();
 
-                libJackSMS::localApi::optionManager man("",GlobalOptions);
-                man.save();
-                Opzioni["password"]=ui->password->text();
-                libJackSMS::localApi::optionManager man2(current_user_directory,Opzioni);
-                man2.save();
-
-           }else{
-               if (Opzioni["password"]!=ui->password->text()){
-                    iter.value()="yes";
-                    libJackSMS::localApi::optionManager man("",GlobalOptions);
-                    man.save();
-                    Opzioni["password"]=ui->password->text();
-                    libJackSMS::localApi::optionManager man2(current_user_directory,Opzioni);
-                    man2.save();
-               }
-           }
        }else{
-           if (iter!=GlobalOptions.end()){
-               GlobalOptions["save-passwd"]="no";
-               libJackSMS::localApi::optionManager man("",GlobalOptions);
-               man.save();
-               Opzioni["password"]="";
-               libJackSMS::localApi::optionManager man2(current_user_directory,Opzioni);
-               man2.save();
-           }
+           GlobalOptions["save-passwd"]="no";
+           libJackSMS::localApi::optionManager man("",GlobalOptions);
+           man.save();
+           Opzioni["password"]="";
+           libJackSMS::localApi::optionManager man2(current_user_directory,Opzioni);
+           man2.save();
+
 
        }
 

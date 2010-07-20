@@ -15,7 +15,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
-
+/*!
+  \file SmsSender.h
+  \brief Contiene la definizione della classe da utilizzare per inviare un messaggio.
+  \ingroup smsSender
+ */
 #include <QObject>
 #include <QString>
 #include "DataTypes.h"
@@ -32,7 +36,11 @@
 namespace libJackSMS{
 
 
+    /*! \brief fornisce la funzionalità di invio di un messaggio sms
+      \ingroup smsSender
+      Questa classe implementa tutto ciò che è necessario per inviare un sms.
 
+      */
     class smsSender:public QObject{
         Q_OBJECT
         private:
@@ -48,14 +56,45 @@ namespace libJackSMS{
             const dataTypes::proxySettings &ps;
             netClient::netClientGeneric *webClient;
         public:
+            /*!
+               \param _services la struttura dati contenente la definizione dei servizi
+               \param _ps L'oggetto contenente le impostazioni per il proxy
+              */
             smsSender(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps=dataTypes::proxySettings());
-            void setRecipient(const dataTypes::phoneNumber & _dest);
-            void setMessage(const dataTypes::shortMessage & _message);
-            void setAccount(dataTypes::configuredAccount _account);
-            void setReportOperation(libJackSMS::reportOperationSendSms * _op);
+            /*!
+               \param _dest numero telefonico del destinatario del messaggio
 
+               Imposta il destinatario del messaggio
+              */
+            void setRecipient(const dataTypes::phoneNumber & _dest);
+            /*!
+               \param _message Il messaggio da inviare
+
+               Imposta il messaggio da inviare
+              */
+            void setMessage(const dataTypes::shortMessage & _message);
+            /*!
+               \param _account L'account da utilizzare per l'invio del messaggio
+
+               Imposta l'account da utilizzare per l'invio del messaggio
+              */
+            void setAccount(dataTypes::configuredAccount _account);
+            /*!
+               \param _op La classe che gestisce le operazioni da eseguire
+
+               Imposta le operazioni sincrone utilizzate dalla classe per notificare gli eventi che accadono durante l'invio
+              */
+            void setReportOperation(libJackSMS::reportOperationSendSms * _op);
+            /*!
+
+               Avvia l'operazione di invio del messaggio sms.
+              */
             void send();
         private slots:
+            /*!
+
+               slot utilizzato per annullare l'invio.
+              */
             void abort();
 
     };
