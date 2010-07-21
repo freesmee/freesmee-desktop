@@ -1,3 +1,18 @@
+/** \mainpage libJackSMS
+
+ *
+ * libJackSMS e' una collezione di classi che implementano le funzionalita' necessarie per poter inviare sms tramite il servizio offerto da jacksms.it<br>
+ * E' completamente scritta in C++/Qt ed utilizza estensivamente le peculiarita' delle libreie Qt.<br>
+ * Dipende solamente dalla libreria XML ticpp ( http://code.google.com/p/ticpp/ ) da cui pero' e' in progetto il porting a Qt.<br>
+
+
+ * <b>Informazioni:</b>
+ * \li <a href="http://www.jacksms.it">jacksms.it</a>
+ * \li <a href="http://code.google.com/p/libjacksms/">libJackSMS home page</a><p>
+
+ */
+
+
 #ifndef LIBJACKSMS_H
 #define LIBJACKSMS_H
 

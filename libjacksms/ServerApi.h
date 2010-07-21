@@ -37,12 +37,31 @@
 namespace libJackSMS{
 
     namespace serverApi{
-        /*! \brief login: Fornisce un'interfaccia per effettuare l'accesso al server di jacksms.it
-          \ingroup serverApi
-          Questa classe implementa le api per l'accesso al server di jacksms.it
-          Esegue l'accesso e fornisce l'identificatore univoco dell'accesso.
-          Permette inoltre di scaricare dal server la lista dei contatti e dei servizi configurati.
-          */
+        /*!
+        \brief Fornisce un'interfaccia per effettuare l'accesso al server di jacksms.it
+        \ingroup serverApi
+        Questa classe implementa le api per l'accesso al server di jacksms.it
+        Esegue l'accesso e fornisce l'identificatore univoco dell'accesso.
+        Permette inoltre di scaricare dal server la lista dei contatti e dei servizi configurati.
+
+        Esempio
+        \code
+            libJackSMS::serverApi::login client("username","password");
+            if (client.doLogin()){
+                //login avvenuto
+                QString sessionId=client.getSessionId();
+                libJackSMS::dataTypes::phoneBookType Rubrica;
+                client.retreivePhoneBook(Rubrica);
+                libJackSMS::dataTypes::configuredServicesType Accounts;
+                client.retreiveAccounts(Accounts);
+            }else{
+                //login fallito
+                QString error=client.getLoginError();
+
+            }
+        \endcode
+
+       */
 
 
         class login{
@@ -108,8 +127,24 @@ namespace libJackSMS{
                 libJackSMS::dataTypesApi::clientVersion getVersion() const;
 
         };
-        /*! \brief pingator: fornisce l'implementazione delle api per pingare il server e non far scadere la sessione.
-          \ingroup serverApi
+        /*!
+        \brief fornisce l'implementazione delle api per pingare il server e non far scadere la sessione.
+        \ingroup serverApi
+
+        Esempio
+        \code
+            //si suppone client oggetto di tipo libJackSMS::serverApi::login
+            QString sessionId=client.getSessionId();
+            libJackSMS::serverApi::pingator ping(sessionId);
+            if (ping.ping()){
+                //ping ok
+
+            }else{
+                //ping fallito
+
+
+            }
+        \endcode
 
           */
         class pingator{
@@ -182,25 +217,21 @@ namespace libJackSMS{
                 dataTypes::logSmsMessage msg;
                 dataTypes::proxySettings ps;
             public:
-                /*! smsLogSaver
-
+                /*!
                    \param _loginId id della sessione corrente
                    \param _ps oggetto di tipo dataTypes::proxySettings che mantiene le impostazioni del proxy
 
                   */
                 smsLogSaver(const QString _loginId,dataTypes::proxySettings _ps );
-                /*! setMessage
-
+                /*!
                    \param _msg Il messaggio da salvare.
 
                    imposta il messaggio da salvare
 
                   */
                 void setMessage(const dataTypes::logSmsMessage &_msg);
-                /*! save
-
+                /*!
                    \param _id La variabile dove verrà memorizzato l'id con cui il messaggio è stato salvato sul server.
-
                    \return true se il messaggio è stato salvato, false altrimenti
 
                    avvia la procedura per salvare il messaggio sul server
@@ -209,7 +240,7 @@ namespace libJackSMS{
                 bool save(QString &_id);
         };
 
-        /*! \brief Implementa le api per salvare un sms sul server di jacksms.it
+        /*! \brief Implementa le api per salvare, eliminare e modificare un contatto sul server di jacksms.it
           \ingroup serverApi
 
           */
@@ -221,13 +252,49 @@ namespace libJackSMS{
                 QString resultId;
                 dataTypes::proxySettings ps;
             public:
+                /*!
+                   \param _loginId id della sessione corrente
+                   \param _ps oggetto di tipo dataTypes::proxySettings che mantiene le impostazioni del proxy
+
+                  */
                 contactManager(const QString & _loginId,dataTypes::proxySettings _ps );
+                /*!
+                   \param _contatto Il contatto da salvare sul server.
+                   \return true se il contatto è stato salvato, false altrimenti
+
+                  Aggiunge un contatto
+
+                  */
                 bool addNewContact(libJackSMS::dataTypes::contact & _contatto);
+                /*!
+                   \param _contatto Il contatto da aggiornare sul server
+                   \return true se il contatto è stato aggiornato, false altrimenti
+
+                  Aggiorna le informazioni relative ad un contatto un contatto
+
+                  */
                 bool updateContact(libJackSMS::dataTypes::contact & _contatto);
+                /*!
+                   \param _id L'id del contatto da eliminare dal server.
+                   \return true se il contatto è stato eliminato, false altrimenti
+
+                  Elimina un conatatto
+
+                  */
                 bool deleteContact(const QString &_id);
+                /*!
+                   \return Id del contatto appena salvato
+                  Ritorna l'id che il server ha assegnato al contatto che e' appena stato salvato.
+
+                  */
                 QString getResultId() const;
         };
 
+
+        /*! \brief Implementa le api per salvare, eliminare e modificare un account sul server di jacksms.it
+          \ingroup serverApi
+
+          */
         class accountManager{
             private:
                 xmlParserApi::xmlParserServerApiGeneric *xmlDocument;
@@ -236,10 +303,42 @@ namespace libJackSMS{
                 QString resultId;
                 dataTypes::proxySettings ps;
             public:
+                /*!
+                   \param _loginId id della sessione corrente
+                   \param _ps oggetto di tipo dataTypes::proxySettings che mantiene le impostazioni del proxy
+
+                  */
                 accountManager(const QString & _loginId,dataTypes::proxySettings _ps );
+                /*!
+                   \param _service Il servizio da configurare.
+                   \param _account I dati del servizio configurato.
+                   \return true se il servizio è stato salvato, false altrimenti
+
+                  Aggiunge la configurazione di un account sul server
+
+                  */
                 bool addNewAccount(libJackSMS::dataTypes::service _service,libJackSMS::dataTypes::configuredAccount & _account);
+                /*!
+                   \param _account L'account da aggiornare sul server
+                   \return true se l'account è stato aggiornato, false altrimenti
+
+                  Aggiorna le informazioni relative ad un account un contatto
+
+                  */
                 bool updateAccount(libJackSMS::dataTypes::configuredAccount & _account);
+                /*!
+                   \param _id L'id dell'account da eliminare dal server.
+                   \return true se l'account è stato eliminato, false altrimenti
+
+                  Elimina un conatatto
+
+                  */
                 bool deleteAccount(const QString &_id);
+                /*!
+                   \return Id del'account appena salvato
+                  Ritorna l'id che il server ha assegnato all'account che e' appena stato salvato.
+
+                  */
                 QString getResultId() const;
         };
         class conversationManager{
@@ -249,7 +348,20 @@ namespace libJackSMS{
                 netClient::netClientGeneric *webClient;
                 dataTypes::proxySettings ps;
             public:
+                /*!
+                   \param _loginId id della sessione corrente
+                   \param _ps oggetto di tipo dataTypes::proxySettings che mantiene le impostazioni del proxy
+
+                  */
                 conversationManager(const QString & _loginId,dataTypes::proxySettings _ps );
+                /*!
+                   \param _logSms Struttura dati dove verranno salvati gli sms inviati( JMS compresi)
+                   \param _logIm Struttura dati dove verranno salvati i JMS ricevuti
+                   \return true se il parsing ha avuto successo, false altrimenti
+
+                   Riceve dal server gli ultimi 100 messaggi inviati e ricevuti
+
+                  */
                 bool downloadLastMessages(libJackSMS::dataTypes::logSmsType & _logSms,libJackSMS::dataTypes::logImType & _logIm);
 
         };
@@ -262,9 +374,36 @@ namespace libJackSMS{
                 QString servXml;
                 dataTypes::proxySettings ps;
             public:
+                /*!
+                   \param _loginId id della sessione corrente
+                   \param _ps oggetto di tipo dataTypes::proxySettings che mantiene le impostazioni del proxy
+
+                  */
                 updateServicesManager(const QString & _loginId,dataTypes::proxySettings _ps );
+                /*!
+
+                   \param _servizi attuale definizione dei servizi.
+                   \return true se almeno un servizio risulta essere aggiornato/nuovo, false altrimenti
+
+                   Scarica dal server le definizioni dei servizi.
+
+                  */
                 bool downloadUpdates(libJackSMS::dataTypes::servicesType & _servizi);
+                /*!
+
+                   \return un messaggio contenente informazioni sui servizi aggiornati/nuovi
+
+                   Fornisce un messaggio contenente informazioni sui servizi aggiornati/nuovi
+
+                  */
                 QString getMessage() const;
+                /*!
+
+                   \return xml contenente la definizione dei servizi
+
+                   Fornisce l'xml contenente la definizione dei servizi. (tipicamente poi passato all'api locale che effettua il merge dei servizi)
+
+                  */
                 QString getXml() const;
 
 
@@ -278,6 +417,11 @@ namespace libJackSMS{
                 netClient::netClientGeneric *webClient;
                 dataTypes::proxySettings ps;
             public:
+                /*!
+                   \param _loginId id della sessione corrente
+                   \param _ps oggetto di tipo dataTypes::proxySettings che mantiene le impostazioni del proxy
+
+                  */
                 reloader(const QString & _loginId,dataTypes::proxySettings _ps );
                 bool reloadPhoneBook(libJackSMS::dataTypes::phoneBookType & _rubrica);
         };
