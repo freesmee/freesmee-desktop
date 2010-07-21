@@ -170,13 +170,8 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     try{
         loader.loadOptions(GlobalOptions);
         Opzioni=GlobalOptions;
-        libJackSMS::dataTypes::optionsType::const_iterator iter=GlobalOptions.find("save-passwd");
-        if (iter!=GlobalOptions.end()){
-            QString v=iter.value();
-            if (v=="yes"){
-                ui->ricordaPassword->setChecked(true);
-
-            }
+        if (GlobalOptions["save-passwd"]=="yes"){
+            ui->ricordaPassword->setChecked(true);
         }
     }catch(libJackSMS::exceptionXmlError){
         //QMessageBox::critical(this,"JackSMS","Il file delle opzioni globali sembra essere corrotto. Non posso caricare le opzioni globali, utilizzo le impostazioni predefinite.");
@@ -1561,28 +1556,27 @@ void MainJackSMS::endLogin(){
        checkUpdatesThread->start();
 
        if (ui->ricordaPassword->isChecked()){
-
            GlobalOptions["save-passwd"]="yes";
-           libJackSMS::localApi::optionManager man("",GlobalOptions);
-           man.save();
+           Opzioni["save-passwd"]="yes";
            Opzioni["password"]=ui->password->text();
-           libJackSMS::localApi::optionManager man2(current_user_directory,Opzioni);
-           man2.save();
-
        }else{
-           GlobalOptions["save-passwd"]="no";
-           libJackSMS::localApi::optionManager man("",GlobalOptions);
-           man.save();
+           GlobalOptions["save-passwd"]="no";        
+           Opzioni["save-passwd"]="no";
            Opzioni["password"]="";
-           libJackSMS::localApi::optionManager man2(current_user_directory,Opzioni);
-           man2.save();
+
 
 
        }
+       libJackSMS::localApi::optionManager man("",GlobalOptions);
+       man.save();
+       libJackSMS::localApi::optionManager man2(current_user_directory,Opzioni);
+       man2.save();
 
-       libJackSMS::dataTypesApi::clientVersion thisVersion(JACKSMS_VERSION);
-       if (thisVersion<signin->getVersion())
-           QMessageBox::information(this,"JackSMS","E' disponibile una nuova versione di JackSMS.\nVisita www.jacksms.it");
+       //if (Opzioni["check-version"]=="yes"){
+           libJackSMS::dataTypesApi::clientVersion thisVersion(JACKSMS_VERSION);
+           if (thisVersion<signin->getVersion())
+               QMessageBox::information(this,"JackSMS","E' disponibile una nuova versione di JackSMS.\nVisita www.jacksms.it");
+       //}
     }else{
         loggedIn=false;
         ui->widgetSchermate->setCurrentIndex(0);

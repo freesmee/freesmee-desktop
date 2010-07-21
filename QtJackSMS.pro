@@ -163,7 +163,6 @@ HEADERS += mainjacksms.h \
     qmymessage.h \
     libjacksms/ProxyConfig.h \
     threadcheckupdates.h \
-    libjacksms/regularexpression.h \
     threadpingserver.h \
     statsdialog.h \
     plugindialog.h \
