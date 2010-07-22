@@ -87,7 +87,8 @@ SOURCES += main.cpp \
     libjacksms/netclientqhttp.cpp \
     libjacksms/EncodingPercent.cpp \
     libjacksms/SocketClient.cpp \
-    threadupdatecontact.cpp
+    threadupdatecontact.cpp \
+    plugins/JackPluginHostInterfacer.cpp
 HEADERS += mainjacksms.h \
     Types.h \
     captchadialog.h \
@@ -174,7 +175,9 @@ HEADERS += mainjacksms.h \
     libjacksms/netclientqhttp.h \
     libjacksms/EncodingPercent.h \
     libjacksms/SocketClient.h \
-    threadupdatecontact.h
+    threadupdatecontact.h \
+    plugins/JackPluginHostInterfacer.h \
+    plugins/puppeteer/JackPuppeteerPluginInterfacer.h
 FORMS += mainjacksms.ui \
     captchadialog.ui \
     servicesdialog.ui \

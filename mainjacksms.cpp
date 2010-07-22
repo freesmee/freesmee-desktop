@@ -141,6 +141,7 @@ MainJackSMS::MainJackSMS(QWidget *parent)
 
     //carica i plugin
     //loadPlugins();
+    jphi = new JackPluginHostInterface();
 
 
 
@@ -1664,6 +1665,9 @@ void MainJackSMS::checkInstantMessengerReceived(){
                 msg.setReaded(false);
                 MessaggiRicevuti.push_back(msg);
                 countReceivedUnreaded++;
+
+                //relays to listening plugins the received message
+                jphi->emitJIMreceived(*i);
 
         }
 

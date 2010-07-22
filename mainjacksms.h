@@ -8,7 +8,8 @@
 #include <QSystemTrayIcon>
 #include <QTimer>
 #include "pluginListItem.h"
-//#include "plugins/JackPluginInterfacer.h"
+#include "plugins/JackPluginInterfacer.h"
+#include "plugins/JackPluginHostInterfacer.h"
 //#include "plugins/captcha/JackCaptchaPluginInterfacer.h"
 #include "libjacksms/libJackSMS.h"
 #include "threadlogin.h"
@@ -110,6 +111,8 @@ private:
     void ReWriteMessagesToGui();
     void ReWriteImToGui();
     QString esitoInvio;
+    JackPluginHostInterface* jphi;
+
 private slots:
     void on_buttonStatusJms_clicked();
     void jmsActive();
