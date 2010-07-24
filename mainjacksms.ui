@@ -46,7 +46,7 @@
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="login">
        <layout class="QHBoxLayout" name="horizontalLayout_18">
@@ -494,7 +494,7 @@ QFrame#frame_3{
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>0</number>
           </property>
           <property name="iconSize">
            <size>
@@ -665,26 +665,6 @@ QFrame#frame_3{
                    </size>
                   </property>
                  </widget>
-                </item>
-                <item>
-                 <layout class="QGridLayout" name="gridLayout_2">
-                  <item row="1" column="2">
-                   <widget class="QComboBox" name="ComboGruppo">
-                    <item>
-                     <property name="text">
-                      <string/>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
-                  <item row="0" column="2">
-                   <widget class="QLabel" name="label_6">
-                    <property name="text">
-                     <string>Gruppi</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
                 </item>
                </layout>
               </item>
@@ -1513,13 +1493,24 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>Strumenti</string>
     </property>
+    <widget class="QMenu" name="menuStrumenti_avanzati">
+     <property name="title">
+      <string>Strumenti avanzati</string>
+     </property>
+     <property name="icon">
+      <iconset resource="resources.qrc">
+       <normaloff>:/resource/7.png</normaloff>:/resource/7.png</iconset>
+     </property>
+     <addaction name="actionRicarica_servizi"/>
+     <addaction name="actionElimina_cookies"/>
+    </widget>
     <addaction name="actionOpzioni"/>
     <addaction name="separator"/>
-    <addaction name="actionCrea_backup_configurazione"/>
-    <addaction name="actionImporta_Backup"/>
     <addaction name="actionTutti_i_messaggi"/>
     <addaction name="actionStatistiche"/>
     <addaction name="actionPlugins"/>
+    <addaction name="separator"/>
+    <addaction name="menuStrumenti_avanzati"/>
    </widget>
    <widget class="QMenu" name="menuInfo">
     <property name="title">
@@ -1617,6 +1608,16 @@ p, li { white-space: pre-wrap; }
     <string>Plugin</string>
    </property>
   </action>
+  <action name="actionRicarica_servizi">
+   <property name="text">
+    <string>Ricarica servizi</string>
+   </property>
+  </action>
+  <action name="actionElimina_cookies">
+   <property name="text">
+    <string>Elimina cookies</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
@@ -1633,7 +1634,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>bottoneinviomultiplo</tabstop>
   <tabstop>RubricaVeloce</tabstop>
   <tabstop>RicercaVeloce</tabstop>
-  <tabstop>ComboGruppo</tabstop>
   <tabstop>TextRapidRubrica</tabstop>
   <tabstop>rubricaListWidget</tabstop>
   <tabstop>RubricaAggiungi</tabstop>

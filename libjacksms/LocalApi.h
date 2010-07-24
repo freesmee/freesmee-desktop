@@ -156,6 +156,13 @@ namespace libJackSMS{
                 bool save();
                 bool increaseTotalSent();
         };
+        class cookieManager{
+            private:
+                QString userDir;
+            public:
+                cookieManager(const QString & _currentUserDirectory);
+                bool deleteCookies();
+        };
 
         class userDirectoryManager{
             private:

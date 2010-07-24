@@ -131,8 +131,7 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     ui->tabWidget->removeTab(5);
     ui->tabWidget->removeTab(5);
     ui->bottoneinviomultiplo->hide();
-    ui->label_6->hide();
-    ui->ComboGruppo->hide();
+
     ui->actionImporta_Backup->setVisible(false);
     ui->actionCrea_backup_configurazione->setVisible(false);
 
@@ -314,8 +313,6 @@ void MainJackSMS::WriteAddressBookToGui(){
                 accountName=x.value().getName();
         }
 
-        if (ui->ComboGruppo->findText(i->getGroup())==-1)
-            ui->ComboGruppo->addItem(i->getGroup());
 
         ContactWidget *ww=new ContactWidget(
                i->getId(),
@@ -917,48 +914,7 @@ void MainJackSMS::on_RicercaVeloce_textChanged(QString )
 
 }
 
-void MainJackSMS::on_ComboGruppo_currentIndexChanged(QString)
-{
 
-    ui->RubricaVeloce->clear();
-    libJackSMS::dataTypes::phoneBookType::const_iterator i=Rubrica.begin();
-    libJackSMS::dataTypes::phoneBookType::const_iterator i_end=Rubrica.end();
-    QString newText=ui->ComboGruppo->currentText();
-    for(;i!=i_end;++i){
-        if (newText.isEmpty() || i->getGroup()==newText){
-            //QString accountName="Nessun servizio associato";
-            QIcon ico;
-            {
-
-
-                libJackSMS::dataTypes::configuredServicesType::const_iterator x=ElencoServiziConfigurati.find(i->getAccount());
-                if (x==ElencoServiziConfigurati.end()){
-                    ico=QIcon(":/resource/ico_contact.png");
-
-                }else{
-                    ico=ElencoServizi[x.value().getService()].getIcon();
-                    //ico=this->createIcon(QString::fromStdString(x->second.getService()));
-
-                }
-
-
-                contactWidgetFastBook *ww=new contactWidgetFastBook(
-                       i->getId(),
-                       i->getName(),
-                       i->getPhone().toString(),
-                       ico.pixmap(16,16),
-                       i->getAccount()
-                       );
-                QListWidgetItem *item = new QListWidgetItem;
-                item->setSizeHint(ww->size());
-                ui->RubricaVeloce->addItem(item);
-                ui->RubricaVeloce->setItemWidget(item, ww);
-            }
-
-        }
-    }
-
-}
 
 
 
@@ -1816,6 +1772,13 @@ void MainJackSMS::optionsLoaded(libJackSMS::dataTypes::optionsType op){
     man2.save();
 }
 void MainJackSMS::loginSuccess(QString sessionId){
+    libJackSMS::localApi::userDirectoryManager man(current_user_username);
+    if (!man.userDirectoryExists()){
+        man.createUser();
+        current_user_username=man.getUserDir();
+    }
+
+
     current_login_id=sessionId;
 
     xmlLoader=new libJackSMS::localApi::xmlLoader(current_user_directory);
@@ -2231,4 +2194,31 @@ void MainJackSMS::on_buttonStatusJms_clicked()
         imChecker->stop();
     else
         startIm();
+}
+
+void MainJackSMS::on_actionRicarica_servizi_triggered()
+{
+    xmlReLoader=new libJackSMS::localApi::xmlLoader(current_user_directory);
+    connect(xmlReLoader,SIGNAL(servicesLoaded(libJackSMS::dataTypes::servicesType)),this,SLOT(servicesReLoaded(libJackSMS::dataTypes::servicesType)));
+
+
+    xmlReLoader->loadServices();
+
+
+
+}
+void MainJackSMS::servicesReLoaded(libJackSMS::dataTypes::servicesType s){
+    ElencoServizi=s;
+    QMessageBox::information(this,"JackSMS","Servizi ricaricati");
+    xmlReLoader->deleteLater();
+
+}
+
+void MainJackSMS::on_actionElimina_cookies_triggered()
+{
+    libJackSMS::localApi::cookieManager m(current_user_directory);
+    if (m.deleteCookies())
+        QMessageBox::information(this,"JackSMS","Cookies eliminati.");
+    else
+        QMessageBox::critical(this,"JackSMS","Errore durante l'eliminazione dei cookie.");
 }

@@ -10,40 +10,46 @@
 #include <QNetworkProxy>
 #include <QNetworkReply>
 #include <QNetworkCookieJar>
+#include <QNetworkCookie>
 namespace libJackSMS{
 
     namespace netClient{
+        class QMyNetworkCookieJar:public QNetworkCookieJar{
+            Q_OBJECT
+
+
+            public:
+                void saveToDisk(QString filename);
+                void loadFromDisk(QString filename);
+                QString getRawData();
+
+        };
         class netClientQHttp : public QObject,public netClientGeneric
         {
         Q_OBJECT
         private:
-//            QHttp *client;
+            
             QNetworkAccessManager request;
             QNetworkReply *reply;
             bool outputHeaders;
             QUrl url;
-            QNetworkCookieJar *cookies;
+            QMyNetworkCookieJar *cookies;
             QList<QPair <QByteArray,QByteArray> > headers;
             bool userAgentSetted;
             QByteArray _lastReadedUrlCode;
             bool useCookies;
+            bool saveCookies;
+            QString cookieFilename;
             QEventLoop *loop;
-//            bool lastSocketIsSsl;
             QList<QPair <QString,QString> > queryStringFields;
             void setSocket();
             QString lastQueryString;
             void makeQueryString(bool urlenc);
             QNetworkProxy proxy;
             bool proxyConfigured;
-//            QString queryItems();
             bool aborted;
             bool error;
-//            void parseCookies();
-//            bool checkRedirects();
-//            //hostname,mapOfCookieForThisHost
-//            QMap<QString,QString> cookies;
-//            void addCookies();
-           QString ua;
+            QString ua;
         public:
             netClientQHttp(QObject *parent = 0);
             ~netClientQHttp();

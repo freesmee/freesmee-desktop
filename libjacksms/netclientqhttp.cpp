@@ -5,9 +5,52 @@
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
 #include <QNetworkCookieJar>
+#include <QFile>
+#include <QNetworkCookie>
 namespace libJackSMS{
 
     namespace netClient{
+
+        void QMyNetworkCookieJar::saveToDisk(QString filename){
+            QList<QNetworkCookie> myCookieList=allCookies();
+            QFile file(filename);
+            if (file.open(QIODevice::ReadWrite | QIODevice::Text)){
+
+                for(QList<QNetworkCookie>::const_iterator i=myCookieList.begin();i!=myCookieList.end();++i){
+                    file.write(i->toRawForm()+"\n");
+                }
+                file.close();
+            }
+
+        }
+
+        void QMyNetworkCookieJar::loadFromDisk(QString filename){
+            QList<QNetworkCookie> myCookieList;
+            QFile file(filename);
+            if (file.open(QIODevice::ReadOnly | QIODevice::Text)){
+                while (!file.atEnd()) {
+                    QByteArray line = file.readLine();
+                    line.resize(line.length()-1);
+                    QList<QNetworkCookie> cock=QNetworkCookie::parseCookies(line);
+                    myCookieList.append(cock);
+                }
+
+                setAllCookies(myCookieList);
+                file.close();
+            }
+        }
+        QString QMyNetworkCookieJar::getRawData(){
+            QByteArray raw;
+            QList<QNetworkCookie> myCookieList=allCookies();
+            for(QList<QNetworkCookie>::const_iterator i=myCookieList.begin();i!=myCookieList.end();++i){
+                raw.append(i->toRawForm()+"\n");
+            }
+
+
+        }
+
+
+
         netClientQHttp::netClientQHttp(QObject *parent):
             QObject(parent),
             outputHeaders(false),
@@ -50,12 +93,17 @@ namespace libJackSMS{
 
         }
         bool netClientQHttp::setCookieFile(const QString &_filename,bool savecookiefile){
-
+            saveCookies=savecookiefile;
+            cookieFilename=_filename;
+            if (QFile::exists(_filename)){
+                cookies=new QMyNetworkCookieJar;
+                cookies->loadFromDisk(_filename);
+            }
             return false;
         }
         bool netClientQHttp::setUseCookie(bool _useCookie){
             useCookies=_useCookie;
-            return false;
+            return true;
         }
         bool netClientQHttp::setUrl(const QString &_url){
             url=QUrl(QString::fromUtf8(_url.toStdString().c_str(),_url.length()));
@@ -96,7 +144,9 @@ namespace libJackSMS{
             }else if (!aborted){
                 //saving cookies
                 if (useCookies){
-                    cookies=request.cookieJar();
+                    cookies=static_cast<QMyNetworkCookieJar*>(request.cookieJar());
+                    if (saveCookies)
+                        cookies->saveToDisk(cookieFilename);
                 }
 
                 QVariant redirect=reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
@@ -152,7 +202,9 @@ namespace libJackSMS{
             }else if (!aborted){
                 //saving cookies
                 if (useCookies){
-                    cookies=request.cookieJar();
+                    cookies=static_cast<QMyNetworkCookieJar*>(request.cookieJar());
+                    if (saveCookies)
+                        cookies->saveToDisk(cookieFilename);
                 }
 
                 QVariant redirect=reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
@@ -226,7 +278,9 @@ namespace libJackSMS{
             }else if (!aborted){
                 //saving cookies
                 if (useCookies){
-                    cookies=request.cookieJar();
+                    cookies=static_cast<QMyNetworkCookieJar*>(request.cookieJar());
+                    if (saveCookies)
+                        cookies->saveToDisk(cookieFilename);
                 }
 
                 QVariant redirect=reply->attribute(QNetworkRequest::RedirectionTargetAttribute);

@@ -150,6 +150,7 @@ namespace libJackSMS{
             webClient->setUserAgent("Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.3) Gecko/20070309 Firefox/2.0.0.3");
             //webClient->SetCookie(directories::CookiesDirectory()+"cookie");
             webClient->setUseCookie(true);
+            webClient->setCookieFile(libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::CookiesDirectory(),account.getId()+".cookie"),true);
             //webClient->IncludeHeaders();
             dataTypes::contentType elenco_contenuti;
             dataTypes::variousType elenco_dati_vari;

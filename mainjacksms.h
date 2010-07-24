@@ -110,11 +110,15 @@ private:
     QString esitoInvio;
 
     libJackSMS::localApi::xmlLoader *xmlLoader;
+    libJackSMS::localApi::xmlLoader *xmlReLoader;
     libJackSMS::localApi::xmlLoader *initialXmlLoader;
 
     JackPluginHostInterface* jphi;
 
 private slots:
+    void on_actionElimina_cookies_triggered();
+    void servicesReLoaded(libJackSMS::dataTypes::servicesType);
+    void on_actionRicarica_servizi_triggered();
     void on_buttonStatusJms_clicked();
     void jmsActive();
     void jmsNotActive(bool err);
@@ -123,7 +127,7 @@ private slots:
     void on_actionPlugins_triggered();
     void on_actionStatistiche_triggered();
     void on_actionTutti_i_messaggi_triggered();
-    void on_ComboGruppo_currentIndexChanged(QString);
+
     void startIm();
     void stopIm();
     void on_password_returnPressed();

@@ -367,6 +367,12 @@ namespace libJackSMS{
                         error="cannot create "+path;
                         return false;
                     }
+                path=directories::CookiesDirectory();
+                if (!fileOrDirExists(path))
+                    if(!mymkdir(path)){
+                        error="cannot create "+path;
+                        return false;
+                    }
 
                 path=directories::concatDirectoryAndFile(directories::XmlDirectory(),"services.xml");
                 if (fileOrDirExists(path)){
@@ -419,6 +425,12 @@ namespace libJackSMS{
                 if (!fileOrDirExists(dir))
                     if(!mymkdir(dir)){
                         error="cannot create "+dir;
+                        return false;
+                    }
+                path=directories::CookiesDirectory();
+                if (!fileOrDirExists(path))
+                    if(!mymkdir(path)){
+                        error="cannot create "+path;
                         return false;
                     }
                 if (!fileOrDirExists(directories::concatDirectoryAndFile(dir,"users.xml")))
@@ -477,6 +489,19 @@ namespace libJackSMS{
         }
 
 
+
+        cookieManager::cookieManager(const QString & _currentUserDirectory):
+                userDir(_currentUserDirectory){
+        }
+        bool cookieManager::deleteCookies(){
+            bool r=true;
+            QDir d(libJackSMS::directories::CookiesDirectory());
+            QStringList l=d.entryList(QStringList("*.cookie"),QDir::Files);
+            for(QStringList::const_iterator i=l.begin();i!=l.end();++i){
+                r=r && d.remove(*i);
+            }
+            return r;
+        }
 
     }
 
