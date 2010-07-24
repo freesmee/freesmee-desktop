@@ -31,6 +31,7 @@ namespace libJackSMS{
             encodingRemoveAccents();
             ~encodingRemoveAccents();
             QString getEncodedString(QString _text);
+            QString getEncodedAndUrlString(QString _text);
     };
 
 

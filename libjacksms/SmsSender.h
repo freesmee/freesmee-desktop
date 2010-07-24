@@ -20,10 +20,10 @@
   \brief Contiene la definizione della classe da utilizzare per inviare un messaggio.
   \ingroup smsSender
  */
-#include <QObject>
+#include <QThread>
 #include <QString>
 #include "DataTypes.h"
-#include "ReportOperationSendSmsNothing.h"
+#include <QSemaphore>
 #include "ShortMessage.h"
 #include "ProxyConfig.h"
 #include "Encoding.h"
@@ -35,20 +35,48 @@
 
 namespace libJackSMS{
 
+    class smsSender:public QThread{
+        Q_OBJECT
+        private:
+            dataTypes::phoneNumber destinatario;
+            dataTypes::shortMessage messaggio;
+            const dataTypes::servicesType & servizi;
+            dataTypes::configuredAccount account;
+            dataTypes::proxySettings ps;
+            void run();
+        public:
+            smsSender(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps=dataTypes::proxySettings());
+            void setRecipient(const dataTypes::phoneNumber & _dest);
+            void setMessage(const dataTypes::shortMessage & _message);
+            void setAccount(const dataTypes::configuredAccount &_account);
+            void send();
+            void abort();
+        private slots:
+            void slotOperation();
+            void slotOperation(QString);
+            void slotError(QString);
+            void slotSuccess(QString);
+            void slotCaptcha(QByteArray,QSemaphore*);
 
-    /*! \brief fornisce la funzionalità di invio di un messaggio sms
-      \ingroup smsSender
-      Questa classe implementa tutto ciò che è necessario per inviare un sms.
+        signals:
+            void abortSignal();
+            void operation();
+            void operation(QString);
+            void error(QString);
+            void success(QString);
+            void captcha(QByteArray,QSemaphore*);
 
-      */
-    class smsSender:public QObject{
+
+    };
+
+
+    class smsSenderBase:public QObject{
         Q_OBJECT
         private:
 
             dataTypes::phoneNumber destinatario;
             dataTypes::shortMessage messaggio;
             QString messagiofinale;
-            libJackSMS::reportOperationSendSms * operazione;
             const dataTypes::servicesType & servizi;
             dataTypes::configuredAccount account;
             QString substitute(QString _input,const dataTypes::contentType &_cont,bool replace_encoded=true);
@@ -56,46 +84,20 @@ namespace libJackSMS{
             const dataTypes::proxySettings &ps;
             netClient::netClientGeneric *webClient;
         public:
-            /*!
-               \param _services la struttura dati contenente la definizione dei servizi
-               \param _ps L'oggetto contenente le impostazioni per il proxy
-              */
-            smsSender(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps=dataTypes::proxySettings());
-            /*!
-               \param _dest numero telefonico del destinatario del messaggio
-
-               Imposta il destinatario del messaggio
-              */
+            smsSenderBase(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps=dataTypes::proxySettings());
             void setRecipient(const dataTypes::phoneNumber & _dest);
-            /*!
-               \param _message Il messaggio da inviare
-
-               Imposta il messaggio da inviare
-              */
             void setMessage(const dataTypes::shortMessage & _message);
-            /*!
-               \param _account L'account da utilizzare per l'invio del messaggio
-
-               Imposta l'account da utilizzare per l'invio del messaggio
-              */
             void setAccount(dataTypes::configuredAccount _account);
-            /*!
-               \param _op La classe che gestisce le operazioni da eseguire
-
-               Imposta le operazioni sincrone utilizzate dalla classe per notificare gli eventi che accadono durante l'invio
-              */
-            void setReportOperation(libJackSMS::reportOperationSendSms * _op);
-            /*!
-
-               Avvia l'operazione di invio del messaggio sms.
-              */
             void send();
-        private slots:
-            /*!
-
-               slot utilizzato per annullare l'invio.
-              */
+        public slots:
             void abort();
+        signals:
+            void operation();
+            void operation(QString);
+            void error(QString);
+            void success(QString);
+            void captcha(QByteArray,QSemaphore*);
+
 
     };
 

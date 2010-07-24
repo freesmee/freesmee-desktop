@@ -73,6 +73,20 @@ namespace libJackSMS{
                 textEncoder->~encodingGeneric();
                 textEncoder=new libJackSMS::encodingRemoveAccents();
                 codifica=_encoding;
+            }else if (_encoding=="URL"){
+                textEncoder->~encodingGeneric();
+                textEncoder=new libJackSMS::encodingUrl();
+                codifica=_encoding;
+            }else if (_encoding=="AUTO"){
+                QMap<QString,QString> compatMap;
+                compatMap.insert("71","UTF-8");
+                for(QMap<QString,QString>::const_iterator i=compatMap.begin();i!=compatMap.end();++i){
+                    if (getId()==i.key()){
+                        setEncoding(i.value());
+                        break;
+                    }
+
+                }
             }
 
         }
@@ -259,10 +273,7 @@ namespace libJackSMS{
 
         }
         QString service::getEncodedTextUrlEncoded(const QString & _text){
-            libJackSMS::encodingUrl encoder;
-            return encoder.getEncodedString(textEncoder->getEncodedString(_text));
-
-
+            return textEncoder->getEncodedAndUrlString(_text);
         }
         void service::setPage(const dataTypes::paginaServizio & _pag){
             pagine.push_back(_pag);

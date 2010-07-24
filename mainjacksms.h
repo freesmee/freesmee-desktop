@@ -12,18 +12,14 @@
 #include "plugins/JackPluginHostInterfacer.h"
 //#include "plugins/captcha/JackCaptchaPluginInterfacer.h"
 #include "libjacksms/libJackSMS.h"
-#include "threadlogin.h"
-#include "threadsendsms.h"
-#include "sendsmsoperations.h"
-#include "threadsavesmsonline.h"
+
 #include <QSemaphore>
-#include "threadinstantmessenger.h"
-#include "threaddeletecontactonline.h"
+
 #include <QMultiMap>
 #include "smswidget.h"
-#include "threaddeleteaccountonline.h"
-#include "threadcheckupdates.h"
-#include "threadpingserver.h"
+#include "messageloader.h"
+
+
 namespace Ui
 {
     class MainJackSMS;
@@ -38,7 +34,6 @@ signals:
     void abortSendSms();
 public:
 
-    QSemaphore * semaforoCaptcha;
     QSemaphore * semaforoGui;
     Ui::MainJackSMS *ui;
     MainJackSMS(QWidget *parent = 0);
@@ -57,12 +52,16 @@ public:
     QList<JackPluginInterface*> pluginsList;
     QString current_user_directory;
     QString current_user_username;
+    QString current_login_id;
     libJackSMS::serverApi::login *signin;
     void ReWriteAddressBookToGui();
     void ReWriteConfiguredServicesToGui();
 
 private:
-    void appendImToGui();
+    void countdownToGui();
+    int countdownToGuiCount;
+    messageLoader * loaderMessages;
+    //void appendImToGui();
     bool imServiceActive;
     void setTrayIcon();
     int countReceivedUnreaded;
@@ -71,30 +70,29 @@ private:
     //QPixmap createIcon(const QString& _idOfService);
     bool invioInCorso;
 
-    QTimer *pingServerTimer;
+
     int currentMaxLength;
     int currentSingleLength;
-    threadCheckUpdates *checkUpdatesThread;
+    libJackSMS::serverApi::updateServicesManager *updateChecker;
     QMultiMap<QDateTime,SmsWidget*> mapWidgets;
-    QMultiMap<QDateTime,SmsWidget*> mapWidgetsNew;
+    //QMultiMap<QDateTime,SmsWidget*> mapWidgetsNew;
     QMultiMap<QDateTime,SmsWidget*> mapWidgetsReceived;
-    QMultiMap<QDateTime,SmsWidget*> mapWidgetsReceivedNew;
-    threadDeleteContactOnline *deleterThread;
-    threadDeleteAccountOnline *accountDeleterThread;
-    threadPingServer *pingator;
+    //QMultiMap<QDateTime,SmsWidget*> mapWidgetsReceivedNew;
+    libJackSMS::serverApi::contactManager *deleteContect;
+    libJackSMS::serverApi::accountManager *accountManager;
+    libJackSMS::serverApi::pingator *pingator;
     libJackSMS::localApi::userFinder *finder;
-    sendSmsOperations * sendSmsOp;
     QMovie *spinner,*spinnerDC;
     QMenu * menu;
     QList<QString> idList;
     libJackSMS::dataTypes::optionsType Opzioni;
     libJackSMS::dataTypes::optionsType GlobalOptions;
-    threadsendsms * threadSendSMS;
-    ThreadLogin * loginThread;
-    threadSaveSmsOnline *onlineSmsSaver;
+    libJackSMS::smsSender *smsSender;
+    libJackSMS::serverApi::login * loginClient;
+    libJackSMS::serverApi::smsLogSaver *onlineSmsSaver;
     libJackSMS::dataTypes::logImType messaggiRicevuti;
     libJackSMS::dataTypes::logImType nuoviMessaggiRicevuti;
-    threadInstantMessenger *imChecker;
+    libJackSMS::serverApi::permanentInstantMessenger *imChecker;
     QMyMessage ultimoSms;
     QSystemTrayIcon *trayIco;
     QStringList stringList;
@@ -106,11 +104,14 @@ private:
     void loadPlugins();
     void disableUibeforeLogin();
     void enableUiAfterLogin();
-    bool onlineLogin;
     bool loggedIn;
     void ReWriteMessagesToGui();
     void ReWriteImToGui();
     QString esitoInvio;
+
+    libJackSMS::localApi::xmlLoader *xmlLoader;
+    libJackSMS::localApi::xmlLoader *initialXmlLoader;
+
     JackPluginHostInterface* jphi;
 
 private slots:
@@ -128,15 +129,13 @@ private slots:
     void on_password_returnPressed();
     void on_RicercaVeloceIM_2_textChanged(QString );
     void on_comboServizio_currentIndexChanged(QString );
-    void updatesAvailable();
     void on_RispondiIm_clicked();
     void on_TextRapidServizi_textEdited(QString );
     void on_actionLogout_triggered();
     void on_RubricaVeloce_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void on_smsListWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
-    void on_accedi_locale_clicked();
     void on_username_currentIndexChanged(int index);
-    void endLogin();
+    //void endLogin();
     void on_loginButton_clicked();
     void gestiscimenu(QAction*);
     void on_bottoneinviomultiplo_clicked();
@@ -153,7 +152,6 @@ private slots:
     void on_NumeroDestinatario_textEdited(QString );
     void on_RispondiButton_clicked();
     void on_CitaButton_clicked();
-    void CheckIm();
     void on_AnnullaSMS_clicked();
     void on_InoltraButton_clicked();
     void on_RicercaVeloce_textChanged(QString );
@@ -172,18 +170,31 @@ private slots:
     bool eventFilter( QObject *obj, QEvent *ev );
     void TrayClicked();
 
-    void displayCaptcha(const QByteArray & data);
+    void displayCaptcha(QByteArray data,QSemaphore* sem);
     void eseguiPassoInvio();
     void invioSuccesso(const QString & _text);
     void invioFallito(const QString & _text);
-    void checkInstantMessengerReceived();
+    void checkInstantMessengerReceived(libJackSMS::dataTypes::logImType);
     void deleteContactKo();
-    void deleteContactOk();
+    void deleteContactOk(QString);
     void deleteAccountKo();
-    void deleteAccountOk();
-    void pingServer();
+    void deleteAccountOk(QString);
+
     void translateGui();
     void popupInvio();
+    void newVersionAvailable();
+    void loginSuccess(QString);
+    void accountsReceived(libJackSMS::dataTypes::configuredServicesType);
+    void phoneBookReceived(libJackSMS::dataTypes::phoneBookType);
+    void loginFailed(QString);
+    void loginStarted();
+    void updatesAvailable(libJackSMS::dataTypes::servicesType,QString,QString);
+    void servicesLoaded(libJackSMS::dataTypes::servicesType);
+    void optionsLoaded(libJackSMS::dataTypes::optionsType);
+    void initialOptionsLoaded(libJackSMS::dataTypes::optionsType);
+    void serverPinged();
+    void messagesLoaded(QList<QMyMessage> msgs);
+
 };
 
 #endif // MAINJACKSMS_H

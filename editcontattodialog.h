@@ -3,10 +3,10 @@
 
 #ifndef EDITCONTATTODIALOG_H
 #define EDITCONTATTODIALOG_H
-#include "threadupdatecontact.h"
 #include <QtGui/QDialog>
 
 #include <QMovie>
+#include "libjacksms/libJackSMS.h"
 namespace Ui {
     class editcontattodialog;
 }
@@ -27,7 +27,7 @@ private:
     const libJackSMS::dataTypes::servicesType & ElencoServizi;
     const libJackSMS::dataTypes::configuredServicesType &ElencoServiziConfigurati;
     libJackSMS::dataTypes::phoneBookType &Rubrica;
-    threadUpdateContact *saver;
+    libJackSMS::serverApi::contactManager *saver;
     QMovie *spinner;
     const libJackSMS::dataTypes::optionsType Opzioni;
     QString id;
@@ -35,7 +35,7 @@ private slots:
     void on_salva_clicked();
     void on_annulla_clicked();
 
-    void salvataggioOk();
+    void salvataggioOk(libJackSMS::dataTypes::contact);
     void salvataggioKo();
 };
 

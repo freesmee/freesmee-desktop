@@ -30,6 +30,7 @@ namespace libJackSMS{
             encodingGeneric(){};
             virtual ~encodingGeneric(){};
             virtual QString getEncodedString(QString _text)=0;
+            virtual QString getEncodedAndUrlString(QString _text)=0;
     };
 
 

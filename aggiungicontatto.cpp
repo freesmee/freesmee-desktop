@@ -6,8 +6,8 @@
 #include <QMessageBox>
 #include "Configuration.h"
 #include "libjacksms/libJackSMS.h"
-#include "threadsavecontactonline.h"
-AggiungiContatto::AggiungiContatto(QWidget *parent , MainJackSMS * _padre,libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati,libJackSMS::dataTypes::phoneBookType &_Rubrica,libJackSMS::dataTypes::servicesType &_ElencoServizi,bool _onlineLogin,libJackSMS::dataTypes::optionsType & _opzioni) :
+
+AggiungiContatto::AggiungiContatto(QWidget *parent , MainJackSMS * _padre,libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati,libJackSMS::dataTypes::phoneBookType &_Rubrica,libJackSMS::dataTypes::servicesType &_ElencoServizi,libJackSMS::dataTypes::optionsType & _opzioni) :
     QDialog(parent),
 
     m_ui(new Ui::AggiungiContatto),
@@ -15,7 +15,6 @@ AggiungiContatto::AggiungiContatto(QWidget *parent , MainJackSMS * _padre,libJac
     ElencoServiziConfigurati(_ElencoServiziConfigurati),
     Rubrica(_Rubrica),
     ElencoServizi(_ElencoServizi),
-    onlineLogin(_onlineLogin),
     opzioni(_opzioni)
 {
     m_ui->setupUi(this);
@@ -120,37 +119,29 @@ void AggiungiContatto::on_salva_clicked()
         }
         //QString nn=nome.to;
 
-        libJackSMS::dataTypes::contact contatto(nome,num,gruppo,idAccount);
+        contatto=libJackSMS::dataTypes::contact(nome,num,gruppo,idAccount);
         m_ui->salva->setEnabled(false);
         m_ui->annulla->setEnabled(false);
-        if (onlineLogin){
-            m_ui->labelSpin->show();
+
+        m_ui->labelSpin->show();
 
 
 
-            saver=new threadSaveContactOnline(Rubrica,padre->signin->getSessionId(),contatto,opzioni) ;
-            connect(saver,SIGNAL(saveOk()),this,SLOT(salvataggioOk()));
-            connect(saver,SIGNAL(saveKo()),this,SLOT(salvataggioKo()));
-            saver->start();
-        }else{
-            libJackSMS::localApi::contactManager manager(padre->current_user_directory);
-            if (!manager.addNewContact(contatto)){
-                QMessageBox::critical(this,"JackSMS","Errore durante il salvataggio del contatto.");
-                m_ui->salva->setEnabled(true);
-                m_ui->annulla->setEnabled(true);
-            }else{
-                padre->ReloadRubrica();
-                this->close();
-            }
-        }
+        saver=new libJackSMS::serverApi::contactManager(padre->current_login_id,opzioni);
+        connect(saver,SIGNAL(contactSaved(QString)),this,SLOT(salvataggioOk(QString)));
+        connect(saver,SIGNAL(contactNotSaved()),this,SLOT(salvataggioKo()));
+        saver->addNewContact(contatto);
+
 
 
 
 }
 
-void AggiungiContatto::salvataggioOk(){
+void AggiungiContatto::salvataggioOk(QString id){
+    contatto.setId(id);
+    Rubrica.insert(id,contatto);
     padre->ReWriteAddressBookToGui();
-    this->close();
+    close();
 }
 void AggiungiContatto::salvataggioKo(){
     this->close();

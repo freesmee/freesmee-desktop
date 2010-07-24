@@ -3,7 +3,7 @@
 #include <QProcess>
 #include <Configuration.h>
 #include <QMessageBox>
-#include "threadupdatecontact.h"
+
 
 editcontattodialog::editcontattodialog(QWidget *parent , MainJackSMS * _padre,const libJackSMS::dataTypes::servicesType & _ElencoServizi,const libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati,libJackSMS::dataTypes::phoneBookType &_Rubrica,QString contactId,const libJackSMS::dataTypes::optionsType _Opzioni) :
     QDialog(parent),
@@ -102,15 +102,16 @@ void editcontattodialog::on_salva_clicked()
 
 
 
-    saver=new threadUpdateContact(Rubrica,padre->signin->getSessionId(),contatto,Opzioni);
-    connect(saver,SIGNAL(updateOk()),this,SLOT(salvataggioOk()));
-    connect(saver,SIGNAL(updateKo()),this,SLOT(salvataggioKo()));
-    saver->start();
+    saver=new libJackSMS::serverApi::contactManager(padre->current_login_id,Opzioni);
+    connect(saver,SIGNAL(contactUpdated(libJackSMS::dataTypes::contact)),this,SLOT(salvataggioOk(libJackSMS::dataTypes::contact)));
+    connect(saver,SIGNAL(contactNotUpdated()),this,SLOT(salvataggioKo()));
+    saver->updateContact(contatto);
 
 
 }
 
-void editcontattodialog::salvataggioOk(){
+void editcontattodialog::salvataggioOk(libJackSMS::dataTypes::contact c){
+    Rubrica[c.getId()]=c;
     padre->ReWriteAddressBookToGui();
     this->close();
 }

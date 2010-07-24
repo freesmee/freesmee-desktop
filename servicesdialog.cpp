@@ -10,14 +10,14 @@
 
 #include "mainjacksms.h"
 #include "avvisoaccentidialog.h"
-#include "threadsaveaccountonline.h"
-ServicesDialog::ServicesDialog(QWidget *parent,MainJackSMS * _padre,libJackSMS::dataTypes::servicesType &_ElencoServizi,libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati,bool _onlineLogin,const libJackSMS::dataTypes::optionsType &_opzioni) :
+
+ServicesDialog::ServicesDialog(QWidget *parent,MainJackSMS * _padre,libJackSMS::dataTypes::servicesType &_ElencoServizi,libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati,const libJackSMS::dataTypes::optionsType &_opzioni) :
     QDialog(parent),
     padre(_padre),
     m_ui(new Ui::ServicesDialog),
     ElencoServizi(_ElencoServizi),
     ElencoServiziConfigurati(_ElencoServiziConfigurati),
-    onlineLogin( _onlineLogin),
+
     opzioni(_opzioni)
 {
     m_ui->setupUi(this);
@@ -47,9 +47,9 @@ void ServicesDialog::addAccountKo(){
     m_ui->labelSpinAddAccount->hide();
     QMessageBox::critical(this,"JackSMS","Errore durante l'eliminazione dell'account.");
 }
-void ServicesDialog::addAccountOk(){
-    //ElencoServiziConfigurati.insert(std::make_pair(newAcc.getId(),newAcc));
-    //QMessageBox::information(this,"asd",QString::number(ElencoServiziConfigurati.size()));
+void ServicesDialog::addAccountOk(QString id){
+    newAcc.setId(id);
+    this->ElencoServiziConfigurati.insert(id,newAcc);
     m_ui->Salva->show();
     m_ui->labelSpinAddAccount->hide();
     padre->ReWriteConfiguredServicesToGui();
@@ -163,21 +163,12 @@ void ServicesDialog::on_Salva_clicked()
             m_ui->Salva->hide();
             m_ui->labelSpinAddAccount->show();
 
-            if (this->onlineLogin){
-                saver=new threadSaveAccountOnline(ElencoServiziConfigurati,ElencoServizi,padre->signin->getSessionId(),newAcc,opzioni) ;
-                connect(saver,SIGNAL(saveOk()),this,SLOT(addAccountOk()));
-                connect(saver,SIGNAL(saveKo()),this,SLOT(addAccountOk()));
-                saver->start();
-            }else{
 
-                libJackSMS::localApi::accountManager acc(padre->current_user_directory);
-                if(acc.addNewAccount(newAcc)){
-                    padre->ReloadConfiguredServices();
-                    QMessageBox::information(this,"JackSMS","Account aggiunto");
-                    this->close();
-                }else
-                    QMessageBox::information(this,"JackSMS","Errore durante l'aggiunta dell'account");
-            }
+            saver=new libJackSMS::serverApi::accountManager(padre->current_login_id,opzioni);
+            connect(saver,SIGNAL(accountSaved(QString)),this,SLOT(addAccountOk(QString)));
+            connect(saver,SIGNAL(accountNotSaved()),this,SLOT(addAccountKo()));
+            saver->addNewAccount(ElencoServizi[currentId],newAcc);
+
         }
 
 
@@ -186,11 +177,3 @@ void ServicesDialog::on_Salva_clicked()
 
 
 
-void ServicesDialog::on_TableVariabili_currentCellChanged(int currentRow, int /*currentColumn*/, int/* previousRow*/, int /*previousColumn*/)
-{
-    /*
-    const QTableWidgetItem *it=m_ui->TableVariabili->item(currentRow,2);
-    if (it!=NULL)
-        m_ui->DescrizioneVariabile->setText(it->text());
-        */
-}

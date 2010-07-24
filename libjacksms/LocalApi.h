@@ -20,6 +20,7 @@
 #include <QList>
 #include "xmlParserLocalApi.h"
 #include "DataTypes.h"
+#include <QThread>
 #ifndef LOCALAPI_H
 #define LOCALAPI_H 1
 
@@ -73,19 +74,51 @@ namespace libJackSMS{
                 bool deleteIm(const QList<QString>  &_idList);
 
         };
-        class xmlLoader{
+
+        class optionLoader:public QThread{
+            Q_OBJECT
             private:
                 xmlParserApi::xmlParserLocalApiGeneric *xmlDocument;
+            protected:
+                void run();
+            public:
+                void load();
+                optionLoader(QString _userDir="");
+            signals:
+                void endLoad(libJackSMS::dataTypes::optionsType);
+        };
+        class serviceLoader:public QThread{
+            Q_OBJECT
+            private:
+                xmlParserApi::xmlParserLocalApiGeneric *xmlDocument;
+            protected:
+                void run();
+            public:
+                void load();
+                serviceLoader();
+            signals:
+                void endLoad(libJackSMS::dataTypes::servicesType);
+        };
+        class xmlLoader:public QObject{
+            Q_OBJECT
+            private:
+                xmlParserApi::xmlParserLocalApiGeneric *xmlDocument;
+                serviceLoader *lo;
+                optionLoader *l;
+                QString currentUserDirectory;
             public:
                 xmlLoader(const QString & _currentUserDirectory);
                 bool loadPhoneBook(libJackSMS::dataTypes::phoneBookType & _rubrica);
-                bool loadServices(libJackSMS::dataTypes::servicesType & _servizi);
+                bool loadServices();
                 bool loadAccounts(libJackSMS::dataTypes::configuredServicesType & _serviziConfigurati);
-                bool loadOptions(libJackSMS::dataTypes::optionsType & _opzioni,bool overwriteExisting=true);
+                bool loadOptions();
                 bool loadSmsLog(libJackSMS::dataTypes::logSmsType & _logSms);
                 bool loadImLog(libJackSMS::dataTypes::logImType & _logIm);
-                //bool loadGlobalOptions(libJackSMS::dataTypes::optionsType & _opzioni,bool overwriteExisting=true);
+           signals:
+                void servicesLoaded(libJackSMS::dataTypes::servicesType);
+                void optionsLoaded(libJackSMS::dataTypes::optionsType);
         };
+
         class serviceManager{
             private:
                 xmlParserApi::xmlParserLocalApiGeneric *xmlDocument;

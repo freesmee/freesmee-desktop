@@ -29,7 +29,10 @@ namespace libJackSMS{
     }
     encodingTransformAccents::~encodingTransformAccents(){
     }
-
+    QString encodingTransformAccents::getEncodedAndUrlString(QString _text){
+        QByteArray _t=getEncodedString(_text).toLocal8Bit().toPercentEncoding();
+        return QString(_t);
+    }
     QString encodingTransformAccents::getEncodedString(QString _text){
         QList<QPair<QString,QString> > symbols;
         symbols.push_back(qMakePair(QString("è"),QString("e'")));

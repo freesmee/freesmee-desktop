@@ -258,10 +258,8 @@ namespace libJackSMS{
                         //std::cout <<std::endl<<thisService->GetAttribute("name")<<std::endl;
                         servizio.setName(QString::fromStdString(thisService->GetAttribute("name")));
                         servizio.setVersion(QString::fromStdString(thisService->GetAttribute("v")));
-                        if (thisService->HasAttribute("output_encoding"))
-                            servizio.setEncoding(QString::fromStdString(thisService->GetAttribute("output_encoding")));
-                        else
-                            servizio.setEncoding("URL");
+                        servizio.setEncoding(QString::fromStdString(thisService->GetAttributeOrDefault("output_encoding","auto")));
+
                         servizio.setMaxSms(QString::fromStdString(thisService->GetAttribute("maxsms")));
                         servizio.setReset(QString::fromStdString(thisService->GetAttribute("reset")));
                         servizio.setMaxLength(QString::fromStdString(thisService->GetAttribute("maxlen")));
@@ -477,6 +475,7 @@ namespace libJackSMS{
                 ticpp::Node *child=NULL;
                 while( child = subRoot->IterateChildren( child ) ){
                     ticpp::Element * curElem= child->ToElement();
+
                     if (overwriteExisting)
                         _opzioni[QString::fromStdString(child->Value())]=QString::fromStdString(curElem->GetTextOrDefault(""));
                     else if (_opzioni.find(QString::fromStdString(child->Value()))==_opzioni.end())
@@ -1015,6 +1014,7 @@ namespace libJackSMS{
                 dataTypes::optionsType::const_iterator i_end=_opzioni.end();
                 for(;i!=i_end;++i){
                     ticpp::Element *el=new ticpp::Element(i.key().toStdString());
+
                     if (!i.value().isEmpty())
                         el->SetText(i.value().toStdString());
                     subRoot->LinkEndChild(el);

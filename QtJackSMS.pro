@@ -27,9 +27,6 @@ SOURCES += main.cpp \
     editcontattodialog.cpp \
     inviomultiplo.cpp \
     avvisoaccentidialog.cpp \
-    threadlogin.cpp \
-    sendsmsoperations.cpp \
-    threadsendsms.cpp \
     libjacksms/xmlParserServerApiTicpp.cpp \
     libjacksms/xmlParserLocalApiTicpp.cpp \
     libjacksms/VariabileServizio.cpp \
@@ -39,7 +36,6 @@ SOURCES += main.cpp \
     libjacksms/ShortMessage.cpp \
     libjacksms/Service.cpp \
     libjacksms/ServerApi.cpp \
-    libjacksms/ReportOperationSendSmsNothing.cpp \
     libjacksms/PhoneNumber.cpp \
     libjacksms/PaginaServizio.cpp \
     libjacksms/PageVariable.cpp \
@@ -64,20 +60,12 @@ SOURCES += main.cpp \
     libjacksms/ConfiguredAccount.cpp \
     smswidget.cpp \
     contactwidget.cpp \
-    threadsavesmsonline.cpp \
-    threadinstantmessenger.cpp \
-    threadsavecontactonline.cpp \
-    threaddeletecontactonline.cpp \
     contactwidgetfastbook.cpp \
-    threaddeleteaccountonline.cpp \
     accountwidget.cpp \
-    threadsaveaccountonline.cpp \
     qcontact.cpp \
     qmymessage.cpp \
     libjacksms/ProxyConfig.cpp \
-    threadcheckupdates.cpp \
     libjacksms/DataTypesApi.cpp \
-    threadpingserver.cpp \
     statsdialog.cpp \
     plugindialog.cpp \
     libjacksms/PageCommand.cpp \
@@ -87,8 +75,9 @@ SOURCES += main.cpp \
     libjacksms/netclientqhttp.cpp \
     libjacksms/EncodingPercent.cpp \
     libjacksms/SocketClient.cpp \
-    threadupdatecontact.cpp \
+    messageloader.cpp \
     plugins/JackPluginHostInterfacer.cpp
+
 HEADERS += mainjacksms.h \
     Types.h \
     captchadialog.h \
@@ -103,9 +92,6 @@ HEADERS += mainjacksms.h \
     plugins/captcha/JackCaptchaPluginInterfacer.h \
     avvisoaccentidialog.h \
     pluginListItem.h \
-    threadlogin.h \
-    sendsmsoperations.h \
-    threadsendsms.h \
     libjacksms/xmlParserServerApiTicpp.h \
     libjacksms/xmlParserServerApi.h \
     libjacksms/xmlParserLocalApiTicpp.h \
@@ -121,8 +107,6 @@ HEADERS += mainjacksms.h \
     libjacksms/ShortMessage.h \
     libjacksms/Service.h \
     libjacksms/ServerApi.h \
-    libjacksms/ReportOperationSendSmsNothing.h \
-    libjacksms/ReportOperationSendSms.h \
     libjacksms/PhoneNumber.h \
     libjacksms/PaginaServizio.h \
     libjacksms/PageVariable.h \
@@ -152,19 +136,11 @@ HEADERS += mainjacksms.h \
     libjacksms/ConfiguredAccount.h \
     smswidget.h \
     contactwidget.h \
-    threadsavesmsonline.h \
-    threadinstantmessenger.h \
-    threadsavecontactonline.h \
-    threaddeletecontactonline.h \
     contactwidgetfastbook.h \
-    threaddeleteaccountonline.h \
     accountwidget.h \
-    threadsaveaccountonline.h \
     qcontact.h \
     qmymessage.h \
     libjacksms/ProxyConfig.h \
-    threadcheckupdates.h \
-    threadpingserver.h \
     statsdialog.h \
     plugindialog.h \
     libjacksms/PageCommand.h \
@@ -175,7 +151,7 @@ HEADERS += mainjacksms.h \
     libjacksms/netclientqhttp.h \
     libjacksms/EncodingPercent.h \
     libjacksms/SocketClient.h \
-    threadupdatecontact.h \
+    messageloader.h \
     plugins/JackPluginHostInterfacer.h \
     plugins/puppeteer/JackPuppeteerPluginInterfacer.h
 FORMS += mainjacksms.ui \

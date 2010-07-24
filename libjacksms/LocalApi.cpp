@@ -24,18 +24,10 @@
 #include "Utilities.h"
 #include "FilesDirectory.h"
 #include "Encrypter.h"
+#include "Exceptions.h"
 #include <QDir>
-#ifdef WIN32
-    #include <dirent.h>
-#else
-    #ifdef WIN64
-        #include <dirent.h>
-    #else
-        #include <sys/stat.h>
-        #include <sys/types.h>
-        #include <cstdlib>
-    #endif
-#endif
+#include <QMetaType>
+
 
 
 
@@ -93,32 +85,76 @@ namespace libJackSMS{
         bool imLogSaver::deleteIm(const  QList<QString>  &_idList){
             return xmlDocument->deleteImMessage(_idList);
         }
+
+        /***************************************************************/
+        optionLoader::optionLoader(QString _userDir):
+                xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_userDir)){
+            qRegisterMetaType<libJackSMS::dataTypes::optionsType>("libJackSMS::dataTypes::optionsType");
+        }
+        void optionLoader::load(){
+            start();
+        }
+        void optionLoader::run(){
+            try{
+               libJackSMS::dataTypes::optionsType s;
+               if (xmlDocument->loadOptions(s,true)){
+                   libJackSMS::dataTypes::optionsType::iterator i=s.begin();
+                   libJackSMS::dataTypes::optionsType::iterator i_end=s.end();
+                   for(;i!=i_end;++i){
+
+                       if (i.key().indexOf("password")!=-1){
+                           i.value()=Encrypter::Encrypter::decrypt(i.value());
+                       }
+                   }
+                   emit endLoad(s);
+
+               }
+            }catch(libJackSMS::exceptionXmlError){
+               //QMessageBox::critical(this,"JackSMS","Il file delle opzioni globali sembra essere corrotto. Non posso caricare le opzioni globali, utilizzo le impostazioni predefinite.");
+            }catch(libJackSMS::exceptionXmlNotFound){
+
+            }
+
+
+        }
+        /***************************************************************/
+        /***************************************************************/
+        serviceLoader::serviceLoader():
+                xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp("")){
+            qRegisterMetaType<libJackSMS::dataTypes::servicesType>("libJackSMS::dataTypes::servicesType");
+        }
+        void serviceLoader::load(){
+            start();
+        }
+        void serviceLoader::run(){
+           libJackSMS::dataTypes::servicesType s;
+           if (xmlDocument->loadServices(s))
+                   emit endLoad(s);
+
+        }
+        /***************************************************************/
         xmlLoader::xmlLoader(const QString & _currentUserDirectory):
-            xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_currentUserDirectory)){
+            xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_currentUserDirectory)),
+            currentUserDirectory(_currentUserDirectory){
 
         }
         bool xmlLoader::loadPhoneBook(libJackSMS::dataTypes::phoneBookType & _rubrica){
             return xmlDocument->loadPhoneBook(_rubrica);
         }
-        bool xmlLoader::loadServices(libJackSMS::dataTypes::servicesType & _servizi){
-            return xmlDocument->loadServices(_servizi);
+        bool xmlLoader::loadServices(){
+
+            lo=new serviceLoader;
+            connect(lo,SIGNAL(endLoad(libJackSMS::dataTypes::servicesType)),this,SIGNAL(servicesLoaded(libJackSMS::dataTypes::servicesType)));
+            lo->load();
         }
         bool xmlLoader::loadAccounts(libJackSMS::dataTypes::configuredServicesType & _serviziConfigurati){
             return xmlDocument->loadAccounts(_serviziConfigurati);
         }
-        bool xmlLoader::loadOptions(libJackSMS::dataTypes::optionsType & _opzioni,bool overwriteExisting){
-            if(xmlDocument->loadOptions(_opzioni,overwriteExisting)){
-                libJackSMS::dataTypes::optionsType::iterator i=_opzioni.begin();
-                libJackSMS::dataTypes::optionsType::iterator i_end=_opzioni.end();
-                for(;i!=i_end;++i){
+        bool xmlLoader::loadOptions(){
+            l=new optionLoader(currentUserDirectory);
+            connect(l,SIGNAL(endLoad(libJackSMS::dataTypes::optionsType)),this,SIGNAL(optionsLoaded(libJackSMS::dataTypes::optionsType)));
+            l->load();
 
-                    if (i.key().indexOf("password")!=-1){
-                        i.value()=Encrypter::Encrypter::decrypt(i.value());
-                    }
-                }
-                return true;
-            }else
-                return false;
         }
 
         bool xmlLoader::loadSmsLog(libJackSMS::dataTypes::logSmsType & _logSms){
@@ -240,7 +276,7 @@ namespace libJackSMS{
             }
 
             opzioni["sent-count"]=QString::number(n);
-            return xmlDocument->saveOptions(opzioni);
+            return save();
 
         }
         statsManager::statsManager(const QString & _currentUserDirectory)

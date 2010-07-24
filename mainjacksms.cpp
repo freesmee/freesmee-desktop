@@ -21,31 +21,37 @@
 #include <QHeaderView>
 #include <QMap>
 #include "inviomultiplo.h"
-#include "threadlogin.h"
-#include "sendsmsoperations.h"
 #include "libjacksms/libJackSMS.h"
-#include "threadsendsms.h"
 #include <QSharedMemory>
 #include <QSemaphore>
 #include "smswidget.h"
 #include "contactwidget.h"
-#include "threadsavesmsonline.h"
-#include "threadinstantmessenger.h"
-#include "threaddeletecontactonline.h"
+
+
 #include "contactwidgetfastbook.h"
 #include "accountwidget.h"
 #include "Types.h"
-#include "threadcheckupdates.h"
-#include "threadpingserver.h"
+
+
 #include <cmath>
 #include "statsdialog.h"
 #include "plugindialog.h"
 #include "qlabelresult.h"
-
+#include "messageloader.h"
+#define COUNTDOWNTOGUICOUNTDEFINE 5
 MainJackSMS::MainJackSMS(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainJackSMS)
 {
 
+    //abilito la gui quando  countdownToGuiCount==0
+    //1-fine caricamento servizi
+    //2-fine login
+    //3-fine caricamento messaggi
+    //4-fine caricamento account di lofin
+    //5 -fine caricamento rubrica login
+    countdownToGuiCount=COUNTDOWNTOGUICOUNTDEFINE;
+    imChecker=NULL;
+    updateChecker=NULL;
 
     ui->setupUi(this);
     ui->widgetSchermate->setCurrentIndex(0);
@@ -97,7 +103,6 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     imServiceActive=false;
     invioInCorso=false;
     /*imposto il semaforo per sincronizzare thread d'invio*/
-    semaforoCaptcha=new QSemaphore(0);
     semaforoGui=new QSemaphore(0);
 
 
@@ -130,7 +135,6 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     ui->ComboGruppo->hide();
     ui->actionImporta_Backup->setVisible(false);
     ui->actionCrea_backup_configurazione->setVisible(false);
-    ui->accedi_locale->hide();
 
     ui->actionPlugins->setVisible(false);
 
@@ -166,19 +170,14 @@ MainJackSMS::MainJackSMS(QWidget *parent)
         exit(-1);
     }
 
+
+
     /*questo carica le opzioni globali*/
-    libJackSMS::localApi::xmlLoader loader("");
-    try{
-        loader.loadOptions(GlobalOptions);
-        Opzioni=GlobalOptions;
-        if (GlobalOptions["save-passwd"]=="yes"){
-            ui->ricordaPassword->setChecked(true);
-        }
-    }catch(libJackSMS::exceptionXmlError){
-        //QMessageBox::critical(this,"JackSMS","Il file delle opzioni globali sembra essere corrotto. Non posso caricare le opzioni globali, utilizzo le impostazioni predefinite.");
-    }catch(libJackSMS::exceptionXmlNotFound){
-        /*non trovare il file significa che non ci sono opzioni globali */
-    }
+    initialXmlLoader=new libJackSMS::localApi::xmlLoader("");
+    connect(initialXmlLoader,SIGNAL(optionsLoaded(libJackSMS::dataTypes::optionsType)),this,SLOT(initialOptionsLoaded(libJackSMS::dataTypes::optionsType)));
+    initialXmlLoader->loadOptions();
+
+
 
 
     try{
@@ -195,14 +194,27 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     translateGui();
 
 }
-
+void MainJackSMS::initialOptionsLoaded(libJackSMS::dataTypes::optionsType o){
+    Opzioni=o;
+    GlobalOptions=o;
+    if (GlobalOptions["save-passwd"]=="yes"){
+        ui->ricordaPassword->setChecked(true);
+    }
+}
 MainJackSMS::~MainJackSMS()
 {
-    if (Opzioni["receive-im"]=="yes"){
-        this->imChecker->stop();
+    if (updateChecker!=NULL)
+        if (updateChecker->isRunning()){
+            updateChecker->abort();
+
+        }
+    if (imChecker!=NULL && Opzioni["receive-im"]=="yes"){
+
+        imChecker->stop();
         delete imChecker;
 
     }
+
     delete trayIco;
     delete ui;
 }
@@ -511,12 +523,12 @@ void MainJackSMS::WriteImToGui(){
 
 void MainJackSMS::on_RubricaAggiungi_clicked()
 {
-    AggiungiContatto *diag=new AggiungiContatto(this,this,ElencoServiziConfigurati,Rubrica,ElencoServizi,onlineLogin,Opzioni);
+    AggiungiContatto *diag=new AggiungiContatto(this,this,ElencoServiziConfigurati,Rubrica,ElencoServizi,Opzioni);
     diag->exec();
     diag->deleteLater();
 
 }
-void MainJackSMS::displayCaptcha(const QByteArray & data){
+void MainJackSMS::displayCaptcha(QByteArray data,QSemaphore* sem){
     /*
             //cerca se c'è un plugin captcha per questo servizio
             JackCaptchaPluginInterface* availablePlugin = 0;
@@ -560,10 +572,22 @@ void MainJackSMS::displayCaptcha(const QByteArray & data){
         CaptchaDialog *dial=new CaptchaDialog(data,QString("100%"),this);
         dial->exec();
         dial->deleteLater();
+        /**/
+        QString toWrite="toWrite";
+        QSharedMemory memoriaCaptcha("jacksms_result_captcha_shmem");
+        if(memoriaCaptcha.attach()){
+
+            char * to=(char*)memoriaCaptcha.data();
+            const char * from=toWrite.toStdString().c_str();
+            memcpy(to,from,toWrite.length());
+
+        }else{
+            QString err=memoriaCaptcha.errorString();
+        }/**/
     }catch (QString s){
         QMessageBox::critical(this,"JackSMS","Si e' verificato un errore.\nImpossibile caricare l'immagine captcha. L'invio verra' interrotto.");
     }
-    semaforoCaptcha->release(1);
+    sem->release(1);
 }
 
 void MainJackSMS::eseguiPassoInvio(){
@@ -659,10 +683,8 @@ void MainJackSMS::invioSuccesso(const QString & _text){
 
 
 
-    if (onlineLogin){
-        onlineSmsSaver=new threadSaveSmsOnline(signin->getSessionId(),us,Opzioni,current_user_directory,ultimoSms.getAccountId());
-        onlineSmsSaver->start();
-    }
+    onlineSmsSaver=new libJackSMS::serverApi::smsLogSaver(current_login_id,Opzioni);
+    onlineSmsSaver->save(us);
 
 
 
@@ -685,12 +707,7 @@ void MainJackSMS::on_InviaSMS_clicked()
 
     try{
         invioInCorso=true;
-        sendSmsOp=new sendSmsOperations(semaforoCaptcha,semaforoGui);
-        connect(sendSmsOp,SIGNAL(signalCaptcha(QByteArray)),this,SLOT(displayCaptcha(const QByteArray &)));
-        connect(sendSmsOp,SIGNAL(signalOperation()),this,SLOT(eseguiPassoInvio()));
-        connect(sendSmsOp,SIGNAL(signalSendKO(QString)),this,SLOT(invioFallito(const QString &)));
-        connect(sendSmsOp,SIGNAL(signalSendOK(QString)),this,SLOT(invioSuccesso(const QString &)));
-
+        DisabilitaUi();
 
         libJackSMS::dataTypes::shortMessage messaggio(ui->TestoSMS->toPlainText());
         libJackSMS::dataTypes::phoneNumber destinatario;
@@ -719,9 +736,18 @@ void MainJackSMS::on_InviaSMS_clicked()
         ultimoSms.setData(QDateTime::currentDateTime());
         ultimoSms.setPhone(destinatario);
         ultimoSms.setServiceId(ElencoServiziConfigurati[idAccount].getService());
-        threadSendSMS=new threadsendsms(Opzioni,sendSmsOp,ElencoServiziConfigurati[idAccount],ElencoServizi,messaggio,destinatario);
-        DisabilitaUi();
-        threadSendSMS->start();
+
+        smsSender=new libJackSMS::smsSender(ElencoServizi,Opzioni);
+        smsSender->setRecipient(destinatario);
+        smsSender->setMessage(messaggio);
+        smsSender->setAccount(ElencoServiziConfigurati[idAccount]);
+
+        connect(smsSender,SIGNAL(captcha(QByteArray,QSemaphore*)),this,SLOT(displayCaptcha(QByteArray,QSemaphore*)));
+        connect(smsSender,SIGNAL(error(QString)),this,SLOT(invioFallito(QString)));
+        connect(smsSender,SIGNAL(success(QString)),this,SLOT(invioSuccesso(QString )));
+
+
+        smsSender->send();
 
 
     }catch(libJackSMS::exceptionPhoneNumber e){
@@ -756,7 +782,7 @@ void MainJackSMS::on_actionEsci_triggered()
 
 void MainJackSMS::on_AggiungiServizioButton_clicked()
 {
-    ServicesDialog *sd=new ServicesDialog(this,this,ElencoServizi,ElencoServiziConfigurati,onlineLogin,Opzioni);
+    ServicesDialog *sd=new ServicesDialog(this,this,ElencoServizi,ElencoServiziConfigurati,Opzioni);
     sd->exec();
     sd->deleteLater();
 
@@ -775,25 +801,13 @@ void MainJackSMS::on_EliminaServizioButton_clicked()
             accountWidget* cw=static_cast<accountWidget*>(wi);
             //QMessageBox::information(this,"JackSMS",cw->getName());
             QString id=cw->getAccountId();
-            if (onlineLogin){
+            ui->labelSpinDelAccount->show();
+            ui->EliminaServizioButton->setEnabled(false);
+            accountManager=new libJackSMS::serverApi::accountManager(current_login_id,Opzioni);
+            connect(accountManager,SIGNAL(accountDeleted(QString)),this,SLOT(deleteAccountOk(QString)));
+            connect(accountManager,SIGNAL(accountNotDeleted()),this,SLOT(deleteAccountKo()));
+            accountManager->deleteAccount(id);
 
-
-
-                ui->labelSpinDelAccount->show();
-                ui->EliminaServizioButton->setEnabled(false);
-                accountDeleterThread=new threadDeleteAccountOnline(ElencoServiziConfigurati,signin->getSessionId(),id,Opzioni);
-                connect(accountDeleterThread,SIGNAL(deleteOk()),this,SLOT(deleteAccountOk()));
-                connect(accountDeleterThread,SIGNAL(deleteKo()),this,SLOT(deleteAccountKo()));
-                accountDeleterThread->start();
-
-            }else{
-                libJackSMS::localApi::accountManager manager(current_user_directory);
-                if (!manager.deleteAccount(id)){
-                    QMessageBox::critical(this,"JackSMS","Errore durante l'eliminazione dell'account.");
-                }else{
-                    ReloadConfiguredServices();
-                }
-            }
         }
 
 
@@ -971,22 +985,13 @@ void MainJackSMS::on_InoltraButton_clicked()
 
 void MainJackSMS::on_AnnullaSMS_clicked()
 {
-    threadSendSMS->cancelSend();
-    //emit abortSendSms();
-    //threadSendSMS->terminate();
+    smsSender->abort();
 
     ui->LabelEsito->setText("Invio annullato dall'utente.");
-    this->invioInCorso=false;
-    this->AbilitaUi();
+    invioInCorso=false;
+    AbilitaUi();
 }
 
-
-
-void MainJackSMS::CheckIm(){
-
-    /*std::cout <<"[JMS] lanciato check JMS "<<QDateTime::currentDateTime().toString("hh:mm:ss").toStdString()<<std::endl;
-    imChecker->start();*/
-}
 
 
 void MainJackSMS::on_CitaButton_clicked()
@@ -1153,25 +1158,17 @@ void MainJackSMS::on_RubricaElimina_clicked()
         if (QMessageBox::Yes==QMessageBox::question(this,"JackSMS","Eliminare questo contatto?",QMessageBox::Yes,QMessageBox::No)){
             QWidget * wi=ui->rubricaListWidget->itemWidget(wid);
             ContactWidget* cw=static_cast<ContactWidget*>(wi);
-            if (onlineLogin){
 
-                QString id=cw->getContactId();
+            QString id=cw->getContactId();
 
-                ui->labelSpinDelContact->show();
-                ui->RubricaElimina->setEnabled(false);
-                deleterThread=new threadDeleteContactOnline(Rubrica,signin->getSessionId(),id,Opzioni);
-                connect(deleterThread,SIGNAL(deleteOk()),this,SLOT(deleteContactOk()));
-                connect(deleterThread,SIGNAL(deleteKo()),this,SLOT(deleteContactKo()));
-                deleterThread->start();
+            ui->labelSpinDelContact->show();
+            ui->RubricaElimina->setEnabled(false);
 
-            }else{
-                libJackSMS::localApi::contactManager manager(current_user_directory);
-                if (!manager.deleteContact(cw->getName())){
-                    QMessageBox::critical(this,"JackSMS","Errore durante l'eliminazione del contatto.");
-                }else{
-                    ReloadRubrica();
-                }
-            }
+            deleteContect=new libJackSMS::serverApi::contactManager(current_login_id,Opzioni);
+            connect(deleteContect,SIGNAL(contactDeleted(QString)),this,SLOT(deleteContactOk(QString)));
+            connect(deleteContect,SIGNAL(contactNotDeleted()),this,SLOT(deleteContactKo()));
+            deleteContect->deleteContact(id);
+
         }
 
 
@@ -1183,7 +1180,8 @@ void MainJackSMS::deleteContactKo(){
     ui->RubricaElimina->setEnabled(true);
     QMessageBox::critical(this,"JackSMS","Errore durante l'eliminazione del contatto.");
 }
-void MainJackSMS::deleteContactOk(){
+void MainJackSMS::deleteContactOk(QString id){
+    Rubrica.remove(id);
     ui->RubricaElimina->setEnabled(true);
     this->ReWriteAddressBookToGui();
     ui->labelSpinDelContact->hide();
@@ -1516,8 +1514,9 @@ void MainJackSMS::startIm(){
         imServiceActive=false;
 
 
-        imChecker=new threadInstantMessenger(nuoviMessaggiRicevuti,this->current_user_username,ui->password->text(),Opzioni,current_user_directory);
-        connect(imChecker,SIGNAL(newMessages()),this,SLOT(checkInstantMessengerReceived()));
+        imChecker=new libJackSMS::serverApi::permanentInstantMessenger(current_user_username,ui->password->text(),Opzioni);
+        connect(imChecker,SIGNAL(newJMS(libJackSMS::dataTypes::logImType)),this,SLOT(checkInstantMessengerReceived(libJackSMS::dataTypes::logImType)));
+
         connect(imChecker,SIGNAL(serviceActive()),this,SLOT(jmsActive()));
         connect(imChecker,SIGNAL(serviceNotActive(bool)),this,SLOT(jmsNotActive(bool)));
         connect(imChecker,SIGNAL(serviceActiving()),this,SLOT(jmsActiving()));
@@ -1525,11 +1524,8 @@ void MainJackSMS::startIm(){
 
 
 }
-void MainJackSMS::pingServer(){
-    pingator=new threadPingServer(signin->getSessionId(),Opzioni);
-    pingator->start();
-    std::cout <<"[PING] avviato ping sul server"<<std::endl;
-}
+
+/*
 void MainJackSMS::endLogin(){
     if (loginThread->result){
        loggedIn=true;
@@ -1583,11 +1579,9 @@ void MainJackSMS::endLogin(){
         ui->widgetSchermate->setCurrentIndex(0);
         QMessageBox::critical(this,"JackSMS",loginThread->getError());
     }
-}
-void MainJackSMS::updatesAvailable(){
-    QMessageBox::information(this,"Aggiornamenti JackSMS",checkUpdatesThread->getResult());
-}
+}*/
 
+/*
 void MainJackSMS::appendImToGui(){
     mapWidgetsReceivedNew.clear();
     mapWidgetsNew.clear();
@@ -1647,13 +1641,20 @@ void MainJackSMS::appendImToGui(){
             ui->smsListWidget->setItemWidget(item, xx.value());
         }
     }
-}
-void MainJackSMS::checkInstantMessengerReceived(){
+}*/
+void MainJackSMS::checkInstantMessengerReceived(libJackSMS::dataTypes::logImType jmsList){
 
-        libJackSMS::dataTypes::logImType::const_iterator i=nuoviMessaggiRicevuti.begin();
-        libJackSMS::dataTypes::logImType::const_iterator i_end=nuoviMessaggiRicevuti.end();
+        libJackSMS::dataTypes::logImType::iterator i=jmsList.begin();
+        libJackSMS::dataTypes::logImType::iterator i_end=jmsList.end();
+        libJackSMS::localApi::imLogSaver *manager;
+        if( Opzioni["save-local"]=="yes")
+            manager=new libJackSMS::localApi::imLogSaver(current_user_directory);
         for(;i!=i_end;++i){
-
+                if( Opzioni["save-local"]=="yes"){
+                    manager->setMessage(i.value());
+                    manager->appendToLogFile();
+                }
+                i.value().setId(manager->getSavedId());
                 QMyMessage msg;
                 msg.setAccountId(QString::number(0));
                 msg.setData( i.value().getDate().getData());
@@ -1671,19 +1672,98 @@ void MainJackSMS::checkInstantMessengerReceived(){
 
         }
 
-        appendImToGui();
+        /*********************append im to gui*********************************/
+        //mapWidgetsReceivedNew.clear();
+        QMultiMap<QDateTime,SmsWidget*> mapWidgetsReceivedNew;
+        //mapWidgetsNew.clear();
+        QMultiMap<QDateTime,SmsWidget*> mapWidgetsNew;
+
+        QPixmap icon_jack=ElencoServizi["40"].getIcon().pixmap(16,16);
+        i=jmsList.begin();
+        i_end=jmsList.end();
+        for(;i!=i_end;++i){
+            QString user_num_name=phone2name(i.value().getPhoneNumber());
+            SmsWidget *wid=new SmsWidget(
+                                         i.value().getText(),
+                                         icon_jack,
+                                         true,
+                                         i.value().getDate().getData(),
+                                         user_num_name,
+                                         QString("JackSMS Messenger"),
+                                         i.value().getId(),
+                                         i.value().getPhoneNumber(),
+                                         false
+                                         );
+            mapWidgetsReceived.insert(i.value().getDate().getData(),wid);
+            mapWidgetsReceivedNew.insert(i.value().getDate().getData(),wid);
+
+            SmsWidget *wid2=new SmsWidget(
+                                         i.value().getText(),
+                                         icon_jack,
+                                         true,
+                                         i.value().getDate().getData(),
+                                         user_num_name,
+                                         QString("JackSMS Messenger"),
+                                         i.value().getId(),
+                                         i.value().getPhoneNumber(),
+                                         true
+                                         );
+            mapWidgets.insert(i.value().getDate().getData(),wid2);
+            mapWidgetsNew.insert(i.value().getDate().getData(),wid2);
+        }
+
+        if (mapWidgetsReceivedNew.size()>0){
+            QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx=mapWidgetsReceivedNew.begin();
+            QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx_end=mapWidgetsReceivedNew.end();
+            for(;xx!=xx_end;++xx){
+
+                QListWidgetItem *item = new QListWidgetItem;
+                item->setSizeHint(xx.value()->size());
+                ui->imRicevutiWidget->insertItem(0,item);
+                ui->imRicevutiWidget->setItemWidget(item, xx.value());
+            }
+        }
+        if (mapWidgetsNew.size()>0){
+            QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx=mapWidgetsNew.begin();
+            QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx_end=mapWidgetsNew.end();
+            for(;xx!=xx_end;++xx){
+
+                QListWidgetItem *item = new QListWidgetItem;
+                item->setSizeHint(xx.value()->size());
+                ui->smsListWidget->insertItem(0,item);
+                ui->smsListWidget->setItemWidget(item, xx.value());
+            }
+        }
+        /*****************************end append im to gui***************************/
 
 
 
         setTrayIcon();
 
-        if (nuoviMessaggiRicevuti.size()==1)
+        if (jmsList.size()==1)
             trayIco->showMessage("JackSMS Messenger","Ricevuto un nuovo JMS");
         else
-            trayIco->showMessage("JackSMS Messenger","Ricevuti "+QString::number(nuoviMessaggiRicevuti.size())+" nuovi JMS");
-        nuoviMessaggiRicevuti.clear();
-        //messaggiRicevuti.clear();
+            trayIco->showMessage("JackSMS Messenger","Ricevuti "+QString::number(jmsList.size())+" nuovi JMS");
+        //jmsList.clear();
 
+
+
+}
+void MainJackSMS::countdownToGui(){
+    countdownToGuiCount--;
+    if (countdownToGuiCount==0){
+       this->WriteAddressBookToGui();
+       this->WriteConfiguredServicesToGui();
+       this->WriteMessagesToGui();
+
+       enableUiAfterLogin();
+       ui->widgetSchermate->setCurrentIndex(2);
+       updateChecker=new libJackSMS::serverApi::updateServicesManager(this->current_login_id,Opzioni,ElencoServizi);
+       connect(updateChecker,SIGNAL(updatesAvailable(libJackSMS::dataTypes::servicesType,QString,QString)),this,SLOT(updatesAvailable(libJackSMS::dataTypes::servicesType,QString,QString)));
+       updateChecker->checkUpdadates();
+       countdownToGuiCount=COUNTDOWNTOGUICOUNTDEFINE;
+    
+    }
 
 }
 void MainJackSMS::setTrayIcon(){
@@ -1693,6 +1773,111 @@ void MainJackSMS::setTrayIcon(){
         trayIco->setIcon(QIcon(":/resource/tray_icon.png"));
     }
 }
+void MainJackSMS::messagesLoaded(QList<QMyMessage> msgs){
+    Messaggi=msgs;
+    countdownToGui();
+}
+void MainJackSMS::servicesLoaded(libJackSMS::dataTypes::servicesType s){
+    ElencoServizi=s;
+    libJackSMS::serverApi::synchronizeVariables(ElencoServiziConfigurati,ElencoServizi);
+
+    loaderMessages=new messageLoader(current_user_directory);
+    connect(loaderMessages,SIGNAL(messagesLoaded(QList<QMyMessage>)),this,SLOT(messagesLoaded(QList<QMyMessage>)));
+    loaderMessages->loadMessages();
+    countdownToGui();
+
+
+}
+void MainJackSMS::optionsLoaded(libJackSMS::dataTypes::optionsType op){
+    Opzioni=op;
+
+    ui->TestoSMS->setFont(QFont(ui->TestoSMS->font().family(),Opzioni["textsize"].toInt(NULL,10),ui->TestoSMS->font().weight(),false));
+
+    if (Opzioni["receive-im"]=="yes"){
+        startIm();
+    }
+
+
+    if (ui->ricordaPassword->isChecked()){
+        GlobalOptions["save-passwd"]="yes";
+        Opzioni["save-passwd"]="yes";
+        Opzioni["password"]=ui->password->text();
+    }else{
+        GlobalOptions["save-passwd"]="no";
+        Opzioni["save-passwd"]="no";
+        Opzioni["password"]="";
+
+
+
+    }
+    libJackSMS::localApi::optionManager man("",GlobalOptions);
+    man.save();
+    libJackSMS::localApi::optionManager man2(current_user_directory,Opzioni);
+    man2.save();
+}
+void MainJackSMS::loginSuccess(QString sessionId){
+    current_login_id=sessionId;
+
+    xmlLoader=new libJackSMS::localApi::xmlLoader(current_user_directory);
+    connect(xmlLoader,SIGNAL(servicesLoaded(libJackSMS::dataTypes::servicesType)),this,SLOT(servicesLoaded(libJackSMS::dataTypes::servicesType)));
+    connect(xmlLoader,SIGNAL(optionsLoaded(libJackSMS::dataTypes::optionsType)),this,SLOT(optionsLoaded(libJackSMS::dataTypes::optionsType)));
+
+    xmlLoader->loadServices();
+    xmlLoader->loadOptions();
+
+    loggedIn=true;
+
+    pingator=new libJackSMS::serverApi::pingator(current_login_id,Opzioni);
+    connect(pingator,SIGNAL(pinged()),this,SLOT(serverPinged()));
+    pingator->launchPing();
+    countdownToGui();
+
+
+
+
+
+
+
+
+}
+void MainJackSMS::serverPinged(){
+    std::cout<<"[PING] pingato server"<<std::endl;
+}
+void MainJackSMS::updatesAvailable(libJackSMS::dataTypes::servicesType serv,QString xml,QString msg){
+    QMessageBox::information(this,"Aggiornamenti JackSMS",msg);
+    ElencoServizi=serv;
+
+}
+void MainJackSMS::newVersionAvailable(){
+
+    //if (Opzioni["check-version"]=="yes"){
+        QMessageBox::information(this,"JackSMS","E' disponibile una nuova versione di JackSMS.\nVisita www.jacksms.it");
+    //}
+}
+
+void MainJackSMS::accountsReceived(libJackSMS::dataTypes::configuredServicesType accounts){
+    ElencoServiziConfigurati=accounts;
+    libJackSMS::localApi::statsManager l(current_user_directory);
+    l.loadStats(ElencoServiziConfigurati);
+    countdownToGui();
+
+
+}
+void MainJackSMS::phoneBookReceived(libJackSMS::dataTypes::phoneBookType r){
+    Rubrica=r;
+    countdownToGui();
+
+
+}
+void MainJackSMS::loginStarted(){
+    ui->widgetSchermate->setCurrentIndex(1);
+}
+void MainJackSMS::loginFailed(QString err){
+    ui->widgetSchermate->setCurrentIndex(0);
+    QMessageBox::critical(this,"JackSMS",err);
+    countdownToGuiCount=COUNTDOWNTOGUICOUNTDEFINE;
+}
+
 void MainJackSMS::on_loginButton_clicked()
 {
 
@@ -1704,24 +1889,19 @@ void MainJackSMS::on_loginButton_clicked()
         QMessageBox::critical(this,"JackSMS","Il tuo username non puo' essere vuoto!");
         return;
     }
-    ui->widgetSchermate->setCurrentIndex(1);
 
 
-    signin=new libJackSMS::serverApi::login(ui->username->currentText(),ui->password->text(),Opzioni);
     current_user_directory=finder->getDataDirectory(ui->username->currentText());
     current_user_username=ui->username->currentText();
-    loginThread=new ThreadLogin(
-            signin,
-            ElencoServizi,
-            Opzioni,
-            ElencoServiziConfigurati,
-            Rubrica,
-            current_user_directory,
-            current_user_username,
-            Messaggi
-    );
-    connect(loginThread,SIGNAL(finished()),this,SLOT(endLogin()));
-    loginThread->start();
+
+    loginClient=new libJackSMS::serverApi::login(current_user_username,ui->password->text(),Opzioni);
+    connect(loginClient,SIGNAL(loginSuccess(QString)),this,SLOT(loginSuccess(QString)));
+    connect(loginClient,SIGNAL(newVersionAvailable()),this,SLOT(newVersionAvailable()));
+    connect(loginClient,SIGNAL(accountsReceived(libJackSMS::dataTypes::configuredServicesType)),this,SLOT(accountsReceived(libJackSMS::dataTypes::configuredServicesType)));
+    connect(loginClient,SIGNAL(phoneBookReceived(libJackSMS::dataTypes::phoneBookType)),this,SLOT(phoneBookReceived(libJackSMS::dataTypes::phoneBookType)));
+    connect(loginClient,SIGNAL(loginFailed(QString)),this,SLOT(loginFailed(QString)));
+    connect(loginClient,SIGNAL(loginStarted()),this,SLOT(loginStarted()));
+    loginClient->doLogin();
 
 }
 
@@ -1732,28 +1912,7 @@ void MainJackSMS::on_username_currentIndexChanged(int index)
 
 }
 
-void MainJackSMS::on_accedi_locale_clicked()
-{
-    /*ui->widgetSchermate->setCurrentIndex(1);
-    libJackSMS::localApi::xmlLoader loader(finder->getDataDirectory(ui->username->currentText().toStdString()));
-    current_user_username=ui->username->currentText();
-    current_user_directory=QString::fromStdString(finder->getDataDirectory(ui->username->currentText().toStdString()));
-    loader.loadAccounts(ElencoServiziConfigurati);
-    loader.loadImLog(cArchivioIm);
-    loader.loadSmsLog(cArchivioMessaggi);
-    loader.loadOptions(Opzioni);
-    loader.loadPhoneBook(cRubrica);
-    loader.loadServices(ElencoServizi);
-    WriteConfiguredServicesToGui();
-    WriteAddressBookToGui();
-    this->WriteMessagesToGui();
-    onlineLogin=false;
-    ui->TestoSMS->setFont(QFont(ui->TestoSMS->font().family(),QString::fromStdString(Opzioni["textsize"]).toInt(NULL,10),ui->TestoSMS->font().weight(),false));
-    this->enableUiAfterLogin();
 
-    ui->widgetSchermate->setCurrentIndex(2);
-    */
-}
 void MainJackSMS::disableUibeforeLogin(){
     //ui->actionOpzioni->setEnabled(false);
     ui->actionStatistiche->setEnabled(false);
@@ -1835,7 +1994,8 @@ void MainJackSMS::deleteAccountKo(){
     ui->labelSpinDelAccount->hide();
     QMessageBox::critical(this,"JackSMS","Errore durante l'eliminazione dell'account.");
 }
-void MainJackSMS::deleteAccountOk(){
+void MainJackSMS::deleteAccountOk(QString id){
+    ElencoServiziConfigurati.remove(id);
     ui->EliminaServizioButton->setEnabled(true);
     ui->labelSpinDelAccount->hide();
     ReWriteConfiguredServicesToGui();
@@ -1843,13 +2003,14 @@ void MainJackSMS::deleteAccountOk(){
 
 void MainJackSMS::on_actionLogout_triggered()
 {
-    if (this->onlineLogin)
-            this->loginThread->~ThreadLogin();
-
+    loggedIn=false;
+    loginClient->deleteLater();
+    loaderMessages->deleteLater();
+    pingator->deleteLater();
     Rubrica.clear();
     if (Opzioni["receive-im"]=="yes"){
        imChecker->stop();
-       imChecker->~threadInstantMessenger();
+       imChecker->deleteLater();
     }
 
     ElencoServizi.clear();
@@ -1857,6 +2018,14 @@ void MainJackSMS::on_actionLogout_triggered()
     if (GlobalOptions["save-passwd"]!="yes"){
         ui->password->clear();
     }
+
+    if (updateChecker->isRunning()){
+        updateChecker->abort();
+
+        //updateChecker->deleteLater();
+
+    }
+    pingator->~QThread();
     ui->tabWidget->setCurrentIndex(0);
     Messaggi.clear();
     Opzioni.clear();
@@ -1867,7 +2036,7 @@ void MainJackSMS::on_actionLogout_triggered()
     ui->rubricaListWidget->clear();
     ui->listServiziConfigurati->clear();
     disableUibeforeLogin();
-    loggedIn=false;
+
     ui->widgetSchermate->setCurrentIndex(0);
 }
 

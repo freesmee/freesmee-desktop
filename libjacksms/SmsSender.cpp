@@ -19,7 +19,9 @@
 #include <QString>
 
 #include "DataTypes.h"
-#include "ReportOperationSendSmsNothing.h"
+#include <QSharedMemory>
+#include <QSemaphore>
+
 #include "SmsSender.h"
 #include "ShortMessage.h"
 #include "NetClient.h"
@@ -33,9 +35,10 @@
 
 namespace libJackSMS{
 
-
-    smsSender::smsSender(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps):servizi(_services),ps(_ps){
-        operazione=new libJackSMS::reportOperationSendSmsNothing();
+    /********************smssender****************/
+    smsSender::smsSender(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps):
+            servizi(_services),
+            ps(_ps){
 
     }
     void smsSender::setRecipient(const dataTypes::phoneNumber & _dest){
@@ -44,14 +47,62 @@ namespace libJackSMS{
     void smsSender::setMessage(const dataTypes::shortMessage & _message){
         messaggio=_message;
     }
-    void smsSender::setAccount(dataTypes::configuredAccount _account){
+    void smsSender::setAccount(const dataTypes::configuredAccount &_account){
         account=_account;
     }
-    void smsSender::setReportOperation(libJackSMS::reportOperationSendSms * _op){
-        operazione->~reportOperationSendSms();
-        operazione=_op;
+    void smsSender::send(){
+        start();
     }
-    QString smsSender::substitute(QString _input,const dataTypes::contentType &_cont,bool replace_encoded){
+    void smsSender::run(){
+        try{
+            smsSenderBase sndr(servizi,ps);
+            connect(this,SIGNAL(abortSignal()),&sndr,SLOT(abort()));
+            sndr.setRecipient(destinatario);
+            sndr.setMessage(messaggio);
+            sndr.setAccount(account);
+            connect(&sndr,SIGNAL(operation()),this,SLOT(slotOperation()));
+            connect(&sndr,SIGNAL(operation(QString)),this,SLOT(slotError(QString)));
+            connect(&sndr,SIGNAL(error(QString)),this,SLOT(slotError(QString)));
+            connect(&sndr,SIGNAL(success(QString)),this,SLOT(slotSuccess(QString)));
+            connect(&sndr,SIGNAL(captcha(QByteArray,QSemaphore*)),this,SLOT(slotCaptcha(QByteArray,QSemaphore*)));
+            sndr.send();
+        }catch(libJackSMS::netClient::abortedException e){
+
+
+        }
+    }
+    void smsSender::abort(){
+        emit abortSignal();
+    }
+
+    void smsSender::slotOperation(){emit operation();}
+    void smsSender::slotOperation(QString s){emit operation(s);}
+    void smsSender::slotError(QString s){emit error(s);}
+    void smsSender::slotSuccess(QString s ){emit success(s);}
+    void smsSender::slotCaptcha(QByteArray a,QSemaphore* b){
+        emit captcha(a,b);
+    }
+
+
+
+    /********************end smssender****************/
+
+    smsSenderBase::smsSenderBase(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps):
+            servizi(_services),
+            ps(_ps){
+
+    }
+    void smsSenderBase::setRecipient(const dataTypes::phoneNumber & _dest){
+        destinatario=_dest;
+    }
+    void smsSenderBase::setMessage(const dataTypes::shortMessage & _message){
+        messaggio=_message;
+    }
+    void smsSenderBase::setAccount(dataTypes::configuredAccount _account){
+        account=_account;
+    }
+
+    QString smsSenderBase::substitute(QString _input,const dataTypes::contentType &_cont,bool replace_encoded){
         dataTypes::contentType::const_iterator i=_cont.begin();
         dataTypes::contentType::const_iterator i_end=_cont.end();
         for(;i!=i_end;++i){
@@ -64,7 +115,7 @@ namespace libJackSMS{
         return _input;
     }
 
-    QString smsSender::substitute(QString _input,const dataTypes::variousType &_cont){
+    QString smsSenderBase::substitute(QString _input,const dataTypes::variousType &_cont){
         dataTypes::variousType::const_iterator i=_cont.begin();
         dataTypes::variousType::const_iterator i_end=_cont.end();
         for(;i!=i_end;++i){
@@ -73,15 +124,16 @@ namespace libJackSMS{
         }
         return _input;
     }
-    void smsSender::abort(){
+    void smsSenderBase::abort(){
         webClient->interrupt();
     }
-    void smsSender::send(){
+
+    void smsSenderBase::send(){
         libJackSMS::logger log;
-        libJackSMS::dataTypes::servicesType::const_iterator service_iter=servizi.find(account.getService());
+         libJackSMS::dataTypes::servicesType::const_iterator service_iter=servizi.find(account.getService());
         if (service_iter==servizi.end()){
             log.addNotice("non esiste alcun servizio con questo id.");
-            operazione->doOperationError("Servizio inesistente.");
+            emit error("Servizio inesistente.");
         }else{
             bool resultSend=false;
             bool resultError=false;
@@ -104,16 +156,17 @@ namespace libJackSMS{
             dataTypes::creditsType elenco_credenziali;
 
 
-            elenco_dati_vari.insert(QString("message"),servizioDaUsare.getEncodedText(messaggio.getText()));
-            elenco_dati_vari.insert(QString("intcode"),destinatario.getIntCode());
-            elenco_dati_vari.insert(QString("intpref"),destinatario.getIntPref());
-            elenco_dati_vari.insert(QString("pref"),destinatario.getPref());
-            elenco_dati_vari.insert(QString("num"),destinatario.getNum());
-            elenco_dati_vari.insert(QString("intnum"),destinatario.getIntNum());
+            elenco_dati_vari.insert(QString("message"),servizioDaUsare.getEncodedTextUrlEncoded(messaggio.getText()));
+            elenco_dati_vari.insert(QString("intcode"),servizioDaUsare.getEncodedTextUrlEncoded(destinatario.getIntCode()));
+            elenco_dati_vari.insert(QString("intpref"),servizioDaUsare.getEncodedTextUrlEncoded(destinatario.getIntPref()));
+            elenco_dati_vari.insert(QString("pref"),servizioDaUsare.getEncodedTextUrlEncoded(destinatario.getPref()));
+            elenco_dati_vari.insert(QString("num"),servizioDaUsare.getEncodedTextUrlEncoded(destinatario.getNum()));
+            elenco_dati_vari.insert(QString("intnum"),servizioDaUsare.getEncodedTextUrlEncoded(destinatario.getIntNum()));
 
             while(servizioDaUsare.nextVar()){
-                //std::cout<<servizioDaUsare.currentVar().getName()<<"-"<<account.getData(servizioDaUsare.currentVar().getName());
-                elenco_credenziali.insert(servizioDaUsare.currentVar().getName(),account.getData(servizioDaUsare.currentVar().getName()));
+                QString n=servizioDaUsare.currentVar().getName();
+                QString aa=account.getData(n);
+                elenco_credenziali.insert(n,servizioDaUsare.getEncodedTextUrlEncoded(aa));
             }
 
 
@@ -169,7 +222,7 @@ namespace libJackSMS{
 
                     //std::cout <<"[ELABORAZIONE] Pagina: "<<parsedCurrentUrlPage.toStdString()<<std::endl;
                     log.addNotice("Pagina: "+parsedCurrentUrlPage);
-                    operazione->doOperation();
+                    emit operation();
                     if (paginaCorrente.getIsCaptcha()){
                         log.addNotice("Eseguita come pagina captcha");
 
@@ -186,13 +239,26 @@ namespace libJackSMS{
                         QByteArray captchaBytes;
                         webClient->getFile(parsedCurrentUrlPage,captchaBytes);
                         log.addNotice("Captcha ricevuto: bytes="+QString::number(captchaBytes.size()));
-                        QString captcha_result=operazione->doCaptchaOperation(captchaBytes);
-                        if (captcha_result=="captcha_non_decodificato"){
-                            operazione->doOperationError("Captcha failed.");
-                            resultError=true;
-                            break;
+
+                        QString captcha_result;
+
+                        QSemaphore semaforoCaptcha(0);
+
+                        /**/
+                        QSharedMemory memoriaRisultatoCaptcha("jacksmsm_result_captcha_shmem");
+                        if (!memoriaRisultatoCaptcha.create(captchaBytes.size())){
+
+                                throw;
                         }
-                        elenco_dati_vari.insert("captcha_value",captcha_result);
+
+                        emit this->captcha(captchaBytes,&semaforoCaptcha);
+                        semaforoCaptcha.acquire(1);
+                        memoriaRisultatoCaptcha.lock();
+                        captcha_result=QString((const char*)memoriaRisultatoCaptcha.constData());
+                        memoriaRisultatoCaptcha.unlock();
+                        memoriaRisultatoCaptcha.detach();
+                        /**/
+                        elenco_dati_vari.insert("captcha_value",servizioDaUsare.getEncodedTextUrlEncoded(captcha_result));
 
                     }else{
                         if (paginaCorrente.hasRawCommands()){
@@ -208,14 +274,14 @@ namespace libJackSMS{
                             QRegExp r;
                             r.setPattern("^socket\\:\\/\\/(.{1,})\\:([0-9]*)$");
                             if (!r.exactMatch(server)){
-                                operazione->doOperationError("Server address malformed.");
+                                emit error("Server address malformed.");
                                 resultError=true;
                                 break;
                             }
                             QString host=r.cap(1);
                             QString port=r.cap(2);
                             if (port.isEmpty()){
-                                operazione->doOperationError("Indirizzo del server non corretto. Porta mancante.");
+                                emit error("Indirizzo del server non corretto. Porta mancante.");
                                 resultError=true;
                                 break;
                             }
@@ -248,7 +314,7 @@ namespace libJackSMS{
                                     log.addNotice("Errore rilevato: "+substitute(errore.getErrorMessage(),elenco_contenuti,false));
                                     log.addNotice("Codice errore: "+errore.getErrorCode());
 
-                                    operazione->doOperationError(substitute(errore.getErrorMessage(),elenco_contenuti,false));
+                                    emit error(substitute(errore.getErrorMessage(),elenco_contenuti,false));
                                     resultError=true;
                                     break;
 
@@ -258,7 +324,7 @@ namespace libJackSMS{
                                     log.addNotice("Ho trovato una stringa accettante: "+accettante.getAcceptString());
                                     log.addNotice("Messaggio di conferma: "+substitute(accettante.getConfirmMessage(),elenco_contenuti,false));
 
-                                    operazione->doOperationSuccess(substitute(accettante.getConfirmMessage(),elenco_contenuti,false));
+                                    emit success(substitute(accettante.getConfirmMessage(),elenco_contenuti,false));
                                     resultSend=true;
                                     break;
                                 }
@@ -290,9 +356,12 @@ namespace libJackSMS{
                                 var_name=substitute(var_name,elenco_credenziali);
                                 var_name=substitute(var_name,elenco_dati_vari);
                                 var_name=substitute(var_name,elenco_contenuti,false);
-
                                 webClient->insertFormData(var_name,var_value);
-                                log.addNotice("Aggiunta variabile: "+var_name+" - "+var_value);
+
+                                QByteArray v=QByteArray::fromPercentEncoding(var_value.toAscii());
+                                v=v.toPercentEncoding();
+
+                                log.addNotice("Aggiunta variabile: "+var_name+" - "+QString(v));
 
                             }
 
@@ -341,7 +410,7 @@ namespace libJackSMS{
                                 log.addNotice("Errore rilevato: "+substitute(errore.getErrorMessage(),elenco_contenuti,false));
                                 log.addNotice("Codice errore: "+errore.getErrorCode());
 
-                                operazione->doOperationError(substitute(errore.getErrorMessage(),elenco_contenuti,false));
+                                emit error(substitute(errore.getErrorMessage(),elenco_contenuti,false));
                                 resultError=true;
                                 break;
 
@@ -351,7 +420,7 @@ namespace libJackSMS{
                                 log.addNotice("Ho trovato una stringa accettante: "+accettante.getAcceptString());
                                 log.addNotice("Messaggio di conferma: "+substitute(accettante.getConfirmMessage(),elenco_contenuti,false));
 
-                                operazione->doOperationSuccess(substitute(accettante.getConfirmMessage(),elenco_contenuti,false));
+                                emit success(substitute(accettante.getConfirmMessage(),elenco_contenuti,false));
                                 resultSend=true;
                                 break;
                             }
@@ -362,7 +431,7 @@ namespace libJackSMS{
             }
             if ((!resultSend) && (!resultError)){
                 log.addNotice("Ho raggiunto la fine delle pagine da elaborare per il servizio ma non ho ricevuto alcun errore o alcuna stringa accettante: marco come fallito l'invio.");
-                operazione->doOperationError("Conferma di invio non trovata.");
+                emit error("Conferma di invio non trovata.");
             }
 
         }

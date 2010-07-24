@@ -27,6 +27,10 @@ namespace libJackSMS{
     }
     encodingRemoveAccents::~encodingRemoveAccents(){
     }
+    QString encodingRemoveAccents::getEncodedAndUrlString(QString _text){
+        QByteArray _t=getEncodedString(_text).toLocal8Bit().toPercentEncoding();
+        return QString(_t);
+    }
     /*the input string _text is supposed to be in utf*/
     QString encodingRemoveAccents::getEncodedString(QString _text){
 

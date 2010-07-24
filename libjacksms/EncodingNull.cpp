@@ -30,4 +30,7 @@ namespace libJackSMS{
     QString encodingNull::getEncodedString(QString _text){
         return _text;
     }
+    QString encodingNull::getEncodedAndUrlString(QString _text){
+        return _text;
+    }
 }

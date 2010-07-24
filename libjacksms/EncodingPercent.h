@@ -33,6 +33,7 @@ namespace libJackSMS{
             encodingPercent();
             ~encodingPercent();
             QString getEncodedString(QString _text);
+            QString getEncodedAndUrlString(QString _text);
     };
 
 

@@ -45,8 +45,6 @@
 #include "PageVariable.h"
 #include "PaginaServizio.h"
 #include "PhoneNumber.h"
-#include "ReportOperationSendSms.h"
-#include "ReportOperationSendSmsNothing.h"
 #include "ServerApi.h"
 #include "Service.h"
 #include "ShortMessage.h"

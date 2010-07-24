@@ -29,7 +29,9 @@ namespace libJackSMS{
     /*the input string _text is supposed to be in utf*/
     QString encodingPercent::getEncodedString(QString _text){
          return QString(QUrl::toPercentEncoding(_text));
+    }
 
-
+    QString encodingPercent::getEncodedAndUrlString(QString _text){
+         return QString(QUrl::toPercentEncoding(_text));
     }
 }

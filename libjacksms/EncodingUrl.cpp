@@ -31,5 +31,10 @@ namespace libJackSMS{
         QByteArray _t=_text.toLocal8Bit().toPercentEncoding();
         return QString(_t);
     }
+    QString encodingUrl::getEncodedAndUrlString(QString _text){
+        QByteArray _t=_text.toLocal8Bit().toPercentEncoding();
+        return QString(_t);
+    }
+
 }
 

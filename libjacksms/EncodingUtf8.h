@@ -30,6 +30,7 @@ namespace libJackSMS{
             encodingUtf8();
             ~encodingUtf8();
             QString getEncodedString(QString _text);
+            QString getEncodedAndUrlString(QString _text);
     };
 
 
