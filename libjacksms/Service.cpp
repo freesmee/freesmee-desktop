@@ -24,6 +24,7 @@
 #include "Encoding.h"
 #include "EncodingRemoveAccents.h"
 #include "Utilities.h"
+#include "EncodingIso88591.h"
 #include <QIcon>
 namespace libJackSMS{
 
@@ -77,6 +78,11 @@ namespace libJackSMS{
                 textEncoder->~encodingGeneric();
                 textEncoder=new libJackSMS::encodingUrl();
                 codifica=_encoding;
+            }else if (_encoding=="ISO-8859-1"){
+                textEncoder->~encodingGeneric();
+                textEncoder=new libJackSMS::encodingISO88591();
+                codifica=_encoding;
+
             }else if (_encoding=="AUTO"){
                 QMap<QString,QString> compatMap;
                 compatMap.insert("71","UTF-8");

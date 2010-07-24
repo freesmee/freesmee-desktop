@@ -27,6 +27,7 @@
 #include "Exceptions.h"
 #include <QDir>
 #include <QMetaType>
+#include "Configuration.h"
 
 
 
@@ -366,25 +367,38 @@ namespace libJackSMS{
                         error="cannot create "+path;
                         return false;
                     }
+
                 path=directories::concatDirectoryAndFile(directories::XmlDirectory(),"services.xml");
                 if (fileOrDirExists(path)){
-                    return true;
-                }else{
-                    bool r;
-                    #ifdef WIN32
-                        r= copyFile("services.xml",path);
-                    #else
-                        #ifdef WIN64
-                            r= copyFile("services.xml",path);
-                        #else
-                            r= copyFile("/var/jacksms2/services.xml",path);
-                        #endif
-                    #endif
-                    if (!r){
-                        error="cannot copy "+path+" file";
+                    path=directories::concatDirectoryAndFile(directories::XmlDirectory(),"services.forcecopy");
+                    if(!fileOrDirExists(path)){
+                        mymkdir(path);
+                        path=directories::concatDirectoryAndFile(directories::XmlDirectory(),"services.xml");
+                        QFile file(path);
+                        if (!file.open(QIODevice::ReadWrite | QIODevice::Text)){
+                            error="cannot create "+path+" file";
+                            return false;
+                        }else{
+                            file.write(hardcodedServicesFile());
+                        }
+                        file.close();
 
+
+                        return true;
+                    }else{
+                        return true;
                     }
-                    return r;
+
+                }else{
+                    QFile file(path);
+                    if (!file.open(QIODevice::ReadWrite | QIODevice::Text)){
+                        error="cannot create "+path+" file";
+                        return false;
+                    }else{
+                        file.write(hardcodedServicesFile());
+                    }
+                    file.close();
+                    return true;
 
                 }
             }else{
@@ -415,21 +429,15 @@ namespace libJackSMS{
 
                 path=directories::concatDirectoryAndFile(directories::XmlDirectory(),"services.xml");
                 if (!fileOrDirExists(path)){
-                    bool r;
-                    #ifdef WIN32
-                        r= copyFile("services.xml",path);
-                    #else
-                        #ifdef WIN64
-                            r= copyFile("services.xml",path);
-                        #else
-                            r= copyFile("/var/jacksms2/services.xml",path);
-                        #endif
-                    #endif
-                    if (!r){
-                        error="cannot copy "+path+" file (2nd opt)";
-
+                    QFile file(path);
+                    if (!file.open(QIODevice::ReadWrite | QIODevice::Text)){
+                        error="cannot create "+path+" file";
+                        return false;
+                    }else{
+                        file.write(hardcodedServicesFile());
                     }
-                    return r;
+                    file.close();
+
                 }
                 
                 

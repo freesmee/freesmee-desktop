@@ -76,8 +76,9 @@ SOURCES += main.cpp \
     libjacksms/EncodingPercent.cpp \
     libjacksms/SocketClient.cpp \
     messageloader.cpp \
-    plugins/JackPluginHostInterfacer.cpp
-
+    plugins/JackPluginHostInterfacer.cpp \
+    libjacksms/EncodingIso88591.cpp \
+    Configuration.cpp
 HEADERS += mainjacksms.h \
     Types.h \
     captchadialog.h \
@@ -153,7 +154,8 @@ HEADERS += mainjacksms.h \
     libjacksms/SocketClient.h \
     messageloader.h \
     plugins/JackPluginHostInterfacer.h \
-    plugins/puppeteer/JackPuppeteerPluginInterfacer.h
+    plugins/puppeteer/JackPuppeteerPluginInterfacer.h \
+    libjacksms/EncodingIso88591.h
 FORMS += mainjacksms.ui \
     captchadialog.ui \
     servicesdialog.ui \
