@@ -143,9 +143,17 @@ namespace libJackSMS{
 
         };
         void pingator::launchPing(){
-            timer.stop();
-            timer.singleShot(minutes*60*1000,this,SLOT(launchPing()));
-            start();
+            try{
+                timer.stop();
+                timer.singleShot(minutes*60*1000,this,SLOT(launchPing()));
+                start();
+            }catch(libJackSMS::exceptionXmlError e){
+
+            }catch(libJackSMS::exceptionSomethingWrong e){
+
+            }catch(...){
+
+            }
         }
         void pingator::run(){
             try{
@@ -564,11 +572,20 @@ namespace libJackSMS{
 
         void updateServicesManager::run(){
 
-            updateServicesManagerBase man(loginId,ps);
-            connect(this,SIGNAL(abortSignal()),&man,SLOT(abort()));
-            if (man.downloadUpdates(servizi)){
-                if (!aborted)
-                emit updatesAvailable(servizi,man.getXml(),man.getMessage());
+            try{
+                updateServicesManagerBase man(loginId,ps);
+                connect(this,SIGNAL(abortSignal()),&man,SLOT(abort()));
+
+                if (man.downloadUpdates(servizi)){
+
+                    if (!aborted)
+                    emit updatesAvailable(servizi,man.getXml(),man.getMessage());
+                }
+            }catch(libJackSMS::exceptionXmlError e){
+                emit criticalError(e.what());
+
+            }catch(...){
+                emit criticalError("error too critical: section 2");
             }
         }
 
@@ -650,6 +667,7 @@ namespace libJackSMS{
                 }
             }
             QString xml=webClient->submitPost("http://q.jacksms.it/"+loginId+"/servicesFullXML",true);
+
             if (!aborted){
                 xmlDocument->setXml(xml);
                 servXml=xml;
@@ -690,7 +708,7 @@ namespace libJackSMS{
 
 
 
-        /***********************************permaneno instant messenger******************/
+        /***********************************permanent instant messenger******************/
         permanentInstantMessenger::permanentInstantMessenger(QString _username,QString _password,dataTypes::proxySettings _ps ):
                 username(_username),
                 password(_password),
@@ -730,11 +748,16 @@ namespace libJackSMS{
         }
         void permanentInstantMessenger::pingTimeoutError(){
 
-            sock.abort();
-            pingTimer.stop();
-            pingTimeout.stop();
-            reconnectTimer.start(3*60*1000);
-            emit serviceNotActive(true,"Timeout");
+            try{
+                sock.abort();
+                pingTimer.stop();
+                pingTimeout.stop();
+                reconnectTimer.start(3*60*1000);
+                emit serviceNotActive(true,"Timeout");
+            }catch(...){
+                emit serviceNotActive(true,"Errore sconosciuto: section 3");
+
+            }
         }
 
 
@@ -752,73 +775,77 @@ namespace libJackSMS{
         }
         void  permanentInstantMessenger::parseLine(){
 
-            QList<QByteArray> finalLines;
-            QByteArray a=sock.read(20000);
-            if (a.at(0)=='\0')
-                a=a.right(a.length()-1);
-            a=a.left(a.length()-2);
-            QList<QByteArray> lines=a.split('\0');
-            for (QList<QByteArray>::iterator i=lines.begin();i!=lines.end();++i){
-                QList<QByteArray> ll=i->split('\n');
-                finalLines.append(ll);
-            }
-            QRegExp r;
+            try{
+                QList<QByteArray> finalLines;
+                QByteArray a=sock.read(20000);
+                if (a.at(0)=='\0')
+                    a=a.right(a.length()-1);
+                a=a.left(a.length()-2);
+                QList<QByteArray> lines=a.split('\0');
+                for (QList<QByteArray>::iterator i=lines.begin();i!=lines.end();++i){
+                    QList<QByteArray> ll=i->split('\n');
+                    finalLines.append(ll);
+                }
+                QRegExp r;
 
-            for (QList<QByteArray>::iterator i=finalLines.begin();i!=finalLines.end();++i){
-                QString line=QString(finalLines.first());
-                finalLines.removeFirst();
-                if (line.isEmpty()){
-                    pingTimeout.stop();
-                }else if (line.startsWith("W")){
-                    emit serviceActive();
-                }else{
-                    r.setPattern("^R ([^\\t]+) \\(([^)]+)\\)\\t([^\\t]+)$");
-                    if (r.exactMatch(line)){
-                        libJackSMS::dataTypes::phoneNumber num;
-                        num.parse(r.cap(1));
-                        num.setAltName(r.cap(2));
-                        libJackSMS::dataTypes::dateTime dat(libJackSMS::dataTypes::dateTime::getCurrentDay(),libJackSMS::dataTypes::dateTime::getCurrentHour());
-
-                        libJackSMS::dataTypes::logImMessage im(num,dat,"",QString::fromUtf8(r.cap(3).toAscii(),r.cap(3).length()));
-
-                        signalCountdown.stop();
-                        id++;
-                        im.setId(QString::number(id));
-                        imLog.insert(im.getId(),im);
-                        signalCountdown.start(2000);
-
+                for (QList<QByteArray>::iterator i=finalLines.begin();i!=finalLines.end();++i){
+                    QString line=QString(finalLines.first());
+                    finalLines.removeFirst();
+                    if (line.isEmpty()){
+                        pingTimeout.stop();
+                    }else if (line.startsWith("W")){
+                        emit serviceActive();
                     }else{
-                        r.setPattern("^R\\t([^ ]+) \\(([^)]+)\\)\\t([0-9]+)/([0-9]+) ([0-9]+):([0-9]+) - (.+)$");
+                        r.setPattern("^R ([^\\t]+) \\(([^)]+)\\)\\t([^\\t]+)$");
                         if (r.exactMatch(line)){
-                            QString a=r.cap(1);
-                            QString b=r.cap(2);
-                            QString c=r.cap(3);
-                            QString d=r.cap(4);
-                            QString e=r.cap(5);
-                            QString f=r.cap(6);
-                            QString g=QString::fromUtf8(r.cap(7).toAscii(),r.cap(7).length());
                             libJackSMS::dataTypes::phoneNumber num;
-                            num.parse(a);
-                            num.setAltName(b);
-                            QDateTime dd(QDateTime::fromString(c+"/"+d+" "+e+":"+f,"dd/MM HH:mm"));
-                            bool ok;
-                            int current_year=QDateTime::currentDateTime().toString("yyyy").toInt(&ok,10);
-                            dd=dd.addYears(current_year-1900);
-                            libJackSMS::dataTypes::dateTime dat(dd.toString("dd/MM/yyyy HH:mm:ss"));
-                            libJackSMS::dataTypes::logImMessage im(num,dat,"",g);
+                            num.parse(r.cap(1));
+                            num.setAltName(r.cap(2));
+                            libJackSMS::dataTypes::dateTime dat(libJackSMS::dataTypes::dateTime::getCurrentDay(),libJackSMS::dataTypes::dateTime::getCurrentHour());
+
+                            libJackSMS::dataTypes::logImMessage im(num,dat,"",QString::fromUtf8(r.cap(3).toAscii(),r.cap(3).length()));
+
                             signalCountdown.stop();
                             id++;
                             im.setId(QString::number(id));
                             imLog.insert(im.getId(),im);
                             signalCountdown.start(2000);
+
+                        }else{
+                            r.setPattern("^R\\t([^ ]+) \\(([^)]+)\\)\\t([0-9]+)/([0-9]+) ([0-9]+):([0-9]+) - (.+)$");
+                            if (r.exactMatch(line)){
+                                QString a=r.cap(1);
+                                QString b=r.cap(2);
+                                QString c=r.cap(3);
+                                QString d=r.cap(4);
+                                QString e=r.cap(5);
+                                QString f=r.cap(6);
+                                QString g=QString::fromUtf8(r.cap(7).toAscii(),r.cap(7).length());
+                                libJackSMS::dataTypes::phoneNumber num;
+                                num.parse(a);
+                                num.setAltName(b);
+                                QDateTime dd(QDateTime::fromString(c+"/"+d+" "+e+":"+f,"dd/MM HH:mm"));
+                                bool ok;
+                                int current_year=QDateTime::currentDateTime().toString("yyyy").toInt(&ok,10);
+                                dd=dd.addYears(current_year-1900);
+                                libJackSMS::dataTypes::dateTime dat(dd.toString("dd/MM/yyyy HH:mm:ss"));
+                                libJackSMS::dataTypes::logImMessage im(num,dat,"",g);
+                                signalCountdown.stop();
+                                id++;
+                                im.setId(QString::number(id));
+                                imLog.insert(im.getId(),im);
+                                signalCountdown.start(2000);
+                            }
+
+
                         }
 
 
                     }
 
-
                 }
-
+            }catch (...){
+                emit serviceNotActive(true,"Unknown error");
             }
 
 
@@ -829,40 +856,52 @@ namespace libJackSMS{
 
 
         void permanentInstantMessenger::connectDone(){
-            QString sn=QString("ID ")+username+QString("\t")+password+QString("\t5551\r\n");
-            sock.write(sn.toAscii());
-            pingTimer.start(1000*60);
+            try{
+                QString sn=QString("ID ")+username+QString("\t")+password+QString("\t5551\r\n");
+                sock.write(sn.toAscii());
+                pingTimer.start(1000*60);
+            }catch(...){
+                emit serviceNotActive(true,"Errore sconosciuto: section 6");
+
+            }
         }
         void permanentInstantMessenger::launchSignal(){
-            signalCountdown.stop();
-            emit newJMS(imLog);
-            imLog.clear();
-            id=0;
+            try{
+                signalCountdown.stop();
+                emit newJMS(imLog);
+                imLog.clear();
+                id=0;
+            }catch(...){
+                emit serviceNotActive(true,"Errore sconosciuto: section 5");
+
+            }
         }
 
         void permanentInstantMessenger::activateServ(){
+            try{
+                id=0;
+                reconnectTimer.stop();
+                emit serviceActiving();
+                if (ps.useProxy()){
+                    proxy.setHostName(ps.getServer());
+                    bool ok;
+                    proxy.setPort(ps.getPort().toInt(&ok,10));
+                    if (ps.getType().toUpper()=="HTTP")
+                        proxy.setType(QNetworkProxy::HttpProxy);
+                    else if (ps.getType().toUpper()=="SOCKS5")
+                        proxy.setType(QNetworkProxy::Socks5Proxy);
+                    if (ps.useAuth()){
+                        proxy.setUser(ps.getUsername());
+                        proxy.setPassword(ps.getPassword());
+                    }
+                    sock.setProxy(proxy);
 
-            id=0;
-            reconnectTimer.stop();
-            emit serviceActiving();
-            if (ps.useProxy()){
-                proxy.setHostName(ps.getServer());
-                bool ok;
-                proxy.setPort(ps.getPort().toInt(&ok,10));
-                if (ps.getType().toUpper()=="HTTP")
-                    proxy.setType(QNetworkProxy::HttpProxy);
-                else if (ps.getType().toUpper()=="SOCKS5")
-                    proxy.setType(QNetworkProxy::Socks5Proxy);
-                if (ps.useAuth()){
-                    proxy.setUser(ps.getUsername());
-                    proxy.setPassword(ps.getPassword());
                 }
-                sock.setProxy(proxy);
+                sock.connectToHost("www.jacksms.it",5551);
+            }catch(...){
+                emit serviceNotActive(true,"Errore sconosciuto: section 4");
 
             }
-
-            sock.connectToHost("www.jacksms.it",5551);
-
 
 
         }

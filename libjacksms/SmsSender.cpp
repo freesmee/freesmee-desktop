@@ -32,6 +32,7 @@
 #include "SocketClient.h"
 #include "FilesDirectory.h"
 #include "Utilities.h"
+#include "Exceptions.h"
 
 namespace libJackSMS{
 
@@ -69,7 +70,11 @@ namespace libJackSMS{
         }catch(libJackSMS::netClient::abortedException e){
 
 
+        }catch(libJackSMS::exceptionSharedMemory e){
+            emit error("Cannot create shared memory");
+
         }
+
     }
     void smsSender::abort(){
         emit abortSignal();
@@ -246,13 +251,20 @@ namespace libJackSMS{
                         QSemaphore semaforoCaptcha(0);
 
                         /**/
-                        QSharedMemory memoriaRisultatoCaptcha("jacksmsm_result_captcha_shmem");
+                        QSharedMemory memoriaRisultatoCaptcha("jacksms_result_captcha_shmem");
                         if (!memoriaRisultatoCaptcha.create(captchaBytes.size())){
 
-                                throw;
+                            if (memoriaRisultatoCaptcha.error()==QSharedMemory::AlreadyExists){
+                                if (!memoriaRisultatoCaptcha.attach()){
+                                    throw libJackSMS::exceptionSharedMemory();
+                                }
+                            }else{
+                                throw libJackSMS::exceptionSharedMemory();
+                            }
+
                         }
 
-                        emit this->captcha(captchaBytes,&semaforoCaptcha);
+                        emit captcha(captchaBytes,&semaforoCaptcha);
                         semaforoCaptcha.acquire(1);
                         memoriaRisultatoCaptcha.lock();
                         captcha_result=QString((const char*)memoriaRisultatoCaptcha.constData());

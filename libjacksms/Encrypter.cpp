@@ -52,7 +52,7 @@ namespace libJackSMS{
         QString  Encrypter::base(QString _str,QString _pass){
 
             QString fi;
-            for(size_t i=0,x=0;i<_str.length();i++,x++){
+            for(size_t i=0,x=0;i<_str.length();++i,++x){
                 if (x==_pass.length())
                     x=0;
                 my_byte a(_str.at(i).toAscii());

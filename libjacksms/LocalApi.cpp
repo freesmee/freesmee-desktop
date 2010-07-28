@@ -97,24 +97,27 @@ namespace libJackSMS{
         }
         void optionLoader::run(){
             try{
-               libJackSMS::dataTypes::optionsType s;
-               if (xmlDocument->loadOptions(s,true)){
-                   libJackSMS::dataTypes::optionsType::iterator i=s.begin();
-                   libJackSMS::dataTypes::optionsType::iterator i_end=s.end();
-                   for(;i!=i_end;++i){
+                libJackSMS::dataTypes::optionsType s;
+                if (xmlDocument->loadOptions(s,true)){
+                    libJackSMS::dataTypes::optionsType::iterator i=s.begin();
+                    libJackSMS::dataTypes::optionsType::iterator i_end=s.end();
+                    for(;i!=i_end;++i){
 
-                       if (i.key().indexOf("password")!=-1){
-                           i.value()=Encrypter::Encrypter::decrypt(i.value());
-                       }
-                   }
-                   emit endLoad(s);
+                        if (i.key().indexOf("password")!=-1){
+                            i.value()=Encrypter::Encrypter::decrypt(i.value());
+                        }
+                    }
+                    emit endLoad(s);
 
-               }
-            }catch(libJackSMS::exceptionXmlError){
-               //QMessageBox::critical(this,"JackSMS","Il file delle opzioni globali sembra essere corrotto. Non posso caricare le opzioni globali, utilizzo le impostazioni predefinite.");
-            }catch(libJackSMS::exceptionXmlNotFound){
-
+                }
+            }catch (libJackSMS::exceptionXmlError e){
+               emit criticalError(e.what());
+            }catch (libJackSMS::exceptionXmlNotFound e){
+                //emit criticalError(e.what());
+            }catch (...){
+                emit criticalError("Error too critical: section 1");
             }
+
 
 
         }
@@ -128,9 +131,15 @@ namespace libJackSMS{
             start();
         }
         void serviceLoader::run(){
-           libJackSMS::dataTypes::servicesType s;
-           if (xmlDocument->loadServices(s))
-                   emit endLoad(s);
+            try{
+               libJackSMS::dataTypes::servicesType s;
+               if (xmlDocument->loadServices(s))
+                       emit endLoad(s);
+            }catch (libJackSMS::exceptionXmlError e){
+               emit criticalError(e.what());
+            }catch (...){
+                emit criticalError("Error too critical: section 1");
+            }
 
         }
         /***************************************************************/
@@ -146,6 +155,7 @@ namespace libJackSMS{
 
             lo=new serviceLoader;
             connect(lo,SIGNAL(endLoad(libJackSMS::dataTypes::servicesType)),this,SIGNAL(servicesLoaded(libJackSMS::dataTypes::servicesType)));
+            connect(lo,SIGNAL(criticalError(QString)),this,SIGNAL(criticalError(QString)));
             lo->load();
         }
         bool xmlLoader::loadAccounts(libJackSMS::dataTypes::configuredServicesType & _serviziConfigurati){
@@ -154,6 +164,7 @@ namespace libJackSMS{
         bool xmlLoader::loadOptions(){
             l=new optionLoader(currentUserDirectory);
             connect(l,SIGNAL(endLoad(libJackSMS::dataTypes::optionsType)),this,SIGNAL(optionsLoaded(libJackSMS::dataTypes::optionsType)));
+            connect(l,SIGNAL(criticalError(QString)),this,SIGNAL(criticalError(QString)));
             l->load();
 
         }

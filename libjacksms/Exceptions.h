@@ -30,6 +30,8 @@ namespace libJackSMS{
 
     class exceptionPhoneNumber : public std::exception{
     };
+    class exceptionSharedMemory : public std::exception{
+    };
     class exceptionRegExpr : public std::exception{
     };
 

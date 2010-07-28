@@ -64,6 +64,7 @@ namespace libJackSMS{
                 void accountsReceived(libJackSMS::dataTypes::configuredServicesType serviziConfigurati);
                 void newVersionAvailable();
 
+
         };
 
         class login:public QThread{
@@ -367,6 +368,8 @@ namespace libJackSMS{
                 void abort();
             signals:
                 void abortSignal();
+                void criticalError(QString);
+                void error(QString);
                 void updatesAvailable(libJackSMS::dataTypes::servicesType _servizi,QString xml,QString message);
 
 
@@ -450,6 +453,7 @@ namespace libJackSMS{
             void serviceActive();
             void serviceNotActive(bool err=false,QString errStr="");
             void serviceActiving();
+
     };
     }
 }

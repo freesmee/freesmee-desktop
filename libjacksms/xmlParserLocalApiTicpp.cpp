@@ -29,7 +29,7 @@
 #include <QPixmap>
 #include <QImage>
 #include <iostream>
-
+#include <QFile>
 
 
 
@@ -44,6 +44,7 @@ namespace libJackSMS{
         bool xmlParserLocalApiTicpp::appendSmsToLogfile(dataTypes::logSmsMessage &_msg ){
             try{
                 ticpp::Document log;
+
                 QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),userDirectory);
                 path=libJackSMS::directories::concatDirectoryAndFile(path,"log.xml");
                 log.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
@@ -415,6 +416,8 @@ namespace libJackSMS{
                 ticpp::Document accounts;
                 QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),userDirectory);
                 path=libJackSMS::directories::concatDirectoryAndFile(path,"accounts.xml");
+                if (!QFile::exists(path))
+                    throw libJackSMS::exceptionXmlNotFound();
                 accounts.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
 
 
@@ -466,7 +469,8 @@ namespace libJackSMS{
                 ticpp::Document config;
                 QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),userDirectory);
                 path=libJackSMS::directories::concatDirectoryAndFile(path,"config.xml");
-                
+                if (!QFile::exists(path))
+                    throw libJackSMS::exceptionXmlNotFound();
                 config.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
                 
 
@@ -496,6 +500,8 @@ namespace libJackSMS{
                 ticpp::Document acc;
                 QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),userDirectory);
                 path=libJackSMS::directories::concatDirectoryAndFile(path,"accounts.xml");
+                if (!QFile::exists(path))
+                    throw libJackSMS::exceptionXmlNotFound();
                 acc.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
 
                 ticpp::Node *subRoot=acc.FirstChild("profile");
@@ -579,6 +585,8 @@ namespace libJackSMS{
                 ticpp::Document acc;
                 QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),userDirectory);
                 path=libJackSMS::directories::concatDirectoryAndFile(path,"accounts.xml");
+                if (!QFile::exists(path))
+                    throw libJackSMS::exceptionXmlNotFound();
                 acc.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
 
                 ticpp::Node *subRoot=acc.FirstChild("profile");
@@ -638,7 +646,8 @@ namespace libJackSMS{
             try{
                 ticpp::Document log;
                 QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),"users.xml");
-
+                if (!QFile::exists(path))
+                    throw libJackSMS::exceptionXmlNotFound();
                 log.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
 
                 ticpp::Node *subRoot=log.FirstChild("users");
@@ -674,9 +683,7 @@ namespace libJackSMS{
                 ticpp::Document log;
                 QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),userDirectory);
                 path=libJackSMS::directories::concatDirectoryAndFile(path,"log.xml");
-                try{
-                    log.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
-                }catch(ticpp::Exception e){
+                if (!QFile::exists(path)){
                     ticpp::Document doc;
                     ticpp::Element *newRoot=new ticpp::Element("log");
                     doc.LinkEndChild(newRoot);
@@ -685,6 +692,8 @@ namespace libJackSMS{
                     doc.SaveFile(path.toStdString());
                     return true;
                 }
+                log.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
+
 
                 ticpp::Node *subRoot=log.FirstChild("log");
                 ticpp::Node *child=NULL;
@@ -710,9 +719,7 @@ namespace libJackSMS{
                 ticpp::Document log;
                 QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),userDirectory);
                 path=libJackSMS::directories::concatDirectoryAndFile(path,"imlog.xml");
-                try{
-                    log.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
-                }catch(ticpp::Exception e){
+                if (!QFile::exists(path)){
                     ticpp::Document doc;
                     ticpp::Element *newRoot=new ticpp::Element("log");
                     doc.LinkEndChild(newRoot);
@@ -721,6 +728,8 @@ namespace libJackSMS{
                     doc.SaveFile(path.toStdString());
                     return true;
                 }
+                log.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
+
 
 
                 ticpp::Node *subRoot=log.FirstChild("log");
@@ -747,8 +756,9 @@ namespace libJackSMS{
                 ticpp::Document log;
                 QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),userDirectory);
                 path=libJackSMS::directories::concatDirectoryAndFile(path,"stats.xml");
-
-                    log.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
+                if (!QFile::exists(path))
+                    throw libJackSMS::exceptionXmlNotFound();
+                log.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
 
 
                 bool nodeExist=false;

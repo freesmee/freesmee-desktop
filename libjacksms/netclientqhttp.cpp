@@ -6,6 +6,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkCookieJar>
 #include <QFile>
+#include <QDateTime>
 #include <QNetworkCookie>
 namespace libJackSMS{
 
@@ -31,8 +32,12 @@ namespace libJackSMS{
                 while (!file.atEnd()) {
                     QByteArray line = file.readLine();
                     line.resize(line.length()-1);
-                    QList<QNetworkCookie> cock=QNetworkCookie::parseCookies(line);
-                    myCookieList.append(cock);
+                    QList<QNetworkCookie> c=QNetworkCookie::parseCookies(line);
+                    for(QList<QNetworkCookie>::iterator i=c.begin();i!=c.end();++i)
+                        if (i->expirationDate()>QDateTime::currentDateTime())
+                            myCookieList.push_back(*i);
+
+
                 }
 
                 setAllCookies(myCookieList);

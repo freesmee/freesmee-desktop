@@ -86,6 +86,7 @@ namespace libJackSMS{
                 optionLoader(QString _userDir="");
             signals:
                 void endLoad(libJackSMS::dataTypes::optionsType);
+                void criticalError(QString);
         };
         class serviceLoader:public QThread{
             Q_OBJECT
@@ -98,6 +99,7 @@ namespace libJackSMS{
                 serviceLoader();
             signals:
                 void endLoad(libJackSMS::dataTypes::servicesType);
+                void criticalError(QString);
         };
         class xmlLoader:public QObject{
             Q_OBJECT
@@ -117,6 +119,7 @@ namespace libJackSMS{
            signals:
                 void servicesLoaded(libJackSMS::dataTypes::servicesType);
                 void optionsLoaded(libJackSMS::dataTypes::optionsType);
+                void criticalError(QString);
         };
 
         class serviceManager{

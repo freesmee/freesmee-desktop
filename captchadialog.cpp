@@ -37,7 +37,7 @@ CaptchaDialog::CaptchaDialog(const QByteArray &_imgData,QString zoomFactor,QWidg
         memcpy(to, text, strlen(text)+1);
         sharedMemory.unlock();
 */
-        QSharedMemory sharedMemory("jacksmsm_result_captcha_shmem");
+        QSharedMemory sharedMemory("jacksms_result_captcha_shmem");
         sharedMemory.attach();
         sharedMemory.lock();
         char *to = (char*)sharedMemory.data();
@@ -79,7 +79,7 @@ void CaptchaDialog::on_pushButton_clicked()
    QString toWrite=m_ui->TextCaptcha->text();
    if (toWrite.isEmpty())
        toWrite="captcha_non_decodificato";
-   QSharedMemory memoriaCaptcha("jacksmsm_result_captcha_shmem");
+   QSharedMemory memoriaCaptcha("jacksms_result_captcha_shmem");
    memoriaCaptcha.attach();
    memoriaCaptcha.lock();
    memcpy(memoriaCaptcha.data(),toWrite.toStdString().c_str(),toWrite.length());

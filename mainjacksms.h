@@ -13,7 +13,6 @@
 //#include "plugins/captcha/JackCaptchaPluginInterfacer.h"
 #include "libjacksms/libJackSMS.h"
 
-#include <QSemaphore>
 
 #include <QMultiMap>
 #include "smswidget.h"
@@ -34,7 +33,7 @@ signals:
     void abortSendSms();
 public:
 
-    QSemaphore * semaforoGui;
+
     Ui::MainJackSMS *ui;
     MainJackSMS(QWidget *parent = 0);
     ~MainJackSMS();
@@ -121,7 +120,7 @@ private slots:
     void on_actionRicarica_servizi_triggered();
     void on_buttonStatusJms_clicked();
     void jmsActive();
-    void jmsNotActive(bool err);
+    void jmsNotActive(bool,QString);
     void jmsActiving();
     void on_imRicevutiWidget_itemClicked(QListWidgetItem* item);
     void on_actionPlugins_triggered();
@@ -197,7 +196,8 @@ private slots:
     void optionsLoaded(libJackSMS::dataTypes::optionsType);
     void initialOptionsLoaded(libJackSMS::dataTypes::optionsType);
     void serverPinged();
-    void messagesLoaded(QList<QMyMessage> msgs);
+    void messagesLoaded(QList<QMyMessage>);
+    void errorUpdates(QString);
 
 };
 
