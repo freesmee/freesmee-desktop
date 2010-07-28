@@ -1887,6 +1887,8 @@ void MainJackSMS::disableUibeforeLogin(){
     ui->actionCrea_backup_configurazione->setEnabled(false);
     ui->actionImporta_Backup->setEnabled(false);
     ui->actionLogout->setEnabled(false);
+    ui->actionRicarica_servizi->setEnabled(false);
+    ui->actionElimina_cookies->setEnabled(false);
 
 }
 void MainJackSMS::enableUiAfterLogin(){
@@ -1895,6 +1897,8 @@ void MainJackSMS::enableUiAfterLogin(){
     ui->actionStatistiche->setEnabled(true);
     ui->actionCrea_backup_configurazione->setEnabled(true);
     ui->actionImporta_Backup->setEnabled(true);
+    ui->actionRicarica_servizi->setEnabled(true);
+    ui->actionElimina_cookies->setEnabled(true);
 }
 void MainJackSMS::on_smsListWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous)
 {
