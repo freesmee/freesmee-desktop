@@ -276,7 +276,18 @@ namespace libJackSMS{
                     }else{
                         if (paginaCorrente.hasRawCommands()){
 
+                            elenco_dati_vari.insert(QString("message"),messaggio.getText());
+                            elenco_dati_vari.insert(QString("intcode"),destinatario.getIntCode());
+                            elenco_dati_vari.insert(QString("intpref"),destinatario.getIntPref());
+                            elenco_dati_vari.insert(QString("pref"),destinatario.getPref());
+                            elenco_dati_vari.insert(QString("num"),destinatario.getNum());
+                            elenco_dati_vari.insert(QString("intnum"),destinatario.getIntNum());
                             elenco_dati_vari["message"]=messaggio.getText();
+                            while(servizioDaUsare.nextVar()){
+                                QString n=servizioDaUsare.currentVar().getName();
+                                QString aa=account.getData(n);
+                                elenco_credenziali.insert(n,aa);
+                            }
 
                             netClient::SocketClient *rawClient=new netClient::SocketClient(false);
                             QString server=parsedCurrentUrlPage;
