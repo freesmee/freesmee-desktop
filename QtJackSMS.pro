@@ -7,8 +7,9 @@ INCLUDEPATH += "./include"
 macx { 
     SOURCES += MacOSspecific.cpp
     LIBS += /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation
+    LIBS += -L"./lib/osx"
     ICON = JackIcon.icns
-    TARGET = ../../bin/JackSms
+    TARGET = JackSMS
 }
 win32 { 
     LIBS += -L"./lib/win32"
