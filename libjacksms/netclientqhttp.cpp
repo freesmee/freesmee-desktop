@@ -33,10 +33,16 @@ namespace libJackSMS{
                     QByteArray line = file.readLine();
                     line.resize(line.length()-1);
                     QList<QNetworkCookie> c=QNetworkCookie::parseCookies(line);
-                    for(QList<QNetworkCookie>::iterator i=c.begin();i!=c.end();++i)
-                        if (i->expirationDate()>QDateTime::currentDateTime())
+                    for(QList<QNetworkCookie>::iterator i=c.begin();i!=c.end();++i){
+                        QDateTime dd=i->expirationDate();
+                        QDateTime ct=QDateTime::currentDateTime();
+                        //QDateTime say: if the cookie is a session cookie , epirationDate()
+                        //will return an invalid date.. but i want the session cookie!
+                        if (!dd.isValid())
                             myCookieList.push_back(*i);
-
+                        else if (dd>ct)
+                            myCookieList.push_back(*i);
+                    }
 
                 }
 

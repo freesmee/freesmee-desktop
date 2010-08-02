@@ -18,7 +18,8 @@
 #include "smswidget.h"
 #include "messageloader.h"
 
-
+#define TYPE_SMS 1
+#define TYPE_JMS 2
 namespace Ui
 {
     class MainJackSMS;
@@ -57,6 +58,8 @@ public:
     void ReWriteConfiguredServicesToGui();
 
 private:
+
+    int messageType;
     void countdownToGui();
     int countdownToGuiCount;
     messageLoader * loaderMessages;
@@ -113,8 +116,13 @@ private:
     libJackSMS::localApi::xmlLoader *initialXmlLoader;
 
     JackPluginHostInterface* jphi;
+    void showContactByTypeInFastAbook();
 
 private slots:
+    void on_radioJMS_clicked();
+    void on_radioSMS_clicked();
+    void on_radioButton_2_clicked();
+    void on_pushButton_clicked();
     void on_actionElimina_cookies_triggered();
     void servicesReLoaded(libJackSMS::dataTypes::servicesType);
     void on_actionRicarica_servizi_triggered();

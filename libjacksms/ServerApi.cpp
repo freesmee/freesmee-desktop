@@ -72,6 +72,13 @@ namespace libJackSMS{
 
         }
         void login::slotAccountsReceived(libJackSMS::dataTypes::configuredServicesType serviziConfigurati){
+            /*dataTypes::configuredAccount account;
+            account.setId("0");
+            account.setName("JackSMS Messenger");
+            account.setService("40");
+            account.setData("data1",username);
+            account.setData("data2",password);
+            serviziConfigurati.insert(account.getId(),account);*/
             emit this->accountsReceived(serviziConfigurati);
         }
         void login::slotNewVersionAvailable(){

@@ -122,13 +122,28 @@ namespace libJackSMS{
                 void criticalError(QString);
         };
 
-        class serviceManager{
+        class serviceManagerBase:public QThread{
+            Q_OBJECT
+            private:
+                QString xml;
+                xmlParserApi::xmlParserLocalApiGeneric *xmlDocument;
+                void run();
+            public:
+                serviceManagerBase(const QString &_xml);
+                void merge();
+            signals:
+                void merged();
+        };
+        class serviceManager:public QObject{
+            Q_OBJECT;
             private:
                 xmlParserApi::xmlParserLocalApiGeneric *xmlDocument;
             public:
                 serviceManager();
                 bool saveServices(QString _xml);
-                bool mergeServices(QString _xml);
+                bool mergeServices(const QString &_xml);
+            signals:
+                void merged();
         };
 
         class accountManager{

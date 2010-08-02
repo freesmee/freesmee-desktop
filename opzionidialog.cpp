@@ -53,10 +53,11 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType & _opt,QTextEdit
                 m_ui->checkSalvalocale->setChecked(true);
 
         iter=opt.find("receive-im");
-        if (iter!=opt.end())
-            if ("yes"==iter.value())
+        if (iter!=opt.end()){
+            if ("no"!=iter.value())
                 m_ui->CheckAbilitaIM->setChecked(true);
-
+        }else
+            m_ui->CheckAbilitaIM->setChecked(true);
         iter=opt.find("use-captcha");
         if (iter!=opt.end())
             if ("yes"==iter.value())
@@ -279,11 +280,11 @@ void OpzioniDialog::on_pushButton_2_clicked()
 
         }
 
-        if (("yes"==opt["receive-im"])&& (!m_ui->CheckAbilitaIM->isChecked())){
+        if (("no"!=opt["receive-im"])&& (!m_ui->CheckAbilitaIM->isChecked())){
 
             opt["receive-im"]="no";
             //emit deactivateImTimer();
-        }else if (("yes"!=opt["receive-im"])&& (m_ui->CheckAbilitaIM->isChecked())){
+        }else if (("no"==opt["receive-im"])&& (m_ui->CheckAbilitaIM->isChecked())){
 
             opt["receive-im"]="yes";
             //emit activateImTimer();

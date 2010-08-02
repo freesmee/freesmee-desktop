@@ -10,7 +10,7 @@ QString getJackPluginsPath();
 
 
 
-#define JACKSMS_VERSION "2.0-b2"
+#define JACKSMS_VERSION "2.0-b3"
 
 QByteArray hardcodedServicesFile();
 

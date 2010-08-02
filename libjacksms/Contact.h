@@ -39,6 +39,7 @@ namespace libJackSMS{
                 QString gruppo;
                 QString account;
                 QString id;
+                bool canReceiveJms;
             public:
                 contact();
                 contact(const QString & _nome,const phoneNumber & _telefono,const QString & _gruppo, const QString & _account);
@@ -84,6 +85,13 @@ namespace libJackSMS{
                  * \return l'id del contatto
                  */
                 QString getId()const;
+
+                void setCanReceiveJms(bool can);
+                /**
+                 * Preleva l'id del contatto
+                 * \return l'id del contatto
+                 */
+                bool getCanReceiveJms()const;
 
         };
 

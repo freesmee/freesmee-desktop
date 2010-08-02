@@ -227,6 +227,19 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>nome</tabstop>
+  <tabstop>intPref</tabstop>
+  <tabstop>pref</tabstop>
+  <tabstop>num</tabstop>
+  <tabstop>comboaccount</tabstop>
+  <tabstop>radioEsistente</tabstop>
+  <tabstop>radioNuovo</tabstop>
+  <tabstop>ComboGruppo</tabstop>
+  <tabstop>nuovogruppo</tabstop>
+  <tabstop>annulla</tabstop>
+  <tabstop>salva</tabstop>
+ </tabstops>
  <resources>
   <include location="resources.qrc"/>
  </resources>

@@ -35,6 +35,7 @@
 #include "Logger.h"
 #include "LogImMessage.h"
 #include "LogSmsMessage.h"
+#include "Encrypter.h"
 
 #include "netclientqhttp.h"
 #include "NetClient.h"

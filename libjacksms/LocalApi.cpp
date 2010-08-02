@@ -495,10 +495,25 @@ namespace libJackSMS{
         bool serviceManager::saveServices(QString _xml){
             return xmlDocument->saveServices(_xml);
         }
-        bool serviceManager::mergeServices(QString _xml){
-            return xmlDocument->mergeServices(_xml);
+        bool serviceManager::mergeServices(const QString &_xml){
+            serviceManagerBase*smb=new serviceManagerBase(_xml);
+            connect(smb,SIGNAL(merged()),this,SIGNAL(merged()));
+            smb->merge();
+
         }
 
+        void serviceManagerBase::run(){
+            if (xmlDocument->mergeServices(xml))
+                emit merged();
+        }
+
+        serviceManagerBase::serviceManagerBase(const QString &_xml):xml(_xml),xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp("")){
+
+        }
+
+        void serviceManagerBase::merge(){
+            start();
+        }
 
 
         cookieManager::cookieManager(const QString & _currentUserDirectory):

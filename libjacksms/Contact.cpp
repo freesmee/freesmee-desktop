@@ -23,7 +23,7 @@ namespace libJackSMS{
 
     namespace dataTypes{
             contact::contact(){}
-            contact::contact(const QString & _nome,const phoneNumber & _telefono,const QString & _gruppo, const QString & _account):nome(_nome),telefono(_telefono),gruppo(_gruppo),account(_account){}
+            contact::contact(const QString & _nome,const phoneNumber & _telefono,const QString & _gruppo, const QString & _account):nome(_nome),telefono(_telefono),gruppo(_gruppo),account(_account),canReceiveJms(false){}
 
             QString contact::getName() const{
                 return nome;
@@ -45,6 +45,13 @@ namespace libJackSMS{
             }
             void contact::setName(const QString & _name){
                 nome=_name;
+            }
+            void contact::setCanReceiveJms(bool can){
+                canReceiveJms=can;
+            }
+
+            bool contact::getCanReceiveJms()const{
+                return canReceiveJms;
             }
 
     }

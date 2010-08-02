@@ -494,7 +494,7 @@ QFrame#frame_3{
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>4</number>
           </property>
           <property name="iconSize">
            <size>
@@ -510,7 +510,7 @@ QFrame#frame_3{
            <attribute name="title">
             <string>SMS</string>
            </attribute>
-           <layout class="QHBoxLayout" name="horizontalLayout_10">
+           <layout class="QHBoxLayout" name="horizontalLayout_17">
             <item>
              <layout class="QGridLayout" name="gridLayout_7">
               <property name="horizontalSpacing">
@@ -1623,32 +1623,37 @@ p, li { white-space: pre-wrap; }
  <tabstops>
   <tabstop>username</tabstop>
   <tabstop>password</tabstop>
+  <tabstop>ricordaPassword</tabstop>
   <tabstop>loginButton</tabstop>
-  <tabstop>smsListWidget</tabstop>
-  <tabstop>tabWidget</tabstop>
   <tabstop>NumeroDestinatario</tabstop>
   <tabstop>comboServizio</tabstop>
   <tabstop>TestoSMS</tabstop>
-  <tabstop>AnnullaSMS</tabstop>
   <tabstop>InviaSMS</tabstop>
-  <tabstop>bottoneinviomultiplo</tabstop>
+  <tabstop>AnnullaSMS</tabstop>
   <tabstop>RubricaVeloce</tabstop>
   <tabstop>RicercaVeloce</tabstop>
-  <tabstop>TextRapidRubrica</tabstop>
-  <tabstop>rubricaListWidget</tabstop>
-  <tabstop>RubricaAggiungi</tabstop>
-  <tabstop>RubricaModifica</tabstop>
-  <tabstop>RubricaElimina</tabstop>
-  <tabstop>TextRapidServizi</tabstop>
-  <tabstop>listServiziConfigurati</tabstop>
-  <tabstop>AggiungiServizioButton</tabstop>
-  <tabstop>ModificaServizioButton</tabstop>
-  <tabstop>EliminaServizioButton</tabstop>
-  <tabstop>RicercaVeloceIM</tabstop>
   <tabstop>RispondiButton</tabstop>
   <tabstop>CitaButton</tabstop>
   <tabstop>InoltraButton</tabstop>
   <tabstop>EliminaButton</tabstop>
+  <tabstop>RicercaVeloceIM</tabstop>
+  <tabstop>RubricaAggiungi</tabstop>
+  <tabstop>RubricaModifica</tabstop>
+  <tabstop>RubricaElimina</tabstop>
+  <tabstop>TextRapidRubrica</tabstop>
+  <tabstop>AggiungiServizioButton</tabstop>
+  <tabstop>ModificaServizioButton</tabstop>
+  <tabstop>EliminaServizioButton</tabstop>
+  <tabstop>TextRapidServizi</tabstop>
+  <tabstop>smsListWidget</tabstop>
+  <tabstop>bottoneinviomultiplo</tabstop>
+  <tabstop>listServiziConfigurati</tabstop>
+  <tabstop>rubricaListWidget</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>RicercaVeloceIM_2</tabstop>
+  <tabstop>imRicevutiWidget</tabstop>
+  <tabstop>RispondiIm</tabstop>
+  <tabstop>buttonStatusJms</tabstop>
  </tabstops>
  <resources>
   <include location="resources.qrc"/>

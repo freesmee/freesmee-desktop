@@ -143,6 +143,7 @@ namespace libJackSMS{
 
                 dataTypes::contact contatto(name,num,"Contatti", srv);
                 contatto.setId(QString::fromStdString(curElem->GetAttribute("id")));
+
                 _rubrica.insert(contatto.getId(),contatto);
             }
 
@@ -196,6 +197,7 @@ namespace libJackSMS{
 
                     _serviziConfigurati.insert(account.getId(),account);
                 }
+
             }catch(ticpp::Exception e){
                 throw libJackSMS::exceptionXmlError(e.what());
 

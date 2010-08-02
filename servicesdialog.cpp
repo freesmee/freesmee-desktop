@@ -131,13 +131,14 @@ void ServicesDialog::on_Salva_clicked()
         QLineEdit *it;
         QString accountName;
         it = dynamic_cast<QLineEdit*>(m_ui->serviceDataForms->itemAt(0, QFormLayout::FieldRole)->widget());
-
+        accountName=it->text();
 
         libJackSMS::dataTypes::configuredServicesType::const_iterator i=ElencoServiziConfigurati.begin();
         libJackSMS::dataTypes::configuredServicesType::const_iterator i_end=ElencoServiziConfigurati.end();
+
         bool save=true;
         while(i!=i_end){
-            accountName=it->text();
+
             if (i.value().getName()==accountName){
                 save=false;
                 break;

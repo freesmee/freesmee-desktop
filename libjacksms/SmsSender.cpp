@@ -455,7 +455,7 @@ namespace libJackSMS{
             }
             if ((!resultSend) && (!resultError)){
                 log.addNotice("Ho raggiunto la fine delle pagine da elaborare per il servizio ma non ho ricevuto alcun errore o alcuna stringa accettante: marco come fallito l'invio.");
-                emit error("Conferma di invio non trovata.");
+                emit error("Errore durante l'invio.");
             }
 
         }
