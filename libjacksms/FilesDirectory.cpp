@@ -17,11 +17,13 @@
 */
 
 #ifdef WIN32
+
     #include <dirent.h>
 #else
     #include <sys/stat.h>
     #include <sys/types.h>
 #endif
+#include <QDir>
 #include <cstdlib>
 #include <QString>
 #include "FilesDirectory.h"
@@ -31,6 +33,7 @@ namespace libJackSMS{
     namespace directories{
 
         QString concatDirectoryAndFile(const QString & _dir,const QString &_file){
+
             #ifdef WIN32
             QString newPath=_dir+QString("\\")+_file;
             newPath=newPath.replace("\\\\","\\");
@@ -40,19 +43,22 @@ namespace libJackSMS{
             newPath=newPath.replace("//","/");
 
             #endif
+
             return newPath;
         }
         QString DataDirectory(){
 
-
+            #ifndef PORTABLE
             #ifdef WIN32
             char * path=getenv("appdata");
-            return QString(path)+"\\JackSMS Desktop 2\\";
+            return concatDirectoryAndFile(QString(path),"JackSMS Desktop 2\\");
             #else
             char * path=getenv("HOME");
-            return QString(path)+"/.JackSMSDesktop2/";
+            return concatDirectoryAndFile(QString(path),".JackSMSDesktop2/");
             #endif
-
+            #else
+            return concatDirectoryAndFile(QDir::currentPath(),"configuration/");
+            #endif
 
 
         }

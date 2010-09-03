@@ -39,6 +39,7 @@ namespace libJackSMS{
                 QString alternativeName;
                 bool valid;
                 bool specialNumber;
+                bool virtualNumber;
             public:
                 phoneNumber();
                 /**
@@ -108,7 +109,8 @@ namespace libJackSMS{
 
                 void setIsValid(bool v);
                 bool getIsValid() const;
-
+                void setVirtual(bool v);
+                bool getVirtual() const;
 
 
         };

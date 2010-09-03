@@ -16,9 +16,11 @@ win32 {
     RC_FILE = icon.rc
 }
 QT += network
+QT += phonon
 CONFIG(debug, debug|release):LIBS += -lticppd
 CONFIG(release, debug|release):LIBS += -lticpp
 DEFINES += TIXML_USE_TICPP
+#DEFINES += PORTABLE
 SOURCES += main.cpp \
     mainjacksms.cpp \
     captchadialog.cpp \
@@ -79,7 +81,8 @@ SOURCES += main.cpp \
     messageloader.cpp \
     plugins/JackPluginHostInterfacer.cpp \
     libjacksms/EncodingIso88591.cpp \
-    Configuration.cpp
+    Configuration.cpp \
+    libjacksms/libraryconfig.cpp
 HEADERS += mainjacksms.h \
     Types.h \
     captchadialog.h \
@@ -156,7 +159,8 @@ HEADERS += mainjacksms.h \
     messageloader.h \
     plugins/JackPluginHostInterfacer.h \
     plugins/puppeteer/JackPuppeteerPluginInterfacer.h \
-    libjacksms/EncodingIso88591.h
+    libjacksms/EncodingIso88591.h \
+    libjacksms/libraryconfig.h
 FORMS += mainjacksms.ui \
     captchadialog.ui \
     servicesdialog.ui \

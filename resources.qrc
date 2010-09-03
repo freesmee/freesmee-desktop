@@ -70,5 +70,8 @@
         <file>resource/jms-not-active.png</file>
         <file>resource/jms-activing.png</file>
         <file>resource/external-link-ltr-icon.png</file>
+        <file>resource/freccia.png</file>
+        <file>resource/background_new.png</file>
+        <file>resource/jacksms_logo_medium_light.png</file>
     </qresource>
 </RCC>

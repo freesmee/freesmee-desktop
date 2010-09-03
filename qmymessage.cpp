@@ -11,6 +11,7 @@ bool QMyMessage::getReaded()const{
 }
 void QMyMessage::setMessage(const QString &_msg){
     message=_msg;
+
 }
 void QMyMessage::setData (const QDateTime &_date){
     data=_date;
@@ -44,6 +45,9 @@ bool QMyMessage::getIsReceived()const{
 }
 QString QMyMessage::getId()const{
     return id;
+}
+bool QMyMessage::messageContains(QString text)const{
+    return !(-1==message.indexOf(text,0,Qt::CaseInsensitive));
 }
 QString QMyMessage::getServiceId()const{
     return serviceId;

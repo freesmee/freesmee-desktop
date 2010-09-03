@@ -10,6 +10,7 @@ accountWidget::accountWidget(QString _id,QString _nome,QPixmap _icoServ):id(_id)
        //hLayout->setMargin(2);
 
        nome=new QLabel(_nome);
+
        //icon->setMaximumSize(1000,16);
        //nome->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
        icon=new QLabel;
@@ -24,6 +25,13 @@ accountWidget::accountWidget(QString _id,QString _nome,QPixmap _icoServ):id(_id)
        adjustSize();
 
 }
+QIcon accountWidget::getIcon()const{
+    return QIcon(*icon->pixmap());
+}
+QString accountWidget::getName()const{
+    return this->nome->text();
+}
 QString accountWidget::getAccountId()const{
+
     return this->id;
 }

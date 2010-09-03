@@ -27,7 +27,7 @@
 #include "Exceptions.h"
 #include <QDir>
 #include <QMetaType>
-#include "Configuration.h"
+#include "libraryconfig.h"
 
 
 

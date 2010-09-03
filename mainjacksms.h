@@ -17,7 +17,7 @@
 #include <QMultiMap>
 #include "smswidget.h"
 #include "messageloader.h"
-
+#include "accountwidget.h"
 #define TYPE_SMS 1
 #define TYPE_JMS 2
 namespace Ui
@@ -80,6 +80,7 @@ private:
     //QMultiMap<QDateTime,SmsWidget*> mapWidgetsNew;
     QMultiMap<QDateTime,SmsWidget*> mapWidgetsReceived;
     //QMultiMap<QDateTime,SmsWidget*> mapWidgetsReceivedNew;
+    QMap<QString,accountWidget*> mapWidgetsAccount;
     libJackSMS::serverApi::contactManager *deleteContect;
     libJackSMS::serverApi::accountManager *accountManager;
     libJackSMS::serverApi::pingator *pingator;
@@ -119,6 +120,9 @@ private:
     void showContactByTypeInFastAbook();
 
 private slots:
+    void on_buttonNoAccount_clicked();
+    void on_buttonLostPassword_clicked();
+    void on_CitaButton_2_clicked();
     void on_radioJMS_clicked();
     void on_radioSMS_clicked();
     void on_radioButton_2_clicked();

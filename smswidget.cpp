@@ -7,15 +7,24 @@ SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QStr
 {
 
        labelGroup = new QLabel(user);
-       labelGroup->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+
        labelGroup->setFont(QFont(labelGroup->font().family(),-1,QFont::Bold,false));
+
+       labelGroup->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
+       labelGroup->setMaximumSize(10000,18);
+
+
        labelIco=new QLabel();
        if (!service.isEmpty())
            service=service+" - ";
        labelService=new QLabel(service);
-       labelService->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+       labelService->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
+       labelService->setMaximumSize(10000,18);
+
+
        labelIcoReceived=new QLabel();
        labelIcoReceived->setMaximumSize(16,16);
+       labelIcoReceived->setMinimumSize(16,16);
        if (!_letto){
            labelIcoReceived->setPixmap(QPixmap(":/resource/go-down-notify.png"));
        }
@@ -26,33 +35,48 @@ SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QStr
                labelIcoReceived->setPixmap(QPixmap(":/resource/go-up.png"));
        }
        labelIco->setPixmap(_ico);
-       //labelIco->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Minimum);
+       labelIco->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
        labelIco->setMaximumSize(16,16);
+       labelIco->setMinimumSize(16,16);
 
 
        labelTime = new QLabel(time.toString("dd/MM/yyyy hh:mm:ss"));
-       labelTime->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+
+       labelTime->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
+       labelTime->setMaximumSize(10000,18);
        _txt=this->parseLinks(_txt);
 
        labelTxt = new QLabel(_txt);
        labelTxt->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
        labelTxt->setWordWrap (true);
-       labelTxt->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+       labelTxt->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
+
+
        connect(labelTxt,SIGNAL(linkActivated(QString)),this,SLOT(openUrl(QString)));
 
        hLayout = new QHBoxLayout;
        vLayout = new QVBoxLayout;
+
+       labelGroup->adjustSize();
+       labelIco->adjustSize();
+       labelIcoReceived->adjustSize();
+       labelTxt->adjustSize();
+       labelTime->adjustSize();
+
        hLayout->addWidget(labelIcoReceived);
        hLayout->addWidget(labelGroup);
        hLayout->addWidget(labelIco);
        hLayout->addWidget(labelService);
        hLayout->addWidget(labelTime);
-
        vLayout->addLayout(hLayout);
        vLayout->addWidget(labelTxt);
 
        setLayout(vLayout);
        setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+
+
+
+
        adjustSize();
 
 }
@@ -82,6 +106,7 @@ libJackSMS::dataTypes::phoneNumber SmsWidget::getPhoneNum() const{
     return number;
 }
 void SmsWidget::setReaded(bool _r){
+    readed=_r;
     if (!_r){
         labelIcoReceived->setPixmap(QPixmap(":/resource/go-down-notify.png"));
     }

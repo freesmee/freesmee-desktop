@@ -17,10 +17,13 @@ private:
     QHBoxLayout *hLayout;
     QString id;
 
+
 public:
     accountWidget(QString _id,QString _nome,QPixmap _icoServ);
 
     QString getContactId()const;
     QString getAccountId()const;
+    QIcon getIcon() const ;
+    QString getName()const;
 };
 #endif // ACCOUNTWIDGET_H

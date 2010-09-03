@@ -815,7 +815,19 @@ namespace libJackSMS{
                         QString id=QString::fromStdString(childElem->GetAttribute("account"));
                         dataTypes::configuredServicesType::iterator i=_services.find(id);
                         if (i!=_services.end()){
-                            i.value().setStat("sent",QString::fromStdString(childElem->GetTextOrDefault("0")));
+                            std::string r=childElem->GetTextOrDefault("-1");
+                            if (r!="-1"){
+                                i.value().setStat("sent",QString::fromStdString(r));
+                                i.value().setStat("sent-partial","0");
+                                childElem->SetText("");
+                            }else{
+                                ticpp::Node *se=child->FirstChild("sent-total");
+                                QString r=QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));
+                                i.value().setStat("sent",r);
+                                se=child->FirstChild("sent-partial");
+                                r=QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));
+                                i.value().setStat("sent-partial",r);
+                            }
 
                         }
                     }

@@ -88,6 +88,7 @@ void AggiungiContatto::on_salva_clicked()
         QString nome=m_ui->nome->text();
         libJackSMS::dataTypes::phoneNumber num;
         num.parse(m_ui->intPref->text()+"."+m_ui->pref->text()+"."+m_ui->num->text());
+
         QString gruppo;
         if (m_ui->radioNuovo->isChecked()){
             QRegExp checker;

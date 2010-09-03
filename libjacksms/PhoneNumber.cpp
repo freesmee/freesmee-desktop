@@ -30,17 +30,30 @@
 
 namespace libJackSMS{
     namespace dataTypes{
-        phoneNumber::phoneNumber():valid(false),specialNumber(false){
+        phoneNumber::phoneNumber():valid(false),specialNumber(false),virtualNumber(false){
         }
 
         void
         phoneNumber::parse(QString _phoneNum){
 
             QRegExp  regExp;
-            regExp.setPattern(QString("^\\+([0-9]{1,4})\\.([0-9]{1,4})\\.([0-9]{1,7})$"));
+            regExp.setPattern(QString("^\\+([0-9]{1,4})\\.([0-9]{1,4})\\.([0-9]{6,7})$"));
             if (regExp.exactMatch(_phoneNum)){
                 intcode=regExp.cap(1);
+
                 intpref="+"+intcode;
+                pref=regExp.cap(2);
+                if (pref=="555")
+                    virtualNumber=true;
+                num=regExp.cap(3);
+                valid=true;
+                return;
+            }
+
+            regExp.setPattern(QString("^([0-9]{1,4})\\.([0-9]{1,4})\\.([0-9]{1,7})$"));
+            if (regExp.exactMatch(_phoneNum)){
+                intcode=regExp.cap(1);
+                intpref=intcode;
                 pref=regExp.cap(2);
                 num=regExp.cap(3);
                 valid=true;
@@ -51,6 +64,8 @@ namespace libJackSMS{
                 intcode="39";
                 intpref="+39";
                 pref=_phoneNum.left(3);
+                if (pref=="555")
+                    virtualNumber=true;
                 num=_phoneNum.right(7);
                 valid=true;
                 return;
@@ -73,6 +88,7 @@ namespace libJackSMS{
                 num=_phoneNum;
                 valid=true;
                 specialNumber=true;
+                virtualNumber=true;
                 return;
             }
             valid=false;
@@ -128,6 +144,13 @@ namespace libJackSMS{
         }
         bool phoneNumber::getIsValid() const{
             return valid;
+        }
+        void phoneNumber::setVirtual(bool v){
+            virtualNumber=v;
+        }
+        bool phoneNumber::getVirtual() const{
+            return virtualNumber;
+
         }
     }
 }

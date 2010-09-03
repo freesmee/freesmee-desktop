@@ -106,7 +106,7 @@
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>1</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="generali">
           <layout class="QHBoxLayout" name="horizontalLayout_3">

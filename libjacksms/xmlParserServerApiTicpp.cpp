@@ -143,6 +143,8 @@ namespace libJackSMS{
 
                 dataTypes::contact contatto(name,num,"Contatti", srv);
                 contatto.setId(QString::fromStdString(curElem->GetAttribute("id")));
+                if (curElem->GetAttributeOrDefault("jms","0")=="1")
+                    contatto.setCanReceiveJms(true);
 
                 _rubrica.insert(contatto.getId(),contatto);
             }

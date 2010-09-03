@@ -14,6 +14,7 @@ class QMyMessage
         QString serviceId;
         bool letto;
         QString accountName;
+        QString upperText;
     public:
         QMyMessage();
         void setMessage(const QString &_msg);
@@ -25,6 +26,7 @@ class QMyMessage
         void setServiceId(const QString &_id);
         void setReaded(bool readed);
         bool getReaded()const;
+        bool messageContains(QString text)const;
         QString getMessage()const;
         QDateTime getData()const;
         QString getAccountId()const;

@@ -20,6 +20,7 @@ private:
     libJackSMS::dataTypes::phoneNumber number;
     bool readed;
     QString parseLinks(QString _s);
+
 private slots:
      void openUrl(QString _url);
 public:
@@ -32,6 +33,7 @@ public:
     void setReaded(bool _r);
     QString getText()const;
     libJackSMS::dataTypes::phoneNumber getPhoneNum() const;
+
 };
 
 #endif // SMSWIDGET_H
