@@ -83,18 +83,7 @@ namespace libJackSMS{
                 textEncoder=new libJackSMS::encodingISO88591();
                 codifica=_encoding;
 
-            }else if (_encoding=="AUTO"){
-                QMap<QString,QString> compatMap;
-                compatMap.insert("71","UTF-8");
-                for(QMap<QString,QString>::const_iterator i=compatMap.begin();i!=compatMap.end();++i){
-                    if (getId()==i.key()){
-                        setEncoding(i.value());
-                        break;
-                    }
-
-                }
             }
-
         }
         QString service::getEncoding() const{
             return codifica;

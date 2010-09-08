@@ -37,6 +37,7 @@ namespace libJackSMS{
                 QString valore;
                 QString unEncodedValue;
                 bool trovato;
+                bool encode;
             public:
                 content();
                 /**
@@ -53,7 +54,7 @@ namespace libJackSMS{
                  * Impoista il valore del contenuto non codificato
                  * \param _val Il valore del contenuto
                  */
-                void setUnEncodedValue(const QString & _val);
+                //void setUnEncodedValue(const QString & _val);
                 /**
                  * Impoista il flag che mi dice se il contenuto era stato trovato o meno nella pagina
                  * \param _fount L'esito della ricerca
@@ -73,12 +74,16 @@ namespace libJackSMS{
                  * Preleva il valore del contenuto non codificato
                  * \return Il valore del contenuto
                  */
-                QString getUnEncodedValue() const;
+                //QString getUnEncodedValue() const;
                 /**
                  * Preleva l'esito della ricerca del contenuto
                  * \return l'esito della ricerca (true= trovato, false=non trovato)
                  */
                 bool getFound() const;
+
+                /*void setToEncode(bool _e);
+                bool getToEncode()const;*/
+
         };
 
     }

@@ -40,12 +40,8 @@ namespace libJackSMS{
                 return progressivo;
             }
 
-            bool variabileServizio::isRequired() const{
-                return required;
-            }
-            bool variabileServizio::isEmpty() const{
-                return vuota;
-            }
+
+
 
     }
 

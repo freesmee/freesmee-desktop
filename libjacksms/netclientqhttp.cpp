@@ -175,11 +175,11 @@ namespace libJackSMS{
 
         }
         bool netClientQHttp::insertFormData(const QString &_field,const QString &_value){
-            QByteArray v=QByteArray::fromPercentEncoding(_value.toAscii());
-            v=v.toPercentEncoding();
+            //QByteArray v=QByteArray::fromPercentEncoding(_value.toAscii());
+            //v=v.toPercentEncoding();
 
-
-            queryStringFields.push_back(QPair<QString,QString>(_field,QString(v)));
+            queryStringFields.push_back(QPair<QString,QString>(_field,_value));
+            //queryStringFields.push_back(QPair<QString,QString>(_field,QString(v)));
             return true;
         }
 

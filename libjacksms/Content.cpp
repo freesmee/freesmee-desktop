@@ -28,7 +28,7 @@ namespace libJackSMS{
 
     namespace dataTypes{
 
-        content::content():trovato(false){
+        content::content():trovato(false),encode(false){
         }
         void content::setName(const QString & _name){
             nome=_name;
@@ -49,15 +49,21 @@ namespace libJackSMS{
         void content::setValue(const QString & _val){
             valore=_val;
         }
-        void content::setUnEncodedValue(const QString & _val){
+        /*void content::setUnEncodedValue(const QString & _val){
             unEncodedValue=_val;
         }
         QString content::getUnEncodedValue()const {
             return unEncodedValue;
-        }
+        }*/
         void content::setFound(bool _found){
             trovato=_found;
         }
+        /*void content::setToEncode(bool _e){
+            encode=_e;
+        }
+        bool content::getToEncode()const{
+            return encode;
+        }*/
 
 
     }

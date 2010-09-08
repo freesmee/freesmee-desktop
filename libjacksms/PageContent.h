@@ -35,12 +35,15 @@ namespace libJackSMS{
 
                 QString l;
                 QString r;
+                bool encode;
             public:
                 pageContent();
                 pageContent(const QString &_name,const QString &_left,const QString &_right);
                 QString getName() const;
                 QString getLeft() const;
                 QString getRight() const;
+                /*void setToEncode(bool _e);
+                bool getToEncode()const;*/
 
 
         };

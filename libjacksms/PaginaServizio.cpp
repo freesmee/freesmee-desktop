@@ -146,8 +146,14 @@ namespace libJackSMS{
             return iter_contents->getName();
         }
         QString paginaServizio::currentContentValue() const{
-            return pageHtml.mid(currentContentPosition.first,currentContentPosition.second-currentContentPosition.first);
+            //if (!iter_contents->getToEncode())
+                return pageHtml.mid(currentContentPosition.first,currentContentPosition.second-currentContentPosition.first);
+            //else
+            //    return QString(pageHtml.mid(currentContentPosition.first,currentContentPosition.second-currentContentPosition.first).toAscii().toPercentEncoding());
         }
+        /*bool paginaServizio::currentContentToEncode() const{
+            return iter_contents->getToEncode();
+        }*/
 
         bool paginaServizio::currentContentFound(){
             QString l=iter_contents->getLeft();

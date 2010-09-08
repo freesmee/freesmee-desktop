@@ -79,7 +79,7 @@ namespace libJackSMS{
             QString messagiofinale;
             const dataTypes::servicesType & servizi;
             dataTypes::configuredAccount account;
-            QString substitute(QString _input,const dataTypes::contentType &_cont,bool replace_encoded=true);
+            QString substitute(QString _input,const dataTypes::contentType &_cont);
             QString substitute(QString _input,const dataTypes::creditsType &_cont);
             const dataTypes::proxySettings &ps;
             netClient::netClientGeneric *webClient;

@@ -6,6 +6,8 @@
 #include <QDateTime>
 #include <QListWidgetItem>
 #include "libjacksms/libJackSMS.h"
+#include <QResizeEvent>
+#include <QListWidgetItem>
 class SmsWidget : public QWidget
 {
 Q_OBJECT
@@ -33,6 +35,8 @@ public:
     void setReaded(bool _r);
     QString getText()const;
     libJackSMS::dataTypes::phoneNumber getPhoneNum() const;
+    void resizeEvent ( QResizeEvent *  );
+
 
 };
 

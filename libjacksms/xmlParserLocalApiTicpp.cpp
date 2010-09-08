@@ -284,12 +284,16 @@ namespace libJackSMS{
                                 QString qTmp=QString::fromUtf8(tmp.c_str(),tmp.length());
                                 tmp=thisVarElem->GetAttribute("name");
                                 QString qName=QString::fromUtf8(tmp.c_str(),tmp.length());
+
                                 if (thisVar->Value()=="required"){
                                     libJackSMS::dataTypes::variabileServizio var(qName,qTmp,QString::fromStdString(thisVarElem->GetAttributeOrDefault("default","")),QString::fromStdString(thisVarElem->GetAttributeOrDefault("n",QString::number(c).toStdString())),true);
+
                                     servizio.setVariable(var);
                                 }else{
                                     libJackSMS::dataTypes::variabileServizio var(qName,qTmp,QString::fromStdString(thisVarElem->GetAttributeOrDefault("default","")),QString::fromStdString(thisVarElem->GetAttributeOrDefault("n",QString::number(c).toStdString())),false);
+
                                     servizio.setVariable(var);
+
                                 }
                                 c++;
                             }
@@ -315,7 +319,9 @@ namespace libJackSMS{
                                         ticpp::Node *currentVar=NULL;
                                         while(  currentVar = varNode->IterateChildren( currentVar ) ){
                                             ticpp::Element * thisVar= currentVar->ToElement();
+                                            std::string tmp=thisVar->GetAttributeOrDefault("encode","0");
                                             dataTypes::pageVariable var(QString::fromStdString(thisVar->GetAttribute("name")),QString::fromStdString(thisVar->GetAttribute("value")),QString::fromStdString(thisVar->GetAttributeOrDefault("value","")));
+                                            var.setToEncode((tmp=="1")?true:false);
                                             page.setVariable(var);
                                         }
                                     }
@@ -329,8 +335,10 @@ namespace libJackSMS{
                                         while(  currentContent = contentNode->IterateChildren( currentContent ) ){
                                             ticpp::Element * thisContent= currentContent->ToElement();
                                             /********************/
-                                            //std::cout <<std::endl<<thisContent->GetAttribute("name")<<"]["<<thisContent->GetAttribute("left")<<"]["<<thisContent->GetAttribute("right")<<std::endl;
+
+
                                             dataTypes::pageContent con(QString::fromStdString(thisContent->GetAttribute("name")),QString::fromStdString(thisContent->GetAttribute("left")),QString::fromStdString(thisContent->GetAttribute("right")));
+
                                             page.setContent(con);
                                         }
                                     }

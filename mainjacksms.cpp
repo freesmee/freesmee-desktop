@@ -197,13 +197,41 @@ MainJackSMS::MainJackSMS(QWidget *parent)
         /*non trovare il file significa che non ci sono utenti(tipico dell'installazione fresca) */
     }
     translateGui();
-
+    this->firstResize=true;
+    connect(&resizeTimer,SIGNAL(timeout()),this,SLOT(resized()));
 }
 void MainJackSMS::initialOptionsLoaded(libJackSMS::dataTypes::optionsType o){
     Opzioni=o;
     GlobalOptions=o;
     if (GlobalOptions["save-passwd"]=="yes"){
         ui->ricordaPassword->setChecked(true);
+    }
+    libJackSMS::dataTypes::optionsType::const_iterator i= GlobalOptions.find("window-height");
+    if (i!=GlobalOptions.end()){
+        bool ok;
+        int h=i.value().toInt(&ok,10);
+        bool ok2;
+        int w=GlobalOptions["window-width"].toInt(&ok2,10);
+        if (ok&&ok2)
+           this->resize(w,h);
+
+
+
+    }
+    firstResize=false;
+}
+void MainJackSMS::resized(){
+    resizeTimer.stop();
+
+    GlobalOptions["window-height"]=QString::number(size().height());
+    GlobalOptions["window-width"]=QString::number(size().width());
+    libJackSMS::localApi::optionManager man("",GlobalOptions);
+    man.save();
+}
+void MainJackSMS::resizeEvent ( QResizeEvent * s){
+    if (!firstResize){
+        resizeTimer.stop();
+        resizeTimer.start(1000);
     }
 }
 MainJackSMS::~MainJackSMS()
@@ -541,10 +569,12 @@ void MainJackSMS::WriteMessagesToGui(){
             do{
                 --xx;
                 QListWidgetItem *item = new QListWidgetItem;
-               /* QSize s=xx.value()->size();
+                /*QSize s=xx.value()->size();
                 s.setHeight(s.height()/2+40);
                 item->setSizeHint(s);*/
                 item->setSizeHint(xx.value()->size());
+                //item->setText("\n\n\n\n"+xx.value()->getText());
+
                 ui->smsListWidget->addItem(item);
                 ui->smsListWidget->setItemWidget(item, xx.value());
             }while(xx!=xx_end);
@@ -672,28 +702,32 @@ void MainJackSMS::popupInvio(){
 
 
 }
-
-void MainJackSMS::invioSuccesso(const QString & _text){
-
+void MainJackSMS::clickText(QString _text,QString defaultStr){
+    QSize s=this->size();
+    int maxlenght=((s.width()-290)/5)-defaultStr.length();
     if (!_text.isEmpty()){
-        if (_text.length()<45){
-            ui->LabelEsito->setText("Messaggio inviato: "+_text);
-            if (esitoInvio.length()>=45)
+
+        if (_text.length()<maxlenght){
+            ui->LabelEsito->setText(defaultStr+": "+_text);
+            if (esitoInvio.length()>=maxlenght)
                 disconnect(ui->LabelEsito,SIGNAL(clicked()),this,SLOT(popupInvio()));
 
         }else{
-            if (esitoInvio.length()<45)
+            if (esitoInvio.length()<maxlenght)
                 connect(ui->LabelEsito,SIGNAL(clicked()),this,SLOT(popupInvio()));
             esitoInvio=_text;
-            ui->LabelEsito->setText("Messaggio inviato: "+_text.left(45)+"...");
+            ui->LabelEsito->setText(defaultStr+": "+_text.left(maxlenght)+"...");
         }
 
 
     }else{
-        if (esitoInvio.length()>=45)
+        if (esitoInvio.length()>=maxlenght)
             disconnect(ui->LabelEsito,SIGNAL(clicked()),this,SLOT(popupInvio()));
-        ui->LabelEsito->setText("Messaggio inviato!");
+        ui->LabelEsito->setText(defaultStr+"!");
     }
+}
+void MainJackSMS::invioSuccesso(const QString & _text){
+    clickText(_text,"Messaggio inviato");
 
 
 
@@ -766,11 +800,7 @@ void MainJackSMS::invioSuccesso(const QString & _text){
 }
 void MainJackSMS::invioFallito(const QString & _text){
 
-    if (!_text.isEmpty()){
-        ui->LabelEsito->setText("Messaggio non inviato: "+_text);
-    }else{
-        ui->LabelEsito->setText("Messaggio non inviato!");
-    }
+    clickText(_text,"Messaggio non inviato");
 
     AbilitaUi();
     invioInCorso=false;
@@ -1465,7 +1495,8 @@ void MainJackSMS::loadPlugins(){
 
         foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
 
-            QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
+            QString afp=pluginsDir.absoluteFilePath(fileName);
+            QPluginLoader loader(afp);
                  QObject *plugin = loader.instance();
                  if (plugin) {
 
@@ -1808,6 +1839,7 @@ void MainJackSMS::checkInstantMessengerReceived(libJackSMS::dataTypes::logImType
                  s.setHeight(s.height()/2+40);
                  item->setSizeHint(s);*/
                  item->setSizeHint(xx.value()->size());
+
                 ui->smsListWidget->insertItem(0,item);
                 ui->smsListWidget->setItemWidget(item, xx.value());
             }
@@ -2047,6 +2079,7 @@ void MainJackSMS::disableUibeforeLogin(){
     ui->actionLogout->setEnabled(false);
     ui->actionRicarica_servizi->setEnabled(false);
     ui->actionElimina_cookies->setEnabled(false);
+    ui->actionPlugins->setEnabled(false);
 
 }
 void MainJackSMS::enableUiAfterLogin(){
@@ -2057,6 +2090,7 @@ void MainJackSMS::enableUiAfterLogin(){
     ui->actionImporta_Backup->setEnabled(true);
     ui->actionRicarica_servizi->setEnabled(true);
     ui->actionElimina_cookies->setEnabled(true);
+    ui->actionPlugins->setEnabled(true);
 }
 void MainJackSMS::on_smsListWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous)
 {

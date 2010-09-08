@@ -3,6 +3,7 @@
 #include <QLabel>
 #include <QDateTime>
 #include <QDesktopServices>
+
 SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QString user,QString service,QString _id,libJackSMS::dataTypes::phoneNumber _number,bool _letto):type(received),id(_id),number(_number),readed(_letto),dateTim(time)
 {
 
@@ -47,11 +48,14 @@ SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QStr
        _txt=this->parseLinks(_txt);
 
        labelTxt = new QLabel(_txt);
+
        labelTxt->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
        labelTxt->setWordWrap (true);
-       labelTxt->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
-
-
+       labelTxt->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+    /*QPalette *p=new QPalette();
+    p->setColor(QPalette::Window,QColor(255,0,0));
+    labelTxt->setPalette(*p);
+*/
        connect(labelTxt,SIGNAL(linkActivated(QString)),this,SLOT(openUrl(QString)));
 
        hLayout = new QHBoxLayout;
@@ -132,4 +136,8 @@ bool SmsWidget::searchMatch(QString _txt)
 QString SmsWidget::getText()const{
     return labelTxt->text();
 }
+void SmsWidget::resizeEvent ( QResizeEvent * s ){
 
+
+
+}

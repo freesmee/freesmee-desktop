@@ -29,7 +29,7 @@ namespace libJackSMS{
             /****************definitions for pageContent**********/
             pageContent::pageContent(){
             }
-            pageContent::pageContent(const QString &_name,const QString &_left,const QString &_right):n(_name),l(_left),r(_right){
+            pageContent::pageContent(const QString &_name,const QString &_left,const QString &_right):n(_name),l(_left),r(_right),encode(false){
             }
             QString pageContent::getName() const{
                 return n;
@@ -40,6 +40,12 @@ namespace libJackSMS{
             QString pageContent::getRight() const{
                 return r;
             }
+            /*void pageContent::setToEncode(bool _e){
+                encode=_e;
+            }
+            bool pageContent::getToEncode()const{
+                return encode;
+            }*/
 
     }
 

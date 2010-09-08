@@ -35,6 +35,7 @@ namespace libJackSMS{
                 QString progressivo;
                 bool required;
                 bool vuota;
+
             public:
                 variabileServizio();
                 variabileServizio(const QString &_name,const QString &_descr,const QString &_default,const QString & _progressivo,bool _required);
@@ -43,7 +44,7 @@ namespace libJackSMS{
                 QString getDefaultValue() const;
                 QString getProgressive() const;
                 bool isRequired() const;
-                bool isEmpty() const;
+
         };
 
 

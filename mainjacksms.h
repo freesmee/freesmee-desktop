@@ -56,9 +56,10 @@ public:
     libJackSMS::serverApi::login *signin;
     void ReWriteAddressBookToGui();
     void ReWriteConfiguredServicesToGui();
-
+    QSize windowSize;
+    QTimer resizeTimer;
 private:
-
+    void resizeEvent ( QResizeEvent * );
     int messageType;
     void countdownToGui();
     int countdownToGuiCount;
@@ -118,8 +119,10 @@ private:
 
     JackPluginHostInterface* jphi;
     void showContactByTypeInFastAbook();
-
+    bool firstResize;
+    void clickText(QString text,QString defaultStr);
 private slots:
+    void resized();
     void on_buttonNoAccount_clicked();
     void on_buttonLostPassword_clicked();
     void on_CitaButton_2_clicked();

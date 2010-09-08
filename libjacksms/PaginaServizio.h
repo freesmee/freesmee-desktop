@@ -99,6 +99,7 @@ namespace libJackSMS{
                 bool nextCommand();
                 pageCommand currentCommand();
                 bool hasRawCommands() const;
+                bool currentContentToEncode() const;
 
         };
     }
