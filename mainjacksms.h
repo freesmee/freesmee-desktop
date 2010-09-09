@@ -58,6 +58,7 @@ public:
     void ReWriteConfiguredServicesToGui();
     QSize windowSize;
     QTimer resizeTimer;
+    QString result;
 private:
     void resizeEvent ( QResizeEvent * );
     int messageType;
@@ -188,7 +189,7 @@ private slots:
     bool eventFilter( QObject *obj, QEvent *ev );
     void TrayClicked();
 
-    void displayCaptcha(QByteArray data,QSemaphore* sem);
+    void displayCaptcha(QByteArray data/*,QSemaphore* sem*/);
     void eseguiPassoInvio();
     void invioSuccesso(const QString & _text);
     void invioFallito(const QString & _text);

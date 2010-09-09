@@ -218,13 +218,27 @@ void MainJackSMS::initialOptionsLoaded(libJackSMS::dataTypes::optionsType o){
 
 
     }
+    i= GlobalOptions.find("window-maximized");
+    if (i!=GlobalOptions.end()){
+        if (i.value()=="yes")
+            showMaximized();
+
+    }
+
     firstResize=false;
 }
 void MainJackSMS::resized(){
     resizeTimer.stop();
 
-    GlobalOptions["window-height"]=QString::number(size().height());
-    GlobalOptions["window-width"]=QString::number(size().width());
+    if (isMaximized())
+        GlobalOptions["window-maximized"] ="yes";
+    else{
+        GlobalOptions["window-maximized"] ="no";
+        GlobalOptions["window-height"]=QString::number(size().height());
+        GlobalOptions["window-width"]=QString::number(size().width());
+    }
+
+
     libJackSMS::localApi::optionManager man("",GlobalOptions);
     man.save();
 }
@@ -640,7 +654,7 @@ void MainJackSMS::on_RubricaAggiungi_clicked()
     diag->deleteLater();
 
 }
-void MainJackSMS::displayCaptcha(QByteArray data,QSemaphore* sem){
+void MainJackSMS::displayCaptcha(QByteArray data/*,QSemaphore* sem*/){
     /*
             //cerca se c'è un plugin captcha per questo servizio
             JackCaptchaPluginInterface* availablePlugin = 0;
@@ -683,12 +697,15 @@ void MainJackSMS::displayCaptcha(QByteArray data,QSemaphore* sem){
     try{
         CaptchaDialog *dial=new CaptchaDialog(data,QString("100%"),this);
         dial->exec();
-        dial->deleteLater();
 
+        this->smsSender->continueSend(dial->result);
+        dial->deleteLater();
     }catch (QString s){
         QMessageBox::critical(this,"JackSMS","Si e' verificato un errore.\nImpossibile caricare l'immagine captcha. L'invio verra' interrotto.");
+        this->invioFallito("Errore durante il caricamento dell'immagine capptcha.");
     }
-    sem->release(1);
+
+    //sem->release(1);
 }
 
 void MainJackSMS::eseguiPassoInvio(){
@@ -721,7 +738,7 @@ void MainJackSMS::clickText(QString _text,QString defaultStr){
 
 
     }else{
-        if (esitoInvio.length()>=maxlenght)
+        if (!esitoInvio.isEmpty())
             disconnect(ui->LabelEsito,SIGNAL(clicked()),this,SLOT(popupInvio()));
         ui->LabelEsito->setText(defaultStr+"!");
     }
@@ -858,7 +875,7 @@ void MainJackSMS::on_InviaSMS_clicked()
         }else if (messageType==TYPE_SMS)
             smsSender->setAccount(ElencoServiziConfigurati[idAccount]);
 
-        connect(smsSender,SIGNAL(captcha(QByteArray,QSemaphore*)),this,SLOT(displayCaptcha(QByteArray,QSemaphore*)));
+        connect(smsSender,SIGNAL(captcha(QByteArray)),this,SLOT(displayCaptcha(QByteArray)));
         connect(smsSender,SIGNAL(error(QString)),this,SLOT(invioFallito(QString)));
         connect(smsSender,SIGNAL(success(QString)),this,SLOT(invioSuccesso(QString )));
 
@@ -1086,7 +1103,7 @@ void MainJackSMS::on_CitaButton_clicked()
         SmsWidget * ww=static_cast< SmsWidget*>(ui->smsListWidget->itemWidget(it));
         QString phone=ww->getPhoneNum().toString();
         ui->NumeroDestinatario->setText(phone);
-        ui->TestoSMS->setText("[ "+ww->getText()+" ]");
+        ui->TestoSMS->setText("<<[ "+ww->getText()+" ]>>");
         libJackSMS::dataTypes::phoneBookType::const_iterator a=Rubrica.begin();
         libJackSMS::dataTypes::phoneBookType::const_iterator a_end=Rubrica.end();
         ui->labelNomeDest->setText("");
@@ -2472,7 +2489,7 @@ void MainJackSMS::on_CitaButton_2_clicked()
         SmsWidget * ww=static_cast< SmsWidget*>(ui->imRicevutiWidget->itemWidget(it));
         QString phone=ww->getPhoneNum().toString();
         ui->NumeroDestinatario->setText(phone);
-        ui->TestoSMS->setText("[ "+ww->getText()+" ]");
+        ui->TestoSMS->setText("<<[ "+ww->getText()+" ]>>");
         libJackSMS::dataTypes::phoneBookType::const_iterator a=Rubrica.begin();
         libJackSMS::dataTypes::phoneBookType::const_iterator a_end=Rubrica.end();
 

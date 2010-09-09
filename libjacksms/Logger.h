@@ -27,11 +27,13 @@ namespace libJackSMS{
         class logger{
             private:
                 QList<QString> noticeList;
+                QString filename;
             public:
-                logger();
+                logger(QString _filename);
                 void addNotice(const QString &_notice);
                 bool save();
-                bool save(const QString &_filename);
+
+                void cancelLog();
        };
 
 }

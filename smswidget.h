@@ -22,7 +22,7 @@ private:
     libJackSMS::dataTypes::phoneNumber number;
     bool readed;
     QString parseLinks(QString _s);
-
+    QString parseAts(QString _s);
 private slots:
      void openUrl(QString _url);
 public:

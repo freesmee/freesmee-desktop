@@ -37,14 +37,14 @@ CaptchaDialog::CaptchaDialog(const QByteArray &_imgData,QString zoomFactor,QWidg
         memcpy(to, text, strlen(text)+1);
         sharedMemory.unlock();
 */
-        QSharedMemory sharedMemory("jacksms_result_captcha_shmem");
+        /*QSharedMemory sharedMemory("jacksms_result_captcha_shmem");
         sharedMemory.attach();
         sharedMemory.lock();
         char *to = (char*)sharedMemory.data();
         memcpy(to, "captcha_non_decodificato", 24);
         sharedMemory.unlock();
         sharedMemory.detach();
-
+*/
         throw QString("captcha");
     }else{
         m_ui->captchalabel->setPixmap(QPixmap::fromImage(im));
@@ -75,7 +75,10 @@ void CaptchaDialog::changeEvent(QEvent *e)
 
 void CaptchaDialog::on_pushButton_clicked()
 {
-
+    result=m_ui->TextCaptcha->text();
+    if (result.isEmpty())
+           result="captcha_non_decodificato";
+/*
    QString toWrite=m_ui->TextCaptcha->text();
    if (toWrite.isEmpty())
        toWrite="captcha_non_decodificato";
@@ -84,6 +87,7 @@ void CaptchaDialog::on_pushButton_clicked()
    memoriaCaptcha.lock();
    memcpy(memoriaCaptcha.data(),toWrite.toStdString().c_str(),toWrite.length());
    memoriaCaptcha.unlock();
+*/
    this->close();
 
 }

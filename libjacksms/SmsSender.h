@@ -44,19 +44,24 @@ namespace libJackSMS{
             dataTypes::configuredAccount account;
             dataTypes::proxySettings ps;
             void run();
+            int pageIndex;
+            bool continueSendFlag;
+            QString captchaValue;
+            dataTypes::contentType contenuti;
         public:
             smsSender(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps=dataTypes::proxySettings());
             void setRecipient(const dataTypes::phoneNumber & _dest);
             void setMessage(const dataTypes::shortMessage & _message);
             void setAccount(const dataTypes::configuredAccount &_account);
             void send();
+            void continueSend(QString captcha_value);
             void abort();
         private slots:
             void slotOperation();
             void slotOperation(QString);
             void slotError(QString);
             void slotSuccess(QString);
-            void slotCaptcha(QByteArray,QSemaphore*);
+            void slotCaptcha(QByteArray);
 
         signals:
             void abortSignal();
@@ -64,7 +69,7 @@ namespace libJackSMS{
             void operation(QString);
             void error(QString);
             void success(QString);
-            void captcha(QByteArray,QSemaphore*);
+            void captcha(QByteArray);
 
 
     };
@@ -83,12 +88,21 @@ namespace libJackSMS{
             QString substitute(QString _input,const dataTypes::creditsType &_cont);
             const dataTypes::proxySettings &ps;
             netClient::netClientGeneric *webClient;
+            int pageIndex;
+            bool captchaInterrupt;
+            dataTypes::contentType elenco_contenuti;
         public:
             smsSenderBase(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps=dataTypes::proxySettings());
+            void setNumberOfFirstPage(int _pn);
             void setRecipient(const dataTypes::phoneNumber & _dest);
             void setMessage(const dataTypes::shortMessage & _message);
             void setAccount(dataTypes::configuredAccount _account);
-            void send();
+            void send(QString captcha_value="");
+            bool isInterruptedByCaptcha()const;
+            int getCaptchaPageIndex()const;
+            dataTypes::contentType getContents()const;
+            void setContents(dataTypes::contentType contents);
+
         public slots:
             void abort();
         signals:
@@ -96,7 +110,7 @@ namespace libJackSMS{
             void operation(QString);
             void error(QString);
             void success(QString);
-            void captcha(QByteArray,QSemaphore*);
+            void captcha(QByteArray);
 
 
     };

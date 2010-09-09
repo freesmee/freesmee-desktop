@@ -45,7 +45,11 @@ SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QStr
 
        labelTime->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
        labelTime->setMaximumSize(10000,18);
+       _txt=_txt.replace("<","&lt;");
+       _txt=_txt.replace(">","&gt;");
+
        _txt=this->parseLinks(_txt);
+       _txt=this->parseAts(_txt);
 
        labelTxt = new QLabel(_txt);
 
@@ -89,6 +93,15 @@ QString SmsWidget::parseLinks(QString _s){
     r.setPattern("^(.*)(http|https|ftp|ftps)\\:\\/\\/([^ ]+)(.*)$");
     if (r.exactMatch(_s)){
         return parseLinks(r.cap(1))+"<a href=\""+r.cap(2)+"://"+r.cap(3)+"\">"+r.cap(2)+"://"+r.cap(3)+"</a> "+parseLinks(r.cap(4));
+    }else{
+        return _s;
+    }
+}
+QString SmsWidget::parseAts(QString _s){
+    QRegExp r;
+    r.setPattern("^(.*)@([^ ]+)(.*)$");
+    if (r.exactMatch(_s)){
+        return parseAts(r.cap(1))+"<b><i>@"+r.cap(2)+"</i></b> "+parseAts(r.cap(3));
     }else{
         return _s;
     }
