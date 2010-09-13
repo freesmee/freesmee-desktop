@@ -487,7 +487,7 @@ QFrame#frame_3_old{
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <property name="iconSize">
            <size>
@@ -920,6 +920,9 @@ p, li { white-space: pre-wrap; }
               </item>
               <item>
                <widget class="QListWidget" name="imRicevutiWidget">
+                <property name="verticalScrollMode">
+                 <enum>QAbstractItemView::ScrollPerPixel</enum>
+                </property>
                 <property name="sortingEnabled">
                  <bool>false</bool>
                 </property>

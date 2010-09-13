@@ -744,6 +744,7 @@ void MainJackSMS::clickText(QString _text,QString defaultStr){
     }
 }
 void MainJackSMS::invioSuccesso(const QString & _text){
+    smsSender->deleteLater();
     clickText(_text,"Messaggio inviato");
 
 
@@ -816,7 +817,7 @@ void MainJackSMS::invioSuccesso(const QString & _text){
 
 }
 void MainJackSMS::invioFallito(const QString & _text){
-
+    smsSender->deleteLater();
     clickText(_text,"Messaggio non inviato");
 
     AbilitaUi();
@@ -2389,7 +2390,7 @@ void MainJackSMS::on_actionPlugins_triggered()
 
 void MainJackSMS::on_imRicevutiWidget_itemClicked(QListWidgetItem* current)
 {
-    if (current!=NULL){
+    /*if (current!=NULL){
         SmsWidget * w=static_cast<SmsWidget*>(ui->imRicevutiWidget->itemWidget(current));
         if (!w->isReaded()){
             if (countReceivedUnreaded>0)
@@ -2408,7 +2409,7 @@ void MainJackSMS::on_imRicevutiWidget_itemClicked(QListWidgetItem* current)
         }
 
 
-    }
+    }*/
 }
 
 void MainJackSMS::on_buttonStatusJms_clicked()
@@ -2516,4 +2517,28 @@ void MainJackSMS::on_buttonLostPassword_clicked()
 void MainJackSMS::on_buttonNoAccount_clicked()
 {
     QDesktopServices::openUrl(QUrl("http://www.jacksms.it/registrazione.html", QUrl::TolerantMode));
+}
+
+void MainJackSMS::on_imRicevutiWidget_itemPressed(QListWidgetItem* current)
+{
+    if (current!=NULL){
+            SmsWidget * w=static_cast<SmsWidget*>(ui->imRicevutiWidget->itemWidget(current));
+            if (!w->isReaded()){
+                if (countReceivedUnreaded>0)
+                    countReceivedUnreaded--;
+                w->setReaded(true);
+
+                types::QMessageListType::iterator i=MessaggiRicevuti.begin();
+                types::QMessageListType::iterator i_end=MessaggiRicevuti.end();
+                for(;i!=i_end;++i){
+                    if (i->getId()==w->getId()){
+                        i->setReaded(true);
+                        break;
+                    }
+                }
+                setTrayIcon();
+            }
+
+
+        }
 }

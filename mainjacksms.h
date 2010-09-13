@@ -123,6 +123,7 @@ private:
     bool firstResize;
     void clickText(QString text,QString defaultStr);
 private slots:
+    void on_imRicevutiWidget_itemPressed(QListWidgetItem* item);
     void resized();
     void on_buttonNoAccount_clicked();
     void on_buttonLostPassword_clicked();
