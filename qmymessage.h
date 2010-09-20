@@ -15,6 +15,7 @@ class QMyMessage
         bool letto;
         QString accountName;
         QString upperText;
+        QString pn;
     public:
         QMyMessage();
         void setMessage(const QString &_msg);
@@ -32,6 +33,8 @@ class QMyMessage
         QString getAccountId()const;
         void setAccountName(const QString & _an);
         QString getAccountName() const;
+        void setParsedName(const QString & _pn);
+        QString getParsedName() const;
         bool getIsReceived()const;
         QString getId()const;
         libJackSMS::dataTypes::phoneNumber getPhone()const;

@@ -18,6 +18,7 @@
 #include "smswidget.h"
 #include "messageloader.h"
 #include "accountwidget.h"
+
 #define TYPE_SMS 1
 #define TYPE_JMS 2
 namespace Ui
@@ -43,8 +44,6 @@ public:
     libJackSMS::dataTypes::phoneBookType Rubrica;
     types::QMessageListType Messaggi;
     types::QMessageListType MessaggiRicevuti;
-    /*types::QMessageListType nuoviMessaggiRicevuti;*/
-
     void DisabilitaUi();
     void AbilitaUi();
     void ReloadConfiguredServices();
@@ -60,18 +59,17 @@ public:
     QTimer resizeTimer;
     QString result;
 private:
+    QPixmap icon_jack;
+
     void resizeEvent ( QResizeEvent * );
     int messageType;
     void countdownToGui();
     int countdownToGuiCount;
     messageLoader * loaderMessages;
-    //void appendImToGui();
     bool imServiceActive;
     void setTrayIcon();
     int countReceivedUnreaded;
-    //QMap<QString,QPixmap> Icone;
     QString phone2name(const libJackSMS::dataTypes::phoneNumber &_number);
-    //QPixmap createIcon(const QString& _idOfService);
     bool invioInCorso;
 
 
@@ -79,9 +77,7 @@ private:
     int currentSingleLength;
     libJackSMS::serverApi::updateServicesManager *updateChecker;
     QMultiMap<QDateTime,SmsWidget*> mapWidgets;
-    //QMultiMap<QDateTime,SmsWidget*> mapWidgetsNew;
     QMultiMap<QDateTime,SmsWidget*> mapWidgetsReceived;
-    //QMultiMap<QDateTime,SmsWidget*> mapWidgetsReceivedNew;
     QMap<QString,accountWidget*> mapWidgetsAccount;
     libJackSMS::serverApi::contactManager *deleteContect;
     libJackSMS::serverApi::accountManager *accountManager;
@@ -116,13 +112,14 @@ private:
 
     libJackSMS::localApi::xmlLoader *xmlLoader;
     libJackSMS::localApi::xmlLoader *xmlReLoader;
-    libJackSMS::localApi::xmlLoader *initialXmlLoader;
+    //libJackSMS::localApi::xmlLoader *initialXmlLoader;
 
     JackPluginHostInterface* jphi;
     void showContactByTypeInFastAbook();
     bool firstResize;
     void clickText(QString text,QString defaultStr);
 private slots:
+    void on_ModificaServizioButton_clicked();
     void on_imRicevutiWidget_itemPressed(QListWidgetItem* item);
     void resized();
     void on_buttonNoAccount_clicked();
@@ -155,7 +152,6 @@ private slots:
     void on_RubricaVeloce_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void on_smsListWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void on_username_currentIndexChanged(int index);
-    //void endLogin();
     void on_loginButton_clicked();
     void gestiscimenu(QAction*);
     void on_bottoneinviomultiplo_clicked();
@@ -211,7 +207,7 @@ private slots:
     void updatesAvailable(libJackSMS::dataTypes::servicesType,QString,QString);
     void servicesLoaded(libJackSMS::dataTypes::servicesType);
     void optionsLoaded(libJackSMS::dataTypes::optionsType);
-    void initialOptionsLoaded(libJackSMS::dataTypes::optionsType);
+    //void initialOptionsLoaded(libJackSMS::dataTypes::optionsType);
     void serverPinged();
     void messagesLoaded(QList<QMyMessage>);
     void errorUpdates(QString);

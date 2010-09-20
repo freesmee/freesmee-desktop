@@ -87,6 +87,31 @@ namespace libJackSMS{
             return xmlDocument->deleteImMessage(_idList);
         }
 
+        /****************************************************************/
+        bool synchronousOptionLoader::load(libJackSMS::dataTypes::optionsType & dest){
+
+            try{
+                libJackSMS::dataTypes::optionsType s;
+                if (xmlDocument->loadOptions(s,true)){
+                    libJackSMS::dataTypes::optionsType::iterator i=s.begin();
+                    libJackSMS::dataTypes::optionsType::iterator i_end=s.end();
+                    for(;i!=i_end;++i){
+
+                        if (i.key().indexOf("password")!=-1){
+                            i.value()=Encrypter::Encrypter::decrypt(i.value());
+                        }
+                    }
+                }
+                dest=s;
+            }catch (...){
+                return false;
+            }
+            return true;
+        }
+        synchronousOptionLoader::synchronousOptionLoader(QString _userDir):
+                xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_userDir)){
+        }
+
         /***************************************************************/
         optionLoader::optionLoader(QString _userDir):
                 xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_userDir)){

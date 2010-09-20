@@ -239,7 +239,7 @@ namespace libJackSMS{
                 lastQueryString.append(i->first+"=");
                 if (!i->second.isEmpty()){
                     if (urlenc){
-                       lastQueryString.append(i->second.toAscii().toPercentEncoding());
+                        lastQueryString.append(QByteArray::fromPercentEncoding(i->second.toAscii()).toPercentEncoding());
                     }else{
                         lastQueryString.append(i->second.toAscii().constData());
                     }

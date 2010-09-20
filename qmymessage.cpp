@@ -28,6 +28,12 @@ void QMyMessage::setId(const QString &_id){
 void QMyMessage::setServiceId(const QString &_id){
     serviceId=_id;
 }
+void QMyMessage:: setParsedName(const QString & _pn){
+    pn=_pn;
+}
+QString QMyMessage::getParsedName() const{
+    return pn;
+}
 void QMyMessage::setPhone(const libJackSMS::dataTypes::phoneNumber & _pn){
     telefono=_pn;
 }
@@ -47,7 +53,7 @@ QString QMyMessage::getId()const{
     return id;
 }
 bool QMyMessage::messageContains(QString text)const{
-    return !(-1==message.indexOf(text,0,Qt::CaseInsensitive));
+    return (!(-1==pn.indexOf(text,0,Qt::CaseInsensitive)))||(!(-1==message.indexOf(text,0,Qt::CaseInsensitive)));
 }
 QString QMyMessage::getServiceId()const{
     return serviceId;

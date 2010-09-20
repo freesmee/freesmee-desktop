@@ -200,6 +200,7 @@ namespace libJackSMS{
                     dataTypes::service servizio=iter.value();
                     while(servizio.nextVar()){
                         dataTypes::variabileServizio var=servizio.currentVar();
+
                         i.value().setData(var.getName(),i.value().getData("data"+var.getProgressive()));
                         //std::cout<<(servizio.getName()+" sostituita data"+var.getProgressive()+" con "+var.getName()+" (valore "+i.value().getData("data"+var.getProgressive())+")")<<std::endl;;
                     }
@@ -482,7 +483,7 @@ namespace libJackSMS{
             webClient.insertFormData("contact_name",pEncoder.getEncodedString(contatto.getName()));
             webClient.insertFormData("contact_number",pEncoder.getEncodedString(contatto.getPhone().toString()));
             webClient.insertFormData("account_id",contatto.getAccount());
-            QString xml=webClient.submitPost("http://q.jacksms.it/"+loginId+"/modifyAbook?xml,desktop",true);
+            QString xml=webClient.submitPost("http://q.jacksms.it/"+loginId+"/editAbook?xml,desktop",true);
             xmlDocument.setXml(xml);
 
             if(xmlDocument.checkUpdateContact()){
@@ -503,7 +504,46 @@ namespace libJackSMS{
 
 
 
+        /*********************************/
+        void accountManagerUpdate::run(){
 
+
+            libJackSMS::xmlParserApi::xmlParserServerApiTicpp xmlDocument;
+            netClient::netClientQHttp webClient;
+
+            libJackSMS::encodingPercent pEncoder;
+            webClient.insertFormData("id",account.getId());
+            webClient.insertFormData("account_name",pEncoder.getEncodedString(account.getName()));
+            int i=0;
+            while(s.nextVar()){
+                i++;
+                libJackSMS::dataTypes::variabileServizio var=s.currentVar();
+                QString prog=var.getProgressive();
+                QString name=var.getName();
+                webClient.insertFormData("data_"+prog,pEncoder.getEncodedString(account.getData(name)));
+            }
+            if (i<4)
+                for(int x=i+1;x<=4;++x)
+                    webClient.insertFormData("data_"+QString::number(x),"");
+            QString xml=webClient.submitPost("http://q.jacksms.it/"+loginId+"/editService?xml,desktop",true);
+            xmlDocument.setXml(xml);
+
+            if(xmlDocument.checkUpdateAccount()){
+                emit this->accountUpdated(account);
+            }else{
+                emit this->errorUpdate();
+            }
+        }
+        accountManagerUpdate::accountManagerUpdate(const QString & _loginId,libJackSMS::dataTypes::service _s,dataTypes::proxySettings _ps )
+            :loginId(_loginId),
+            s(_s),
+            ps(_ps){
+            qRegisterMetaType<libJackSMS::dataTypes::configuredAccount>("libJackSMS::dataTypes::configuredAccount");
+        }
+        bool accountManagerUpdate::updateAccount(libJackSMS::dataTypes::configuredAccount _account){
+            account=_account;
+            start();
+        }
         /***********************************/
         accountManager::accountManager(const QString & _loginId,dataTypes::proxySettings _ps )
 
@@ -522,14 +562,13 @@ namespace libJackSMS{
 
 
         }
-        /*bool accountManager::updateAccount(libJackSMS::dataTypes::configuredAccount & _account){
+        bool accountManager::updateAccount(libJackSMS::dataTypes::configuredAccount & _account,libJackSMS::dataTypes::service s){
 
-            webClient->insertFormData("XXXX",_contatto.getCampo());
-            QString xml=webClient->submitPost("http://q.jacksms.it/"+loginId+"/desktopSync?xml,desktop",true);
-            xmlResponse->setXml(xml);
-
-            return xmlDocument->checkUpdateAccount();
-        }*/
+            manUp=new accountManagerUpdate(loginId,s,ps);
+            connect(manUp,SIGNAL(accountUpdated(libJackSMS::dataTypes::configuredAccount)),this,SIGNAL(accountUpdated(libJackSMS::dataTypes::configuredAccount)));
+            connect(manUp,SIGNAL(errorUpdate()),this,SIGNAL(accountNotUpdated()));
+            manUp->updateAccount(_account);
+        }
         bool accountManager::deleteAccount(QString _id){
             manDel=new accountManagerDelete(loginId,ps);
             connect(manDel,SIGNAL(accountDeleted(QString)),this,SIGNAL(accountDeleted(QString)));

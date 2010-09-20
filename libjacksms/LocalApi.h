@@ -88,6 +88,15 @@ namespace libJackSMS{
                 void endLoad(libJackSMS::dataTypes::optionsType);
                 void criticalError(QString);
         };
+        class synchronousOptionLoader:public QObject{
+            Q_OBJECT
+            private:
+                xmlParserApi::xmlParserLocalApiGeneric *xmlDocument;
+            public:
+                bool load(libJackSMS::dataTypes::optionsType & dest);
+                synchronousOptionLoader(QString _userDir="");
+        };
+
         class serviceLoader:public QThread{
             Q_OBJECT
             private:

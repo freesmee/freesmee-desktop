@@ -20,7 +20,8 @@ QT += phonon
 CONFIG(debug, debug|release):LIBS += -lticppd
 CONFIG(release, debug|release):LIBS += -lticpp
 DEFINES += TIXML_USE_TICPP
-#DEFINES += PORTABLE
+
+# DEFINES += PORTABLE
 SOURCES += main.cpp \
     mainjacksms.cpp \
     captchadialog.cpp \
@@ -82,7 +83,8 @@ SOURCES += main.cpp \
     plugins/JackPluginHostInterfacer.cpp \
     libjacksms/EncodingIso88591.cpp \
     Configuration.cpp \
-    libjacksms/libraryconfig.cpp
+    libjacksms/libraryconfig.cpp \
+    editaccountdialog.cpp
 HEADERS += mainjacksms.h \
     Types.h \
     captchadialog.h \
@@ -160,7 +162,8 @@ HEADERS += mainjacksms.h \
     plugins/JackPluginHostInterfacer.h \
     plugins/puppeteer/JackPuppeteerPluginInterfacer.h \
     libjacksms/EncodingIso88591.h \
-    libjacksms/libraryconfig.h
+    libjacksms/libraryconfig.h \
+    editaccountdialog.h
 FORMS += mainjacksms.ui \
     captchadialog.ui \
     servicesdialog.ui \
@@ -170,5 +173,6 @@ FORMS += mainjacksms.ui \
     inviomultiplo.ui \
     avvisoaccentidialog.ui \
     statsdialog.ui \
-    plugindialog.ui
+    plugindialog.ui \
+    editaccountdialog.ui
 RESOURCES += resources.qrc

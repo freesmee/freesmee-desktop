@@ -203,14 +203,14 @@ namespace libJackSMS{
             dataTypes::creditsType elenco_credenziali;
 
 
-            elenco_dati_vari.insert(QString("message"),servizioDaUsare.getEncodedText(messaggio.getText()));
-            elenco_dati_vari.insert(QString("intcode"),servizioDaUsare.getEncodedText(destinatario.getIntCode()));
-            elenco_dati_vari.insert(QString("intpref"),servizioDaUsare.getEncodedText(destinatario.getIntPref()));
-            elenco_dati_vari.insert(QString("pref"),servizioDaUsare.getEncodedText(destinatario.getPref()));
-            elenco_dati_vari.insert(QString("num"),servizioDaUsare.getEncodedText(destinatario.getNum()));
-            elenco_dati_vari.insert(QString("intnum"),servizioDaUsare.getEncodedText(destinatario.getIntNum()));
+            elenco_dati_vari.insert(QString("message"),servizioDaUsare.getEncodedTextUrlEncoded(messaggio.getText()));
+            elenco_dati_vari.insert(QString("intcode"),servizioDaUsare.getEncodedTextUrlEncoded(destinatario.getIntCode()));
+            elenco_dati_vari.insert(QString("intpref"),servizioDaUsare.getEncodedTextUrlEncoded(destinatario.getIntPref()));
+            elenco_dati_vari.insert(QString("pref"),servizioDaUsare.getEncodedTextUrlEncoded(destinatario.getPref()));
+            elenco_dati_vari.insert(QString("num"),servizioDaUsare.getEncodedTextUrlEncoded(destinatario.getNum()));
+            elenco_dati_vari.insert(QString("intnum"),servizioDaUsare.getEncodedTextUrlEncoded(destinatario.getIntNum()));
             if (!captcha_value.isEmpty())
-                elenco_dati_vari.insert("captcha_value",servizioDaUsare.getEncodedText(captcha_value));
+                elenco_dati_vari.insert("captcha_value",servizioDaUsare.getEncodedTextUrlEncoded(captcha_value));
 
             while(servizioDaUsare.nextVar()){
                 QString n=servizioDaUsare.currentVar().getName();

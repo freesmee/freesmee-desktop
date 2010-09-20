@@ -19,6 +19,7 @@ public:
     ContactWidget(QString _id,QString _nome,QString _numero,QPixmap _icoServ,QString _gruppo,QString _accountName);
     QString getName()const;
     QString getContactId()const;
+    bool searchMatch(QString _txt)const;
 };
 
 #endif // CONTACTWIDGET_H

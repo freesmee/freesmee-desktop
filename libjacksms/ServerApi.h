@@ -270,7 +270,24 @@ namespace libJackSMS{
         };
 
 
+        class accountManagerUpdate:public QThread{
+            Q_OBJECT
+            private:
 
+                QString loginId;
+                libJackSMS::dataTypes::service s;
+                dataTypes::proxySettings ps;
+                void run();
+                libJackSMS::dataTypes::configuredAccount account;
+
+            public:
+                accountManagerUpdate(const QString & _loginId,libJackSMS::dataTypes::service _s,dataTypes::proxySettings _ps );
+                bool updateAccount(libJackSMS::dataTypes::configuredAccount _account);
+            signals:
+                void accountUpdated(libJackSMS::dataTypes::configuredAccount);
+                void errorUpdate();
+
+        };
         class accountManagerDelete:public QThread{
             Q_OBJECT
             private:
@@ -312,16 +329,18 @@ namespace libJackSMS{
                 dataTypes::proxySettings ps;
                 accountManagerDelete *manDel;
                 accountManagerAdd *manAdd;
+                accountManagerUpdate *manUp;
             public:
                 accountManager(const QString & _loginId,dataTypes::proxySettings _ps );
                 bool addNewAccount(libJackSMS::dataTypes::service _service,libJackSMS::dataTypes::configuredAccount & _account);
-                //bool updateAccount(libJackSMS::dataTypes::configuredAccount & _account);
+                bool updateAccount(libJackSMS::dataTypes::configuredAccount & _account,libJackSMS::dataTypes::service s);
                 bool deleteAccount(QString _id);
 
             signals:
                 void accountDeleted(QString);
                 void accountNotDeleted();
-                void accountUpdated();
+                void accountUpdated(libJackSMS::dataTypes::configuredAccount);
+                void accountNotUpdated();
                 void accountSaved(QString);
                 void accountNotSaved();
 

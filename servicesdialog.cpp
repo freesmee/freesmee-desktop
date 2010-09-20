@@ -45,7 +45,7 @@ ServicesDialog::ServicesDialog(QWidget *parent,MainJackSMS * _padre,libJackSMS::
 void ServicesDialog::addAccountKo(){
     m_ui->Salva->show();
     m_ui->labelSpinAddAccount->hide();
-    QMessageBox::critical(this,"JackSMS","Errore durante l'eliminazione dell'account.");
+    QMessageBox::critical(this,"JackSMS","Si è verificato un errore durante il salvataggio dell'account.");
 }
 void ServicesDialog::addAccountOk(QString id){
     newAcc.setId(id);

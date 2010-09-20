@@ -39,3 +39,7 @@ QString ContactWidget:: getName()const{
 QString ContactWidget:: getContactId()const{
     return this->id;
 }
+
+bool ContactWidget:: searchMatch(QString _txt)const{
+    return (!(-1==nome->text().indexOf(_txt,0,Qt::CaseInsensitive))) || (!(-1==numero->text().indexOf(_txt,0,Qt::CaseInsensitive)))|| (!(-1==nomeAccount->text().indexOf(_txt,0,Qt::CaseInsensitive))) ;
+}
