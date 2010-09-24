@@ -18,7 +18,7 @@
 #include "smswidget.h"
 #include "messageloader.h"
 #include "accountwidget.h"
-
+#include "contactwidgetfastbook.h"
 #define TYPE_SMS 1
 #define TYPE_JMS 2
 namespace Ui
@@ -59,6 +59,10 @@ public:
     QTimer resizeTimer;
     QString result;
 private:
+    void recipientStringCalculate();
+    void sendNextMessage(bool first, bool result=false);
+    QList<QPair<contactWidgetFastBook*,libJackSMS::dataTypes::phoneNumber> > multipleSendRecipients;
+    bool invioMultiplo;
     QPixmap icon_jack;
 
     void resizeEvent ( QResizeEvent * );
@@ -119,6 +123,10 @@ private:
     bool firstResize;
     void clickText(QString text,QString defaultStr);
 private slots:
+    void on_TextRapidServizi_textChanged(QString);
+
+    void on_destinatariListWidget_itemDoubleClicked(QListWidgetItem* item);
+    void on_RubricaVeloce_itemDoubleClicked(QListWidgetItem* item);
     void on_ModificaServizioButton_clicked();
     void on_imRicevutiWidget_itemPressed(QListWidgetItem* item);
     void resized();
@@ -153,7 +161,9 @@ private slots:
     void on_smsListWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void on_username_currentIndexChanged(int index);
     void on_loginButton_clicked();
-    void gestiscimenu(QAction*);
+    void gestiscimenuSingolo();
+    void gestiscimenu(QAction* act);
+    void gestiscimenuMultiplo();
     void on_bottoneinviomultiplo_clicked();
     void on_comboServizio_currentIndexChanged(int index);
     void on_comboServizio_activated(QString );

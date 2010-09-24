@@ -29,7 +29,6 @@ SOURCES += main.cpp \
     aggiungicontatto.cpp \
     opzionidialog.cpp \
     editcontattodialog.cpp \
-    inviomultiplo.cpp \
     avvisoaccentidialog.cpp \
     libjacksms/xmlParserServerApiTicpp.cpp \
     libjacksms/xmlParserLocalApiTicpp.cpp \
@@ -94,7 +93,6 @@ HEADERS += mainjacksms.h \
     opzionidialog.h \
     JackUtils.h \
     editcontattodialog.h \
-    inviomultiplo.h \
     plugins/JackPluginInterfacer.h \
     plugins/captcha/JackCaptchaPluginInterfacer.h \
     avvisoaccentidialog.h \
@@ -170,7 +168,6 @@ FORMS += mainjacksms.ui \
     aggiungicontatto.ui \
     opzionidialog.ui \
     editcontattodialog.ui \
-    inviomultiplo.ui \
     avvisoaccentidialog.ui \
     statsdialog.ui \
     plugindialog.ui \
