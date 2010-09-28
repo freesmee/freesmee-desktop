@@ -124,6 +124,7 @@ private:
     bool firstResize;
     void clickText(QString text,QString defaultStr);
 private slots:
+    void on_rubricaListWidget_itemDoubleClicked(QListWidgetItem* item);
     void on_TextRapidServizi_textChanged(QString);
 
     void on_destinatariListWidget_itemDoubleClicked(QListWidgetItem* item);

@@ -81,7 +81,8 @@ SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QStr
        adjustSize();
 
 }
-SmsWidget::SmsWidget(QMyMessage _sms,QPixmap _ico,bool received):msg(_sms),type(received),readed(_sms.getReaded()){
+SmsWidget::SmsWidget(QMyMessage _sms,QPixmap _ico,bool received):msg(_sms),type(received),readed(_sms.getReaded()),number(_sms.getPhone()){
+
     id=_sms.getId();
     labelGroup = new QLabel(_sms.getParsedName());
 

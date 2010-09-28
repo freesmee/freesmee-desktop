@@ -37,7 +37,7 @@ namespace libJackSMS{
         phoneNumber::parse(QString _phoneNum){
 
             QRegExp  regExp;
-            regExp.setPattern(QString("^\\+([0-9]{1,4})\\.([0-9]{1,4})\\.([0-9]{6,7})$"));
+            regExp.setPattern(QString("^\\+([0-9]{1,4})\\.([0-9]{1,4})\\.([0-9]{6,8})$"));
             if (regExp.exactMatch(_phoneNum)){
                 intcode=regExp.cap(1);
 
@@ -50,7 +50,7 @@ namespace libJackSMS{
                 return;
             }
 
-            regExp.setPattern(QString("^([0-9]{1,4})\\.([0-9]{1,4})\\.([0-9]{1,7})$"));
+            regExp.setPattern(QString("^([0-9]{1,4})\\.([0-9]{1,4})\\.([0-9]{6,8})$"));
             if (regExp.exactMatch(_phoneNum)){
                 intcode=regExp.cap(1);
                 intpref=intcode;

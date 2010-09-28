@@ -21,18 +21,12 @@
 #include <QHeaderView>
 #include <QMap>
 #include "libjacksms/libJackSMS.h"
-
-#include <QSemaphore>
 #include "smswidget.h"
 #include "contactwidget.h"
 #include "editaccountdialog.h"
-
 #include "contactwidgetfastbook.h"
 #include "accountwidget.h"
 #include "Types.h"
-
-
-
 #include "statsdialog.h"
 #include "plugindialog.h"
 #include "qlabelresult.h"
@@ -356,7 +350,6 @@ void MainJackSMS::gestiscimenuMultiplo(){
 }
 
 void MainJackSMS::gestiscimenu(QAction* act){
-
     menu->setDefaultAction(act);
 
 }
@@ -601,12 +594,7 @@ void MainJackSMS::WriteMessagesToGui(){
             do{
                 --xx;
                 QListWidgetItem *item = new QListWidgetItem;
-                /*QSize s=xx.value()->size();
-                s.setHeight(s.height()/2+40);
-                item->setSizeHint(s);*/
                 item->setSizeHint(xx.value()->size());
-                //item->setText("\n\n\n\n"+xx.value()->getText());
-
                 ui->smsListWidget->addItem(item);
                 ui->smsListWidget->setItemWidget(item, xx.value());
             }while(xx!=xx_end);
@@ -738,7 +726,7 @@ void MainJackSMS::popupInvio(){
 }
 void MainJackSMS::clickText(QString _text,QString defaultStr){
     QSize s=this->size();
-    int maxlenght=((s.width()-290)/5)-defaultStr.length();
+    int maxlenght=((s.width()-330)/5)-defaultStr.length();
     if (!_text.isEmpty()){
 
         if (_text.length()<maxlenght){
@@ -1292,6 +1280,7 @@ void MainJackSMS::on_NumeroDestinatario_textEdited(QString str)
             ui->destinatariListWidget->clear();
             while(!strings.isEmpty()){
                 QString s=strings.first();
+                s=s.trimmed();
                 strings.removeFirst();
                 QRegExp r;
                 r.setPattern("^([^<]+) <([\\+\\.0-9]+)>$");
@@ -1332,7 +1321,7 @@ void MainJackSMS::on_NumeroDestinatario_textEdited(QString str)
                             libJackSMS::dataTypes::phoneNumber num;
                             num.parse(r.cap(1));
                             libJackSMS::dataTypes::contact cc(r.cap(1),num,"","0");
-                            contactWidgetFastBook * w=new contactWidgetFastBook(cc,this->icon_jack);
+                            contactWidgetFastBook * w=new contactWidgetFastBook(cc,icon_jack);
                             n->setSizeHint(w->size());
                             ui->destinatariListWidget->addItem(n);
                             ui->destinatariListWidget->setItemWidget(n, w);
@@ -1377,7 +1366,12 @@ void MainJackSMS::on_NumeroDestinatario_textEdited(QString str)
                         if ((i->getPhone().toString()==s)||(i->getName().toUpper()==s.toUpper())){
                             QListWidgetItem *n = new QListWidgetItem;
                             libJackSMS::dataTypes::contact cc(i->getName(),i->getPhone(),"",i->getAccount());
-                            contactWidgetFastBook * w=new contactWidgetFastBook(cc,ElencoServizi[ElencoServiziConfigurati[i->getAccount()].getService()].getIcon().pixmap(16,16));
+                            QIcon ico;
+                            //if (i->getAccount()=="0")
+                            //    ico=QIcon(":/resource/ico_contact.png");
+                            //else
+                                ico=ElencoServizi[ElencoServiziConfigurati[i->getAccount()].getService()].getIcon();
+                            contactWidgetFastBook * w=new contactWidgetFastBook(cc,ico.pixmap(16,16));
                             n->setSizeHint(w->size());
                             ui->destinatariListWidget->addItem(n);
                             ui->destinatariListWidget->setItemWidget(n, w);
@@ -2669,4 +2663,14 @@ void MainJackSMS::on_destinatariListWidget_itemDoubleClicked(QListWidgetItem* it
 
     item->~QListWidgetItem();
     recipientStringCalculate();
+}
+
+void MainJackSMS::on_rubricaListWidget_itemDoubleClicked(QListWidgetItem* item)
+{
+    QWidget * wi=ui->rubricaListWidget->itemWidget(item);
+    ContactWidget* cw=static_cast<ContactWidget*>(wi);
+    QString id=cw->getContactId();
+    editcontattodialog *dial=new editcontattodialog(this,this,ElencoServizi,ElencoServiziConfigurati,Rubrica,id,Opzioni);
+    dial->exec();
+    dial->deleteLater();
 }
