@@ -64,6 +64,7 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     ui->widgetSchermate->setCurrentIndex(0);
     ui->tabWidget->setCurrentIndex(0);
     loggedIn=false;
+    recipientAutoEdited=false;
     currentMaxLength=160;
     countReceivedUnreaded=0;
     setWindowTitle(QString("JackSMS ")+QString(JACKSMS_VERSION));
@@ -1275,9 +1276,119 @@ void MainJackSMS::ClickBaloon(){
 
 }
 
-void MainJackSMS::on_NumeroDestinatario_textEdited(QString )
+void MainJackSMS::on_NumeroDestinatario_textEdited(QString str)
 {
+
+
     ui->labelNomeDest->setText("");
+    if(!recipientAutoEdited){
+        QStringList strings=str.split(",",QString::SkipEmptyParts);
+        if (strings.count()>1)
+            gestiscimenuMultiplo();
+        else if (invioMultiplo)
+            gestiscimenuSingolo();
+
+        if(invioMultiplo){
+            ui->destinatariListWidget->clear();
+            while(!strings.isEmpty()){
+                QString s=strings.first();
+                strings.removeFirst();
+                QRegExp r;
+                r.setPattern("^([^<]+) <([\\+\\.0-9]+)>$");
+                bool ok=false;
+                if (r.exactMatch(s)){
+                    libJackSMS::dataTypes::phoneBookType::const_iterator i=Rubrica.begin();
+                    for(;i!=Rubrica.end();++i){
+                        if (i->getPhone().toString()==r.cap(2)){
+                            QListWidgetItem *n = new QListWidgetItem;
+                            libJackSMS::dataTypes::contact cc(i->getName(),i->getPhone(),"",i->getAccount());
+                            contactWidgetFastBook * w=new contactWidgetFastBook(cc,ElencoServizi[ElencoServiziConfigurati[i->getAccount()].getService()].getIcon().pixmap(16,16));
+                            n->setSizeHint(w->size());
+                            ui->destinatariListWidget->addItem(n);
+                            ui->destinatariListWidget->setItemWidget(n, w);
+                            ok=true;
+                            break;
+                        }
+                    }
+                }
+                if (!ok){
+                    r.setPattern("^([0-9]{10})$");
+                    if (r.exactMatch(s)){
+                        libJackSMS::dataTypes::phoneBookType::const_iterator i=Rubrica.begin();
+                        for(;i!=Rubrica.end();++i){
+                            if (i->getPhone().toString()==r.cap(1)){
+                                QListWidgetItem *n = new QListWidgetItem;
+                                libJackSMS::dataTypes::contact cc(i->getName(),i->getPhone(),"",i->getAccount());
+                                contactWidgetFastBook * w=new contactWidgetFastBook(cc,ElencoServizi[ElencoServiziConfigurati[i->getAccount()].getService()].getIcon().pixmap(16,16));
+                                n->setSizeHint(w->size());
+                                ui->destinatariListWidget->addItem(n);
+                                ui->destinatariListWidget->setItemWidget(n, w);
+                                ok=true;
+                                break;
+                            }
+                        }
+                        if (!ok){
+                            QListWidgetItem *n = new QListWidgetItem;
+                            libJackSMS::dataTypes::phoneNumber num;
+                            num.parse(r.cap(1));
+                            libJackSMS::dataTypes::contact cc(r.cap(1),num,"","0");
+                            contactWidgetFastBook * w=new contactWidgetFastBook(cc,this->icon_jack);
+                            n->setSizeHint(w->size());
+                            ui->destinatariListWidget->addItem(n);
+                            ui->destinatariListWidget->setItemWidget(n, w);
+                            ok=true;
+                        }
+
+                    }
+                }
+                if (!ok){
+                    r.setPattern("^([0-9]{4,5})$");
+                    if (r.exactMatch(s)){
+                        QListWidgetItem *n = new QListWidgetItem;
+                        libJackSMS::dataTypes::phoneNumber num;
+                        num.parse(r.cap(1));
+                        libJackSMS::dataTypes::contact cc(r.cap(1),num,"","0");
+                        contactWidgetFastBook * w=new contactWidgetFastBook(cc,icon_jack);
+                        n->setSizeHint(w->size());
+                        ui->destinatariListWidget->addItem(n);
+                        ui->destinatariListWidget->setItemWidget(n, w);
+                        ok=true;
+
+                    }
+                }
+                if (!ok){
+                    r.setPattern("^([0-9]{4,5}) <([0-9]{4,5})>$");
+                    if (r.exactMatch(s)){
+                        QListWidgetItem *n = new QListWidgetItem;
+                        libJackSMS::dataTypes::phoneNumber num;
+                        num.parse(r.cap(2));
+                        libJackSMS::dataTypes::contact cc(r.cap(1),num,"","0");
+                        contactWidgetFastBook * w=new contactWidgetFastBook(cc,icon_jack);
+                        n->setSizeHint(w->size());
+                        ui->destinatariListWidget->addItem(n);
+                        ui->destinatariListWidget->setItemWidget(n, w);
+                        ok=true;
+
+                    }
+                }
+                if (!ok){
+                    libJackSMS::dataTypes::phoneBookType::const_iterator i=Rubrica.begin();
+                    for(;i!=Rubrica.end();++i){
+                        if ((i->getPhone().toString()==s)||(i->getName().toUpper()==s.toUpper())){
+                            QListWidgetItem *n = new QListWidgetItem;
+                            libJackSMS::dataTypes::contact cc(i->getName(),i->getPhone(),"",i->getAccount());
+                            contactWidgetFastBook * w=new contactWidgetFastBook(cc,ElencoServizi[ElencoServiziConfigurati[i->getAccount()].getService()].getIcon().pixmap(16,16));
+                            n->setSizeHint(w->size());
+                            ui->destinatariListWidget->addItem(n);
+                            ui->destinatariListWidget->setItemWidget(n, w);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    recipientAutoEdited=false;
 }
 
 
@@ -2535,6 +2646,7 @@ void MainJackSMS::on_RubricaVeloce_itemDoubleClicked(QListWidgetItem* item)
 
 }
 void MainJackSMS::recipientStringCalculate(){
+
     QString r;
     int c=ui->destinatariListWidget->count();
     for(int i=0;i<c;++i){
@@ -2546,6 +2658,7 @@ void MainJackSMS::recipientStringCalculate(){
 
 
     }
+    recipientAutoEdited=true;
     ui->NumeroDestinatario->setText(r);
 
 

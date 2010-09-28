@@ -59,6 +59,7 @@ public:
     QTimer resizeTimer;
     QString result;
 private:
+    bool recipientAutoEdited;
     void recipientStringCalculate();
     void sendNextMessage(bool first, bool result=false);
     QList<QPair<contactWidgetFastBook*,libJackSMS::dataTypes::phoneNumber> > multipleSendRecipients;
