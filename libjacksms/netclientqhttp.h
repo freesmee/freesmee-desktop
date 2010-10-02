@@ -71,6 +71,7 @@ namespace libJackSMS{
             bool setProxyAuthentication(const QString &_proxyUsername, const QString &_proxyPassword);
             bool interrupt();
             bool getAborted();
+            void clearCookies();
         signals:
             void pageDownloaded();
 

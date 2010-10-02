@@ -116,5 +116,9 @@ void editcontattodialog::salvataggioOk(libJackSMS::dataTypes::contact c){
     this->close();
 }
 void editcontattodialog::salvataggioKo(){
-    this->close();
+    m_ui->salva->setEnabled(true);
+    m_ui->annulla->setEnabled(true);
+    m_ui->labelSpin->hide();
+    QMessageBox::critical(this,"JackSMS","Si e' verificato un errore durante l'aggiornamento del contatto.");
 }
+

@@ -26,7 +26,7 @@ namespace libJackSMS{
 
 
             /****************definitions for pageVariable**********/
-        pageVariable::pageVariable(const QString &_name,const QString &_value,const QString &_condition):n(_name),v(_value),c(_condition),encode(false){
+        pageVariable::pageVariable(const QString &_name,const QString &_value,const QString &_condition,bool cond):n(_name),v(_value),c(_condition),encode(false),hasCond(cond){
             }
             QString pageVariable::getName() const{
                 return n;
@@ -43,7 +43,9 @@ namespace libJackSMS{
             bool pageVariable::getToEncode()const{
                 return encode;
             }
-
+            bool pageVariable::hasCondition() const{
+                return hasCond;
+            }
 
     }
 

@@ -152,6 +152,19 @@ namespace libJackSMS{
             return virtualNumber;
 
         }
+        bool phoneNumber::operator==(const phoneNumber &_other){
+            if (intcode!=_other.intcode) return false;
+            if ( intpref!=_other.intpref) return false;
+            if ( num!=_other.num) return false;
+            if ( intnum!=_other.intnum) return false;
+            if ( pref!=_other.pref) return false;
+            if ( alternativeName!=_other.alternativeName) return false;
+            if ( valid!=_other.valid) return false;
+            if ( specialNumber!=_other.specialNumber) return false;
+            if ( virtualNumber!=_other.virtualNumber) return false;
+            return true;
+
+        }
     }
 }
 

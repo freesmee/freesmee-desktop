@@ -27,21 +27,6 @@ AggiungiContatto::AggiungiContatto(QWidget *parent , MainJackSMS * _padre,libJac
         libJackSMS::dataTypes::configuredServicesType::const_iterator i_end=ElencoServiziConfigurati.end();
         for(;i!=i_end;++i){
             QIcon ico=ElencoServizi[i.value().getService()].getIcon();
-            /*libJackSMS::dataTypes::servicesType::const_iterator x=ElencoServizi.find(i.value().getService());
-            if (x!=ElencoServizi.end()){
-                if (x->second.getIcon()!=""){
-                    try{
-                        QByteArray bytes(reinterpret_cast<const char*>(x->second.getIcon().c_str()),x->second.getIcon().length());
-                        QImage im=QImage::fromData(bytes,"png");
-                        ico=QIcon(QPixmap::fromImage(im));
-                    }catch(...){
-                        //errore nel recuperare / generare l'icona...
-                    }
-                }
-            }*/
-
-
-
             m_ui->comboaccount->addItem(ico,i.value().getName());
         }
         spinner=new QMovie(":/resource/loading-spinner.gif",QByteArray("gif"),this);
@@ -50,15 +35,6 @@ AggiungiContatto::AggiungiContatto(QWidget *parent , MainJackSMS * _padre,libJac
         m_ui->labelSpin->setMovie(spinner);
         m_ui->labelSpin->hide();
     }
-    /*{
-        libJackSMS::dataTypes::phoneBookType::const_iterator i=Rubrica.begin();
-        libJackSMS::dataTypes::phoneBookType::const_iterator i_end=Rubrica.end();
-        for(;i!=i_end;++i){
-            if (m_ui->ComboGruppo->findText(i->gruppo)== -1){
-                m_ui->ComboGruppo->addItem(i->gruppo);
-            }
-        }
-    }*/
 }
 
 AggiungiContatto::~AggiungiContatto()
@@ -145,8 +121,8 @@ void AggiungiContatto::salvataggioOk(QString id){
     close();
 }
 void AggiungiContatto::salvataggioKo(){
-    this->close();
-}
-void AggiungiContatto::ReadStdoutSaveContact(){
-
+    m_ui->salva->setEnabled(true);
+    m_ui->annulla->setEnabled(true);
+    m_ui->labelSpin->hide();
+    QMessageBox::critical(this,"JackSMS","Si e' verificato un errore durante il salvataggio del contatto.");
 }

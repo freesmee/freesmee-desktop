@@ -2,6 +2,7 @@
 #define EDITACCOUNTDIALOG_H
 
 #include <QDialog>
+#include <QMovie>
 #include <libjacksms/libJackSMS.h>
 namespace Ui {
     class editAccountDialog;
@@ -17,6 +18,7 @@ protected:
     void changeEvent(QEvent *e);
 
 private:
+    QMovie *spinner;
     libJackSMS::dataTypes::configuredServicesType &accounts;
     libJackSMS::dataTypes::servicesType &services;
     QString id;

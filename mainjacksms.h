@@ -59,6 +59,7 @@ public:
     QTimer resizeTimer;
     QString result;
 private:
+    bool checkDoubleRecipients(libJackSMS::dataTypes::phoneNumber &_n) const;
     bool recipientAutoEdited;
     void recipientStringCalculate();
     void sendNextMessage(bool first, bool result=false);
@@ -124,6 +125,8 @@ private:
     bool firstResize;
     void clickText(QString text,QString defaultStr);
 private slots:
+    void on_actionCsv_triggered();
+    void on_listServiziConfigurati_itemDoubleClicked(QListWidgetItem* item);
     void on_rubricaListWidget_itemDoubleClicked(QListWidgetItem* item);
     void on_TextRapidServizi_textChanged(QString);
 
@@ -200,8 +203,8 @@ private slots:
 
     void displayCaptcha(QByteArray data/*,QSemaphore* sem*/);
     void eseguiPassoInvio();
-    void invioSuccesso(const QString & _text);
-    void invioFallito(const QString & _text);
+    void invioSuccesso(QString _text);
+    void invioFallito(QString _text);
     void checkInstantMessengerReceived(libJackSMS::dataTypes::logImType);
     void deleteContactKo();
     void deleteContactOk(QString);

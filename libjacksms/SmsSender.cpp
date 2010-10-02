@@ -297,37 +297,10 @@ namespace libJackSMS{
                         QByteArray captchaBytes;
                         webClient->getFile(parsedCurrentUrlPage,captchaBytes);
                         log.addNotice("Captcha ricevuto: bytes="+QString::number(captchaBytes.size()));
-
-                        /*QString captcha_result;
-
-                        QSemaphore semaforoCaptcha(0);
-
-
-                        QSharedMemory memoriaRisultatoCaptcha("jacksms_result_captcha_shmem");
-                        if (!memoriaRisultatoCaptcha.create(captchaBytes.size())){
-
-                            if (memoriaRisultatoCaptcha.error()==QSharedMemory::AlreadyExists){
-                                if (!memoriaRisultatoCaptcha.attach()){
-                                    throw libJackSMS::exceptionSharedMemory();
-                                }
-                            }else{
-                                throw libJackSMS::exceptionSharedMemory();
-                            }
-
-                        }
-                        */
                         pageIndex=pageCounter+1;
                         captchaInterrupt=true;
                         emit captcha(captchaBytes);
                         return;
-                        //semaforoCaptcha.acquire(1);
-                        //memoriaRisultatoCaptcha.lock();
-                        //captcha_result=QString((const char*)memoriaRisultatoCaptcha.constData());
-                        //memoriaRisultatoCaptcha.unlock();
-                        //memoriaRisultatoCaptcha.detach();
-                        /**/
-                        //elenco_dati_vari.insert("captcha_value",servizioDaUsare.getEncodedText(captcha_result));
-
                     }else{
                         if (paginaCorrente.hasRawCommands()){
 
@@ -420,30 +393,42 @@ namespace libJackSMS{
 
                                 webClient->addHeader(paginaCorrente.currentHeader().getName(),headerVal);
 
-                                //webClient->AddHeader(paginaCorrente.currentHeader().getName(),paginaCorrente.currentHeader().getValue());
+
                                 log.addNotice("Aggiunto header: "+paginaCorrente.currentHeader().getName()+" - "+headerVal);
                             }
                             while(paginaCorrente.nextVariable()){
                                 dataTypes::pageVariable var=paginaCorrente.currentVariable();
-                                QString var_value=var.getValue();
-                                QString var_name=var.getName();
+                                bool insert=!var.hasCondition();
+                                if (!insert){
+                                    QString condition=var.getCondition();
 
-                                var_value=substitute(var_value,elenco_credenziali);
-                                var_value=substitute(var_value,elenco_dati_vari);
-                                var_value=substitute(var_value,elenco_contenuti);
+                                    dataTypes::contentType::const_iterator i=elenco_contenuti.begin();
+                                    dataTypes::contentType::const_iterator i_end=elenco_contenuti.end();
+                                    for(;i!=i_end;++i){
+                                        QString code="%%"+i->getName()+"%%";
+                                        if (condition==code && i->getFound()){
+                                            insert=true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (insert){
+                                    QString var_value=var.getValue();
+                                    QString var_name=var.getName();
+                                    var_value=substitute(var_value,elenco_credenziali);
+                                    var_value=substitute(var_value,elenco_dati_vari);
+                                    var_value=substitute(var_value,elenco_contenuti);
 
-                                var_name=substitute(var_name,elenco_credenziali);
-                                var_name=substitute(var_name,elenco_dati_vari);
-                                var_name=substitute(var_name,elenco_contenuti);
-                                if (var.getToEncode())
-                                    var_value=QString(var_value.toAscii().toPercentEncoding());
-                                webClient->insertFormData(var_name,var_value);
-                                log.addNotice("Aggiunta variabile: "+var_name+" - "+var_value);
-                                /*QByteArray v=QByteArray::fromPercentEncoding(var_value.toAscii());
-                                v=v.toPercentEncoding();
+                                    var_name=substitute(var_name,elenco_credenziali);
+                                    var_name=substitute(var_name,elenco_dati_vari);
+                                    var_name=substitute(var_name,elenco_contenuti);
+                                    if (var.getToEncode())
+                                        var_value=QString(var_value.toAscii().toPercentEncoding());
 
+                                    webClient->insertFormData(var_name,var_value);
+                                    log.addNotice("Aggiunta variabile: "+var_name+" - "+var_value);
+                                }
 
-                                log.addNotice("UrlEncode variabile precedente: "+QString(v));*/
 
 
                             }
@@ -497,6 +482,7 @@ namespace libJackSMS{
 
                                 emit error(substitute(errore.getErrorMessage(),elenco_contenuti));
                                 resultError=true;
+                                webClient->clearCookies();
                                 break;
 
                             }

@@ -13,15 +13,17 @@ namespace libJackSMS{
     namespace netClient{
 
         void QMyNetworkCookieJar::saveToDisk(QString filename){
-            QList<QNetworkCookie> myCookieList=allCookies();
-            QFile file(filename);
-            if (file.open(QIODevice::ReadWrite | QIODevice::Text)){
 
-                for(QList<QNetworkCookie>::const_iterator i=myCookieList.begin();i!=myCookieList.end();++i){
-                    file.write(i->toRawForm()+"\n");
+                QList<QNetworkCookie> myCookieList=allCookies();
+                QFile file(filename);
+                if (file.open(QIODevice::ReadWrite | QIODevice::Text)){
+
+                    for(QList<QNetworkCookie>::const_iterator i=myCookieList.begin();i!=myCookieList.end();++i){
+                        file.write(i->toRawForm()+"\n");
+                    }
+                    file.close();
                 }
-                file.close();
-            }
+
 
         }
 
@@ -84,7 +86,11 @@ namespace libJackSMS{
             //client->~QHttp();
 
         }
-
+        void netClientQHttp::clearCookies(){
+            QFile::remove(cookieFilename);
+            cookies->deleteLater();
+            cookies=new QMyNetworkCookieJar;
+        }
         void netClientQHttp::endRequest(QNetworkReply* reply){
             if (reply->error()==QNetworkReply::NoError){
                 _lastReadedUrlCode=reply->readAll();
@@ -97,9 +103,11 @@ namespace libJackSMS{
 
         }
         bool netClientQHttp::setTimeout(int timeout){
+            //todo
             return false;
         }
         void netClientQHttp::IncludeHeaders(){
+            //todo
             outputHeaders=true;
 
         }

@@ -53,6 +53,7 @@ namespace libJackSMS{
                 virtual bool setProxyAuthentication(const QString &_proxyUsername, const QString &_proxyPassword)=0;
                 virtual bool interrupt()=0;
                 virtual bool getAborted()=0;
+                virtual void clearCookies()=0;
 
         };
     }

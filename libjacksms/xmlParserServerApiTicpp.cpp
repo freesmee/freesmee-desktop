@@ -403,7 +403,10 @@ namespace libJackSMS{
                                     while(  currentVar = varNode->IterateChildren( currentVar ) ){
                                         ticpp::Element * thisVar= currentVar->ToElement();
                                         std::string tmp=thisVar->GetAttributeOrDefault("desktop_encode","0");
-                                        dataTypes::pageVariable var(QString::fromStdString(thisVar->GetAttribute("name")),QString::fromStdString(thisVar->GetAttribute("value")),QString::fromStdString(thisVar->GetAttributeOrDefault("value","")));
+                                        bool condition=false;
+                                        if (thisVar->HasAttribute("condition"))
+                                            condition=true;
+                                        dataTypes::pageVariable var(QString::fromStdString(thisVar->GetAttribute("name")),QString::fromStdString(thisVar->GetAttribute("value")),QString::fromStdString(thisVar->GetAttributeOrDefault("condition","")),condition);
                                         var.setToEncode((tmp=="1")?true:false);
                                         page.setVariable(var);
                                     }

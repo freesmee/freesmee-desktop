@@ -32,11 +32,13 @@ namespace libJackSMS{
                 QString v;
                 QString c;
                 bool encode;
+                bool hasCond;
             public:
-                pageVariable(const QString &_name,const QString &_value,const QString &_condition);
+                pageVariable(const QString &_name,const QString &_value,const QString &_condition,bool cond=false);
                 QString getName() const;
                 QString getValue() const;
                 QString getCondition() const;
+                bool hasCondition() const;
                 void setToEncode(bool _e);
                 bool getToEncode()const;
         };

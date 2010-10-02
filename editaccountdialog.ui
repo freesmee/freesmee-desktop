@@ -55,7 +55,7 @@
         <string>Annulla</string>
        </property>
        <property name="icon">
-        <iconset resource="resources.qrc">
+        <iconset>
          <normaloff>:/resource/rimuovi.png</normaloff>:/resource/rimuovi.png</iconset>
        </property>
       </widget>
@@ -66,8 +66,15 @@
         <string>Salva</string>
        </property>
        <property name="icon">
-        <iconset resource="resources.qrc">
+        <iconset>
          <normaloff>:/resource/salva.png</normaloff>:/resource/salva.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="labelSpin">
+       <property name="text">
+        <string/>
        </property>
       </widget>
      </item>
@@ -75,8 +82,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

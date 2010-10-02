@@ -14,6 +14,13 @@ editAccountDialog::editAccountDialog(libJackSMS::dataTypes::configuredServicesTy
     ui(new Ui::editAccountDialog)
 {
     ui->setupUi(this);
+
+    spinner=new QMovie(":/resource/loading-spinner.gif",QByteArray("gif"),this);
+    spinner->setScaledSize(QSize(16,16));
+    spinner->start();
+    ui->labelSpin->setMovie(spinner);
+    ui->labelSpin->hide();
+
     libJackSMS::dataTypes::configuredServicesType::const_iterator iterator=accounts.find(id);
     libJackSMS::dataTypes::servicesType::iterator iterator_serv=services.find(iterator->getService());
     if (iterator_serv!=services.end()){
@@ -75,7 +82,10 @@ void editAccountDialog::updateOk(libJackSMS::dataTypes::configuredAccount acc){
     this->close();
 }
 void editAccountDialog::accountNotUpdated(){
-    QMessageBox::critical(this,"JackSMS","Errore durante l'aggiornamento dell'account");
+    ui->buttonAnnulla->setEnabled(false);
+    ui->pushButton->setEnabled(false);
+    ui->labelSpin->hide();
+    QMessageBox::critical(this,"JackSMS","Si e' verificato un errore durante l'aggiornamento dell'account.");
 }
 
 void editAccountDialog::on_pushButton_clicked()
@@ -113,7 +123,9 @@ void editAccountDialog::on_pushButton_clicked()
             }
             currentAccount.setData(key,value);
         }
-
+        ui->buttonAnnulla->setEnabled(false);
+        ui->pushButton->setEnabled(false);
+        ui->labelSpin->show();
 
         saver=new libJackSMS::serverApi::accountManager(current_login_id,opzioni);
         connect(saver,SIGNAL(accountUpdated(libJackSMS::dataTypes::configuredAccount)),this,SLOT(updateOk(libJackSMS::dataTypes::configuredAccount)));

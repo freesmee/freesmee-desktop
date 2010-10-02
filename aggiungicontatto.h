@@ -37,7 +37,6 @@ private:
 private slots:
     void on_salva_clicked();
     void on_annulla_clicked();
-    void ReadStdoutSaveContact();
     void salvataggioOk(QString);
     void salvataggioKo();
 };

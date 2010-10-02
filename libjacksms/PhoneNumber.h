@@ -111,6 +111,7 @@ namespace libJackSMS{
                 bool getIsValid() const;
                 void setVirtual(bool v);
                 bool getVirtual() const;
+                bool operator==(const phoneNumber &_other);
 
 
         };

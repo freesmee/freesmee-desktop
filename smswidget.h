@@ -20,9 +20,9 @@ private:
     QMyMessage msg;
     bool type;
     QString id;
-
-    libJackSMS::dataTypes::phoneNumber number;
     bool readed;
+    libJackSMS::dataTypes::phoneNumber number;
+
     QString parseLinks(QString _s);
     QString parseAts(QString _s);
 

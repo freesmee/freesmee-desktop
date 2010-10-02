@@ -16,7 +16,7 @@ win32 {
     RC_FILE = icon.rc
 }
 QT += network
-QT += phonon
+#QT += phonon
 CONFIG(debug, debug|release):LIBS += -lticppd
 CONFIG(release, debug|release):LIBS += -lticpp
 DEFINES += TIXML_USE_TICPP
