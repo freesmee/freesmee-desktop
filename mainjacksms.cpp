@@ -339,11 +339,10 @@ void MainJackSMS::showContactByTypeInFastAbook(){
         libJackSMS::dataTypes::phoneBookType::const_iterator i_end=Rubrica.end();
 
         QMultiMap<QString,contactWidgetFastBook*> fastList;
+        QString filter=ui->RicercaVeloce->text();
         for(;i!=i_end;++i){
-
-
-            QIcon ico;
-            {
+            if (i->getName().contains(filter,Qt::CaseInsensitive)){
+                QIcon ico;
                 libJackSMS::dataTypes::configuredServicesType::const_iterator x=ElencoServiziConfigurati.find(i->getAccount());
                 if (x==ElencoServiziConfigurati.end()){
                     ico=QIcon(":/resource/ico_contact.png");
@@ -359,9 +358,6 @@ void MainJackSMS::showContactByTypeInFastAbook(){
                 else if ((!i->getPhone().getVirtual()) && (messageType==TYPE_SMS))
                     fastList.insert(i->getName().toUpper(),ww);
             }
-
-
-
         }
 
         section++;
