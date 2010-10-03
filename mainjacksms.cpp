@@ -17,6 +17,7 @@
 #include <QMultiMap>
 #include <QSystemTrayIcon>
 #include <QTimer>
+
 #include "editcontattodialog.h"
 #include <QHeaderView>
 #include <QMap>
@@ -2562,15 +2563,8 @@ void MainJackSMS::on_actionElimina_cookies_triggered()
         QMessageBox::critical(this,"JackSMS","Errore durante l'eliminazione dei cookie.");
 }
 
-void MainJackSMS::on_pushButton_clicked()
-{
 
-}
 
-void MainJackSMS::on_radioButton_2_clicked()
-{
-
-}
 
 void MainJackSMS::on_radioSMS_clicked()
 {
