@@ -40,6 +40,8 @@ private slots:
     void on_ListServizi_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void addAccountKo();
     void addAccountOk(QString);
+signals:
+    void rewriteAccounts();
 };
 
 #endif // SERVICESDIALOG_H

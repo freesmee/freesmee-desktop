@@ -28,29 +28,13 @@ CaptchaDialog::CaptchaDialog(const QByteArray &_imgData,QString zoomFactor,QWidg
         }
     }
     if(errorImage){
-
-        /*QSharedMemory sharedMemory("jacksms_result_captcha_shmem");
-        sharedMemory.create(1024);
-        sharedMemory.lock();
-        char *to = (char*)sharedMemory.data();
-        const char *text = "captcha_non_decodificato";
-        memcpy(to, text, strlen(text)+1);
-        sharedMemory.unlock();
-*/
-        /*QSharedMemory sharedMemory("jacksms_result_captcha_shmem");
-        sharedMemory.attach();
-        sharedMemory.lock();
-        char *to = (char*)sharedMemory.data();
-        memcpy(to, "captcha_non_decodificato", 24);
-        sharedMemory.unlock();
-        sharedMemory.detach();
-*/
         throw QString("captcha");
     }else{
         m_ui->captchalabel->setPixmap(QPixmap::fromImage(im));
         original=im;
         dim=im.size();
     }
+
 }
 
 

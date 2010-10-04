@@ -37,7 +37,7 @@ private:
 private slots:
     void on_salva_clicked();
     void on_annulla_clicked();
-    void salvataggioOk(QString);
+    void salvataggioOk(QString,bool);
     void salvataggioKo();
 };
 

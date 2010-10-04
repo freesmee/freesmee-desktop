@@ -250,9 +250,14 @@ namespace libJackSMS{
 
         }
 
-        bool xmlParserServerApiTicpp::checkAddNewContact(QString &_resId){
+        bool xmlParserServerApiTicpp::checkAddNewContact(QString &_resId,bool & canReceiveJms){
             ticpp::Node *root=xmlResponse.FirstChild("JackSMS");
             ticpp::Node *child=root->FirstChild("id");
+            ticpp::Node *childJms=root->FirstChild("jms");
+            if (childJms->ToElement()->GetText()=="0")
+                canReceiveJms=false;
+            else
+                canReceiveJms=true;
             _resId=QString::fromStdString(child->ToElement()->GetText());
             if(_resId=="0" || _resId=="-1")
                 return false;

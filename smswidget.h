@@ -25,7 +25,7 @@ private:
 
     QString parseLinks(QString _s);
     QString parseAts(QString _s);
-
+    QString originalText;
 private slots:
      void openUrl(QString _url);
 public:

@@ -54,11 +54,12 @@ public:
     QString current_login_id;
     libJackSMS::serverApi::login *signin;
     void ReWriteAddressBookToGui();
-    void ReWriteConfiguredServicesToGui();
+
     QSize windowSize;
     QTimer resizeTimer;
     QString result;
 private:
+    bool popupJms;
     bool checkDoubleRecipients(libJackSMS::dataTypes::phoneNumber &_n) const;
     bool recipientAutoEdited;
     void recipientStringCalculate();
@@ -125,6 +126,7 @@ private:
     bool firstResize;
     void clickText(QString text,QString defaultStr);
 private slots:
+    void ReWriteConfiguredServicesToGui();
     void on_actionCsv_triggered();
     void on_listServiziConfigurati_itemDoubleClicked(QListWidgetItem* item);
     void on_rubricaListWidget_itemDoubleClicked(QListWidgetItem* item);

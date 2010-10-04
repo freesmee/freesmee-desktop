@@ -91,6 +91,18 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType & _opt,QTextEdit
     if (iter!=opt.end())
         if (iter.value()=="yes")
             m_ui->usaAutenticazione->setChecked(true);
+    iter=opt.find("successfull-send-popup");
+    if (iter!=opt.end())
+        if (iter.value()=="yes")
+            m_ui->successSmsPopup->setChecked(true);
+    iter=opt.find("display-captcha-popup");
+    if (iter!=opt.end())
+        if (iter.value()=="yes")
+            m_ui->captchaPopup->setChecked(true);
+    iter=opt.find("error-send-popup");
+    if (iter!=opt.end())
+        if (iter.value()=="yes")
+            m_ui->errorSmsPopup->setChecked(true);
     iter=opt.find("proxy-port");
     if (iter!=opt.end())
         m_ui->TextPort->setText(iter.value());
@@ -183,6 +195,7 @@ void OpzioniDialog::on_pushButton_2_clicked()
             saveGlobal=true;
 
     }
+
 
     if (("yes"==opt["use-proxy-auth"])!=m_ui->usaAutenticazione->isChecked()){
             opt["use-proxy-auth"]=(m_ui->usaAutenticazione->isChecked())?"yes":"no";
@@ -279,7 +292,21 @@ void OpzioniDialog::on_pushButton_2_clicked()
             opt["save-local"]=(m_ui->checkSalvalocale->isChecked())?"yes":"no";
 
         }
+        if (("yes"==opt["successfull-send-popup"])!=m_ui->successSmsPopup->isChecked()){
+                opt["successfull-send-popup"]=(m_ui->successSmsPopup->isChecked())?"yes":"no";
 
+
+        }
+        if (("yes"==opt["display-captcha-popup"])!=m_ui->captchaPopup->isChecked()){
+                opt["display-captcha-popup"]=(m_ui->captchaPopup->isChecked())?"yes":"no";
+
+
+        }
+        if (("yes"==opt["error-send-popup"])!=m_ui->errorSmsPopup->isChecked()){
+                opt["error-send-popup"]=(m_ui->errorSmsPopup->isChecked())?"yes":"no";
+
+
+        }
         if (("no"!=opt["receive-im"])&& (!m_ui->CheckAbilitaIM->isChecked())){
 
             opt["receive-im"]="no";

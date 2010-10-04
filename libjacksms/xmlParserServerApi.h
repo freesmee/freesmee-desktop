@@ -58,7 +58,7 @@ namespace libJackSMS{
                  * \param \b _resId  la variabile dove verrà messo l'id del nuovo contatto
                  * \return \b true se il contatto e' stato salvato, false altrimenti
                  */
-                virtual bool checkAddNewContact(QString &_resId)=0;
+                virtual bool checkAddNewContact(QString &_resId,bool & canReceiveJms)=0;
 
                 /**
                  * Controlla se l'xml di risposta dell'api di aggiornamento contatto online contiene il valore di successo o meno

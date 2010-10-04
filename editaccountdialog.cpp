@@ -75,11 +75,12 @@ void editAccountDialog::changeEvent(QEvent *e)
 
 void editAccountDialog::on_buttonAnnulla_clicked()
 {
-    this->close();
+    close();
 }
 void editAccountDialog::updateOk(libJackSMS::dataTypes::configuredAccount acc){
     accounts[acc.getId()]=acc;
-    this->close();
+    emit rewriteAccunts();
+    close();
 }
 void editAccountDialog::accountNotUpdated(){
     ui->buttonAnnulla->setEnabled(false);

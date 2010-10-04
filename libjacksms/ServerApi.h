@@ -202,7 +202,7 @@ namespace libJackSMS{
                 contactManagerAdd(const QString & _loginId,dataTypes::proxySettings _ps );
                 bool addNewContact(libJackSMS::dataTypes::contact _contatto);
             signals:
-                void contactAdded(QString);
+                void contactAdded(QString,bool);
                 void errorAdd();
 
 
@@ -262,7 +262,7 @@ namespace libJackSMS{
                 void contactNotDeleted();
                 void contactUpdated(libJackSMS::dataTypes::contact);
                 void contactNotUpdated();
-                void contactSaved(QString);
+                void contactSaved(QString,bool);
                 void contactNotSaved();
 
 

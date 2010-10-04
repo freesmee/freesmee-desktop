@@ -105,7 +105,7 @@ void AggiungiContatto::on_salva_clicked()
 
 
         saver=new libJackSMS::serverApi::contactManager(padre->current_login_id,opzioni);
-        connect(saver,SIGNAL(contactSaved(QString)),this,SLOT(salvataggioOk(QString)));
+        connect(saver,SIGNAL(contactSaved(QString,bool)),this,SLOT(salvataggioOk(QString,bool)));
         connect(saver,SIGNAL(contactNotSaved()),this,SLOT(salvataggioKo()));
         saver->addNewContact(contatto);
 
@@ -114,8 +114,9 @@ void AggiungiContatto::on_salva_clicked()
 
 }
 
-void AggiungiContatto::salvataggioOk(QString id){
+void AggiungiContatto::salvataggioOk(QString id,bool jms){
     contatto.setId(id);
+    contatto.setCanReceiveJms(jms);
     Rubrica.insert(id,contatto);
     padre->ReWriteAddressBookToGui();
     close();

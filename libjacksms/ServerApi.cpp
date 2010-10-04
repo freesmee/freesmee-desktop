@@ -284,7 +284,7 @@ namespace libJackSMS{
         }
         bool contactManager::addNewContact(libJackSMS::dataTypes::contact _contatto){
             manAdd=new contactManagerAdd(loginId,ps);
-            connect(manAdd,SIGNAL(contactAdded(QString)),this,SIGNAL(contactSaved(QString)));
+            connect(manAdd,SIGNAL(contactAdded(QString,bool)),this,SIGNAL(contactSaved(QString,bool)));
             connect(manAdd,SIGNAL(errorAdd()),this,SIGNAL(contactNotSaved()));
             manAdd->addNewContact(_contatto);
 
@@ -451,8 +451,9 @@ namespace libJackSMS{
             QString xml=webClient.submitPost("http://q.jacksms.it/"+loginId+"/addAbook?xml,desktop",true);
             xmlDocument.setXml(xml);
             QString resultId;
-            if(xmlDocument.checkAddNewContact(resultId)){
-                emit this->contactAdded(resultId);
+            bool canReceiveJms;
+            if(xmlDocument.checkAddNewContact(resultId,canReceiveJms)){
+                emit this->contactAdded(resultId,canReceiveJms);
             }else{
                 emit this->errorAdd();
             }

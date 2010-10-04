@@ -32,8 +32,10 @@ private:
 private slots:
     void on_pushButton_clicked();
     void on_buttonAnnulla_clicked();
-void updateOk(libJackSMS::dataTypes::configuredAccount);
-void accountNotUpdated();
+    void updateOk(libJackSMS::dataTypes::configuredAccount);
+    void accountNotUpdated();
+signals:
+    void rewriteAccunts();
 };
 
 #endif // EDITACCOUNTDIALOG_H

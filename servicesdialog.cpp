@@ -52,7 +52,7 @@ void ServicesDialog::addAccountOk(QString id){
     this->ElencoServiziConfigurati.insert(id,newAcc);
     m_ui->Salva->show();
     m_ui->labelSpinAddAccount->hide();
-    padre->ReWriteConfiguredServicesToGui();
+    emit rewriteAccounts();
     this->close();
 }
 ServicesDialog::~ServicesDialog()

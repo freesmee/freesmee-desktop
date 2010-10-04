@@ -5,7 +5,7 @@
 #include <QDesktopServices>
 
 
-SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QString user,QString service,QString _id,libJackSMS::dataTypes::phoneNumber _number,bool _letto):type(received),id(_id),number(_number),readed(_letto),dateTim(time)
+SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QString user,QString service,QString _id,libJackSMS::dataTypes::phoneNumber _number,bool _letto):type(received),id(_id),number(_number),readed(_letto),dateTim(time),originalText(_txt)
 {
 
        labelGroup = new QLabel(user);
@@ -81,7 +81,7 @@ SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QStr
        adjustSize();
 
 }
-SmsWidget::SmsWidget(QMyMessage _sms,QPixmap _ico,bool received):msg(_sms),type(received),readed(_sms.getReaded()),number(_sms.getPhone()){
+SmsWidget::SmsWidget(QMyMessage _sms,QPixmap _ico,bool received):msg(_sms),type(received),readed(_sms.getReaded()),number(_sms.getPhone()),originalText(_sms.getMessage()){
 
     id=_sms.getId();
     labelGroup = new QLabel(_sms.getParsedName());
@@ -219,7 +219,7 @@ bool SmsWidget::searchMatch(QString _txt)
 
 }
 QString SmsWidget::getText()const{
-    return labelTxt->text();
+    return originalText;
 }
 void SmsWidget::resizeEvent ( QResizeEvent * s ){
 

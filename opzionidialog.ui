@@ -106,7 +106,7 @@
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>3</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="generali">
           <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -123,6 +123,27 @@
               <widget class="QCheckBox" name="checkAccountDefault">
                <property name="text">
                 <string>Imposta l'account di default quando selezioni un contatto</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="errorSmsPopup">
+               <property name="text">
+                <string>Segnala con un popup l'errore sull'invio di un SMS oJMS</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="successSmsPopup">
+               <property name="text">
+                <string>Segnala con un popup il corretto invio di un SMS o JMS</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="captchaPopup">
+               <property name="text">
+                <string>Segnala con un popup la richiesta di inserimento captcha</string>
                </property>
               </widget>
              </item>
