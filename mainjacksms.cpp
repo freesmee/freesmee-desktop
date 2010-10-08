@@ -89,13 +89,13 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     
     ui->LabelEsito->~QWidget();
     ui->LabelEsito=new QLabelResult(this);
+    ui->horizontalLayout_16->addWidget(ui->LabelEsito);
+    ui->LabelEsito->hide();
+    connect(ui->LabelEsito,SIGNAL(clicked()),this,SLOT(popupInvio()));
+
     ui->label_3->hide();
     ui->destinatariListWidget->hide();
 
-
-
-    ui->horizontalLayout_16->addWidget(ui->LabelEsito);
-    ui->LabelEsito->hide();
     /*imposto la tray icon*/
     trayIco=new QSystemTrayIcon(this);
     #ifdef __APPLE__
@@ -704,46 +704,29 @@ void MainJackSMS::popupInvio(){
 
 }
 void MainJackSMS::clickText(QString _text,QString defaultStr){
-    //libJackSMS::logger l(libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::DataDirectory(),"crash_log_click.txt"));
-    //l.addNotice("linea 1");
-    QSize s=this->size();
-    int maxlenght=((s.width()-330)/5)-defaultStr.length();
-    //l.addNotice("linea 2");
-    if (!_text.isEmpty()){
-        //l.addNotice("linea 3");
-        if (_text.length()<maxlenght){
-            ui->LabelEsito->setText(defaultStr+": "+_text);
-            if (esitoInvio.length()>=maxlenght){
-                //l.addNotice("linea 4");
-                disconnect(ui->LabelEsito,SIGNAL(clicked()),this,SLOT(popupInvio()));
-            }
-            //l.addNotice("linea 5");
 
-        }else{
-            //l.addNotice("linea 6");
+    try{
+        QSize s=this->size();
+        int maxlenght=((s.width()-330)/5)-3; //calcolo molto ma molto approssimativo e fatto a tentativi
+
+        if (!_text.isEmpty()){
+            esitoInvio=defaultStr+": "+_text;
             if (esitoInvio.length()<maxlenght){
-                //l.addNotice("linea 7");
-                connect(ui->LabelEsito,SIGNAL(clicked()),this,SLOT(popupInvio()));
-
+                ui->LabelEsito->setText(esitoInvio);
+            }else{
+                ui->LabelEsito->setText(esitoInvio.left(maxlenght)+"...");
             }
-           // l.addNotice("linea 8");
-            esitoInvio=_text;
-            ui->LabelEsito->setText(defaultStr+": "+_text.left(maxlenght)+"...");
+        }else{
+            esitoInvio=defaultStr;
+            ui->LabelEsito->setText(defaultStr+"!");
         }
-        //l.addNotice("linea 9");
-
-
-    }else{
-       // l.addNotice("linea 10");
-        if (!esitoInvio.isEmpty()){
-            disconnect(ui->LabelEsito,SIGNAL(clicked()),this,SLOT(popupInvio()));
-           // l.addNotice("linea 11");
-        }
+    }catch(...){
+        esitoInvio=defaultStr+": "+_text;
         ui->LabelEsito->setText(defaultStr+"!");
     }
-    //l.addNotice("linea 11");
 }
 void MainJackSMS::invioSuccesso(QString _text){
+    smsSender->disconnect(this);
     smsSender->deleteLater();
     clickText(_text,"Messaggio inviato");
 
@@ -762,6 +745,7 @@ void MainJackSMS::invioSuccesso(QString _text){
                                            "",
                                            ultimoSms.getMessage()
                                            );
+    us.setAccountId(ultimoSms.getAccountId());
 
     libJackSMS::dataTypes::optionsType::const_iterator iter=Opzioni.find("save-local");
 
@@ -808,25 +792,20 @@ void MainJackSMS::invioSuccesso(QString _text){
 
 
 }
-void MainJackSMS::invioFallito(QString  _text){
-   // libJackSMS::logger l(libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::DataDirectory(),"crash_log.txt"));
-    //l.addNotice("linea 1");
+void MainJackSMS::invioFallito(QString _text){
+    smsSender->disconnect(this);
     smsSender->deleteLater();
-    //l.addNotice("linea 2");
     clickText(_text,"Messaggio non inviato");
-    //l.addNotice("linea 3");
     AbilitaUi();
-    //l.addNotice("linea 4");
     invioInCorso=false;
 
     if (invioMultiplo){
-    //    l.addNotice("linea 5");
         sendNextMessage(false,false);
     }
-   // l.addNotice("linea 6");
+
     if (Opzioni["error-send-popup"]=="yes"){
         popupJms=false;
-        this->trayIco->showMessage("JackSMS","Messaggio non inviato!\n"+_text,QSystemTrayIcon::Critical);
+        trayIco->showMessage("JackSMS","Messaggio non inviato!\n"+_text,QSystemTrayIcon::Critical);
     }
 
 
@@ -1735,14 +1714,14 @@ void MainJackSMS::DisabilitaUi(){
     ui->NumeroDestinatario->setEnabled(false);
     ui->RicercaVeloce->setEnabled(false);
     ui->bottoneinviomultiplo->setEnabled(false);
-    ui->destinatariListWidget->disconnect(this,SLOT(on_destinatariListWidget_itemDoubleClicked(QListWidgetItem*)));
-    //ui->progressBar->setValue(0);
+    if (invioMultiplo)
+        ui->destinatariListWidget->disconnect(this,SLOT(on_destinatariListWidget_itemDoubleClicked(QListWidgetItem*)));
+
 
 }
 void MainJackSMS::AbilitaUi(){
     ui->progressBar->hide();
     ui->LabelEsito->show();
-    //ui->LabelCountChars->show();
     ui->InviaSMS->show();
     ui->AnnullaSMS->hide();
     ui->AnnullaSMS->setEnabled(false);
@@ -1752,7 +1731,8 @@ void MainJackSMS::AbilitaUi(){
     ui->NumeroDestinatario->setEnabled(true);
     ui->RicercaVeloce->setEnabled(true);
     ui->bottoneinviomultiplo->setEnabled(true);
-    ui->destinatariListWidget->connect(ui->destinatariListWidget,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(on_destinatariListWidget_itemDoubleClicked(QListWidgetItem*)));
+    if (invioMultiplo)
+        ui->destinatariListWidget->connect(ui->destinatariListWidget,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(on_destinatariListWidget_itemDoubleClicked(QListWidgetItem*)));
 }
 
 void MainJackSMS::TrayClicked(){

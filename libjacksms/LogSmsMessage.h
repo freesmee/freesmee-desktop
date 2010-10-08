@@ -35,6 +35,7 @@ namespace libJackSMS{
                 dateTime data;
                 QString id;
                 QString testo;
+                QString accountId;
             public:
                 logSmsMessage();
                 logSmsMessage(const phoneNumber &_destinatario,const QString &_account,const QString &_idservizio,const dateTime &_data,const QString &_id,const QString &_testo);
@@ -42,6 +43,8 @@ namespace libJackSMS{
                 void setId(const QString & _id);
                 const phoneNumber & getPhoneNumber() const;
                 QString getAccount() const;
+                QString getAccountId() const;
+                void setAccountId(QString _id);
                 QString getServiceId() const;
                 QString getText() const;
                 dateTime getDate() const;

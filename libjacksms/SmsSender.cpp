@@ -89,6 +89,7 @@ namespace libJackSMS{
 
 
             }
+            sndr.disconnect(this);
 
         }catch(libJackSMS::netClient::abortedException e){
 
@@ -191,6 +192,7 @@ namespace libJackSMS{
                     webClient->setProxyAuthentication(ps.getUsername(),ps.getPassword());
 
             }
+
 
 
             webClient->setUserAgent("Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.3) Gecko/20070309 Firefox/2.0.0.3");
@@ -502,9 +504,11 @@ namespace libJackSMS{
             }
             if ((!resultSend) && (!resultError)){
                 log.addNotice("Ho raggiunto la fine delle pagine da elaborare per il servizio ma non ho ricevuto alcun errore o alcuna stringa accettante: marco come fallito l'invio.");
+                webClient->clearCookies();
                 emit error("Errore durante l'invio.");
-            }
 
+            }
+            webClient->~netClientGeneric();
         }
         //log.save();
 

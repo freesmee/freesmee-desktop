@@ -19,6 +19,7 @@ namespace libJackSMS{
 
 
             public:
+                void clear();
                 void saveToDisk(QString filename);
                 void loadFromDisk(QString filename);
                 QString getRawData();
@@ -49,7 +50,9 @@ namespace libJackSMS{
             bool proxyConfigured;
             bool aborted;
             bool error;
+
             QString ua;
+            bool errorPage;
         public:
             netClientQHttp(QObject *parent = 0);
             ~netClientQHttp();
@@ -72,6 +75,7 @@ namespace libJackSMS{
             bool interrupt();
             bool getAborted();
             void clearCookies();
+            bool hasError();
         signals:
             void pageDownloaded();
 

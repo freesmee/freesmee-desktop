@@ -54,6 +54,7 @@ namespace libJackSMS{
                 virtual bool interrupt()=0;
                 virtual bool getAborted()=0;
                 virtual void clearCookies()=0;
+                virtual bool hasError()=0;
 
         };
     }

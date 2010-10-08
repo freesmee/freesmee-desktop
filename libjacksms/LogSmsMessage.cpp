@@ -49,7 +49,12 @@ namespace libJackSMS{
             dateTime logSmsMessage::getDate() const{
                 return data;
             }
-
+            QString logSmsMessage::getAccountId() const{
+                return accountId;
+            }
+            void logSmsMessage::setAccountId(QString _id){
+                accountId=_id;
+            }
     }
 
 }

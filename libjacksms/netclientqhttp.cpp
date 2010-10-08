@@ -40,10 +40,10 @@ namespace libJackSMS{
                         QDateTime ct=QDateTime::currentDateTime();
                         //QDateTime say: if the cookie is a session cookie , epirationDate()
                         //will return an invalid date.. but i want the session cookie!
-                        if (!dd.isValid())
+                        //if (!dd.isValid())
                             myCookieList.push_back(*i);
-                        else if (dd>ct)
-                            myCookieList.push_back(*i);
+                        //else if (dd>ct)
+                        //    myCookieList.push_back(*i);
                     }
 
                 }
@@ -61,6 +61,9 @@ namespace libJackSMS{
 
 
         }
+        void QMyNetworkCookieJar::clear(){
+            setAllCookies(QList<QNetworkCookie>());
+        }
 
 
 
@@ -73,7 +76,8 @@ namespace libJackSMS{
             //lastSocketIsSsl(false),
             proxyConfigured(false),
             aborted(false),
-            error(false)
+            error(false),
+            errorPage(false)
         {
            // client=new QHttp;
             connect(&request,SIGNAL(finished(QNetworkReply*)),this,SLOT(endRequest(QNetworkReply*)));
@@ -83,13 +87,15 @@ namespace libJackSMS{
 
         }
         netClientQHttp::~netClientQHttp(){
-            //client->~QHttp();
+            reply->deleteLater();
+            cookies->deleteLater();
+            loop->deleteLater();
+
 
         }
         void netClientQHttp::clearCookies(){
             QFile::remove(cookieFilename);
-            cookies->deleteLater();
-            cookies=new QMyNetworkCookieJar;
+            cookies->clear();
         }
         void netClientQHttp::endRequest(QNetworkReply* reply){
             if (reply->error()==QNetworkReply::NoError){
@@ -97,6 +103,7 @@ namespace libJackSMS{
                 error=false;
             }else{
                 _lastReadedUrlCode=reply->errorString().toAscii();
+
                 error=true;
             }
              emit pageDownloaded();
@@ -154,7 +161,7 @@ namespace libJackSMS{
             reply=request.get(r);
 
             loop->exec(QEventLoop::ExcludeUserInputEvents);
-
+            errorPage=error;
             if (error){
                 error=false;
                 headers.clear();
@@ -212,7 +219,7 @@ namespace libJackSMS{
             makeQueryString(false);
             reply=request.post(r,lastQueryString.toAscii());
             loop->exec(QEventLoop::ExcludeUserInputEvents);
-
+            errorPage=error;
             if (error){
                 error=false;
                 headers.clear();
@@ -288,7 +295,7 @@ namespace libJackSMS{
 
             reply=request.get(r);
             loop->exec(QEventLoop::ExcludeUserInputEvents);
-
+            errorPage=error;
             if (error){
                 error=false;
                 headers.clear();
@@ -371,6 +378,9 @@ namespace libJackSMS{
         }
         bool netClientQHttp::getAborted(){
             return aborted;
+        }
+        bool netClientQHttp::hasError(){
+            return errorPage;
         }
     }
 }
