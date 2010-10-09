@@ -41,7 +41,7 @@ namespace libJackSMS{
             servizi(_services),
             ps(_ps),
             continueSendFlag(false){
-        connect(this,SIGNAL(finished()),this,SLOT(deleteLater()));
+
 
     }
     void smsSender::setRecipient(const dataTypes::phoneNumber & _dest){
@@ -107,8 +107,14 @@ namespace libJackSMS{
 
     void smsSender::slotOperation(){emit operation();}
     void smsSender::slotOperation(QString s){emit operation(s);}
-    void smsSender::slotError(QString s){emit error(s);}
-    void smsSender::slotSuccess(QString s ){emit success(s);}
+    void smsSender::slotError(QString s){
+        emit error(s);
+        connect(this,SIGNAL(finished()),this,SLOT(deleteLater()));
+    }
+    void smsSender::slotSuccess(QString s ){
+        emit success(s);
+        connect(this,SIGNAL(finished()),this,SLOT(deleteLater()));
+    }
     void smsSender::slotCaptcha(QByteArray a){
         emit captcha(a);
     }
