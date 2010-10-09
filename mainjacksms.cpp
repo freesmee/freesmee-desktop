@@ -153,7 +153,6 @@ MainJackSMS::MainJackSMS(QWidget *parent)
 
 
 
-    ui->username->setFocus();
     ui->progressBar->hide();
     ui->LabelCountChars->show();
     ui->AnnullaSMS->hide();
@@ -205,9 +204,29 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     libJackSMS::localApi::synchronousOptionLoader l("");
     if(l.load(GlobalOptions)){
         Opzioni=GlobalOptions;
-        if (GlobalOptions["save-passwd"]=="yes")
+
+        /*l'utente di default potrebbe non essere impostato, caso tipico del primo avvio*/
+        libJackSMS::dataTypes::optionsType::const_iterator i= GlobalOptions.find("default-user");
+        if (i!=GlobalOptions.end()) {
+            bool tointcheck;
+            int userindex = i.value().toInt(&tointcheck, 10);
+            if (tointcheck)
+                ui->username->setCurrentIndex(userindex);
+
+        }
+
+        if (GlobalOptions["save-passwd"]=="yes") {
             ui->ricordaPassword->setChecked(true);
-        libJackSMS::dataTypes::optionsType::const_iterator i= GlobalOptions.find("window-height");
+            ui->loginButton->setDefault(true);
+            ui->loginButton->setFocus();
+
+            if (GlobalOptions["auto-login"]=="yes")
+                ui->loginButton->animateClick();
+
+        } else {
+            ui->username->setFocus();
+        }
+        i= GlobalOptions.find("window-height");
         if (i!=GlobalOptions.end()){
             bool ok;
             int h=i.value().toInt(&ok,10);
@@ -283,6 +302,7 @@ void MainJackSMS::translateGui(){
             ui->buttonLostPassword->setText(lm->getString("5"));
             ui->label_19->setText(lm->getString("7"));
             ui->ricordaPassword->setText(lm->getString("6"));
+            ui->autoLogin->setText(lm->getString("31"));
             ui->label->setText(lm->getString("8"));
             ui->label_2->setText(lm->getString("9"));
             ui->label_7->setText(lm->getString("10"));
@@ -726,8 +746,7 @@ void MainJackSMS::clickText(QString _text,QString defaultStr){
     }
 }
 void MainJackSMS::invioSuccesso(QString _text){
-    smsSender->disconnect(this);
-    smsSender->deleteLater();
+
     clickText(_text,"Messaggio inviato");
 
 
@@ -793,8 +812,6 @@ void MainJackSMS::invioSuccesso(QString _text){
 
 }
 void MainJackSMS::invioFallito(QString _text){
-    smsSender->disconnect(this);
-    smsSender->deleteLater();
     clickText(_text,"Messaggio non inviato");
     AbilitaUi();
     invioInCorso=false;
@@ -2108,10 +2125,18 @@ void MainJackSMS::optionsLoaded(libJackSMS::dataTypes::optionsType op){
         GlobalOptions["save-passwd"]="no";
         Opzioni["save-passwd"]="no";
         Opzioni["password"]="";
-
-
-
     }
+
+    if (ui->autoLogin->isChecked()){
+        GlobalOptions["auto-login"]="yes";
+        Opzioni["auto-login"]="yes";
+    } else {
+        GlobalOptions["auto-login"]="no";
+        Opzioni["auto-login"]="no";
+    }
+
+    GlobalOptions["default-user"]=QString::number(ui->username->currentIndex());
+
     libJackSMS::localApi::optionManager man("",GlobalOptions);
     man.save();
     libJackSMS::localApi::optionManager man2(current_user_directory,Opzioni);
@@ -2357,6 +2382,10 @@ void MainJackSMS::on_actionLogout_triggered()
     if (GlobalOptions["save-passwd"]!="yes"){
         ui->password->clear();
     }
+
+    GlobalOptions["auto-login"]="no";
+    Opzioni["auto-login"]="no";
+    ui->autoLogin->setChecked(false);
 
     if (updateChecker->isRunning()){
         updateChecker->abort();
@@ -2770,4 +2799,14 @@ void MainJackSMS::on_actionCsv_triggered()
         QMessageBox::information(this,"JackSMS","Rubrica esportata.");
     }
 
+}
+
+void MainJackSMS::on_ricordaPassword_stateChanged(int stato)
+{
+    if (stato == Qt::Checked) {
+        ui->autoLogin->setEnabled(true);
+    } else {
+        ui->autoLogin->setChecked(false);
+        ui->autoLogin->setEnabled(false);
+    }
 }

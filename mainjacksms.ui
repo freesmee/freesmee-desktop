@@ -20,7 +20,7 @@
    <string>JackSMS</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="resources.qrc">
     <normaloff>:/resource/jacksms_logo_normal.png</normaloff>:/resource/jacksms_logo_normal.png</iconset>
   </property>
   <property name="styleSheet">
@@ -46,7 +46,7 @@
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="login">
        <layout class="QHBoxLayout" name="horizontalLayout_18">
@@ -114,7 +114,7 @@ QFrame#frame_old{
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap>:/resource/jacksms_logo_medium_light.png</pixmap>
+                   <pixmap resource="resources.qrc">:/resource/jacksms_logo_medium_light.png</pixmap>
                   </property>
                   <property name="scaledContents">
                    <bool>false</bool>
@@ -124,13 +124,6 @@ QFrame#frame_old{
                   </property>
                   <property name="margin">
                    <number>5</number>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QLabel" name="label_10">
-                  <property name="text">
-                   <string>Username</string>
                   </property>
                  </widget>
                 </item>
@@ -181,7 +174,7 @@ QFrame#frame_old{
                   </property>
                  </widget>
                 </item>
-                <item row="6" column="1">
+                <item row="7" column="1">
                  <spacer name="verticalSpacer_3">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
@@ -197,7 +190,7 @@ QFrame#frame_old{
                   </property>
                  </spacer>
                 </item>
-                <item row="7" column="1">
+                <item row="8" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout">
                   <item>
                    <spacer name="horizontalSpacer_8">
@@ -243,7 +236,7 @@ QFrame#frame_old{
                   </item>
                  </layout>
                 </item>
-                <item row="11" column="1">
+                <item row="12" column="1">
                  <spacer name="verticalSpacer">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
@@ -259,14 +252,7 @@ QFrame#frame_old{
                   </property>
                  </spacer>
                 </item>
-                <item row="5" column="1">
-                 <widget class="QCheckBox" name="ricordaPassword">
-                  <property name="text">
-                   <string>Ricorda la password</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="8" column="1">
+                <item row="9" column="1">
                  <spacer name="verticalSpacer_6">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
@@ -279,13 +265,13 @@ QFrame#frame_old{
                   </property>
                  </spacer>
                 </item>
-                <item row="9" column="1">
+                <item row="10" column="1">
                  <widget class="QPushButton" name="buttonNoAccount">
                   <property name="text">
                    <string>Non ho un account JackSMS</string>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="resources.qrc">
                     <normaloff>:/resource/freccia.png</normaloff>:/resource/freccia.png</iconset>
                   </property>
                   <property name="flat">
@@ -293,16 +279,43 @@ QFrame#frame_old{
                   </property>
                  </widget>
                 </item>
-                <item row="10" column="1">
+                <item row="11" column="1">
                  <widget class="QPushButton" name="buttonLostPassword">
                   <property name="text">
                    <string>Dimenticato la password?</string>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="resources.qrc">
                     <normaloff>:/resource/freccia.png</normaloff>:/resource/freccia.png</iconset>
                   </property>
                   <property name="flat">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLabel" name="label_10">
+                  <property name="text">
+                   <string>Username</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="1">
+                 <widget class="QCheckBox" name="ricordaPassword">
+                  <property name="text">
+                   <string>Ricorda la password</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="6" column="1">
+                 <widget class="QCheckBox" name="autoLogin">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>Login Automatico</string>
+                  </property>
+                  <property name="checkable">
                    <bool>true</bool>
                   </property>
                  </widget>
@@ -497,7 +510,7 @@ QFrame#frame_3_old{
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="icon">
-            <iconset>
+            <iconset resource="resources.qrc">
              <normaloff>:/resource/jacksms_icona_sms_24x24-1.png</normaloff>:/resource/jacksms_icona_sms_24x24-1.png</iconset>
            </attribute>
            <attribute name="title">
@@ -726,7 +739,7 @@ QFrame#frame_3_old{
                    <string>Ferma</string>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="resources.qrc">
                     <normaloff>:/resource/stop.png</normaloff>:/resource/stop.png</iconset>
                   </property>
                   <property name="iconSize">
@@ -761,7 +774,7 @@ QFrame#frame_3_old{
                    <string>Invia</string>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="resources.qrc">
                     <normaloff>:/resource/invia.png</normaloff>:/resource/invia.png</iconset>
                   </property>
                   <property name="iconSize">
@@ -891,7 +904,7 @@ QFrame#frame_3_old{
           </widget>
           <widget class="QWidget" name="tabIm">
            <attribute name="icon">
-            <iconset>
+            <iconset resource="resources.qrc">
              <normaloff>:/resource/jacksms_icona_im_24x24-3.png</normaloff>:/resource/jacksms_icona_im_24x24-3.png</iconset>
            </attribute>
            <attribute name="title">
@@ -938,7 +951,7 @@ p, li { white-space: pre-wrap; }
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap>:/resource/findd.png</pixmap>
+                   <pixmap resource="resources.qrc">:/resource/findd.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -972,7 +985,7 @@ p, li { white-space: pre-wrap; }
                    <string>Rispondi</string>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="resources.qrc">
                     <normaloff>:/resource/inoltra.png</normaloff>:/resource/inoltra.png</iconset>
                   </property>
                   <property name="iconSize">
@@ -989,7 +1002,7 @@ p, li { white-space: pre-wrap; }
                    <string>Citazione</string>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="resources.qrc">
                     <normaloff>:/resource/inoltra.png</normaloff>:/resource/inoltra.png</iconset>
                   </property>
                   <property name="iconSize">
@@ -1026,7 +1039,7 @@ p, li { white-space: pre-wrap; }
                    <string>Disattivo</string>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="resources.qrc">
                     <normaloff>:/resource/jms-not-active.png</normaloff>:/resource/jms-not-active.png</iconset>
                   </property>
                   <property name="flat">
@@ -1042,7 +1055,7 @@ p, li { white-space: pre-wrap; }
           </widget>
           <widget class="QWidget" name="Messaggi">
            <attribute name="icon">
-            <iconset>
+            <iconset resource="resources.qrc">
              <normaloff>:/resource/jacksms_icona_im_24x24-3.png</normaloff>:/resource/jacksms_icona_im_24x24-3.png</iconset>
            </attribute>
            <attribute name="title">
@@ -1082,7 +1095,7 @@ p, li { white-space: pre-wrap; }
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap>:/resource/findd.png</pixmap>
+                   <pixmap resource="resources.qrc">:/resource/findd.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -1129,7 +1142,7 @@ p, li { white-space: pre-wrap; }
                        <string>Rispondi</string>
                       </property>
                       <property name="icon">
-                       <iconset>
+                       <iconset resource="resources.qrc">
                         <normaloff>:/resource/inoltra.png</normaloff>:/resource/inoltra.png</iconset>
                       </property>
                       <property name="iconSize">
@@ -1146,7 +1159,7 @@ p, li { white-space: pre-wrap; }
                        <string>Citazione</string>
                       </property>
                       <property name="icon">
-                       <iconset>
+                       <iconset resource="resources.qrc">
                         <normaloff>:/resource/inoltra.png</normaloff>:/resource/inoltra.png</iconset>
                       </property>
                       <property name="iconSize">
@@ -1165,7 +1178,7 @@ p, li { white-space: pre-wrap; }
                      <string>Inoltra</string>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="resources.qrc">
                       <normaloff>:/resource/inoltra.png</normaloff>:/resource/inoltra.png</iconset>
                     </property>
                     <property name="iconSize">
@@ -1184,7 +1197,7 @@ p, li { white-space: pre-wrap; }
                    <string>Elimina selezionati</string>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="resources.qrc">
                     <normaloff>:/resource/rimuovi.png</normaloff>:/resource/rimuovi.png</iconset>
                   </property>
                   <property name="iconSize">
@@ -1216,7 +1229,7 @@ p, li { white-space: pre-wrap; }
           </widget>
           <widget class="QWidget" name="tab_2">
            <attribute name="icon">
-            <iconset>
+            <iconset resource="resources.qrc">
              <normaloff>:/resource/jacksms_icona_rubrica_24x24-1.png</normaloff>:/resource/jacksms_icona_rubrica_24x24-1.png</iconset>
            </attribute>
            <attribute name="title">
@@ -1253,7 +1266,7 @@ p, li { white-space: pre-wrap; }
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap>:/resource/findd.png</pixmap>
+                   <pixmap resource="resources.qrc">:/resource/findd.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -1290,7 +1303,7 @@ p, li { white-space: pre-wrap; }
                    <string>Aggiungi</string>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="resources.qrc">
                     <normaloff>:/resource/aggiungi.png</normaloff>:/resource/aggiungi.png</iconset>
                   </property>
                   <property name="iconSize">
@@ -1313,7 +1326,7 @@ p, li { white-space: pre-wrap; }
                    <string>Modifica</string>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="resources.qrc">
                     <normaloff>:/resource/edit.png</normaloff>:/resource/edit.png</iconset>
                   </property>
                   <property name="iconSize">
@@ -1336,7 +1349,7 @@ p, li { white-space: pre-wrap; }
                    <string>Elimina</string>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="resources.qrc">
                     <normaloff>:/resource/rimuovi.png</normaloff>:/resource/rimuovi.png</iconset>
                   </property>
                   <property name="iconSize">
@@ -1393,7 +1406,7 @@ p, li { white-space: pre-wrap; }
           </widget>
           <widget class="QWidget" name="tab_3">
            <attribute name="icon">
-            <iconset>
+            <iconset resource="resources.qrc">
              <normaloff>:/resource/jacksms_icona_servizi_24x24-1.png</normaloff>:/resource/jacksms_icona_servizi_24x24-1.png</iconset>
            </attribute>
            <attribute name="title">
@@ -1430,7 +1443,7 @@ p, li { white-space: pre-wrap; }
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap>:/resource/findd.png</pixmap>
+                   <pixmap resource="resources.qrc">:/resource/findd.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -1470,7 +1483,7 @@ p, li { white-space: pre-wrap; }
                    <string>Aggiungi</string>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="resources.qrc">
                     <normaloff>:/resource/aggiungi.png</normaloff>:/resource/aggiungi.png</iconset>
                   </property>
                   <property name="iconSize">
@@ -1496,7 +1509,7 @@ p, li { white-space: pre-wrap; }
                    <string>Modifica</string>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="resources.qrc">
                     <normaloff>:/resource/edit.png</normaloff>:/resource/edit.png</iconset>
                   </property>
                   <property name="iconSize">
@@ -1519,7 +1532,7 @@ p, li { white-space: pre-wrap; }
                    <string>Elimina</string>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="resources.qrc">
                     <normaloff>:/resource/rimuovi.png</normaloff>:/resource/rimuovi.png</iconset>
                   </property>
                   <property name="iconSize">
@@ -1588,7 +1601,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>550</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1607,7 +1620,7 @@ p, li { white-space: pre-wrap; }
       <string>Strumenti avanzati</string>
      </property>
      <property name="icon">
-      <iconset>
+      <iconset resource="resources.qrc">
        <normaloff>:/resource/7.png</normaloff>:/resource/7.png</iconset>
      </property>
      <widget class="QMenu" name="menuEsporta_rubrica">
@@ -1640,7 +1653,7 @@ p, li { white-space: pre-wrap; }
   </widget>
   <action name="actionEsci">
    <property name="icon">
-    <iconset>
+    <iconset resource="resources.qrc">
      <normaloff>:/resource/quit.png</normaloff>:/resource/quit.png</iconset>
    </property>
    <property name="text">
@@ -1649,7 +1662,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionOpzioni">
    <property name="icon">
-    <iconset>
+    <iconset resource="resources.qrc">
      <normaloff>:/resource/7.png</normaloff>:/resource/7.png</iconset>
    </property>
    <property name="text">
@@ -1658,7 +1671,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionInfo_su_JackSMS">
    <property name="icon">
-    <iconset>
+    <iconset resource="resources.qrc">
      <normaloff>:/resource/jacksms_logo_normal.png</normaloff>:/resource/jacksms_logo_normal.png</iconset>
    </property>
    <property name="text">
@@ -1667,7 +1680,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionCrea_backup_configurazione">
    <property name="icon">
-    <iconset>
+    <iconset resource="resources.qrc">
      <normaloff>:/resource/exportbackup.png</normaloff>:/resource/exportbackup.png</iconset>
    </property>
    <property name="text">
@@ -1676,7 +1689,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionImporta_Backup">
    <property name="icon">
-    <iconset>
+    <iconset resource="resources.qrc">
      <normaloff>:/resource/importbackup.png</normaloff>:/resource/importbackup.png</iconset>
    </property>
    <property name="text">
@@ -1685,7 +1698,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionLogout">
    <property name="icon">
-    <iconset>
+    <iconset resource="resources.qrc">
      <normaloff>:/resource/quit.png</normaloff>:/resource/quit.png</iconset>
    </property>
    <property name="text">
@@ -1699,7 +1712,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionTutti_i_messaggi">
    <property name="icon">
-    <iconset>
+    <iconset resource="resources.qrc">
      <normaloff>:/resource/3.png</normaloff>:/resource/3.png</iconset>
    </property>
    <property name="text">
@@ -1708,7 +1721,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionStatistiche">
    <property name="icon">
-    <iconset>
+    <iconset resource="resources.qrc">
      <normaloff>:/resource/5.png</normaloff>:/resource/5.png</iconset>
    </property>
    <property name="text">
@@ -1717,7 +1730,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionPlugins">
    <property name="icon">
-    <iconset>
+    <iconset resource="resources.qrc">
      <normaloff>:/resource/plugin.png</normaloff>:/resource/plugin.png</iconset>
    </property>
    <property name="text">
@@ -1776,6 +1789,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>RispondiIm</tabstop>
   <tabstop>buttonStatusJms</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -126,6 +126,7 @@ private:
     bool firstResize;
     void clickText(QString text,QString defaultStr);
 private slots:
+    void on_ricordaPassword_stateChanged(int );
     void ReWriteConfiguredServicesToGui();
     void on_actionCsv_triggered();
     void on_listServiziConfigurati_itemDoubleClicked(QListWidgetItem* item);

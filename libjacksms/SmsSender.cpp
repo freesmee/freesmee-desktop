@@ -41,6 +41,7 @@ namespace libJackSMS{
             servizi(_services),
             ps(_ps),
             continueSendFlag(false){
+        connect(this,SIGNAL(finished()),this,SLOT(deleteLater()));
 
     }
     void smsSender::setRecipient(const dataTypes::phoneNumber & _dest){

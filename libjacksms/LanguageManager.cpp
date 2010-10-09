@@ -67,6 +67,7 @@ namespace libJackSMS{
         l.setString("28","Attivo");
         l.setString("29","Connessione...");
         l.setString("30","Disattivo");
+        l.setString("31","Login Automatico");
         //languages.push_back(l);
     }
 
@@ -101,6 +102,7 @@ namespace libJackSMS{
         l.setString("28","Active");
         l.setString("29","Connecting...");
         l.setString("30","Inactive");
+        l.setString("31","Automatic Login");
 
         //languages.push_back(l);
 

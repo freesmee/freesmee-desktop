@@ -267,6 +267,8 @@ void OpzioniDialog::on_pushButton_2_clicked()
         opt2["use-proxy"]=opt["use-proxy"];
         opt2["use-proxy-auth"]=opt["use-proxy-auth"];
         opt2["save-passwd"]=opt["save-passwd"];
+        opt2["auto-login"]=opt["auto-login"];
+        opt2["default-user"]=opt["default-user"];
 
         libJackSMS::localApi::optionManager op("",opt2);
 
