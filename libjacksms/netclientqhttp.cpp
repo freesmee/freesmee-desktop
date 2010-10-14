@@ -69,6 +69,7 @@ namespace libJackSMS{
 
         netClientQHttp::netClientQHttp(QObject *parent):
             QObject(parent),
+            reply(NULL),
             outputHeaders(false),
             cookies(NULL),
             userAgentSetted(false),
@@ -87,8 +88,8 @@ namespace libJackSMS{
 
         }
         netClientQHttp::~netClientQHttp(){
-            reply->deleteLater();
-            cookies->deleteLater();
+            if(reply!=NULL)reply->deleteLater();
+            if(cookies!=NULL)cookies->deleteLater();
             loop->deleteLater();
 
 

@@ -46,7 +46,7 @@
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="login">
        <layout class="QHBoxLayout" name="horizontalLayout_18">
@@ -514,7 +514,7 @@ QFrame#frame_3_old{
              <normaloff>:/resource/jacksms_icona_sms_24x24-1.png</normaloff>:/resource/jacksms_icona_sms_24x24-1.png</iconset>
            </attribute>
            <attribute name="title">
-            <string>SMS</string>
+            <string>Componi SMS</string>
            </attribute>
            <layout class="QHBoxLayout" name="horizontalLayout_17">
             <item>
@@ -908,7 +908,7 @@ QFrame#frame_3_old{
              <normaloff>:/resource/jacksms_icona_im_24x24-3.png</normaloff>:/resource/jacksms_icona_im_24x24-3.png</iconset>
            </attribute>
            <attribute name="title">
-            <string>JMS</string>
+            <string>Ricevuti</string>
            </attribute>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
             <item>
@@ -1601,7 +1601,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>550</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

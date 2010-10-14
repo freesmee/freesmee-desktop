@@ -53,6 +53,7 @@ namespace libJackSMS{
         void login::run(){
             emit loginStarted();
             l=new loginBase(username,password,ps);
+            //connect(this,SIGNAL(abortSignal()),&man,SLOT(abort()));
             connect(l,SIGNAL(accountsReceived(libJackSMS::dataTypes::configuredServicesType)),this,SLOT(slotAccountsReceived(libJackSMS::dataTypes::configuredServicesType)));
             connect(l,SIGNAL(loginFailed(QString)),this,SLOT(slotLoginFailed(QString)));
             connect(l,SIGNAL(loginSuccess(QString)),this,SLOT(slotLoginSuccess(QString)));
@@ -95,6 +96,10 @@ namespace libJackSMS{
         loginBase::~loginBase(){
             xmlResponse->~xmlParserServerApiGeneric();
         }
+      /*  void loginBase::abort(){
+
+
+        }*/
         void loginBase::doLogin(){
             webClient=new netClient::netClientQHttp();
             if (ps.useProxy()){
@@ -150,6 +155,7 @@ namespace libJackSMS{
             minutes=min;
 
         };
+
         void pingator::launchPing(){
             try{
                 timer.stop();
@@ -254,6 +260,8 @@ namespace libJackSMS{
         smsLogSaver::smsLogSaver(const QString _loginId,dataTypes::proxySettings _ps ):
             loginId(_loginId),
             ps(_ps){
+
+            qRegisterMetaType<libJackSMS::dataTypes::logSmsMessage>("libJackSMS::dataTypes::logSmsMessage");
         }
         void smsLogSaver::save(dataTypes::logSmsMessage _msg){
             msg=_msg;
@@ -280,9 +288,10 @@ namespace libJackSMS{
             else{
                 xmlResponse.setXml(xml);
                 QString id;
-                if(xmlResponse.checkSaved(id)){
+                QString total="0";
+                if(xmlResponse.checkSaved(id,total)){
                     msg.setId(id);
-                    emit this->smsSaved(msg);
+                    emit this->smsSaved(msg,total);
                 }else
                     emit this->smsNotSaved();
             }
@@ -539,6 +548,8 @@ namespace libJackSMS{
         contactManagerUpdate::contactManagerUpdate(const QString & _loginId,dataTypes::proxySettings _ps )
             :loginId(_loginId),
             ps(_ps){
+
+
             qRegisterMetaType<libJackSMS::dataTypes::contact>("libJackSMS::dataTypes::contact");
         }
         bool contactManagerUpdate::updateContact(libJackSMS::dataTypes::contact _contatto){
@@ -870,6 +881,7 @@ namespace libJackSMS{
             sock.disconnectFromHost();
             pingTimer.stop();
             pingTimeout.stop();
+            sock.abort();
         }
         void permanentInstantMessenger::ping(){
             if (sock.write("\r\n")!=-1)
@@ -955,7 +967,10 @@ namespace libJackSMS{
 
         }
         permanentInstantMessenger::~permanentInstantMessenger(){
-            sock.waitForDisconnected(1000);
+            if (sock.state()!=QAbstractSocket::UnconnectedState)
+                sock.waitForDisconnected(10000);
+
+
         }
 
 

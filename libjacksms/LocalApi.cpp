@@ -330,6 +330,7 @@ namespace libJackSMS{
         }
 
         bool statsManager::increaseSentStat(const libJackSMS::dataTypes::configuredAccount & _servizio){
+
             bool ok;
             int n=_servizio.getStat("sent").toInt(&ok,10)+1;
             return xmlDocument->updateStat(_servizio.getId(),"sent",QString::number(n));

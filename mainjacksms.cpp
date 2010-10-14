@@ -275,17 +275,10 @@ void MainJackSMS::resizeEvent ( QResizeEvent * s){
 }
 MainJackSMS::~MainJackSMS()
 {
+
+
     if (updateChecker!=NULL)
-        if (updateChecker->isRunning()){
-            updateChecker->abort();
-
-        }
-    if (imChecker!=NULL && Opzioni["receive-im"]!="no"){
-
-        imChecker->stop();
-        delete imChecker;
-
-    }
+        delete updateChecker;
 
     delete trayIco;
     delete ui;
@@ -513,12 +506,33 @@ void MainJackSMS::WriteConfiguredServicesToGui(){
            item->setSizeHint(xx.value()->size());
            ui->listServiziConfigurati->addItem(item);
            ui->listServiziConfigurati->setItemWidget(item, xx.value());
-           ui->comboServizio->addItem(xx.value()->getIcon(),xx.value()->getName());
+           QString sa=ElencoServiziConfigurati[xx.value()->getAccountId()].getStat("sent-all");
+           if (sa=="0")
+               sa=xx.value()->getName();
+           else
+               sa=xx.value()->getName()+" ["+sa+"]";
+           ui->comboServizio->addItem(xx.value()->getIcon(),sa,xx.value()->getName());
 
        }
 
     }catch(...){
         QMessageBox::critical(this,"JackSMS","JackSMS ha rilevato un errore grave durante la procedura WriteConfiguredServicesToGui().\nDettagli: unknown error, section: "+QString::number(section));
+    }
+
+}
+
+void MainJackSMS::updateAccountCountComboBox(QString id){
+
+    libJackSMS::dataTypes::configuredServicesType::const_iterator i=ElencoServiziConfigurati.begin();
+    libJackSMS::dataTypes::configuredServicesType::const_iterator i_end=ElencoServiziConfigurati.end();
+    for(;i!=i_end;++i){
+        if (i.value().getId()==id){
+            QString name=i.value().getName();
+            int index=ui->comboServizio->findData(name,Qt::UserRole);
+            ui->comboServizio->setItemText(index,name+" ["+ElencoServiziConfigurati[id].getStat("sent-all")+"]");
+            break;
+
+        }
     }
 
 }
@@ -750,6 +764,14 @@ void MainJackSMS::clickText(QString _text,QString defaultStr){
         ui->LabelEsito->setText(defaultStr+"!");
     }
 }
+void MainJackSMS::smsSaved(libJackSMS::dataTypes::logSmsMessage sms,QString t){
+    ElencoServiziConfigurati[sms.getAccountId()].setStat("sent-all",t);
+
+    libJackSMS::localApi::statsManager man(current_user_directory);
+    man.updateStatsOfAccount(ultimoSms.getAccountId(),"sent-all",t);
+    updateAccountCountComboBox(sms.getAccountId());
+}
+
 void MainJackSMS::invioSuccesso(QString _text){
 
     clickText(_text,"Messaggio inviato");
@@ -794,16 +816,20 @@ void MainJackSMS::invioSuccesso(QString _text){
         }
     AbilitaUi();
 
-    ElencoServiziConfigurati[ultimoSms.getAccountId()].increaseStatValue("sent");
     libJackSMS::localApi::statsManager man(current_user_directory);
     man.increaseSentStat(ElencoServiziConfigurati[ultimoSms.getAccountId()]);
+
+    ElencoServiziConfigurati[ultimoSms.getAccountId()].increaseStatValue("sent");
+
     libJackSMS::localApi::optionManager man2(current_user_directory,Opzioni);
     man2.increaseTotalSent();
 
 
 
     onlineSmsSaver=new libJackSMS::serverApi::smsLogSaver(current_login_id,Opzioni);
+    connect(onlineSmsSaver,SIGNAL(smsSaved(libJackSMS::dataTypes::logSmsMessage,QString)),this,SLOT(smsSaved(libJackSMS::dataTypes::logSmsMessage,QString)));
     onlineSmsSaver->save(us);
+
     if (invioMultiplo)
         sendNextMessage(false,true);
 
@@ -858,7 +884,7 @@ void MainJackSMS::sendNextMessage(bool first, bool result){
                 libJackSMS::dataTypes::configuredServicesType::const_iterator i_end=ElencoServiziConfigurati.end();
 
                 for(;i!=i_end;++i){
-                    if (i.value().getName()==ui->comboServizio->currentText()){
+                    if (i.value().getName()==ui->comboServizio->itemData(ui->comboServizio->currentIndex(),Qt::UserRole).toString()){
                         idAccount=i.key();
                         break;
                     }
@@ -874,7 +900,7 @@ void MainJackSMS::sendNextMessage(bool first, bool result){
                 ultimoSms.setServiceId("40");
             }
             else if (messageType==TYPE_SMS){
-                ultimoSms.setAccountName(ui->comboServizio->currentText());
+                ultimoSms.setAccountName(ui->comboServizio->itemData(ui->comboServizio->currentIndex(),Qt::UserRole).toString());
                 ultimoSms.setServiceId(ElencoServiziConfigurati[idAccount].getService());
 
             }
@@ -943,7 +969,7 @@ void MainJackSMS::on_InviaSMS_clicked()
                 libJackSMS::dataTypes::configuredServicesType::const_iterator i_end=ElencoServiziConfigurati.end();
 
                 for(;i!=i_end;++i){
-                    if (i.value().getName()==ui->comboServizio->currentText()){
+                    if (i.value().getName()==ui->comboServizio->itemData(ui->comboServizio->currentIndex(),Qt::UserRole).toString()){
                         idAccount=i.key();
                         break;
                     }
@@ -959,7 +985,7 @@ void MainJackSMS::on_InviaSMS_clicked()
                 ultimoSms.setServiceId("40");
             }
             else if (messageType==TYPE_SMS){
-                ultimoSms.setAccountName(ui->comboServizio->currentText());
+                ultimoSms.setAccountName(ui->comboServizio->itemData(ui->comboServizio->currentIndex(),Qt::UserRole).toString());
                 ultimoSms.setServiceId(ElencoServiziConfigurati[idAccount].getService());
 
             }
@@ -1236,7 +1262,8 @@ void MainJackSMS::on_CitaButton_clicked()
         libJackSMS::dataTypes::configuredServicesType::const_iterator x_end=ElencoServiziConfigurati.end();
         for(;x!=x_end;x++){
             if (x.value().getService()=="40"){
-                int index=ui->comboServizio->findText(x.value().getName());
+
+                int index=ui->comboServizio->findData(x.value().getName(),Qt::UserRole);
                 ui->comboServizio->setCurrentIndex(index);
                 break;
             }
@@ -2001,6 +2028,7 @@ void MainJackSMS::checkInstantMessengerReceived(libJackSMS::dataTypes::logImType
                 msg.setAccountName("JackSMS Messenger");
                 MessaggiRicevuti.push_back(msg);
                 countReceivedUnreaded++;
+                ui->tabWidget->setTabText(1,"Ricevuti ("+QString::number(countReceivedUnreaded)+")");
                 SmsWidget *wid=new SmsWidget(msg,icon_jack, true);
                 mapWidgetsReceived.insert(i.value().getDate().getData(),wid);
                 mapWidgetsReceivedNew.insert(i.value().getDate().getData(),wid);
@@ -2094,10 +2122,13 @@ void MainJackSMS::countdownToGui(){
 
 }
 void MainJackSMS::setTrayIcon(){
+
     if (countReceivedUnreaded>0){
+
         trayIco->setIcon(QIcon(":/resource/tray_icon_notify.png"));
     }else{
         trayIco->setIcon(QIcon(":/resource/tray_icon.png"));
+
     }
 }
 void MainJackSMS::messagesLoaded(QList<QMyMessage> msgs){
@@ -2229,6 +2260,7 @@ void MainJackSMS::accountsReceived(libJackSMS::dataTypes::configuredServicesType
     ElencoServiziConfigurati.insert("0",*acc);
 
     libJackSMS::localApi::statsManager l(current_user_directory);
+
     l.loadStats(ElencoServiziConfigurati);
     countdownToGui();
 
@@ -2366,7 +2398,7 @@ void MainJackSMS::on_RubricaVeloce_currentItemChanged(QListWidgetItem* item, QLi
                 libJackSMS::dataTypes::configuredServicesType::const_iterator i=ElencoServiziConfigurati.find(accountId);
 
                 if (i!=ElencoServiziConfigurati.end()){
-                    int index=ui->comboServizio->findText(i.value().getName());
+                    int index=ui->comboServizio->findData(i.value().getName(),Qt::UserRole);
                     if (index>=0)
                         ui->comboServizio->setCurrentIndex(index);
                 }
@@ -2390,6 +2422,32 @@ void MainJackSMS::deleteAccountOk(QString id){
     ui->labelSpinDelAccount->hide();
     ReWriteConfiguredServicesToGui();
 }
+void MainJackSMS::closeEvent(QCloseEvent *event)
+ {
+
+    if (loggedIn){
+        loginClient->deleteLater();
+        loaderMessages->deleteLater();
+        pingator->deleteLater();
+        if (imChecker!=NULL && Opzioni["receive-im"]!="no"){
+           imChecker->stop();
+           imChecker->deleteLater();
+
+        }
+        if (updateChecker!=NULL){
+            if (updateChecker->isRunning()){
+                updateChecker->abort();
+
+
+
+            }
+
+
+        }
+    }
+
+
+ }
 
 void MainJackSMS::on_actionLogout_triggered()
 {
@@ -2416,10 +2474,11 @@ void MainJackSMS::on_actionLogout_triggered()
     if (updateChecker->isRunning()){
         updateChecker->abort();
 
-        //updateChecker->deleteLater();
+
 
     }
-    pingator->~QThread();
+
+
     ui->tabWidget->setCurrentIndex(0);
     Messaggi.clear();
     Opzioni.clear();
@@ -2478,7 +2537,7 @@ void MainJackSMS::on_RispondiIm_clicked()
               libJackSMS::dataTypes::configuredServicesType::const_iterator x_end=ElencoServiziConfigurati.end();
               for(;x!=x_end;x++){
                   if (x.value().getService()=="40"){
-                      int index=ui->comboServizio->findText(x.value().getName());
+                      int index=ui->comboServizio->findData(x.value().getName(),Qt::UserRole);
                       ui->comboServizio->setCurrentIndex(index);
                       break;
                   }
@@ -2630,7 +2689,7 @@ void MainJackSMS::on_radioSMS_clicked()
     ui->label_2->show();
     showContactByTypeInFastAbook();
     ui->radioSMS->setChecked(true);
-    on_comboServizio_currentIndexChanged(ui->comboServizio->currentText());
+    on_comboServizio_currentIndexChanged(ui->comboServizio->itemData(ui->comboServizio->currentIndex(),Qt::UserRole).toString());
 
 
 }
@@ -2702,6 +2761,12 @@ void MainJackSMS::on_imRicevutiWidget_itemPressed(QListWidgetItem* current)
             if (!w->isReaded()){
                 if (countReceivedUnreaded>0)
                     countReceivedUnreaded--;
+
+                if (countReceivedUnreaded>0)
+                    ui->tabWidget->setTabText(1,"Ricevuti ("+QString::number(countReceivedUnreaded)+")");
+                else
+                    ui->tabWidget->setTabText(1,"Ricevuti");
+                
                 w->setReaded(true);
 
                 types::QMessageListType::iterator i=MessaggiRicevuti.begin();
@@ -2806,6 +2871,7 @@ void MainJackSMS::on_listServiziConfigurati_itemDoubleClicked(QListWidgetItem* i
 void MainJackSMS::on_actionCsv_triggered()
 {
     QString fileName = QFileDialog::getSaveFileName(this,"JackSMS - Esporta rubrica","rubrica-jacksms.csv");
+    if (!fileName.isEmpty()){
     libJackSMS::dataTypes::phoneBookType::const_iterator i=Rubrica.begin();
     libJackSMS::dataTypes::phoneBookType::const_iterator i_end=Rubrica.end();
     QFile out(fileName);
@@ -2824,7 +2890,7 @@ void MainJackSMS::on_actionCsv_triggered()
         out.close();
         QMessageBox::information(this,"JackSMS","Rubrica esportata.");
     }
-
+    }
 }
 
 void MainJackSMS::on_ricordaPassword_stateChanged(int stato)
@@ -2838,6 +2904,7 @@ void MainJackSMS::on_ricordaPassword_stateChanged(int stato)
     ui->loginButton->setFocus();
 }
 
+
 void MainJackSMS::username_returnPressed(){
     ui->loginButton->animateClick();
 }
@@ -2847,3 +2914,4 @@ void MainJackSMS::on_autoLogin_stateChanged(int )
 {
     ui->loginButton->setFocus();
 }
+

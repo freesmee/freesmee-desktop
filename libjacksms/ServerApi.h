@@ -183,7 +183,7 @@ namespace libJackSMS{
                 smsLogSaver(QString _loginId,dataTypes::proxySettings _ps );
                 void save(dataTypes::logSmsMessage _msg);
             signals:
-                void smsSaved(dataTypes::logSmsMessage);
+                void smsSaved(libJackSMS::dataTypes::logSmsMessage,QString);
                 void smsNotSaved();
 
         };

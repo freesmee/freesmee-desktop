@@ -196,6 +196,7 @@ namespace libJackSMS{
                             }
                         }
                     }
+                    account.setStat("sent-all",QString::fromStdString(curElem->GetAttributeOrDefault("n","0")));
 
                     _serviziConfigurati.insert(account.getId(),account);
                 }
@@ -209,10 +210,13 @@ namespace libJackSMS{
             return true;
 
         }
-        bool xmlParserServerApiTicpp::checkSaved(QString &_id){
+        bool xmlParserServerApiTicpp::checkSaved(QString &_id,QString &totalForAccount){
             ticpp::Node *root=xmlResponse.FirstChild("JackSMS");
             ticpp::Node *child=root->FirstChild("sync");
-            _id=QString::fromStdString(child->ToElement()->GetText());
+            _id=QString::fromStdString(child->ToElement()->GetTextOrDefault("0"));
+            child=root->FirstChild("account",false);
+            if (child!=NULL)
+                totalForAccount=QString::fromStdString(child->ToElement()->GetAttributeOrDefault("n","0"));
             if((_id=="0") || (_id=="-1"))
                 return false;
             else

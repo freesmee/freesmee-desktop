@@ -41,7 +41,21 @@ StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType & _opzioni,con
         }
         {
             QTextEdit *l=new QTextEdit;
-            l->setText("<b>"+i.value().getName()+"</b><br>Inviati: "+i.value().getStat("sent"));
+
+            QString result="<b>"+i.value().getName()+"</b><br>Inviati con JackSMS Desktop: "+i.value().getStat("sent")+"<br>Inviati in totale con "+i.value().getName()+": "+i.value().getStat("sent-all");
+            /*
+            QString id=i.value().getService();
+
+            QString reset=_ElencoServizi[id].getReset();
+            if (reset.toUpper()=="DAILY"){
+                result=result.append("<br>Inviati oggi: "+i.value().getStat("sent-partial"));
+            }else if (reset.toUpper()=="MONTHLY"){
+                result=result.append("<br>Inviati in questo mese: "+i.value().getStat("sent-partial"));
+            }else if (reset.toUpper()=="WEEKLY"){
+                result=result.append("<br>Inviati in questa settimana: "+i.value().getStat("sent-partial"));
+            }*/
+
+            l->setText(result);
             l->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::MinimumExpanding);
             l->setMaximumHeight(50);
             l->setReadOnly(true);

@@ -339,7 +339,6 @@ namespace libJackSMS{
                                             ticpp::Element * thisContent= currentContent->ToElement();
                                             /********************/
 
-
                                             dataTypes::pageContent con(QString::fromStdString(thisContent->GetAttribute("name")),QString::fromStdString(thisContent->GetAttribute("left")),QString::fromStdString(thisContent->GetAttribute("right")));
 
                                             page.setContent(con);
@@ -773,6 +772,7 @@ namespace libJackSMS{
 
 
                 bool nodeExist=false;
+                bool idExist=false;
                 ticpp::Node *subRoot=log.FirstChild("stats");
                 ticpp::Node *child=NULL;
                 while( child = subRoot->IterateChildren( child ) ){
@@ -780,17 +780,34 @@ namespace libJackSMS{
                     if (child->Value()=="account-stat"){
                         QString id=QString::fromStdString(childElem->GetAttribute("account"));
                         if (id==_accountId){
-                            childElem->SetText(_statVal.toStdString());
-                            log.SaveFile();
-                            nodeExist=true;
+                            idExist=true;
+                            ticpp::Node *childStat=NULL;
+                            while( childStat = child->IterateChildren( childStat ) ){
+                                if (childStat->Value()==_statName.toStdString()){
+                                    childStat->ToElement()->SetText(_statVal.toStdString());
+                                    log.SaveFile();
+                                    nodeExist=true;
+                                }
+                            }
+                            break;
+
                         }
                     }
                 }
-                if(!nodeExist){
+                if (!idExist){
                     ticpp::Element *newNode=new ticpp::Element("account-stat");
-                    newNode->SetText("1");
                     newNode->SetAttribute("account",_accountId.toStdString());
                     subRoot->LinkEndChild(newNode);
+
+                    ticpp::Element *newStat=new ticpp::Element(_statName.toStdString());
+                    newStat->SetText(_statVal.toStdString());
+                    newNode->LinkEndChild(newStat);
+                    log.SaveFile();
+
+                }else if(!nodeExist){
+                    ticpp::Element *newStat=new ticpp::Element(_statName.toStdString());
+                    newStat->SetText(_statVal.toStdString());
+                    child->LinkEndChild(newStat);
                     log.SaveFile();
                 }
             }catch(ticpp::Exception e){
@@ -826,18 +843,32 @@ namespace libJackSMS{
                         QString id=QString::fromStdString(childElem->GetAttribute("account"));
                         dataTypes::configuredServicesType::iterator i=_services.find(id);
                         if (i!=_services.end()){
-                            std::string r=childElem->GetTextOrDefault("-1");
-                            if (r!="-1"){
+                            std::string r=childElem->GetText(false);
+                            if (!r.empty()){
+                                /*this statement is only for compatibility from old stat xml format to new stat xml format*/
                                 i.value().setStat("sent",QString::fromStdString(r));
                                 i.value().setStat("sent-partial","0");
+                                i.value().setStat("sent-all","0");
                                 childElem->SetText("");
+                                ticpp::Element *newEl=new ticpp::Element("sent");
+                                newEl->SetText(r);
+                                child->LinkEndChild(newEl);
+                                newEl=new ticpp::Element("sent-partial");
+                                child->LinkEndChild(newEl);
+                                newEl=new ticpp::Element("sent-all");
+                                child->LinkEndChild(newEl);
+                                log.SaveFile();
+
                             }else{
-                                ticpp::Node *se=child->FirstChild("sent-total");
+                                ticpp::Node *se=child->FirstChild("sent");
                                 QString r=QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));
                                 i.value().setStat("sent",r);
                                 se=child->FirstChild("sent-partial");
                                 r=QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));
                                 i.value().setStat("sent-partial",r);
+                                //se=child->FirstChild("sent-all");
+                                //r=QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));
+                                //i.value().setStat("sent-all",r);
                             }
 
                         }

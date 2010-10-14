@@ -51,7 +51,7 @@ namespace libJackSMS{
                  * Controlla se l'xml di risposta dell'api di salvataggio sms online contiene il valore di successo o meno
                  * \return \b true se il messaggio e' stato salvato, false altrimenti
                  */
-                virtual bool checkSaved(QString &_id)=0;
+                virtual bool checkSaved(QString &_id, QString &totalForAccount)=0;
 
                 /**
                  * Controlla se l'xml di risposta dell'api di aggiunta nuovo contatto online contiene il valore di successo o meno

@@ -126,8 +126,14 @@ private:
     bool firstResize;
     void clickText(QString text,QString defaultStr);
 
+    void updateAccountCountComboBox(QString id);
+    void closeEvent(QCloseEvent *event);
 private slots:
+
+    void smsSaved(libJackSMS::dataTypes::logSmsMessage sms,QString t);
+
     void on_autoLogin_stateChanged(int );
+
     void on_ricordaPassword_stateChanged(int );
     void ReWriteConfiguredServicesToGui();
     void on_actionCsv_triggered();
