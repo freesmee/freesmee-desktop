@@ -48,6 +48,7 @@ namespace libJackSMS{
             bool continueSendFlag;
             QString captchaValue;
             dataTypes::contentType contenuti;
+            bool SalvaCookies;
         public:
             smsSender(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps=dataTypes::proxySettings());
             void setRecipient(const dataTypes::phoneNumber & _dest);
@@ -56,6 +57,7 @@ namespace libJackSMS{
             void send();
             void continueSend(QString captcha_value);
             void abort();
+            void setSalvaCookies(bool value);
         private slots:
             void slotOperation();
             void slotOperation(QString);
@@ -92,6 +94,7 @@ namespace libJackSMS{
             int pageIndex;
             bool captchaInterrupt;
             dataTypes::contentType elenco_contenuti;
+            bool SalvaCookies;
         public:
             smsSenderBase(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps=dataTypes::proxySettings());
             void setNumberOfFirstPage(int _pn);
@@ -103,6 +106,8 @@ namespace libJackSMS{
             int getCaptchaPageIndex()const;
             dataTypes::contentType getContents()const;
             void setContents(dataTypes::contentType contents);
+            void setSalvaCookies(bool value);
+            void optionalDeleteCookies();
 
         public slots:
             void abort();
@@ -112,6 +117,7 @@ namespace libJackSMS{
             void error(QString);
             void success(QString);
             void captcha(QByteArray);
+
 
 
     };

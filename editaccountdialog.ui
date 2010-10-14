@@ -50,24 +50,24 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="buttonAnnulla">
-       <property name="text">
-        <string>Annulla</string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>:/resource/rimuovi.png</normaloff>:/resource/rimuovi.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="pushButton">
        <property name="text">
         <string>Salva</string>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="resources.qrc">
          <normaloff>:/resource/salva.png</normaloff>:/resource/salva.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonAnnulla">
+       <property name="text">
+        <string>Annulla</string>
+       </property>
+       <property name="icon">
+        <iconset resource="resources.qrc">
+         <normaloff>:/resource/rimuovi.png</normaloff>:/resource/rimuovi.png</iconset>
        </property>
       </widget>
      </item>
@@ -82,6 +82,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

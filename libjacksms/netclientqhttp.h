@@ -39,7 +39,6 @@ namespace libJackSMS{
             bool userAgentSetted;
             QByteArray _lastReadedUrlCode;
             bool useCookies;
-            bool saveCookies;
             QString cookieFilename;
             QEventLoop *loop;
             QList<QPair <QString,QString> > queryStringFields;
@@ -58,7 +57,7 @@ namespace libJackSMS{
             ~netClientQHttp();
             bool setTimeout(int timeout);
             void IncludeHeaders();
-            bool setCookieFile(const QString &_filename,bool savecookiefile=true);
+            bool setCookieFile(const QString &_filename);
             bool setUseCookie(bool _useCookie);
             bool setUrl(const QString &_url);
             void setUserAgent(const QString &_useragent);

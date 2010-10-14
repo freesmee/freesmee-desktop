@@ -125,7 +125,9 @@ private:
     void showContactByTypeInFastAbook();
     bool firstResize;
     void clickText(QString text,QString defaultStr);
+
 private slots:
+    void on_autoLogin_stateChanged(int );
     void on_ricordaPassword_stateChanged(int );
     void ReWriteConfiguredServicesToGui();
     void on_actionCsv_triggered();
@@ -229,6 +231,8 @@ private slots:
     void serverPinged();
     void messagesLoaded(QList<QMyMessage>);
     void errorUpdates(QString);
+
+    void username_returnPressed();
 
 };
 

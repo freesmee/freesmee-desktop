@@ -118,8 +118,7 @@ namespace libJackSMS{
             outputHeaders=true;
 
         }
-        bool netClientQHttp::setCookieFile(const QString &_filename,bool savecookiefile){
-            saveCookies=savecookiefile;
+        bool netClientQHttp::setCookieFile(const QString &_filename){
             cookieFilename=_filename;
             if (QFile::exists(_filename)){
                 cookies=new QMyNetworkCookieJar;
@@ -171,8 +170,7 @@ namespace libJackSMS{
                 //saving cookies
                 if (useCookies){
                     cookies=static_cast<QMyNetworkCookieJar*>(request.cookieJar());
-                    if (saveCookies)
-                        cookies->saveToDisk(cookieFilename);
+                    cookies->saveToDisk(cookieFilename);
                 }
 
                 QVariant redirect=reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
@@ -229,8 +227,7 @@ namespace libJackSMS{
                 //saving cookies
                 if (useCookies){
                     cookies=static_cast<QMyNetworkCookieJar*>(request.cookieJar());
-                    if (saveCookies)
-                        cookies->saveToDisk(cookieFilename);
+                    cookies->saveToDisk(cookieFilename);
                 }
 
                 QVariant redirect=reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
@@ -305,8 +302,7 @@ namespace libJackSMS{
                 //saving cookies
                 if (useCookies){
                     cookies=static_cast<QMyNetworkCookieJar*>(request.cookieJar());
-                    if (saveCookies)
-                        cookies->saveToDisk(cookieFilename);
+                    cookies->saveToDisk(cookieFilename);
                 }
 
                 QVariant redirect=reply->attribute(QNetworkRequest::RedirectionTargetAttribute);

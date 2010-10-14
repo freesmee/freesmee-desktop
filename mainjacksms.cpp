@@ -220,8 +220,10 @@ MainJackSMS::MainJackSMS(QWidget *parent)
             ui->loginButton->setDefault(true);
             ui->loginButton->setFocus();
 
-            if (GlobalOptions["auto-login"]=="yes")
+            if (GlobalOptions["auto-login"]=="yes"){
+                ui->autoLogin->setChecked(true);
                 ui->loginButton->animateClick();
+            }
 
         } else {
             ui->username->setFocus();
@@ -243,6 +245,9 @@ MainJackSMS::MainJackSMS(QWidget *parent)
         }
 
         firstResize=false;
+
+        connect( ui->username->lineEdit(), SIGNAL(returnPressed()), this, SLOT(username_returnPressed()));
+
     }
 
 }
@@ -891,6 +896,13 @@ void MainJackSMS::sendNextMessage(bool first, bool result){
             connect(smsSender,SIGNAL(error(QString)),this,SLOT(invioFallito(QString)));
             connect(smsSender,SIGNAL(success(QString)),this,SLOT(invioSuccesso(QString )));
 
+            libJackSMS::dataTypes::optionsType::const_iterator iter=Opzioni.find("dont-cookies");
+            if (iter!=Opzioni.end()){
+                if ("yes"==iter.value()){
+                    smsSender->setSalvaCookies(false);
+                }
+            }
+
             smsSender->send();
 
 
@@ -967,8 +979,14 @@ void MainJackSMS::on_InviaSMS_clicked()
 
             connect(smsSender,SIGNAL(captcha(QByteArray)),this,SLOT(displayCaptcha(QByteArray)));
             connect(smsSender,SIGNAL(error(QString)),this,SLOT(invioFallito(QString)));
-            connect(smsSender,SIGNAL(success(QString)),this,SLOT(invioSuccesso(QString )));
+            connect(smsSender,SIGNAL(success(QString)),this,SLOT(invioSuccesso(QString)));
 
+            libJackSMS::dataTypes::optionsType::const_iterator iter=Opzioni.find("dont-cookies");
+            if (iter!=Opzioni.end()){
+                if ("yes"==iter.value()){
+                    smsSender->setSalvaCookies(false);
+                }
+            }
 
             smsSender->send();
 
@@ -2243,6 +2261,14 @@ void MainJackSMS::on_loginButton_clicked()
         return;
     }
 
+    if(ui->autoLogin->isChecked()){
+        GlobalOptions["auto-login"]="yes";
+        Opzioni["auto-login"]="yes";
+    }else{
+        GlobalOptions["auto-login"]="no";
+        Opzioni["auto-login"]="no";
+    }
+
 
     current_user_directory=finder->getDataDirectory(ui->username->currentText());
     current_user_username=ui->username->currentText();
@@ -2809,4 +2835,15 @@ void MainJackSMS::on_ricordaPassword_stateChanged(int stato)
         ui->autoLogin->setChecked(false);
         ui->autoLogin->setEnabled(false);
     }
+    ui->loginButton->setFocus();
+}
+
+void MainJackSMS::username_returnPressed(){
+    ui->loginButton->animateClick();
+}
+
+
+void MainJackSMS::on_autoLogin_stateChanged(int )
+{
+    ui->loginButton->setFocus();
 }

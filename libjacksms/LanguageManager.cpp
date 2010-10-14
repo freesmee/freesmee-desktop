@@ -97,7 +97,7 @@ namespace libJackSMS{
         l.setString("23","Add");
         l.setString("24","Edit");
         l.setString("25","Delete");
-        l.setString("26","Servizi d'invio SMS");
+        l.setString("26","Services");
         l.setString("27","Receiving status:");
         l.setString("28","Active");
         l.setString("29","Connecting...");
@@ -105,6 +105,42 @@ namespace libJackSMS{
         l.setString("31","Automatic Login");
 
         //languages.push_back(l);
+
+        /*
+        dataTypes::Language l("Srpski");
+        l.setString("1","Pošalji");
+        l.setString("2","Odustani");
+        l.setString("3","Login");
+        l.setString("4","Nemam JackSMS nalog");
+        l.setString("5","Izgubio sam šifru");
+        l.setString("6","Zapamni šifru");
+        l.setString("7","Ulogovavanje");
+        l.setString("8","Primalac");
+        l.setString("9","Servis");
+        l.setString("10","Adresar");
+        l.setString("11","Traži");
+        l.setString("12","Pošalji");
+        l.setString("13","Zaustavi");
+        l.setString("14","Konverzacije");
+        l.setString("15","Adresar");
+        l.setString("16","Servisi");
+        l.setString("17","Odgovori");
+        l.setString("18","Prosledi");
+        l.setString("19","Izbriši selektovano");
+        l.setString("20","Citiraj");
+        l.setString("21","Poslalo i primljeno pomocu JackSMS");
+        l.setString("22","Adresar kontakata");
+        l.setString("23","Dodaj");
+        l.setString("24","Ažuriraj");
+        l.setString("25","Izbriši");
+        l.setString("26","Servisi");
+        l.setString("27","Status slanja:");
+        l.setString("28","Aktivan");
+        l.setString("29","Konektovanje...");
+        l.setString("30","Neaktivan");
+        l.setString("31","Automatski login");
+        //languages.push_back(l);
+        */
 
 
 

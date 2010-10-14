@@ -37,7 +37,7 @@ namespace libJackSMS{
                 virtual ~netClientGeneric(){}
                 virtual bool setTimeout(int timeout)=0;
                 virtual void IncludeHeaders()=0;
-                virtual bool setCookieFile(const QString &_filename,bool savecookiefile=true)=0;
+                virtual bool setCookieFile(const QString &_filename)=0;
                 virtual bool setUseCookie(bool _useCookie)=0;
                 virtual bool setUrl(const QString & _url)=0;
                 virtual void setUserAgent(const QString &_useragent)=0;

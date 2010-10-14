@@ -40,7 +40,8 @@ namespace libJackSMS{
     smsSender::smsSender(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps):
             servizi(_services),
             ps(_ps),
-            continueSendFlag(false){
+            continueSendFlag(false),
+            SalvaCookies(true){
 
 
     }
@@ -67,6 +68,7 @@ namespace libJackSMS{
         try{
             smsSenderBase sndr(servizi,ps);
             connect(this,SIGNAL(abortSignal()),&sndr,SLOT(abort()));
+            sndr.setSalvaCookies(this->SalvaCookies);
             sndr.setRecipient(destinatario);
             sndr.setMessage(messaggio);
             sndr.setAccount(account);
@@ -118,6 +120,9 @@ namespace libJackSMS{
     void smsSender::slotCaptcha(QByteArray a){
         emit captcha(a);
     }
+    void smsSender::setSalvaCookies(bool value){
+        SalvaCookies = value;
+    }
 
 
 
@@ -135,6 +140,13 @@ namespace libJackSMS{
     }
     int smsSenderBase::getCaptchaPageIndex()const{
         return pageIndex;
+    }
+    void smsSenderBase::setSalvaCookies(bool value){
+        SalvaCookies = value;
+    }
+    void smsSenderBase::optionalDeleteCookies(){
+        if(!SalvaCookies)
+            webClient->clearCookies();
     }
     void smsSenderBase::setNumberOfFirstPage(int _pn){
         pageIndex=_pn;
@@ -173,6 +185,7 @@ namespace libJackSMS{
     }
     void smsSenderBase::abort(){
         webClient->interrupt();
+        webClient->clearCookies();
     }
     dataTypes::contentType smsSenderBase::getContents()const{
         return elenco_contenuti;
@@ -200,12 +213,10 @@ namespace libJackSMS{
 
             }
 
-
-
             webClient->setUserAgent("Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.3) Gecko/20070309 Firefox/2.0.0.3");
             //webClient->SetCookie(directories::CookiesDirectory()+"cookie");
             webClient->setUseCookie(true);
-            webClient->setCookieFile(libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::CookiesDirectory(),account.getId()+".cookie"),true);
+            webClient->setCookieFile(libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::CookiesDirectory(),account.getId()+".cookie"));
             //webClient->IncludeHeaders();
 
             dataTypes::variousType elenco_dati_vari;
@@ -337,6 +348,7 @@ namespace libJackSMS{
                             if (!r.exactMatch(server)){
                                 emit error("Server address malformed.");
                                 resultError=true;
+                                optionalDeleteCookies();
                                 break;
                             }
                             QString host=r.cap(1);
@@ -344,6 +356,7 @@ namespace libJackSMS{
                             if (port.isEmpty()){
                                 emit error("Indirizzo del server non corretto. Porta mancante.");
                                 resultError=true;
+                                optionalDeleteCookies();
                                 break;
                             }
 
@@ -377,6 +390,7 @@ namespace libJackSMS{
 
                                     emit error(substitute(errore.getErrorMessage(),elenco_contenuti));
                                     resultError=true;
+                                    optionalDeleteCookies();
                                     break;
 
                                 }
@@ -387,6 +401,7 @@ namespace libJackSMS{
 
                                     emit success(substitute(accettante.getConfirmMessage(),elenco_contenuti));
                                     resultSend=true;
+                                    optionalDeleteCookies();
                                     break;
                                 }
                             }
@@ -502,6 +517,7 @@ namespace libJackSMS{
 
                                 emit success(substitute(accettante.getConfirmMessage(),elenco_contenuti));
                                 resultSend=true;
+                                optionalDeleteCookies();
                                 break;
                             }
                         }//end else of if has raw commands

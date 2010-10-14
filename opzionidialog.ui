@@ -148,6 +148,26 @@
               </widget>
              </item>
              <item>
+              <widget class="QCheckBox" name="nonSalvaCookies">
+               <property name="toolTip">
+                <string>Questa opzione disattiva il salvataggio delle sessioni. Utile per coloro che hanno spesso problemi di sessioni corrotte.</string>
+               </property>
+               <property name="text">
+                <string>Disattiva il salvataggio delle sessioni (cookies)</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="opzAutoLogin">
+               <property name="toolTip">
+                <string>Questa opzione viene disattivata automaticamente se si usa il tasto logout dal menu.</string>
+               </property>
+               <property name="text">
+                <string>Effettua il login automaticamente</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <spacer name="verticalSpacer">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>

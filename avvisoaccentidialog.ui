@@ -168,17 +168,6 @@ p, li { white-space: pre-wrap; }
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_2">
-         <property name="text">
-          <string>Non salvare</string>
-         </property>
-         <property name="icon">
-          <iconset resource="resources.qrc">
-           <normaloff>:/resource/rimuovi.png</normaloff>:/resource/rimuovi.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="saveButton">
          <property name="text">
           <string>Salva</string>
@@ -186,6 +175,17 @@ p, li { white-space: pre-wrap; }
          <property name="icon">
           <iconset resource="resources.qrc">
            <normaloff>:/resource/aggiungi.png</normaloff>:/resource/aggiungi.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="text">
+          <string>Non salvare</string>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/resource/rimuovi.png</normaloff>:/resource/rimuovi.png</iconset>
          </property>
         </widget>
        </item>

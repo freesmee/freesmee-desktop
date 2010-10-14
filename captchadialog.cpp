@@ -11,7 +11,7 @@
 
 
 CaptchaDialog::CaptchaDialog(const QByteArray &_imgData,QString zoomFactor,QWidget *parent ):
-    QDialog(parent),
+    QDialog(parent, Qt::WindowStaysOnTopHint),
     m_ui(new Ui::CaptchaDialog)
 {
     m_ui->setupUi(this);

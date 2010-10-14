@@ -47,10 +47,21 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType & _opt,QTextEdit
         if (iter!=opt.end())
             if ("yes"==iter.value())
                 m_ui->checkAccountDefault->setChecked(true);
+
+        iter=opt.find("auto-login");
+        if (iter!=opt.end())
+            if ("yes"==iter.value())
+                m_ui->opzAutoLogin->setChecked(true);
+
         iter=opt.find("save-local");
         if (iter!=opt.end())
             if ("yes"==iter.value())
                 m_ui->checkSalvalocale->setChecked(true);
+
+        iter=opt.find("dont-cookies");
+        if (iter!=opt.end())
+            if ("yes"==iter.value())
+                m_ui->nonSalvaCookies->setChecked(true);
 
         iter=opt.find("receive-im");
         if (iter!=opt.end()){
@@ -193,50 +204,48 @@ void OpzioniDialog::on_pushButton_2_clicked()
     if (("yes"==opt["use-proxy"])!=m_ui->CheckUsaProxy->isChecked()){
             opt["use-proxy"]=(m_ui->CheckUsaProxy->isChecked())?"yes":"no";
             saveGlobal=true;
-
     }
-
 
     if (("yes"==opt["use-proxy-auth"])!=m_ui->usaAutenticazione->isChecked()){
             opt["use-proxy-auth"]=(m_ui->usaAutenticazione->isChecked())?"yes":"no";
             saveGlobal=true;
-
     }
 
     if (opt["proxy-port"]!=m_ui->TextPort->text()){
         opt["proxy-port"]=m_ui->TextPort->text();
         saveGlobal=true;
-
     }
+
     if (opt["proxy-username"]!=m_ui->proxyUsername->text()){
         opt["proxy-username"]=m_ui->proxyUsername->text();
         saveGlobal=true;
-
     }
+
     if (opt["proxy-password"]!=m_ui->proxyPassword->text()){
         opt["proxy-password"]=m_ui->proxyPassword->text();
         saveGlobal=true;
-
     }
+
     if (opt["proxy"]!=m_ui->TextServer->text()){
         opt["proxy"]=m_ui->TextServer->text();
         saveGlobal=true;
-
     }
-
 
     if (m_ui->RadioHttp->isChecked()){
         if (opt["proxy-type"]!="http"){
             opt["proxy-type"]="http";
             saveGlobal=true;
-
         }
     }else if (m_ui->RadioSocks5->isChecked()){
        if (opt["proxy-type"]!="socks5"){
             opt["proxy-type"]="socks5";
             saveGlobal=true;
-
         }
+    }
+
+    if (("yes"==opt["auto-login"])!=m_ui->opzAutoLogin->isChecked()){
+        opt["auto-login"]=(m_ui->opzAutoLogin->isChecked())?"yes":"no";
+        saveGlobal=true;
     }
 
     libJackSMS::dataTypes::optionsType::const_iterator iter=opt.find("language");
@@ -287,28 +296,28 @@ void OpzioniDialog::on_pushButton_2_clicked()
         }*/
         if (("yes"==opt["set-account"])!=m_ui->checkAccountDefault->isChecked()){
             opt["set-account"]=(m_ui->checkAccountDefault->isChecked())?"yes":"no";
-
         }
 
         if (("yes"==opt["save-local"])!=m_ui->checkSalvalocale->isChecked()){
             opt["save-local"]=(m_ui->checkSalvalocale->isChecked())?"yes":"no";
-
         }
+
         if (("yes"==opt["successfull-send-popup"])!=m_ui->successSmsPopup->isChecked()){
                 opt["successfull-send-popup"]=(m_ui->successSmsPopup->isChecked())?"yes":"no";
-
-
         }
+
         if (("yes"==opt["display-captcha-popup"])!=m_ui->captchaPopup->isChecked()){
                 opt["display-captcha-popup"]=(m_ui->captchaPopup->isChecked())?"yes":"no";
-
-
         }
+
         if (("yes"==opt["error-send-popup"])!=m_ui->errorSmsPopup->isChecked()){
                 opt["error-send-popup"]=(m_ui->errorSmsPopup->isChecked())?"yes":"no";
-
-
         }
+
+        if (("yes"==opt["dont-cookies"])!=m_ui->nonSalvaCookies->isChecked()){
+            opt["dont-cookies"]=(m_ui->nonSalvaCookies->isChecked())?"yes":"no";
+        }
+
         if (("no"!=opt["receive-im"])&& (!m_ui->CheckAbilitaIM->isChecked())){
 
             opt["receive-im"]="no";
@@ -319,20 +328,20 @@ void OpzioniDialog::on_pushButton_2_clicked()
             //emit activateImTimer();
         }
 
-         if (opt["textsize"]!=m_ui->ComboDimensione->currentText()){
+        if (opt["textsize"]!=m_ui->ComboDimensione->currentText()){
             opt["textsize"]=m_ui->ComboDimensione->currentText();
             TextSms.setFont(QFont(TextSms.font().family(),m_ui->ComboDimensione->currentText().toInt(NULL,10),TextSms.font().weight(),false));
-
         }
-         if (opt["captcha-zoom"]!=m_ui->comboZoomCaptcha->currentText()){
-             opt["captcha-zoom"]=m_ui->comboZoomCaptcha->currentText();
 
-         }
+        if (opt["captcha-zoom"]!=m_ui->comboZoomCaptcha->currentText()){
+            opt["captcha-zoom"]=m_ui->comboZoomCaptcha->currentText();
+        }
+
         if(("yes"==opt["use-captcha"]) != m_ui->checkUseCaptcha->isChecked()){
              opt["use-captcha"] = (m_ui->checkUseCaptcha->isChecked())?"yes":"no";
+        }
 
-         }
-       // QMessageBox::information(this,"asd",userDirectory);
+        // QMessageBox::information(this,"asd",userDirectory);
         libJackSMS::localApi::optionManager op(userDirectory,opt);
 
         try{
