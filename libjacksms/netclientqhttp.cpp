@@ -96,7 +96,8 @@ namespace libJackSMS{
         }
         void netClientQHttp::clearCookies(){
             QFile::remove(cookieFilename);
-            cookies->clear();
+            if (cookies!=NULL)
+                cookies->clear();
         }
         void netClientQHttp::endRequest(QNetworkReply* reply){
             if (reply->error()==QNetworkReply::NoError){
