@@ -863,8 +863,11 @@ namespace libJackSMS{
                                 ticpp::Node *se=child->FirstChild("sent");
                                 QString r=QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));
                                 i.value().setStat("sent",r);
-                                se=child->FirstChild("sent-partial");
-                                r=QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));
+                                se=child->FirstChild("sent-partial",false);
+                                if (se!=NULL)
+                                    r=QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));
+                                else
+                                    r="0";
                                 i.value().setStat("sent-partial",r);
                                 //se=child->FirstChild("sent-all");
                                 //r=QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));

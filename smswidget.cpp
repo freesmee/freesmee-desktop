@@ -46,6 +46,7 @@ SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QStr
 
        labelTime->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
        labelTime->setMaximumSize(10000,18);
+
        _txt=_txt.replace("<","&lt;");
        _txt=_txt.replace(">","&gt;");
 
@@ -124,6 +125,7 @@ SmsWidget::SmsWidget(QMyMessage _sms,QPixmap _ico,bool received):msg(_sms),type(
     labelTime->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
     labelTime->setMaximumSize(10000,18);
     QString _txt=msg.getMessage();
+    int l=_txt.length();
     _txt=_txt.replace("<","&lt;");
     _txt=_txt.replace(">","&gt;");
 
@@ -131,7 +133,7 @@ SmsWidget::SmsWidget(QMyMessage _sms,QPixmap _ico,bool received):msg(_sms),type(
     _txt=this->parseAts(_txt);
 
     labelTxt = new QLabel(_txt);
-
+    l=_txt.length();
     labelTxt->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
     labelTxt->setWordWrap (true);
     labelTxt->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
@@ -157,6 +159,23 @@ SmsWidget::SmsWidget(QMyMessage _sms,QPixmap _ico,bool received):msg(_sms),type(
     setLayout(vLayout);
     setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
     adjustSize();
+
+}
+QSize SmsWidget::getSize(){
+
+    //size-by size a tentativi
+    if (size().height()<60)
+        return size();
+    else if (size().height()<90)
+        return QSize(size().width(),size().height()*0.9);
+    else if (size().height()<120)
+        return QSize(size().width(),size().height()*0.8);
+    else if (size().height()<150)
+        return QSize(size().width(),size().height()*0.75);
+    else if (size().height()<200)
+        return QSize(size().width(),size().height()*0.70);
+    else
+        return QSize(size().width(),size().height()*0.65);
 
 }
 QString SmsWidget::parseLinks(QString _s){

@@ -446,11 +446,13 @@ namespace libJackSMS{
             QTimer signalCountdown;
             QTimer pingTimeout;
             QTimer reconnectTimer;
+            QTimer dataTimeout;
             QTcpSocket sock;
             QNetworkProxy proxy;
             dataTypes::proxySettings ps;
             libJackSMS::dataTypes::logImType imLog;
             int id;
+            QByteArray buffer;
         public:
 
             permanentInstantMessenger(QString _username,QString _password,dataTypes::proxySettings _ps );
@@ -467,6 +469,7 @@ namespace libJackSMS{
             void ping();
             void pingTimeoutError();
             void tryReconnect();
+            void dataReceived();
         signals:
             void newJMS(libJackSMS::dataTypes::logImType);
             void serviceActive();

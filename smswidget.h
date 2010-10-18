@@ -14,18 +14,19 @@ class SmsWidget : public QWidget
 Q_OBJECT
 
 private:
+    QString originalText;
     QLabel *labelGroup,*labelTxt,*labelTime,*labelIco,*labelIcoReceived,*labelService;
     QVBoxLayout *vLayout;
     QHBoxLayout *hLayout;
     QMyMessage msg;
     bool type;
     QString id;
-    bool readed;
-    libJackSMS::dataTypes::phoneNumber number;
 
+    libJackSMS::dataTypes::phoneNumber number;
+    bool readed;
     QString parseLinks(QString _s);
     QString parseAts(QString _s);
-    QString originalText;
+
 private slots:
      void openUrl(QString _url);
 public:
@@ -40,6 +41,7 @@ public:
     QString getText()const;
     libJackSMS::dataTypes::phoneNumber getPhoneNum() const;
     void resizeEvent ( QResizeEvent *  );
+    QSize getSize();
 
 
 };

@@ -837,7 +837,7 @@ namespace libJackSMS{
             connect(&signalCountdown,SIGNAL(timeout()),this,SLOT(launchSignal()));
             connect(&sock,SIGNAL(disconnected()),this,SLOT(relaunchDisconnected()));
             connect(&sock,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(errorDisconnected(QAbstractSocket::SocketError)));
-            connect(&sock,SIGNAL(readyRead()),this,SLOT(parseLine()));
+            connect(&sock,SIGNAL(readyRead()),this,SLOT(dataReceived()));
             connect(&sock,SIGNAL(connected()),this,SLOT(connectDone()));
             connect(&sock,SIGNAL(aboutToClose()),this,SLOT(relaunchDisconnected()));
             connect(&sock,SIGNAL(stateChanged(QAbstractSocket::SocketState)),this,SLOT(state(QAbstractSocket::SocketState)));
@@ -889,19 +889,23 @@ namespace libJackSMS{
             else
                 emit serviceNotActive(true,"Ping failed");
         }
+        void permanentInstantMessenger::dataReceived(){
+            dataTimeout.stop();
+            this->buffer=this->buffer.append(sock.readAll());
+            dataTimeout.singleShot(500,this,SLOT(parseLine()));
+
+        }
         void  permanentInstantMessenger::parseLine(){
 
             try{
                 QList<QByteArray> finalLines;
-                QByteArray a=sock.read(20000);
-                if (a.at(0)=='\0')
-                    a=a.right(a.length()-1);
-                a=a.left(a.length()-2);
-                QList<QByteArray> lines=a.split('\0');
+
+                QList<QByteArray> lines=buffer.split('\0');
                 for (QList<QByteArray>::iterator i=lines.begin();i!=lines.end();++i){
                     QList<QByteArray> ll=i->split('\n');
                     finalLines.append(ll);
                 }
+                buffer.clear();
                 QRegExp r;
 
                 for (QList<QByteArray>::iterator i=finalLines.begin();i!=finalLines.end();++i){
@@ -925,7 +929,7 @@ namespace libJackSMS{
                             id++;
                             im.setId(QString::number(id));
                             imLog.insert(im.getId(),im);
-                            signalCountdown.start(2000);
+                            signalCountdown.start(1500);
 
                         }else{
                             r.setPattern("^R\\t([^ ]+) \\(([^)]+)\\)\\t([0-9]+)/([0-9]+) ([0-9]+):([0-9]+) - (.+)$");
@@ -950,7 +954,7 @@ namespace libJackSMS{
                                 id++;
                                 im.setId(QString::number(id));
                                 imLog.insert(im.getId(),im);
-                                signalCountdown.start(2000);
+                                signalCountdown.start(1500);
                             }
 
 

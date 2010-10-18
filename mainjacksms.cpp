@@ -91,6 +91,7 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     ui->LabelEsito=new QLabelResult(this);
     ui->horizontalLayout_16->addWidget(ui->LabelEsito);
     ui->LabelEsito->hide();
+    ui->LabelEsito->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
     connect(ui->LabelEsito,SIGNAL(clicked()),this,SLOT(popupInvio()));
 
     ui->label_3->hide();
@@ -607,7 +608,7 @@ void MainJackSMS::WriteMessagesToGui(){
             do{
                 --xx;
                 QListWidgetItem *item = new QListWidgetItem;
-                item->setSizeHint(xx.value()->size());
+                item->setSizeHint(xx.value()->getSize());
                 ui->smsListWidget->addItem(item);
                 ui->smsListWidget->setItemWidget(item, xx.value());
             }while(xx!=xx_end);
@@ -652,7 +653,7 @@ void MainJackSMS::WriteImToGui(){
             /* QSize s=xx.value()->size();
              s.setHeight(s.height()/2+40);
              item->setSizeHint(s);*/
-             item->setSizeHint(xx.value()->size());
+             item->setSizeHint(xx.value()->getSize());
             ui->imRicevutiWidget->addItem(item);
             ui->imRicevutiWidget->setItemWidget(item, xx.value());
         }while(xx!=xx_end);
@@ -744,25 +745,29 @@ void MainJackSMS::popupInvio(){
 }
 void MainJackSMS::clickText(QString _text,QString defaultStr){
 
-    try{
-        QSize s=this->size();
-        int maxlenght=((s.width()-330)/5)-3; //calcolo molto ma molto approssimativo e fatto a tentativi
+    //QFontMetrics fm(ui->LabelEsito->font());
+    QSize s=this->size();
+    int maxlenght=((s.width()-330)/5)-5; //calcolo molto ma molto approssimativo e fatto a tentativi
 
-        if (!_text.isEmpty()){
-            esitoInvio=defaultStr+": "+_text;
-            if (esitoInvio.length()<maxlenght){
-                ui->LabelEsito->setText(esitoInvio);
-            }else{
-                ui->LabelEsito->setText(esitoInvio.left(maxlenght)+"...");
-            }
-        }else{
-            esitoInvio=defaultStr;
-            ui->LabelEsito->setText(defaultStr+"!");
-        }
-    }catch(...){
+    if (!_text.isEmpty()){
         esitoInvio=defaultStr+": "+_text;
+        if (esitoInvio.length()<maxlenght){
+            ui->LabelEsito->setText(esitoInvio);
+        }else{
+            ui->LabelEsito->setText(esitoInvio.left(maxlenght)+"...");
+        }
+    }else{
+        esitoInvio=defaultStr;
         ui->LabelEsito->setText(defaultStr+"!");
     }
+    /*if (!_text.isEmpty()){
+
+        esitoInvio=defaultStr+": "+_text;
+        ui->LabelEsito->setText(fm.elidedText(esitoInvio,Qt::ElideRight,ui->LabelEsito->size().width()));
+    }else{
+        esitoInvio=defaultStr+"!";
+        ui->LabelEsito->setText(fm.elidedText(esitoInvio,Qt::ElideRight,ui->LabelEsito->size().width()));
+    }*/
 }
 void MainJackSMS::smsSaved(libJackSMS::dataTypes::logSmsMessage sms,QString t){
     ElencoServiziConfigurati[sms.getAccountId()].setStat("sent-all",t);
@@ -810,7 +815,7 @@ void MainJackSMS::invioSuccesso(QString _text){
             mapWidgets.insert(ultimoSms.getData(),wid);
 
             QListWidgetItem *item = new QListWidgetItem;
-            item->setSizeHint(wid->size());
+            item->setSizeHint(wid->getSize());
             ui->smsListWidget->insertItem(0,item);
             ui->smsListWidget->setItemWidget(item, wid);
         }
@@ -2029,7 +2034,9 @@ void MainJackSMS::checkInstantMessengerReceived(libJackSMS::dataTypes::logImType
                 MessaggiRicevuti.push_back(msg);
                 countReceivedUnreaded++;
                 ui->tabWidget->setTabText(1,"Ricevuti ("+QString::number(countReceivedUnreaded)+")");
+
                 SmsWidget *wid=new SmsWidget(msg,icon_jack, true);
+
                 mapWidgetsReceived.insert(i.value().getDate().getData(),wid);
                 mapWidgetsReceivedNew.insert(i.value().getDate().getData(),wid);
                 msg.setReaded(true);
@@ -2051,7 +2058,7 @@ void MainJackSMS::checkInstantMessengerReceived(libJackSMS::dataTypes::logImType
             for(;xx!=xx_end;++xx){
 
                 QListWidgetItem *item = new QListWidgetItem;
-                item->setSizeHint(xx.value()->size());
+                item->setSizeHint(xx.value()->getSize());
                 ui->imRicevutiWidget->insertItem(0,item);
                 ui->imRicevutiWidget->setItemWidget(item, xx.value());
             }
@@ -2064,7 +2071,7 @@ void MainJackSMS::checkInstantMessengerReceived(libJackSMS::dataTypes::logImType
             for(;xx!=xx_end;++xx){
 
                 QListWidgetItem *item = new QListWidgetItem;
-                item->setSizeHint(xx.value()->size());
+                item->setSizeHint(xx.value()->getSize());
                 ui->smsListWidget->insertItem(0,item);
                 ui->smsListWidget->setItemWidget(item, xx.value());
             }
