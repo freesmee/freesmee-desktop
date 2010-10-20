@@ -63,6 +63,17 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType & _opt,QTextEdit
             if ("yes"==iter.value())
                 m_ui->nonSalvaCookies->setChecked(true);
 
+        iter=opt.find("opz-radio-singolo");
+        if (iter!=opt.end()){
+            if ("yes"==iter.value()){
+                m_ui->radioSingolo->setChecked(true);
+            } else {
+                m_ui->radioMultiplo->setChecked(true);
+            }
+        } else {
+            m_ui->radioSingolo->setChecked(true);
+        }
+
         iter=opt.find("receive-im");
         if (iter!=opt.end()){
             if ("no"!=iter.value())
@@ -333,6 +344,10 @@ void OpzioniDialog::on_pushButton_2_clicked()
             TextSms.setFont(QFont(TextSms.font().family(),m_ui->ComboDimensione->currentText().toInt(NULL,10),TextSms.font().weight(),false));
         }
 
+        if (("yes"==opt["opz-radio-singolo"])!=m_ui->radioSingolo->isChecked()){
+            opt["opz-radio-singolo"]=(m_ui->radioSingolo->isChecked())?"yes":"no";
+        }
+
         if (opt["captcha-zoom"]!=m_ui->comboZoomCaptcha->currentText()){
             opt["captcha-zoom"]=m_ui->comboZoomCaptcha->currentText();
         }
@@ -366,4 +381,14 @@ void OpzioniDialog::on_pushButton_3_clicked()
 void OpzioniDialog::on_listWidget_itemClicked(QListWidgetItem* item)
 {
 
+}
+
+void OpzioniDialog::on_radioSingolo_clicked()
+{
+    m_ui->radioSingolo->setChecked(true);
+}
+
+void OpzioniDialog::on_radioMultiplo_clicked()
+{
+    m_ui->radioMultiplo->setChecked(true);
 }

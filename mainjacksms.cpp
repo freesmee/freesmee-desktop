@@ -54,7 +54,6 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     popupJms=false;
     imChecker=NULL;
     updateChecker=NULL;
-    invioMultiplo=false;
     messageType=TYPE_SMS;
     ui->setupUi(this);
     ui->widgetSchermate->setCurrentIndex(0);
@@ -93,9 +92,6 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     ui->LabelEsito->hide();
     ui->LabelEsito->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
     connect(ui->LabelEsito,SIGNAL(clicked()),this,SLOT(popupInvio()));
-
-    ui->label_3->hide();
-    ui->destinatariListWidget->hide();
 
     /*imposto la tray icon*/
     trayIco=new QSystemTrayIcon(this);
@@ -2079,11 +2075,22 @@ void MainJackSMS::countdownToGui(){
        enableUiAfterLogin();
        ui->widgetSchermate->setCurrentIndex(2);
 
+       libJackSMS::dataTypes::optionsType::const_iterator iter=Opzioni.find("opz-radio-singolo");
+       if (iter!=Opzioni.end()){
+           if ("no"==iter.value()){
+               gestiscimenuMultiplo();
+           }else{
+               gestiscimenuSingolo();
+           }
+       }else{
+           gestiscimenuSingolo();
+       }
+
+
        updateChecker=new libJackSMS::serverApi::updateServicesManager(this->current_login_id,Opzioni,ElencoServizi);
        connect(updateChecker,SIGNAL(updatesAvailable(libJackSMS::dataTypes::servicesType,QString,QString)),this,SLOT(updatesAvailable(libJackSMS::dataTypes::servicesType,QString,QString)));
        connect(updateChecker,SIGNAL(criticalError(QString)),this,SLOT(errorUpdates(QString)));
        updateChecker->checkUpdadates();
-
        countdownToGuiCount=COUNTDOWNTOGUICOUNTDEFINE;
     
     }
@@ -2186,6 +2193,7 @@ void MainJackSMS::loginSuccess(QString sessionId){
     pingator=new libJackSMS::serverApi::pingator(current_login_id,Opzioni);
     connect(pingator,SIGNAL(pinged()),this,SLOT(serverPinged()));
     pingator->launchPing();
+
     countdownToGui();
 
 

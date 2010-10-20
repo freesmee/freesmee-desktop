@@ -109,35 +109,35 @@ namespace libJackSMS{
 
             }
             webClient->setUrl("http://q.jacksms.it/"+utilities::Base64Encode(username)+"/"+utilities::Base64Encode(password)+"/fullLoginJMS?xml,desktop");
-            QString xml=webClient->readPage(true);
-            if (xml.isEmpty())
-                emit loginFailed("Il server di login non ha risposto correttamante.");
-            else if (webClient->hasError())
-                emit loginFailed("Errore: "+xml);
-            else{
-                xmlResponse->setXml(xml);
-                if (xmlResponse->checkIsLogged()){
-                    emit this->loginSuccess(xmlResponse->getSessionId());
-                    dataTypes::phoneBookType _rubrica;
-                    xmlResponse->loadPhoneBook(_rubrica);
-                    emit this->phoneBookReceived(_rubrica);
-                    dataTypes::configuredServicesType _serviziConfigurati;
-                    xmlResponse->loadAccounts(_serviziConfigurati);
-                    emit this->accountsReceived(_serviziConfigurati);
-                    dataTypesApi::clientVersion v(xmlResponse->getVersion());
-                    dataTypesApi::clientVersion thisVersion(JACKSMS_VERSION);
-                    if (thisVersion<v)
-                        emit this->newVersionAvailable();
+            try{
+                QString xml=webClient->readPage(true);
+                if (xml.isEmpty())
+                    emit loginFailed("Il server di login non ha risposto correttamante.");
+                else if (webClient->hasError())
+                    emit loginFailed("Errore: "+xml);
+                else{
+                    xmlResponse->setXml(xml);
+                    if (xmlResponse->checkIsLogged()){
+                        emit this->loginSuccess(xmlResponse->getSessionId());
+                        dataTypes::phoneBookType _rubrica;
+                        xmlResponse->loadPhoneBook(_rubrica);
+                        emit this->phoneBookReceived(_rubrica);
+                        dataTypes::configuredServicesType _serviziConfigurati;
+                        xmlResponse->loadAccounts(_serviziConfigurati);
+                        emit this->accountsReceived(_serviziConfigurati);
+                        dataTypesApi::clientVersion v(xmlResponse->getVersion());
+                        dataTypesApi::clientVersion thisVersion(JACKSMS_VERSION);
+                        if (thisVersion<v)
+                            emit this->newVersionAvailable();
 
-                }else{
-                    try{
+                    }else{
                         emit loginFailed(xmlResponse->getError());
-                    }catch(libJackSMS::exceptionXmlError e){
-                        emit loginFailed("Errore sconosciuto.");
                     }
                 }
-
-
+            }catch(libJackSMS::exceptionXmlError e){
+                emit loginFailed("Errore sconosciuto.");
+            }catch(...){
+                emit loginFailed("Impossibile Effettuare il Login, verificare di avere accesso alla rete.");
             }
         }
 
