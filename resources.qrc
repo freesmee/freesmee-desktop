@@ -73,5 +73,6 @@
         <file>resource/freccia.png</file>
         <file>resource/background_new.png</file>
         <file>resource/jacksms_logo_medium_light.png</file>
+        <file>resource/ico_contact2.png</file>
     </qresource>
 </RCC>

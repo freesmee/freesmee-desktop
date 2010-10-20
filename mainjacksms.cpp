@@ -111,25 +111,9 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     imServiceActive=false;
     invioInCorso=false;
 
-
-    /*imposto il menu di scelta del tipo di invio*/
-    menu=new QMenu(this);
-    menu->setDefaultAction( menu->addAction(QIcon(),"Invio singolo",this,SLOT(gestiscimenuSingolo())));
-    menu->addAction(QIcon(),"Invio multiplo",this,SLOT(gestiscimenuMultiplo()));
-    connect(menu,SIGNAL(triggered(QAction*)),this,SLOT(gestiscimenu(QAction*)));
-    ui->bottoneinviomultiplo->setMenu(menu);
-
-
-
-
-
     //nascondo alcuni bottoni nella schermata dei messaggi
     ui->InoltraButton->setVisible(false);
     ui->CitaButton->setVisible(false);
-
-
-
-
 
     /////////nascondo alcune cose che ancora non sono state implementate... da rimuovere poi...
     //ui->ModificaServizioButton->hide();
@@ -138,21 +122,16 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     ui->tabWidget->removeTab(5);
     //ui->bottoneinviomultiplo->hide();
 
+
+
     ui->actionImporta_Backup->setVisible(false);
     ui->actionCrea_backup_configurazione->setVisible(false);
 
     ui->actionPlugins->setVisible(false);
 
-
-
-
-
-
     //carica i plugin
     loadPlugins();
     jphi = new JackPluginHostInterface();
-
-
 
     ui->progressBar->hide();
     ui->LabelCountChars->show();
@@ -160,11 +139,7 @@ MainJackSMS::MainJackSMS(QWidget *parent)
 
     disableUibeforeLogin();
 
-
     ////////////////////////////
-
-
-
 
     libJackSMS::localApi::userDirectoryManager man("");
 
@@ -174,16 +149,10 @@ MainJackSMS::MainJackSMS(QWidget *parent)
         exit(-1);
     }
 
-
-
-
-
     /*initialXmlLoader=new libJackSMS::localApi::xmlLoader("");
     connect(initialXmlLoader,SIGNAL(optionsLoaded(libJackSMS::dataTypes::optionsType)),this,SLOT(initialOptionsLoaded(libJackSMS::dataTypes::optionsType)));
     initialXmlLoader->loadOptions();
 */
-
-
 
     try{
         finder=new libJackSMS::localApi::userFinder;
@@ -336,19 +305,22 @@ void MainJackSMS::translateGui(){
 }
 
 void MainJackSMS::gestiscimenuSingolo(){
+    QIcon icon1;
+    icon1.addFile(QString::fromUtf8(":/resource/ico_contact2.png"), QSize(), QIcon::Normal, QIcon::Off);
     ui->label_3->hide();
     ui->destinatariListWidget->hide();
     invioMultiplo=false;
+    ui->bottoneinviomultiplo->setIcon(icon1);
+    ui->bottoneinviomultiplo->setIconSize(QSize(12, 12));
 }
 void MainJackSMS::gestiscimenuMultiplo(){
+    QIcon icon1;
+    icon1.addFile(QString::fromUtf8(":/resource/ico_contact.png"), QSize(), QIcon::Normal, QIcon::Off);
     ui->label_3->show();
     ui->destinatariListWidget->show();
     invioMultiplo=true;
-}
-
-void MainJackSMS::gestiscimenu(QAction* act){
-    menu->setDefaultAction(act);
-
+    ui->bottoneinviomultiplo->setIcon(icon1);
+    ui->bottoneinviomultiplo->setIconSize(QSize(12, 12));
 }
 
 void MainJackSMS::showContactByTypeInFastAbook(){
@@ -1719,19 +1691,6 @@ void MainJackSMS::on_comboServizio_currentIndexChanged(int index)
     on_TestoSMS_textChanged();
 }
 
-
-void MainJackSMS::on_bottoneinviomultiplo_clicked()
-{
-   /* if (!ui->TestoSMS->toPlainText().isEmpty()){
-        InvioMultiplo *inv=new InvioMultiplo(this,ElencoServiziConfigurati,Rubrica,Opzioni,ui->TestoSMS->toPlainText());
-        inv->exec();
-        inv->deleteLater();
-    }else{
-        QMessageBox::information(this,"JackSMS","Il testo del messaggio è vuoto.");
-    }*/
-
-}
-
 //carica i plugin
 void MainJackSMS::loadPlugins(){
 
@@ -1781,6 +1740,7 @@ void MainJackSMS::DisabilitaUi(){
     ui->NumeroDestinatario->setEnabled(false);
     ui->RicercaVeloce->setEnabled(false);
     ui->bottoneinviomultiplo->setEnabled(false);
+    ui->tastoNuovoSMS->setEnabled(false);
     if (invioMultiplo)
         ui->destinatariListWidget->disconnect(this,SLOT(on_destinatariListWidget_itemDoubleClicked(QListWidgetItem*)));
 
@@ -1798,6 +1758,7 @@ void MainJackSMS::AbilitaUi(){
     ui->NumeroDestinatario->setEnabled(true);
     ui->RicercaVeloce->setEnabled(true);
     ui->bottoneinviomultiplo->setEnabled(true);
+    ui->tastoNuovoSMS->setEnabled(true);
     if (invioMultiplo)
         ui->destinatariListWidget->connect(ui->destinatariListWidget,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(on_destinatariListWidget_itemDoubleClicked(QListWidgetItem*)));
 }
@@ -2922,3 +2883,29 @@ void MainJackSMS::on_autoLogin_stateChanged(int )
     ui->loginButton->setFocus();
 }
 
+
+void MainJackSMS::on_bottoneinviomultiplo_clicked()
+{
+    if(invioMultiplo)
+        gestiscimenuSingolo();
+    else
+        gestiscimenuMultiplo();
+
+    svuotaDestinatari();
+}
+
+void MainJackSMS::on_tastoNuovoSMS_clicked()
+{
+    svuotaTabSms();
+}
+
+void MainJackSMS::svuotaTabSms(){
+    svuotaDestinatari();
+    ui->TestoSMS->setText("");
+    ui->progressBar->setText("");
+}
+
+void MainJackSMS::svuotaDestinatari(){
+    ui->destinatariListWidget->clear();
+    ui->NumeroDestinatario->setText("");
+}

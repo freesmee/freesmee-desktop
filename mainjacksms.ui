@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>550</width>
-    <height>386</height>
+    <width>580</width>
+    <height>408</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -514,7 +514,7 @@ QFrame#frame_3_old{
              <normaloff>:/resource/jacksms_icona_sms_24x24-1.png</normaloff>:/resource/jacksms_icona_sms_24x24-1.png</iconset>
            </attribute>
            <attribute name="title">
-            <string>Componi SMS</string>
+            <string>Nuovo SMS</string>
            </attribute>
            <layout class="QHBoxLayout" name="horizontalLayout_17">
             <item>
@@ -724,7 +724,7 @@ QFrame#frame_3_old{
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
-                    <width>40</width>
+                    <width>66</width>
                     <height>20</height>
                    </size>
                   </property>
@@ -793,23 +793,18 @@ QFrame#frame_3_old{
                 </item>
                 <item>
                  <widget class="QPushButton" name="bottoneinviomultiplo">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>20</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
                   <property name="text">
                    <string/>
                   </property>
-                  <property name="flat">
-                   <bool>true</bool>
+                  <property name="icon">
+                   <iconset resource="resources.qrc">
+                    <normaloff>:/resource/ico_contact2.png</normaloff>:/resource/ico_contact2.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>12</width>
+                    <height>12</height>
+                   </size>
                   </property>
                  </widget>
                 </item>
@@ -833,6 +828,9 @@ QFrame#frame_3_old{
                     <width>50</width>
                     <height>16777215</height>
                    </size>
+                  </property>
+                  <property name="layoutDirection">
+                   <enum>Qt::RightToLeft</enum>
                   </property>
                   <property name="text">
                    <string>Filtra</string>
@@ -895,6 +893,43 @@ QFrame#frame_3_old{
                    </size>
                   </property>
                  </spacer>
+                </item>
+               </layout>
+              </item>
+              <item row="0" column="2">
+               <layout class="QHBoxLayout" name="horizontalLayout_27">
+                <item>
+                 <spacer name="horizontalSpacer_17">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>70</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="tastoNuovoSMS">
+                  <property name="layoutDirection">
+                   <enum>Qt::RightToLeft</enum>
+                  </property>
+                  <property name="text">
+                   <string>Scrivi un nuovo SMS</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="resources.qrc">
+                    <normaloff>:/resource/1.png</normaloff>:/resource/1.png</iconset>
+                  </property>
+                  <property name="flat">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
@@ -1059,7 +1094,7 @@ p, li { white-space: pre-wrap; }
              <normaloff>:/resource/jacksms_icona_im_24x24-3.png</normaloff>:/resource/jacksms_icona_im_24x24-3.png</iconset>
            </attribute>
            <attribute name="title">
-            <string>Conversazioni</string>
+            <string>Archivio</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_11">
             <item>
@@ -1600,8 +1635,8 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>550</width>
-     <height>21</height>
+     <width>580</width>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1780,7 +1815,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>EliminaServizioButton</tabstop>
   <tabstop>TextRapidServizi</tabstop>
   <tabstop>smsListWidget</tabstop>
-  <tabstop>bottoneinviomultiplo</tabstop>
   <tabstop>listServiziConfigurati</tabstop>
   <tabstop>rubricaListWidget</tabstop>
   <tabstop>tabWidget</tabstop>

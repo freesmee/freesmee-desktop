@@ -128,8 +128,14 @@ private:
 
     void updateAccountCountComboBox(QString id);
     void closeEvent(QCloseEvent *event);
+
+    void svuotaDestinatari();
+    void svuotaTabSms();
+
 private slots:
 
+    void on_tastoNuovoSMS_clicked();
+    void on_bottoneinviomultiplo_clicked();
     void smsSaved(libJackSMS::dataTypes::logSmsMessage sms,QString t);
 
     void on_autoLogin_stateChanged(int );
@@ -178,9 +184,7 @@ private slots:
     void on_username_currentIndexChanged(int index);
     void on_loginButton_clicked();
     void gestiscimenuSingolo();
-    void gestiscimenu(QAction* act);
     void gestiscimenuMultiplo();
-    void on_bottoneinviomultiplo_clicked();
     void on_comboServizio_currentIndexChanged(int index);
     void on_comboServizio_activated(QString );
     void on_TestoSMS_textChanged();
