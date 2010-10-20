@@ -804,7 +804,7 @@ void MainJackSMS::invioSuccesso(QString _text){
     onlineSmsSaver->save(us);
 
     if (invioMultiplo)
-        sendNextMessage(false,true);
+        sendNextMessage(false,true,"Messaggio Inviato! " + _text);
 
     if (Opzioni["successfull-send-popup"]=="yes"){
         popupJms=false;
@@ -821,7 +821,7 @@ void MainJackSMS::invioFallito(QString _text){
     invioInCorso=false;
 
     if (invioMultiplo){
-        sendNextMessage(false,false);
+        sendNextMessage(false,false,"Messaggio non inviato: "+_text);
     }
 
     if (Opzioni["error-send-popup"]=="yes"){
@@ -831,20 +831,20 @@ void MainJackSMS::invioFallito(QString _text){
 
 
 }
-void MainJackSMS::sendNextMessage(bool first, bool result){
+void MainJackSMS::sendNextMessage(bool first, bool result, QString _text){
 
     if ((!first) && (multipleSendRecipients.size()>0)){
         QPair<contactWidgetFastBook*,libJackSMS::dataTypes::phoneNumber> pair=multipleSendRecipients.first();
         if (result)
-            pair.first->setInfoIcon(QIcon(":/resource/jms-active.png").pixmap(16,16));
+            pair.first->setInfoIcon(QIcon(":/resource/jms-active.png").pixmap(16,16),_text);
         else
-            pair.first->setInfoIcon(QIcon(":/resource/jms-not-active.png").pixmap(16,16));
+            pair.first->setInfoIcon(QIcon(":/resource/jms-not-active.png").pixmap(16,16), _text);
         multipleSendRecipients.removeFirst();
     }
     if (multipleSendRecipients.size()>0){
         try{
             QPair<contactWidgetFastBook*,libJackSMS::dataTypes::phoneNumber> pair=this->multipleSendRecipients.first();
-            pair.first->setInfoIcon(QIcon(":/resource/jms-activing.png").pixmap(16,16));
+            pair.first->setInfoIcon(QIcon(":/resource/jms-activing.png").pixmap(16,16), "Invio in corso...");
             invioInCorso=true;
             DisabilitaUi();
 

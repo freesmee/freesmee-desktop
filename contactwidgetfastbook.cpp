@@ -47,11 +47,13 @@ QPixmap contactWidgetFastBook::getIcon()const{
     return  QPixmap(*icon->pixmap());
 
 }
-void contactWidgetFastBook::setInfoIcon(QPixmap _infoicon){
+void contactWidgetFastBook::setInfoIcon(QPixmap _infoicon, const QString &_tooltip){
     labelIconInfo->deleteLater();
     labelIconInfo=new QLabel;
     labelIconInfo->setMaximumSize(16,16);
     labelIconInfo->setPixmap(_infoicon);
+    labelIconInfo->setToolTip(_tooltip);
+    labelIconInfo->setCursor(Qt::WhatsThisCursor);
     hLayout->addWidget(labelIconInfo);
 }
 QString contactWidgetFastBook:: getName()const{
