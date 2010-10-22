@@ -58,6 +58,11 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType & _opt,QTextEdit
             if ("yes"==iter.value())
                 m_ui->checkSalvalocale->setChecked(true);
 
+        iter=opt.find("opz-svuota-invio-corretto");
+        if (iter!=opt.end())
+            if ("yes"==iter.value())
+                m_ui->opzSvuotaInvioCorretto->setChecked(true);
+
         iter=opt.find("dont-cookies");
         if (iter!=opt.end())
             if ("yes"==iter.value())
@@ -327,6 +332,10 @@ void OpzioniDialog::on_pushButton_2_clicked()
 
         if (("yes"==opt["dont-cookies"])!=m_ui->nonSalvaCookies->isChecked()){
             opt["dont-cookies"]=(m_ui->nonSalvaCookies->isChecked())?"yes":"no";
+        }
+
+        if (("yes"==opt["opz-svuota-invio-corretto"])!=m_ui->opzSvuotaInvioCorretto->isChecked()){
+            opt["opz-svuota-invio-corretto"]=(m_ui->opzSvuotaInvioCorretto->isChecked())?"yes":"no";
         }
 
         if (("no"!=opt["receive-im"])&& (!m_ui->CheckAbilitaIM->isChecked())){

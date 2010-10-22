@@ -67,6 +67,7 @@ private:
     QList<QPair<contactWidgetFastBook*,libJackSMS::dataTypes::phoneNumber> > multipleSendRecipients;
     bool invioMultiplo;
     QPixmap icon_jack;
+    int errorSentCounter;
 
     void resizeEvent ( QResizeEvent * );
     int messageType;

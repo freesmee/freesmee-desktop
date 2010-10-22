@@ -168,6 +168,13 @@
               </widget>
              </item>
              <item>
+              <widget class="QCheckBox" name="opzSvuotaInvioCorretto">
+               <property name="text">
+                <string>Pulisci la schermata per un nuovo messaggio dopo invio corretto </string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <spacer name="verticalSpacer">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>

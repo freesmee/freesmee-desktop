@@ -598,14 +598,14 @@ QFrame#frame_3_old{
                     </item>
                    </layout>
                   </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="label_4">
+                    <property name="text">
+                     <string>Testo SMS</string>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_4">
-                  <property name="text">
-                   <string>Testo SMS</string>
-                  </property>
-                 </widget>
                 </item>
                 <item>
                  <widget class="QTextEdit" name="TestoSMS">
