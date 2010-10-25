@@ -38,7 +38,7 @@ editcontattodialog::editcontattodialog(QWidget *parent , MainJackSMS * _padre,co
         for(;i!=i_end;++i){
             m_ui->comboaccount->addItem(_ElencoServizi[i->getService()].getIcon(),i->getName());
         }
-
+        m_ui->comboaccount->model()->sort(0);
     }
 
     m_ui->nome->setText(contatto.getName());
@@ -113,6 +113,7 @@ void editcontattodialog::on_salva_clicked()
 void editcontattodialog::salvataggioOk(libJackSMS::dataTypes::contact c){
     Rubrica[c.getId()]=c;
     padre->ReWriteAddressBookToGui();
+    padre->ricaricaDestinatariList();
     this->close();
 }
 void editcontattodialog::salvataggioKo(){

@@ -30,6 +30,8 @@ public:
     contactWidgetFastBook *clone() const;
     libJackSMS::dataTypes::contact getContact()const;
     QPixmap getIcon()const;
+    void setIcon(QPixmap _pix);
+    void showIcon(bool value);
     void setInfoIcon(QPixmap _infoicon, const QString &_tooltip);
 };
 

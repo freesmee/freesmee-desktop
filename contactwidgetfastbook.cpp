@@ -45,8 +45,18 @@ libJackSMS::dataTypes::contact contactWidgetFastBook::getContact()const{
 }
 QPixmap contactWidgetFastBook::getIcon()const{
     return  QPixmap(*icon->pixmap());
-
 }
+void contactWidgetFastBook::setIcon(QPixmap _pix){
+    icon->setPixmap(_pix);
+}
+void contactWidgetFastBook::showIcon(bool value){
+    if(value)
+        icon->show();
+    else
+        icon->hide();
+    return;
+}
+
 void contactWidgetFastBook::setInfoIcon(QPixmap _infoicon, const QString &_tooltip){
     labelIconInfo->deleteLater();
     labelIconInfo=new QLabel;

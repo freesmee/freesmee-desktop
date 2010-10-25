@@ -51,14 +51,12 @@ void messageLoader::run(){
         }
         if (!aborted)
             emit messagesLoaded(messaggi);
-
 }
 
 void messageLoader::loadMessages(){
     start();
-
 }
+
 void messageLoader::abort(){
     aborted=true;
-
 }

@@ -58,7 +58,12 @@ public:
     QSize windowSize;
     QTimer resizeTimer;
     QString result;
+    void ricaricaDestinatariList(QStringList strings);
+    void ricaricaDestinatariList(QString str);
+    void ricaricaDestinatariList();
+
 private:
+    bool usaAssociatiPresent;
     bool popupJms;
     bool checkDoubleRecipients(libJackSMS::dataTypes::phoneNumber &_n) const;
     bool recipientAutoEdited;
@@ -108,13 +113,13 @@ private:
     QString selectedService;
     void WriteAddressBookToGui();
     void WriteConfiguredServicesToGui();
-    void WriteMessagesToGui();
+    void WriteMessagesToGui(bool limit100=true);
     void WriteImToGui();
     void loadPlugins();
     void disableUibeforeLogin();
     void enableUiAfterLogin();
     bool loggedIn;
-    void ReWriteMessagesToGui();
+    void ReWriteMessagesToGui(bool limit100=true);
     void ReWriteImToGui();
     QString esitoInvio;
 
@@ -135,6 +140,8 @@ private:
 
 private slots:
 
+    void on_tabWidget_currentChanged(int index);
+    void on_numArchivio_currentIndexChanged(int index);
     void on_tastoNuovoSMS_clicked();
     void on_bottoneinviomultiplo_clicked();
     void smsSaved(libJackSMS::dataTypes::logSmsMessage sms,QString t);
@@ -184,8 +191,8 @@ private slots:
     void on_smsListWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void on_username_currentIndexChanged(int index);
     void on_loginButton_clicked();
-    void gestiscimenuSingolo();
-    void gestiscimenuMultiplo();
+    void gestiscimenuSingolo(bool starting=false);
+    void gestiscimenuMultiplo(bool starting=false);
     void on_comboServizio_currentIndexChanged(int index);
     void on_comboServizio_activated(QString );
     void on_TestoSMS_textChanged();

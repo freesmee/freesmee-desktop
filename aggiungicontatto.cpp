@@ -26,9 +26,9 @@ AggiungiContatto::AggiungiContatto(QWidget *parent , MainJackSMS * _padre,libJac
         libJackSMS::dataTypes::configuredServicesType::const_iterator i=ElencoServiziConfigurati.begin();
         libJackSMS::dataTypes::configuredServicesType::const_iterator i_end=ElencoServiziConfigurati.end();
         for(;i!=i_end;++i){
-            QIcon ico=ElencoServizi[i.value().getService()].getIcon();
-            m_ui->comboaccount->addItem(ico,i.value().getName());
+            m_ui->comboaccount->addItem(ElencoServizi[i.value().getService()].getIcon(),i.value().getName());
         }
+        m_ui->comboaccount->model()->sort(0);
         spinner=new QMovie(":/resource/loading-spinner.gif",QByteArray("gif"),this);
         spinner->setScaledSize(QSize(16,16));
         spinner->start();
@@ -119,6 +119,7 @@ void AggiungiContatto::salvataggioOk(QString id,bool jms){
     contatto.setCanReceiveJms(jms);
     Rubrica.insert(id,contatto);
     padre->ReWriteAddressBookToGui();
+    padre->ricaricaDestinatariList();
     close();
 }
 void AggiungiContatto::salvataggioKo(){
