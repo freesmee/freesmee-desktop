@@ -25,3 +25,6 @@ QString QContact::getId()const{
 void QContact::setName(const QString & _name){
     nome=_name;
 }
+void QContact::setAccount(QString _account){
+    account=_account;
+}

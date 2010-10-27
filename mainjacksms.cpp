@@ -33,6 +33,8 @@
 #include "qlabelresult.h"
 #include "messageloader.h"
 
+//#include "cambiaaccount.h"
+
 
 /*#include <phonon/audiooutput.h>
 #include <Phonon/MediaSource>
@@ -304,7 +306,7 @@ void MainJackSMS::translateGui(){
 }
 
 void MainJackSMS::gestiscimenuSingolo(bool starting){
-    if(invioMultiplo || starting){
+    if(starting || invioMultiplo){
         QIcon icon1;
         icon1.addFile(QString::fromUtf8(":/resource/ico_contact2.png"), QSize(), QIcon::Normal, QIcon::Off);
         ui->label_3->hide();
@@ -322,7 +324,7 @@ void MainJackSMS::gestiscimenuSingolo(bool starting){
     }
 }
 void MainJackSMS::gestiscimenuMultiplo(bool starting){
-    if(!invioMultiplo || starting){
+    if(starting || !invioMultiplo){
         QIcon icon1;
         icon1.addFile(QString::fromUtf8(":/resource/ico_contact.png"), QSize(), QIcon::Normal, QIcon::Off);
         ui->label_3->show();
@@ -820,6 +822,10 @@ void MainJackSMS::invioSuccesso(QString _text){
 
             QListWidgetItem *item = new QListWidgetItem;
             item->setSizeHint(wid->getSize());
+
+            if((ui->numArchivio->currentIndex() == 0) && (ui->smsListWidget->count() > 0))
+                ui->smsListWidget->takeItem(ui->smsListWidget->count() - 1);
+
             ui->smsListWidget->insertItem(0,item);
             ui->smsListWidget->setItemWidget(item, wid);
         }
@@ -1622,7 +1628,6 @@ void MainJackSMS::on_comboServizio_currentIndexChanged(int index)
         int c=ui->destinatariListWidget->count();
         for(int i=0;i<c;++i){
             if(ui->comboServizio->currentIndex() != 0){
-                //working
                 static_cast<contactWidgetFastBook*>(ui->destinatariListWidget->itemWidget(ui->destinatariListWidget->item(i)))->showIcon(false);
                 ui->destinatariListWidget->item(i)->setIcon(ui->comboServizio->itemIcon(ui->comboServizio->currentIndex()));
             } else {
@@ -2018,12 +2023,17 @@ void MainJackSMS::countdownToGui(){
     if (countdownToGuiCount==0){
         libJackSMS::serverApi::synchronizeVariables(ElencoServiziConfigurati,ElencoServizi);
        this->WriteAddressBookToGui();
+
+       invioMultiplo = false;
+       usaAssociatiPresent = false;
        this->WriteConfiguredServicesToGui();
+
        this->WriteMessagesToGui();
 
        enableUiAfterLogin();
        ui->widgetSchermate->setCurrentIndex(2);
 
+       invioMultiplo = false;
        usaAssociatiPresent = false;
        libJackSMS::dataTypes::optionsType::const_iterator iter=Opzioni.find("opz-radio-singolo");
        if (iter!=Opzioni.end()){
@@ -2344,11 +2354,35 @@ void MainJackSMS::deleteAccountKo(){
 }
 void MainJackSMS::deleteAccountOk(QString id){
     ElencoServiziConfigurati.remove(id);
-    ui->EliminaServizioButton->setEnabled(true);
-    ui->labelSpinDelAccount->hide();
     ReWriteConfiguredServicesToGui();
+
+    //controllo se ci sono dei contatti con account associato = quello che sto cancellando
+    try{
+        libJackSMS::dataTypes::phoneBookType::iterator i=Rubrica.begin();
+        libJackSMS::dataTypes::phoneBookType::iterator i_end=Rubrica.end();
+        int found = 0;
+        for(;i!=i_end;++i){
+            if(i->getAccount() == id){
+                found++;
+                i->setAccount("0");
+            }
+        }
+
+        //if(found){
+        //    cambiaaccount *dialog = new cambiaaccount(this, this, ElencoServizi, ElencoServiziConfigurati, Rubrica, id, found);
+        //    dialog->exec();
+        //    dialog->deleteLater();
+        //}
+
+    }catch(...){
+        QMessageBox::critical(this,"JackSMS","Errore nel controllo.");
+    }
+
     ReWriteAddressBookToGui();
     ricaricaDestinatariList();
+    ui->EliminaServizioButton->setEnabled(true);
+    ui->labelSpinDelAccount->hide();
+
 }
 void MainJackSMS::closeEvent(QCloseEvent *event)
  {
@@ -3072,8 +3106,10 @@ void MainJackSMS::ricaricaDestinatariList(){
 void MainJackSMS::on_numArchivio_currentIndexChanged(int index)
 {
     //Ultimi 100
-    if(index == 0){
-        ReWriteMessagesToGui(true);
+    if(index == 0){        
+        for(int c = ui->smsListWidget->count() - 1; c >= 100; --c){
+            ui->smsListWidget->takeItem(c);
+        }
 
     //Tutti
     }else if(index == 1){

@@ -20,6 +20,7 @@ public:
     libJackSMS::dataTypes::phoneNumber getPhone()const;
     void setId(const QString & _id);
     void setName(const QString & _name);
+    void setAccount(QString _account);
     QString getId()const;
 };
 

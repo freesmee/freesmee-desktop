@@ -93,6 +93,12 @@ namespace libJackSMS{
                  */
                 bool getCanReceiveJms()const;
 
+                /**
+                 * Imposta l'account per il contatto
+                 * \param _account l'account del contatto
+                 */
+                void setAccount(QString _account);
+
         };
 
     }

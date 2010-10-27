@@ -54,6 +54,10 @@ namespace libJackSMS{
                 return canReceiveJms;
             }
 
+            void contact::setAccount(QString _account){
+                account=_account;
+            }
+
     }
 
 }

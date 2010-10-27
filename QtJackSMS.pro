@@ -83,7 +83,8 @@ SOURCES += main.cpp \
     libjacksms/EncodingIso88591.cpp \
     Configuration.cpp \
     libjacksms/libraryconfig.cpp \
-    editaccountdialog.cpp
+    editaccountdialog.cpp \
+    cambiaaccount.cpp
 HEADERS += mainjacksms.h \
     Types.h \
     captchadialog.h \
@@ -161,7 +162,8 @@ HEADERS += mainjacksms.h \
     plugins/puppeteer/JackPuppeteerPluginInterfacer.h \
     libjacksms/EncodingIso88591.h \
     libjacksms/libraryconfig.h \
-    editaccountdialog.h
+    editaccountdialog.h \
+    cambiaaccount.h
 FORMS += mainjacksms.ui \
     captchadialog.ui \
     servicesdialog.ui \
@@ -171,5 +173,6 @@ FORMS += mainjacksms.ui \
     avvisoaccentidialog.ui \
     statsdialog.ui \
     plugindialog.ui \
-    editaccountdialog.ui
+    editaccountdialog.ui \
+    cambiaaccount.ui
 RESOURCES += resources.qrc
