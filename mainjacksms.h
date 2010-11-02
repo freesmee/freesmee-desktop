@@ -136,13 +136,13 @@ private:
     void closeEvent(QCloseEvent *event);
 
     void svuotaDestinatari();
-    void svuotaTabSms();
+    QTimer resetCounterTimer;
 
 private slots:
-
+    void resetCounters();
+    void svuotaTabSms();
     void on_tabWidget_currentChanged(int index);
     void on_numArchivio_currentIndexChanged(int index);
-    void on_tastoNuovoSMS_clicked();
     void on_bottoneinviomultiplo_clicked();
     void smsSaved(libJackSMS::dataTypes::logSmsMessage sms,QString t);
 

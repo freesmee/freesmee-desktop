@@ -605,6 +605,25 @@ QFrame#frame_3_old{
                     </property>
                    </widget>
                   </item>
+                  <item row="2" column="3">
+                   <widget class="QPushButton" name="menuInstruments">
+                    <property name="minimumSize">
+                     <size>
+                      <width>22</width>
+                      <height>22</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>22</width>
+                      <height>22</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </item>
                 <item>
@@ -738,6 +757,12 @@ QFrame#frame_3_old{
                   <property name="enabled">
                    <bool>true</bool>
                   </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>24</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string>Ferma</string>
                   </property>
@@ -773,6 +798,12 @@ QFrame#frame_3_old{
                     <height>0</height>
                    </size>
                   </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>24</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string>Invia</string>
                   </property>
@@ -796,6 +827,12 @@ QFrame#frame_3_old{
                 </item>
                 <item>
                  <widget class="QPushButton" name="bottoneinviomultiplo">
+                  <property name="maximumSize">
+                   <size>
+                    <width>24</width>
+                    <height>24</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
@@ -805,9 +842,12 @@ QFrame#frame_3_old{
                   </property>
                   <property name="iconSize">
                    <size>
-                    <width>12</width>
-                    <height>12</height>
+                    <width>16</width>
+                    <height>16</height>
                    </size>
+                  </property>
+                  <property name="flat">
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -900,41 +940,7 @@ QFrame#frame_3_old{
                </layout>
               </item>
               <item row="0" column="2">
-               <layout class="QHBoxLayout" name="horizontalLayout_27">
-                <item>
-                 <spacer name="horizontalSpacer_17">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeType">
-                   <enum>QSizePolicy::Fixed</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>70</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="tastoNuovoSMS">
-                  <property name="layoutDirection">
-                   <enum>Qt::RightToLeft</enum>
-                  </property>
-                  <property name="text">
-                   <string>Scrivi un nuovo SMS</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="resources.qrc">
-                    <normaloff>:/resource/1.png</normaloff>:/resource/1.png</iconset>
-                  </property>
-                  <property name="flat">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
+               <layout class="QHBoxLayout" name="horizontalLayout_27"/>
               </item>
              </layout>
             </item>
@@ -1667,7 +1673,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>580</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

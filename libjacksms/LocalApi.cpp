@@ -413,7 +413,7 @@ namespace libJackSMS{
 
                 path=directories::concatDirectoryAndFile(directories::XmlDirectory(),"services.xml");
                 if (fileOrDirExists(path)){
-                    path=directories::concatDirectoryAndFile(directories::XmlDirectory(),"services.forcecopy2");
+                    path=directories::concatDirectoryAndFile(directories::XmlDirectory(),"services.forcecopy3");
                     if(!fileOrDirExists(path)){
                         mymkdir(path);
                         path=directories::concatDirectoryAndFile(directories::XmlDirectory(),"services.xml");

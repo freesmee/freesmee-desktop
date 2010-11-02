@@ -32,14 +32,11 @@
 #include "plugindialog.h"
 #include "qlabelresult.h"
 #include "messageloader.h"
+#include <QSslSocket>
 
 #include "cambiaaccount.h"
 
 
-/*#include <phonon/audiooutput.h>
-#include <Phonon/MediaSource>
-#include <phonon/mediaobject.h>
-*/
 
 #define COUNTDOWNTOGUICOUNTDEFINE 5
 MainJackSMS::MainJackSMS(QWidget *parent)
@@ -62,6 +59,7 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     ui->tabWidget->setCurrentIndex(0);
     loggedIn=false;
     recipientAutoEdited=false;
+    invioMultiplo=false;
     currentMaxLength=160;
     countReceivedUnreaded=0;
     setWindowTitle(QString("JackSMS ")+QString(JACKSMS_VERSION));
@@ -87,7 +85,7 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     ui->imRicevutiWidget->setPalette(p);
     ui->RubricaVeloce->setPalette(p);
     ui->destinatariListWidget->setPalette(p);
-    
+
     ui->LabelEsito->~QWidget();
     ui->LabelEsito=new QLabelResult(this);
     ui->horizontalLayout_16->addWidget(ui->LabelEsito);
@@ -149,6 +147,9 @@ MainJackSMS::MainJackSMS(QWidget *parent)
 
         exit(-1);
     }
+    menu=new QMenu(this);
+    menu->addAction(QIcon(),"Pulisci tutti i campi",this,SLOT(svuotaTabSms()));
+    ui->menuInstruments->setMenu(menu);
 
     /*initialXmlLoader=new libJackSMS::localApi::xmlLoader("");
     connect(initialXmlLoader,SIGNAL(optionsLoaded(libJackSMS::dataTypes::optionsType)),this,SLOT(initialOptionsLoaded(libJackSMS::dataTypes::optionsType)));
@@ -220,7 +221,17 @@ MainJackSMS::MainJackSMS(QWidget *parent)
         connect( ui->username->lineEdit(), SIGNAL(returnPressed()), this, SLOT(username_returnPressed()));
 
     }
+    if (!QSslSocket::supportsSsl()){
+        QMessageBox::critical(this,"JackSMS","Il sistema in uso non supporta la modalità di connessione sicura(SSL).\nIn queste condizioni, alcuni servizi potrebbero non funzionare correttamente.");
+    }
 
+    QDateTime midnight;
+    midnight.setTime(QTime(23,59,59,999));
+    midnight.setDate(QDate::currentDate());
+
+    int secToMidnight=QDateTime::currentDateTime().secsTo(midnight);  //directly from the Maiden Album "powerslave"....2 minutes to midnight! :P
+    //QMessageBox::critical(this,"JackSMS",QString::number(secToMidnight));
+    resetCounterTimer.singleShot(secToMidnight*1000,this,SLOT(resetCounters()));
 }
 
 void MainJackSMS::resized(){
@@ -253,6 +264,22 @@ MainJackSMS::~MainJackSMS()
 
     delete trayIco;
     delete ui;
+}
+
+void MainJackSMS::resetCounters(){
+    libJackSMS::dataTypes::configuredServicesType::iterator i=ElencoServiziConfigurati.begin();
+    for(;i!=ElencoServiziConfigurati.end();++i){
+        i->setStat("sent-all","0");
+    }
+    i=ElencoServiziConfigurati.begin();
+    for(;i!=ElencoServiziConfigurati.end();++i){
+            QString name=i.value().getName();
+            int index=ui->comboServizio->findData(name,Qt::UserRole);
+            ui->comboServizio->setItemText(index,name);
+    }
+
+
+
 }
 void MainJackSMS::translateGui(){
     libJackSMS::dataTypes::optionsType::const_iterator iter=Opzioni.find("language");
@@ -307,13 +334,12 @@ void MainJackSMS::translateGui(){
 
 void MainJackSMS::gestiscimenuSingolo(bool starting){
     if(starting || invioMultiplo){
-        QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/resource/ico_contact2.png"), QSize(), QIcon::Normal, QIcon::Off);
+        QIcon icon1(QString::fromUtf8(":/resource/ico_contact2.png"));
         ui->label_3->hide();
         ui->destinatariListWidget->hide();
 
         ui->bottoneinviomultiplo->setIcon(icon1);
-        ui->bottoneinviomultiplo->setIconSize(QSize(12, 12));
+
         ui->label->setText("Destinatario");
 
         invioMultiplo = false;
@@ -325,13 +351,12 @@ void MainJackSMS::gestiscimenuSingolo(bool starting){
 }
 void MainJackSMS::gestiscimenuMultiplo(bool starting){
     if(starting || !invioMultiplo){
-        QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/resource/ico_contact.png"), QSize(), QIcon::Normal, QIcon::Off);
+        QIcon icon1(QString::fromUtf8(":/resource/ico_contact.png"));
         ui->label_3->show();
         ui->destinatariListWidget->show();
 
         ui->bottoneinviomultiplo->setIcon(icon1);
-        ui->bottoneinviomultiplo->setIconSize(QSize(12, 12));
+
         ui->label->setText("Destinatari");
 
         invioMultiplo=true;
@@ -1689,7 +1714,7 @@ void MainJackSMS::DisabilitaUi(){
     ui->NumeroDestinatario->setEnabled(false);
     ui->RicercaVeloce->setEnabled(false);
     ui->bottoneinviomultiplo->setEnabled(false);
-    ui->tastoNuovoSMS->setEnabled(false);
+    ui->menuInstruments->setEnabled(false);
     if (invioMultiplo)
         ui->destinatariListWidget->disconnect(this,SLOT(on_destinatariListWidget_itemDoubleClicked(QListWidgetItem*)));
 
@@ -1707,7 +1732,7 @@ void MainJackSMS::AbilitaUi(){
     ui->NumeroDestinatario->setEnabled(true);
     ui->RicercaVeloce->setEnabled(true);
     ui->bottoneinviomultiplo->setEnabled(true);
-    ui->tastoNuovoSMS->setEnabled(true);
+     ui->menuInstruments->setEnabled(true);
     if (invioMultiplo)
         ui->destinatariListWidget->connect(ui->destinatariListWidget,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(on_destinatariListWidget_itemDoubleClicked(QListWidgetItem*)));
 }
@@ -1813,7 +1838,7 @@ void MainJackSMS::endLogin(){
            Opzioni["save-passwd"]="yes";
            Opzioni["password"]=ui->password->text();
        }else{
-           GlobalOptions["save-passwd"]="no";        
+           GlobalOptions["save-passwd"]="no";
            Opzioni["save-passwd"]="no";
            Opzioni["password"]="";
 
@@ -2051,7 +2076,7 @@ void MainJackSMS::countdownToGui(){
        connect(updateChecker,SIGNAL(criticalError(QString)),this,SLOT(errorUpdates(QString)));
        updateChecker->checkUpdadates();
        countdownToGuiCount=COUNTDOWNTOGUICOUNTDEFINE;
-    
+
     }
 
 }
@@ -2269,10 +2294,11 @@ void MainJackSMS::disableUibeforeLogin(){
     ui->actionElimina_cookies->setEnabled(false);
     ui->actionPlugins->setEnabled(false);
     ui->actionCsv->setEnabled(false);
-
+    ui->menuInstruments->setEnabled(false);
 }
 void MainJackSMS::enableUiAfterLogin(){
     ui->actionLogout->setEnabled(true);
+    ui->menuInstruments->setEnabled(true);
     //ui->actionOpzioni->setEnabled(true);
     ui->actionStatistiche->setEnabled(true);
     ui->actionCrea_backup_configurazione->setEnabled(true);
@@ -2512,7 +2538,7 @@ void MainJackSMS::on_RispondiIm_clicked()
 
                ui->tabWidget->setCurrentIndex(0);
 
-             
+
 
     }
 }
@@ -2735,7 +2761,7 @@ void MainJackSMS::on_imRicevutiWidget_itemPressed(QListWidgetItem* current)
                     ui->tabWidget->setTabText(1,"Ricevuti ("+QString::number(countReceivedUnreaded)+")");
                 else
                     ui->tabWidget->setTabText(1,"Ricevuti");
-                
+
                 w->setReaded(true);
 
                 types::QMessageListType::iterator i=MessaggiRicevuti.begin();
@@ -2903,10 +2929,6 @@ void MainJackSMS::on_bottoneinviomultiplo_clicked()
         gestiscimenuMultiplo();
 }
 
-void MainJackSMS::on_tastoNuovoSMS_clicked()
-{
-    svuotaTabSms();
-}
 
 void MainJackSMS::svuotaTabSms(){
     svuotaDestinatari();
@@ -3113,7 +3135,7 @@ void MainJackSMS::ricaricaDestinatariList(){
 void MainJackSMS::on_numArchivio_currentIndexChanged(int index)
 {
     //Ultimi 100
-    if(index == 0){        
+    if(index == 0){
         for(int c = ui->smsListWidget->count() - 1; c >= 100; --c){
             ui->smsListWidget->takeItem(c);
         }

@@ -240,6 +240,7 @@ namespace libJackSMS{
         bool xmlParserLocalApiTicpp::loadServices(libJackSMS::dataTypes::servicesType & _servizi){
             try{
 
+
                 ticpp::Document services;
 
                 QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),"services.xml");
@@ -860,8 +861,12 @@ namespace libJackSMS{
                                 log.SaveFile();
 
                             }else{
-                                ticpp::Node *se=child->FirstChild("sent");
-                                QString r=QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));
+                                ticpp::Node *se=child->FirstChild("sent",false);
+                                QString r;
+                                if (se==NULL)
+                                    r="0";
+                                else
+                                    r=QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));
                                 i.value().setStat("sent",r);
                                 se=child->FirstChild("sent-partial",false);
                                 if (se!=NULL)
