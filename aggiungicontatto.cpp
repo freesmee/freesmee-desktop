@@ -64,8 +64,7 @@ void AggiungiContatto::on_salva_clicked()
         QString nome=m_ui->nome->text();
         libJackSMS::dataTypes::phoneNumber num;
         bool numeroValido;
-        //numeroValido = num.parse((m_ui->intPref->text().isEmpty() ? "+39" : m_ui->intPref->text())+"."+(m_ui->pref->text().isEmpty() ? "555" : m_ui->pref->text())+"."+m_ui->num->text());
-        numeroValido = num.parse(m_ui->intPref->text()+"."+m_ui->pref->text()+"."+m_ui->num->text());
+        numeroValido = num.parse( (m_ui->intPref->text().isEmpty() ? "" : m_ui->intPref->text() + ".") + m_ui->pref->text() + "." + m_ui->num->text());
         if(!numeroValido){
             QMessageBox::critical(this,"Attenzione","Il numero inserito non è valido, ricontrollalo, oppure se trovi che questo sia un errore segnalalo, grazie.");
             return;

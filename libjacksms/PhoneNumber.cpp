@@ -59,6 +59,19 @@ namespace libJackSMS{
                 valid=true;
                 return valid;
             }
+
+            regExp.setPattern(QString("^([0-9]{1,4})\\.([0-9]{6,8})$"));
+            if (regExp.exactMatch(_phoneNum)){
+                intcode="39";
+                intpref="+39";
+                pref=regExp.cap(2);
+                if (pref=="555")
+                    virtualNumber=true;
+                num=regExp.cap(3);
+                valid=true;
+                return valid;
+            }
+
             regExp.setPattern("^([0-9]{10})$");
             if (regExp.exactMatch(_phoneNum)){
                 intcode="39";

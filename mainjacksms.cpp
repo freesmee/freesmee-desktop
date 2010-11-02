@@ -1935,7 +1935,7 @@ void MainJackSMS::checkInstantMessengerReceived(libJackSMS::dataTypes::logImType
         libJackSMS::dataTypes::logImType::iterator i_end=jmsList.end();
 
         //warning da escludere, non può essere usato non inizializzato. è qui per la visibilità nel for
-        libJackSMS::localApi::imLogSaver *manager;
+        libJackSMS::localApi::imLogSaver *manager = NULL;
         bool save=false;
         if( Opzioni["save-local"]=="yes"){
             save=true;
