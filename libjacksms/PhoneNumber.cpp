@@ -33,7 +33,7 @@ namespace libJackSMS{
         phoneNumber::phoneNumber():valid(false),specialNumber(false),virtualNumber(false){
         }
 
-        void
+        bool
         phoneNumber::parse(QString _phoneNum){
 
             QRegExp  regExp;
@@ -47,7 +47,7 @@ namespace libJackSMS{
                     virtualNumber=true;
                 num=regExp.cap(3);
                 valid=true;
-                return;
+                return valid;
             }
 
             regExp.setPattern(QString("^([0-9]{1,4})\\.([0-9]{1,4})\\.([0-9]{6,8})$"));
@@ -57,7 +57,7 @@ namespace libJackSMS{
                 pref=regExp.cap(2);
                 num=regExp.cap(3);
                 valid=true;
-                return;
+                return valid;
             }
             regExp.setPattern("^([0-9]{10})$");
             if (regExp.exactMatch(_phoneNum)){
@@ -68,7 +68,7 @@ namespace libJackSMS{
                     virtualNumber=true;
                 num=_phoneNum.right(7);
                 valid=true;
-                return;
+                return valid;
             }
 
             regExp.setPattern("^\\+([0-9]{12})$");
@@ -78,7 +78,7 @@ namespace libJackSMS{
                 pref=_phoneNum.mid(3,3);
                 num=_phoneNum.mid(6);
                 valid=true;
-                return;
+                return valid;
             }
             regExp.setPattern("^([0-9]{4,5})$");
             if (regExp.exactMatch(_phoneNum)){
@@ -89,10 +89,11 @@ namespace libJackSMS{
                 valid=true;
                 specialNumber=true;
                 virtualNumber=true;
-                return;
+                return valid;
             }
             valid=false;
             alternativeName=_phoneNum;
+            return valid;
         }
 
 

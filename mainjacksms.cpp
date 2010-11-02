@@ -33,7 +33,7 @@
 #include "qlabelresult.h"
 #include "messageloader.h"
 
-//#include "cambiaaccount.h"
+#include "cambiaaccount.h"
 
 
 /*#include <phonon/audiooutput.h>
@@ -1264,8 +1264,7 @@ void MainJackSMS::on_InoltraButton_clicked()
 
     if (!ls.isEmpty()){
              on_radioSMS_clicked();
-             ui->labelNomeDest->clear();
-             ui->NumeroDestinatario->clear();
+             this->svuotaDestinatari();
              QListWidgetItem *it=ls.front();
              SmsWidget * ww=static_cast< SmsWidget*>(ui->smsListWidget->itemWidget(it));
              ui->TestoSMS->setText(ww->getText());
@@ -1293,7 +1292,7 @@ void MainJackSMS::on_CitaButton_clicked()
 
 
     if (!ls.isEmpty()){
-
+        svuotaDestinatari();
         QListWidgetItem *it=ls.front();
         SmsWidget * ww=static_cast< SmsWidget*>(ui->smsListWidget->itemWidget(it));
         QString phone=ww->getPhoneNum().toString();
@@ -2362,17 +2361,23 @@ void MainJackSMS::deleteAccountOk(QString id){
         libJackSMS::dataTypes::phoneBookType::iterator i_end=Rubrica.end();
         int found = 0;
         for(;i!=i_end;++i){
-            if(i->getAccount() == id){
+            if(i->getAccount() == id)
                 found++;
+        }
+
+        if(found){
+            cambiaaccount *dialog = new cambiaaccount(this, this, ElencoServizi, ElencoServiziConfigurati, Rubrica, Opzioni, id, found);
+            dialog->exec();
+            dialog->deleteLater();
+        }
+
+        i=Rubrica.begin();
+        i_end=Rubrica.end();
+        for(;i!=i_end;++i){
+            if(i->getAccount() == id){
                 i->setAccount("0");
             }
         }
-
-        //if(found){
-        //    cambiaaccount *dialog = new cambiaaccount(this, this, ElencoServizi, ElencoServiziConfigurati, Rubrica, id, found);
-        //    dialog->exec();
-        //    dialog->deleteLater();
-        //}
 
     }catch(...){
         QMessageBox::critical(this,"JackSMS","Errore nel controllo.");
@@ -2660,6 +2665,7 @@ void MainJackSMS::on_radioJMS_clicked()
 {
     messageType=TYPE_JMS;
     ui->comboServizio->hide();
+    ui->comboServizio->setCurrentIndex(0);
     ui->label_2->hide();
     ui->radioJMS->setChecked(true);
     showContactByTypeInFastAbook();
@@ -2682,6 +2688,7 @@ void MainJackSMS::on_CitaButton_2_clicked()
 
 
     if (!ls.isEmpty()){
+        svuotaDestinatari();
         on_radioJMS_clicked();
         QListWidgetItem *it=ls.front();
         SmsWidget * ww=static_cast< SmsWidget*>(ui->imRicevutiWidget->itemWidget(it));

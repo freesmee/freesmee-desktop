@@ -56,10 +56,11 @@ namespace libJackSMS{
                  *                     \li In questo caso, al numero sar√  applicato il prefisso internazionale \b +39\n
                  *
                  * \param _phoneNum la stringa contenente il numero telefonico
-                 *
+                 * \return true = il numero e' valido
+                 * \return false = il numero non Ë valido
                  */
 
-                void parse(QString _phoneNum);
+                bool parse(QString _phoneNum);
 
                 /**
                  * Imposta
