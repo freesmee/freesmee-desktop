@@ -151,11 +151,6 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     menu->addAction(QIcon(),"Pulisci tutti i campi",this,SLOT(svuotaTabSms()));
     ui->menuInstruments->setMenu(menu);
 
-    /*initialXmlLoader=new libJackSMS::localApi::xmlLoader("");
-    connect(initialXmlLoader,SIGNAL(optionsLoaded(libJackSMS::dataTypes::optionsType)),this,SLOT(initialOptionsLoaded(libJackSMS::dataTypes::optionsType)));
-    initialXmlLoader->loadOptions();
-*/
-
     try{
         finder=new libJackSMS::localApi::userFinder;
         finder->findUsers();
@@ -228,9 +223,7 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     QDateTime midnight;
     midnight.setTime(QTime(23,59,59,999));
     midnight.setDate(QDate::currentDate());
-
     int secToMidnight=QDateTime::currentDateTime().secsTo(midnight);  //directly from the Maiden Album "powerslave"....2 minutes to midnight! :P
-    //QMessageBox::critical(this,"JackSMS",QString::number(secToMidnight));
     resetCounterTimer.singleShot(secToMidnight*1000,this,SLOT(resetCounters()));
 }
 

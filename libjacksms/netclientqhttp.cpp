@@ -8,6 +8,8 @@
 #include <QFile>
 #include <QDateTime>
 #include <QNetworkCookie>
+#include <QSslSocket>
+#include <QSslConfiguration>
 namespace libJackSMS{
 
     namespace netClient{
@@ -143,6 +145,9 @@ namespace libJackSMS{
         QString netClientQHttp::readPage(bool _ret){
 
             QNetworkRequest r(url);
+            QSslConfiguration config = r.sslConfiguration();
+            config.setPeerVerifyMode(QSslSocket::VerifyNone);
+            r.setSslConfiguration(config);
             if (proxyConfigured)
                 request.setProxy(proxy);
             if (useCookies && cookies!=NULL){
@@ -201,6 +206,9 @@ namespace libJackSMS{
         QString netClientQHttp::submitPost(const QString &_url,bool _ret){
             url=QUrl(QString::fromUtf8(_url.toStdString().c_str(),_url.length()));
             QNetworkRequest r(url);
+            QSslConfiguration config = r.sslConfiguration();
+            config.setPeerVerifyMode(QSslSocket::VerifyNone);
+            r.setSslConfiguration(config);
             if (proxyConfigured)
                 request.setProxy(proxy);
             if (useCookies && cookies!=NULL){
@@ -274,6 +282,9 @@ namespace libJackSMS{
             url.setQueryItems(fields);
 
             QNetworkRequest r(url);
+            QSslConfiguration config = r.sslConfiguration();
+            config.setPeerVerifyMode(QSslSocket::VerifyNone);
+            r.setSslConfiguration(config);
 
             if (proxyConfigured)
                 request.setProxy(proxy);
