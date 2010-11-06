@@ -952,7 +952,7 @@ void MainJackSMS::sendNextMessage(bool first, bool result, QString _text){
                 ultimoSms.setServiceId("40");
             }
             else if (messageType==TYPE_SMS){
-                ultimoSms.setAccountName(ui->comboServizio->itemData(ui->comboServizio->currentIndex(),Qt::UserRole).toString());
+                ultimoSms.setAccountName(ElencoServiziConfigurati[idAccount].getName());
                 ultimoSms.setServiceId(ElencoServiziConfigurati[idAccount].getService());
 
             }
