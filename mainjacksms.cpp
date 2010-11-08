@@ -1384,7 +1384,7 @@ void MainJackSMS::ClickBaloon(){
 
     raise();
     activateWindow();
-    showNormal();
+    //showNormal();
     if (popupJms){
         ui->tabWidget->setCurrentIndex(1);
         popupJms=false;
