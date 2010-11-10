@@ -1708,6 +1708,17 @@ void MainJackSMS::DisabilitaUi(){
     ui->RicercaVeloce->setEnabled(false);
     ui->bottoneinviomultiplo->setEnabled(false);
     ui->menuInstruments->setEnabled(false);
+    ui->radioJMS->setEnabled(false);
+    ui->radioSMS->setEnabled(false);
+    ui->ModificaServizioButton->setEnabled(false);
+    ui->EliminaServizioButton->setEnabled(false);
+    ui->RubricaElimina->setEnabled(false);
+    ui->RubricaModifica->setEnabled(false);
+    ui->RispondiIm->setEnabled(false);
+    ui->CitaButton->setEnabled(false);
+    ui->CitaButton_2->setEnabled(false);
+    ui->InoltraButton->setEnabled(false);
+    ui->RispondiButton->setEnabled(false);
     if (invioMultiplo)
         ui->destinatariListWidget->disconnect(this,SLOT(on_destinatariListWidget_itemDoubleClicked(QListWidgetItem*)));
 
@@ -1725,7 +1736,18 @@ void MainJackSMS::AbilitaUi(){
     ui->NumeroDestinatario->setEnabled(true);
     ui->RicercaVeloce->setEnabled(true);
     ui->bottoneinviomultiplo->setEnabled(true);
-     ui->menuInstruments->setEnabled(true);
+    ui->menuInstruments->setEnabled(true);
+    ui->radioJMS->setEnabled(true);
+    ui->radioSMS->setEnabled(true);
+    ui->ModificaServizioButton->setEnabled(true);
+    ui->EliminaServizioButton->setEnabled(true);
+    ui->RubricaElimina->setEnabled(true);
+    ui->RubricaModifica->setEnabled(true);
+    ui->RispondiIm->setEnabled(true);
+    ui->CitaButton->setEnabled(true);
+    ui->CitaButton_2->setEnabled(true);
+    ui->InoltraButton->setEnabled(true);
+    ui->RispondiButton->setEnabled(true);
     if (invioMultiplo)
         ui->destinatariListWidget->connect(ui->destinatariListWidget,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(on_destinatariListWidget_itemDoubleClicked(QListWidgetItem*)));
 }

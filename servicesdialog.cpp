@@ -104,7 +104,7 @@ void ServicesDialog::on_ListServizi_currentItemChanged(QListWidgetItem* current,
         }
         delete m_ui->serviceDataForms;
         m_ui->serviceDataForms = new QFormLayout(m_ui->groupBox);
-        m_ui->serviceDataForms->addRow("descrizione", new QLineEdit(nomeServizio));
+        m_ui->serviceDataForms->addRow("nome", new QLineEdit(nomeServizio));
         QLineEdit* linePtr;
         while(iterator_serv.value().nextVar()){
             libJackSMS::dataTypes::variabileServizio i=iterator_serv.value().currentVar();

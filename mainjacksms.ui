@@ -1539,6 +1539,18 @@ p, li { white-space: pre-wrap; }
                   <height>16</height>
                  </size>
                 </property>
+                <property name="flow">
+                 <enum>QListView::TopToBottom</enum>
+                </property>
+                <property name="isWrapping" stdset="0">
+                 <bool>true</bool>
+                </property>
+                <property name="resizeMode">
+                 <enum>QListView::Adjust</enum>
+                </property>
+                <property name="uniformItemSizes">
+                 <bool>false</bool>
+                </property>
                </widget>
               </item>
               <item>
