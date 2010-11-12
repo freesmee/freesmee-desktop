@@ -2089,7 +2089,7 @@ void MainJackSMS::countdownToGui(){
        updateChecker=new libJackSMS::serverApi::updateServicesManager(this->current_login_id,Opzioni,ElencoServizi);
        connect(updateChecker,SIGNAL(updatesAvailable(libJackSMS::dataTypes::servicesType,QString,QString)),this,SLOT(updatesAvailable(libJackSMS::dataTypes::servicesType,QString,QString)));
        connect(updateChecker,SIGNAL(criticalError(QString)),this,SLOT(errorUpdates(QString)));
-       updateChecker->checkUpdadates();
+       updateChecker->checkUpdates();
        countdownToGuiCount=COUNTDOWNTOGUICOUNTDEFINE;
 
     }

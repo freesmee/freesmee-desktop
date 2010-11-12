@@ -120,9 +120,9 @@ namespace libJackSMS{
             public:
                 xmlLoader(const QString & _currentUserDirectory);
                 bool loadPhoneBook(libJackSMS::dataTypes::phoneBookType & _rubrica);
-                bool loadServices();
+                void loadServices();
                 bool loadAccounts(libJackSMS::dataTypes::configuredServicesType & _serviziConfigurati);
-                bool loadOptions();
+                void loadOptions();
                 bool loadSmsLog(libJackSMS::dataTypes::logSmsType & _logSms);
                 bool loadImLog(libJackSMS::dataTypes::logImType & _logIm);
            signals:
@@ -150,7 +150,7 @@ namespace libJackSMS{
             public:
                 serviceManager();
                 bool saveServices(QString _xml);
-                bool mergeServices(const QString &_xml);
+                void mergeServices(const QString &_xml);
             signals:
                 void merged();
         };

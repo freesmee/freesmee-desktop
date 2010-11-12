@@ -200,7 +200,7 @@ namespace libJackSMS{
                 libJackSMS::dataTypes::contact contatto;
             public:
                 contactManagerAdd(const QString & _loginId,dataTypes::proxySettings _ps );
-                bool addNewContact(libJackSMS::dataTypes::contact _contatto);
+                void addNewContact(libJackSMS::dataTypes::contact _contatto);
             signals:
                 void contactAdded(QString,bool);
                 void errorAdd();
@@ -217,7 +217,7 @@ namespace libJackSMS{
                 libJackSMS::dataTypes::contact contatto;
             public:
                 contactManagerUpdate(const QString & _loginId,dataTypes::proxySettings _ps );
-                bool updateContact(libJackSMS::dataTypes::contact _contatto);
+                void updateContact(libJackSMS::dataTypes::contact _contatto);
             signals:
                 void contactUpdated(libJackSMS::dataTypes::contact);
                 void errorUpdate();
@@ -233,7 +233,7 @@ namespace libJackSMS{
                 void run();
             public:
                 contactManagerDelete(const QString & _loginId,dataTypes::proxySettings _ps );
-                bool deleteContact(QString _id);
+                void deleteContact(QString _id);
             signals:
                 void contactDeleted(QString);
                 void errorDelete();
@@ -253,9 +253,9 @@ namespace libJackSMS{
             public:
 
                 contactManager(const QString & _loginId,dataTypes::proxySettings _ps );
-                bool addNewContact(libJackSMS::dataTypes::contact _contatto);
-                bool updateContact(libJackSMS::dataTypes::contact _contatto);
-                bool deleteContact(QString _id);
+                void addNewContact(libJackSMS::dataTypes::contact _contatto);
+                void updateContact(libJackSMS::dataTypes::contact _contatto);
+                void deleteContact(QString _id);
 
             signals:
                 void contactDeleted(QString);
@@ -282,7 +282,7 @@ namespace libJackSMS{
 
             public:
                 accountManagerUpdate(const QString & _loginId,libJackSMS::dataTypes::service _s,dataTypes::proxySettings _ps );
-                bool updateAccount(libJackSMS::dataTypes::configuredAccount _account);
+                void updateAccount(libJackSMS::dataTypes::configuredAccount _account);
             signals:
                 void accountUpdated(libJackSMS::dataTypes::configuredAccount);
                 void errorUpdate();
@@ -297,7 +297,7 @@ namespace libJackSMS{
                 void run();
             public:
                 accountManagerDelete(const QString & _loginId,dataTypes::proxySettings _ps );
-                bool deleteAccount(const QString &_id);
+                void deleteAccount(const QString &_id);
             signals:
                 void accountDeleted(QString);
                 void errorDelete();
@@ -315,7 +315,7 @@ namespace libJackSMS{
                 libJackSMS::dataTypes::configuredAccount account;
             public:
                 accountManagerAdd(const QString & _loginId,dataTypes::proxySettings _ps );
-                bool addNewAccount(libJackSMS::dataTypes::service _service,libJackSMS::dataTypes::configuredAccount & _account);
+                void addNewAccount(libJackSMS::dataTypes::service _service,libJackSMS::dataTypes::configuredAccount & _account);
             signals:
                 void accountAdded(QString);
                 void errorAdd();
@@ -332,9 +332,9 @@ namespace libJackSMS{
                 accountManagerUpdate *manUp;
             public:
                 accountManager(const QString & _loginId,dataTypes::proxySettings _ps );
-                bool addNewAccount(libJackSMS::dataTypes::service _service,libJackSMS::dataTypes::configuredAccount & _account);
-                bool updateAccount(libJackSMS::dataTypes::configuredAccount & _account,libJackSMS::dataTypes::service s);
-                bool deleteAccount(QString _id);
+                void addNewAccount(libJackSMS::dataTypes::service _service,libJackSMS::dataTypes::configuredAccount & _account);
+                void updateAccount(libJackSMS::dataTypes::configuredAccount & _account,libJackSMS::dataTypes::service s);
+                void deleteAccount(QString _id);
 
             signals:
                 void accountDeleted(QString);
@@ -383,7 +383,7 @@ namespace libJackSMS{
                 bool aborted;
             public:
                 updateServicesManager(const QString & _loginId,dataTypes::proxySettings _ps,libJackSMS::dataTypes::servicesType _servizi);
-                bool checkUpdadates();
+                void checkUpdates();
                 void abort();
             signals:
                 void abortSignal();

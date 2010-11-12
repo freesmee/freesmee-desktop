@@ -176,8 +176,7 @@ namespace libJackSMS{
         bool xmlLoader::loadPhoneBook(libJackSMS::dataTypes::phoneBookType & _rubrica){
             return xmlDocument->loadPhoneBook(_rubrica);
         }
-        bool xmlLoader::loadServices(){
-
+        void xmlLoader::loadServices(){
             lo=new serviceLoader;
             connect(lo,SIGNAL(endLoad(libJackSMS::dataTypes::servicesType)),this,SIGNAL(servicesLoaded(libJackSMS::dataTypes::servicesType)));
             connect(lo,SIGNAL(criticalError(QString)),this,SIGNAL(criticalError(QString)));
@@ -186,12 +185,11 @@ namespace libJackSMS{
         bool xmlLoader::loadAccounts(libJackSMS::dataTypes::configuredServicesType & _serviziConfigurati){
             return xmlDocument->loadAccounts(_serviziConfigurati);
         }
-        bool xmlLoader::loadOptions(){
+        void xmlLoader::loadOptions(){
             l=new optionLoader(currentUserDirectory);
             connect(l,SIGNAL(endLoad(libJackSMS::dataTypes::optionsType)),this,SIGNAL(optionsLoaded(libJackSMS::dataTypes::optionsType)));
             connect(l,SIGNAL(criticalError(QString)),this,SIGNAL(criticalError(QString)));
             l->load();
-
         }
 
         bool xmlLoader::loadSmsLog(libJackSMS::dataTypes::logSmsType & _logSms){
@@ -521,11 +519,10 @@ namespace libJackSMS{
         bool serviceManager::saveServices(QString _xml){
             return xmlDocument->saveServices(_xml);
         }
-        bool serviceManager::mergeServices(const QString &_xml){
+        void serviceManager::mergeServices(const QString &_xml){
             serviceManagerBase*smb=new serviceManagerBase(_xml);
             connect(smb,SIGNAL(merged()),this,SIGNAL(merged()));
             smb->merge();
-
         }
 
         void serviceManagerBase::run(){

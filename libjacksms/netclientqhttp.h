@@ -22,7 +22,7 @@ namespace libJackSMS{
                 void clear();
                 void saveToDisk(QString filename);
                 void loadFromDisk(QString filename);
-                QString getRawData();
+                QByteArray getRawData();
 
         };
         class netClientQHttp : public QObject,public netClientGeneric

@@ -5,7 +5,13 @@
 #include <QDesktopServices>
 
 
-SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QString user,QString service,QString _id,libJackSMS::dataTypes::phoneNumber _number,bool _letto):type(received),id(_id),number(_number),readed(_letto),dateTim(time),originalText(_txt)
+SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QString user,QString service,QString _id,libJackSMS::dataTypes::phoneNumber _number,bool _letto) :
+        originalText(_txt),
+        type(received),
+        id(_id),
+        number(_number),
+        readed(_letto),
+        dateTim(time)
 {
 
        labelGroup = new QLabel(user);
@@ -82,7 +88,13 @@ SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QStr
        adjustSize();
 
 }
-SmsWidget::SmsWidget(QMyMessage _sms,QPixmap _ico,bool received):msg(_sms),type(received),readed(_sms.getReaded()),number(_sms.getPhone()),originalText(_sms.getMessage()){
+SmsWidget::SmsWidget(QMyMessage _sms,QPixmap _ico,bool received) :
+        originalText(_sms.getMessage()),
+        msg(_sms),
+        type(received),
+        number(_sms.getPhone()),
+        readed(_sms.getReaded())
+{
 
     id=_sms.getId();
     labelGroup = new QLabel(_sms.getParsedName());

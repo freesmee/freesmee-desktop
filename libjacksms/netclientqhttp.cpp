@@ -54,15 +54,15 @@ namespace libJackSMS{
                 file.close();
             }
         }
-        QString QMyNetworkCookieJar::getRawData(){
+        QByteArray QMyNetworkCookieJar::getRawData(){
             QByteArray raw;
             QList<QNetworkCookie> myCookieList=allCookies();
             for(QList<QNetworkCookie>::const_iterator i=myCookieList.begin();i!=myCookieList.end();++i){
                 raw.append(i->toRawForm()+"\n");
             }
-
-
+            return raw;
         }
+
         void QMyNetworkCookieJar::clear(){
             setAllCookies(QList<QNetworkCookie>());
         }

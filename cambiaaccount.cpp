@@ -4,14 +4,14 @@
 
 cambiaaccount::cambiaaccount(QWidget *parent, MainJackSMS * _padre, const libJackSMS::dataTypes::servicesType & _ElencoServizi, const libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, const libJackSMS::dataTypes::optionsType _Opzioni, QString _id, int _found) :
     QDialog(parent),
+    m_ui(new Ui::cambiaaccount),
     padre(_padre),
     ElencoServizi(_ElencoServizi),
     ElencoServiziConfigurati(_ElencoServiziConfigurati),
     Rubrica(_Rubrica),
     Opzioni(_Opzioni),
     id(_id),
-    found(_found),
-    m_ui(new Ui::cambiaaccount)
+    found(_found)
 {
     m_ui->setupUi(this);
 

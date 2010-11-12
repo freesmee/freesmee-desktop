@@ -303,20 +303,19 @@ namespace libJackSMS{
             :loginId(_loginId),
             ps(_ps){
         }
-        bool contactManager::addNewContact(libJackSMS::dataTypes::contact _contatto){
+        void contactManager::addNewContact(libJackSMS::dataTypes::contact _contatto){
             manAdd=new contactManagerAdd(loginId,ps);
             connect(manAdd,SIGNAL(contactAdded(QString,bool)),this,SIGNAL(contactSaved(QString,bool)));
             connect(manAdd,SIGNAL(errorAdd()),this,SIGNAL(contactNotSaved()));
             manAdd->addNewContact(_contatto);
-
         }
-        bool contactManager::updateContact(libJackSMS::dataTypes::contact  _contatto){
+        void contactManager::updateContact(libJackSMS::dataTypes::contact  _contatto){
             manUp=new contactManagerUpdate(loginId,ps);
             connect(manUp,SIGNAL(contactUpdated(libJackSMS::dataTypes::contact)),this,SIGNAL(contactUpdated(libJackSMS::dataTypes::contact)));
             connect(manUp,SIGNAL(errorUpdate()),this,SIGNAL(contactNotUpdated()));
             manUp->updateContact(_contatto);
         }
-        bool contactManager::deleteContact(QString _id){
+        void contactManager::deleteContact(QString _id){
             manDel=new contactManagerDelete(loginId,ps);
             connect(manDel,SIGNAL(contactDeleted(QString)),this,SIGNAL(contactDeleted(QString)));
             connect(manDel,SIGNAL(errorDelete()),this,SIGNAL(contactNotDeleted()));
@@ -359,7 +358,7 @@ namespace libJackSMS{
 
 
         }
-        bool contactManagerDelete::deleteContact(QString _id){
+        void contactManagerDelete::deleteContact(QString _id){
             id=_id;
             start();
         }
@@ -402,7 +401,7 @@ namespace libJackSMS{
 
 
         }
-        bool accountManagerDelete::deleteAccount(const QString &_id){
+        void accountManagerDelete::deleteAccount(const QString &_id){
             id=_id;
             start();
         }
@@ -459,12 +458,10 @@ namespace libJackSMS{
 
 
         }
-        bool accountManagerAdd::addNewAccount(libJackSMS::dataTypes::service _service,libJackSMS::dataTypes::configuredAccount & _account){
+        void accountManagerAdd::addNewAccount(libJackSMS::dataTypes::service _service,libJackSMS::dataTypes::configuredAccount & _account){
             service=_service;
             account=_account;
             start();
-
-
         }
 
 
@@ -509,7 +506,7 @@ namespace libJackSMS{
             ps(_ps){
 
         }
-        bool contactManagerAdd::addNewContact(libJackSMS::dataTypes::contact _contatto){
+        void contactManagerAdd::addNewContact(libJackSMS::dataTypes::contact _contatto){
             contatto=_contatto;
             start();
         }
@@ -552,7 +549,7 @@ namespace libJackSMS{
 
             qRegisterMetaType<libJackSMS::dataTypes::contact>("libJackSMS::dataTypes::contact");
         }
-        bool contactManagerUpdate::updateContact(libJackSMS::dataTypes::contact _contatto){
+        void contactManagerUpdate::updateContact(libJackSMS::dataTypes::contact _contatto){
             contatto=_contatto;
             start();
         }
@@ -602,7 +599,7 @@ namespace libJackSMS{
             ps(_ps){
             qRegisterMetaType<libJackSMS::dataTypes::configuredAccount>("libJackSMS::dataTypes::configuredAccount");
         }
-        bool accountManagerUpdate::updateAccount(libJackSMS::dataTypes::configuredAccount _account){
+        void accountManagerUpdate::updateAccount(libJackSMS::dataTypes::configuredAccount _account){
             account=_account;
             start();
         }
@@ -614,24 +611,19 @@ namespace libJackSMS{
             ps(_ps){
         }
 
-        bool accountManager::addNewAccount(libJackSMS::dataTypes::service _service,libJackSMS::dataTypes::configuredAccount & _account){
+        void accountManager::addNewAccount(libJackSMS::dataTypes::service _service,libJackSMS::dataTypes::configuredAccount & _account){
             manAdd=new accountManagerAdd(loginId,ps);
             connect(manAdd,SIGNAL(accountAdded(QString)),this,SIGNAL(accountSaved(QString)));
             connect(manAdd,SIGNAL(errorAdd()),this,SIGNAL(accountNotSaved()));
             manAdd->addNewAccount(_service,_account);
-
-
-
-
         }
-        bool accountManager::updateAccount(libJackSMS::dataTypes::configuredAccount & _account,libJackSMS::dataTypes::service s){
-
+        void accountManager::updateAccount(libJackSMS::dataTypes::configuredAccount & _account,libJackSMS::dataTypes::service s){
             manUp=new accountManagerUpdate(loginId,s,ps);
             connect(manUp,SIGNAL(accountUpdated(libJackSMS::dataTypes::configuredAccount)),this,SIGNAL(accountUpdated(libJackSMS::dataTypes::configuredAccount)));
             connect(manUp,SIGNAL(errorUpdate()),this,SIGNAL(accountNotUpdated()));
             manUp->updateAccount(_account);
         }
-        bool accountManager::deleteAccount(QString _id){
+        void accountManager::deleteAccount(QString _id){
             manDel=new accountManagerDelete(loginId,ps);
             connect(manDel,SIGNAL(accountDeleted(QString)),this,SIGNAL(accountDeleted(QString)));
             connect(manDel,SIGNAL(errorDelete()),this,SIGNAL(accountNotDeleted()));
@@ -708,7 +700,7 @@ namespace libJackSMS{
 
         }
 
-        bool updateServicesManager::checkUpdadates(){
+        void updateServicesManager::checkUpdates(){
             start();
         }
 
@@ -813,6 +805,9 @@ namespace libJackSMS{
 
                 }
             }
+            //prevent compile warning.
+            //the execution shouldn't reach this.
+            return false;
         }
 
 
