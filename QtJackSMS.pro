@@ -84,7 +84,9 @@ SOURCES += main.cpp \
     Configuration.cpp \
     libjacksms/libraryconfig.cpp \
     editaccountdialog.cpp \
-    cambiaaccount.cpp
+    cambiaaccount.cpp \
+    qtsingleapplication/qtsingleapplication.cpp \
+    qtsingleapplication/qtlocalpeer.cpp
 HEADERS += mainjacksms.h \
     Types.h \
     captchadialog.h \
@@ -163,7 +165,9 @@ HEADERS += mainjacksms.h \
     libjacksms/EncodingIso88591.h \
     libjacksms/libraryconfig.h \
     editaccountdialog.h \
-    cambiaaccount.h
+    cambiaaccount.h \
+    qtsingleapplication/qtsingleapplication.h \
+    qtsingleapplication/qtlocalpeer.h
 FORMS += mainjacksms.ui \
     captchadialog.ui \
     servicesdialog.ui \

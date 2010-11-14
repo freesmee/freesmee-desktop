@@ -251,6 +251,7 @@ private slots:
     void errorUpdates(QString);
 
     void username_returnPressed();
+    void anotherInstanceOpened(const QString&);
 
 };
 

@@ -3166,3 +3166,7 @@ void MainJackSMS::on_tabWidget_currentChanged(int index)
     if(index==2)
         ui->RicercaVeloceIM->setFocus();
 }
+
+void MainJackSMS::anotherInstanceOpened(const QString &str){
+
+}

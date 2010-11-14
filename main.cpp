@@ -1,16 +1,19 @@
-#include <QtGui/QApplication>
+#include "qtsingleapplication/qtsingleapplication.h"
 #include "mainjacksms.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
+    QtSingleApplication app(argc, argv);
+    if (app.isRunning()) {
+        app.sendMessage("Duplicate");
+        return 0;
+    }
 
+    MainJackSMS w;
+    app.setActivationWindow(&w);
+    w.show();
 
+    QObject::connect(&app, SIGNAL(messageReceived(const QString&)), &w, SLOT(anotherInstanceOpened(const QString&)));
 
-        QApplication a(argc, argv);
-        MainJackSMS w;
-        w.show();
-        return a.exec();
-
-
-
+    return app.exec();
 }
