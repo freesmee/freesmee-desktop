@@ -195,6 +195,9 @@
          <height>16</height>
         </size>
        </property>
+       <property name="autoDefault">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -217,6 +220,9 @@
          <width>16</width>
          <height>16</height>
         </size>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
        </property>
       </widget>
      </item>

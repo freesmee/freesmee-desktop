@@ -217,6 +217,9 @@
          <height>16</height>
         </size>
        </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -252,6 +255,7 @@
   <tabstop>radioNuovo</tabstop>
   <tabstop>ComboGruppo</tabstop>
   <tabstop>nuovogruppo</tabstop>
+  <tabstop>salva</tabstop>
   <tabstop>annulla</tabstop>
  </tabstops>
  <resources>
