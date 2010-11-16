@@ -10,7 +10,7 @@ int main(int argc, char **argv)
     }
 
     MainJackSMS w;
-    app.setActivationWindow(&w);
+    app.setActivationWindow(&w, false);
     w.show();
 
     QObject::connect(&app, SIGNAL(messageReceived(const QString&)), &w, SLOT(anotherInstanceOpened(const QString&)));

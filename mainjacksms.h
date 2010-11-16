@@ -35,7 +35,6 @@ signals:
     void abortSendSms();
 public:
 
-
     Ui::MainJackSMS *ui;
     MainJackSMS(QWidget *parent = 0);
     ~MainJackSMS();
@@ -62,7 +61,11 @@ public:
     void ricaricaDestinatariList(QString str);
     void ricaricaDestinatariList();
 
+public slots:
+    void anotherInstanceOpened(const QString &str);
+
 private:
+
     bool usaAssociatiPresent;
     bool popupJms;
     bool checkDoubleRecipients(libJackSMS::dataTypes::phoneNumber &_n) const;
@@ -251,7 +254,6 @@ private slots:
     void errorUpdates(QString);
 
     void username_returnPressed();
-    void anotherInstanceOpened(const QString&);
 
 };
 

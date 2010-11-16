@@ -68,6 +68,16 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType & _opt,QTextEdit
             if ("yes"==iter.value())
                 m_ui->nonSalvaCookies->setChecked(true);
 
+        iter=opt.find("hide-service-update");
+        if (iter!=opt.end())
+            if ("yes"==iter.value())
+                m_ui->hideServiceUpdate->setChecked(true);
+
+        iter=opt.find("suono-jms");
+        if (iter!=opt.end())
+            if ("yes"==iter.value())
+                m_ui->suonoJMS->setChecked(true);
+
         iter=opt.find("opz-radio-singolo");
         if (iter!=opt.end()){
             if ("yes"==iter.value()){
@@ -332,6 +342,14 @@ void OpzioniDialog::on_pushButton_2_clicked()
 
         if (("yes"==opt["dont-cookies"])!=m_ui->nonSalvaCookies->isChecked()){
             opt["dont-cookies"]=(m_ui->nonSalvaCookies->isChecked())?"yes":"no";
+        }
+
+        if (("yes"==opt["hide-service-update"])!=m_ui->hideServiceUpdate->isChecked()){
+            opt["hide-service-update"]=(m_ui->hideServiceUpdate->isChecked())?"yes":"no";
+        }
+
+        if (("yes"==opt["suono-jms"])!=m_ui->suonoJMS->isChecked()){
+            opt["suono-jms"]=(m_ui->suonoJMS->isChecked())?"yes":"no";
         }
 
         if (("yes"==opt["opz-svuota-invio-corretto"])!=m_ui->opzSvuotaInvioCorretto->isChecked()){

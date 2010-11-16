@@ -1384,7 +1384,8 @@ void MainJackSMS::ClickBaloon(){
 
     raise();
     activateWindow();
-    //showNormal();
+    showNormal();
+
     if (popupJms){
         ui->tabWidget->setCurrentIndex(1);
         popupJms=false;
@@ -2041,7 +2042,14 @@ void MainJackSMS::checkInstantMessengerReceived(libJackSMS::dataTypes::logImType
         //jmsList.clear();
 
         section++;
-/*
+
+        libJackSMS::dataTypes::optionsType::const_iterator iter=Opzioni.find("suono-jms");
+        if (iter!=Opzioni.end())
+            if ("yes"==iter.value())
+                QSound::play("sounds/newjms.wav");
+
+
+        /*
         if( Opzioni["play-im-sound"]=="yes"){
             Phonon::MediaObject *mediaObject= new Phonon::MediaObject(this);
             Phonon::AudioOutput *audioOutput= new Phonon::AudioOutput(Phonon::MusicCategory, this);
@@ -2055,7 +2063,11 @@ void MainJackSMS::checkInstantMessengerReceived(libJackSMS::dataTypes::logImType
 
 }
 void MainJackSMS::errorUpdates(QString err){
-    QMessageBox::critical(this,"JackSMS","si e' verificato un errore grave durante l'aggiornamnto dei servizi.\nErrore: "+err);
+    libJackSMS::dataTypes::optionsType::const_iterator iter=Opzioni.find("hide-service-update");
+    if (iter==Opzioni.end())
+        QMessageBox::critical(this,"JackSMS","si e' verificato un errore grave durante l'aggiornamnto dei servizi.\nErrore: "+err);
+    else if ("no"==iter.value())
+        QMessageBox::critical(this,"JackSMS","si e' verificato un errore grave durante l'aggiornamnto dei servizi.\nErrore: "+err);
 }
 void MainJackSMS::countdownToGui(){
     countdownToGuiCount--;
@@ -2206,15 +2218,20 @@ void MainJackSMS::loginSuccess(QString sessionId){
 void MainJackSMS::serverPinged(){
     std::cout<<"[PING] pingato server"<<std::endl;
 }
+
 void MainJackSMS::updatesAvailable(libJackSMS::dataTypes::servicesType serv,QString xml,QString msg){
 
     libJackSMS::localApi::serviceManager man;
     man.mergeServices(xml);
-    QMessageBox::information(this,"Aggiornamenti JackSMS",msg);
     ElencoServizi=serv;
 
-
+    libJackSMS::dataTypes::optionsType::const_iterator iter=Opzioni.find("hide-service-update");
+    if (iter==Opzioni.end())
+        QMessageBox::information(this,"Aggiornamenti JackSMS",msg);
+    else if ("no"==iter.value())
+        QMessageBox::information(this,"Aggiornamenti JackSMS",msg);
 }
+
 void MainJackSMS::newVersionAvailable(){
 
     //if (Opzioni["check-version"]=="yes"){
@@ -3168,5 +3185,8 @@ void MainJackSMS::on_tabWidget_currentChanged(int index)
 }
 
 void MainJackSMS::anotherInstanceOpened(const QString &str){
-
+    raise();
+    activateWindow();
+    showNormal();
+    //QMessageBox::information(this,"JackSMS","JackSMS è già aperto.");
 }

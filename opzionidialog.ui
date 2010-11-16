@@ -175,6 +175,20 @@
               </widget>
              </item>
              <item>
+              <widget class="QCheckBox" name="hideServiceUpdate">
+               <property name="text">
+                <string>Nascondi i messaggi di aggiornamento servizi</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="suonoJMS">
+               <property name="text">
+                <string>Emetti un suono alla ricezione di un nuovo JMS</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <spacer name="verticalSpacer">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
