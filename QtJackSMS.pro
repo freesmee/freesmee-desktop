@@ -16,7 +16,8 @@ win32 {
     RC_FILE = icon.rc
 }
 QT += network
-#QT += phonon
+
+# QT += phonon
 CONFIG(debug, debug|release):LIBS += -lticppd
 CONFIG(release, debug|release):LIBS += -lticpp
 DEFINES += TIXML_USE_TICPP
@@ -86,7 +87,10 @@ SOURCES += main.cpp \
     editaccountdialog.cpp \
     cambiaaccount.cpp \
     qtsingleapplication/qtsingleapplication.cpp \
-    qtsingleapplication/qtlocalpeer.cpp
+    qtsingleapplication/qtlocalpeer.cpp \
+    qrecipientwidget.cpp \
+    faderwidget.cpp \
+    multiplecheckdialog.cpp
 HEADERS += mainjacksms.h \
     Types.h \
     captchadialog.h \
@@ -167,7 +171,10 @@ HEADERS += mainjacksms.h \
     editaccountdialog.h \
     cambiaaccount.h \
     qtsingleapplication/qtsingleapplication.h \
-    qtsingleapplication/qtlocalpeer.h
+    qtsingleapplication/qtlocalpeer.h \
+    qrecipientwidget.h \
+    faderwidget.h \
+    multiplecheckdialog.h
 FORMS += mainjacksms.ui \
     captchadialog.ui \
     servicesdialog.ui \
@@ -178,5 +185,6 @@ FORMS += mainjacksms.ui \
     statsdialog.ui \
     plugindialog.ui \
     editaccountdialog.ui \
-    cambiaaccount.ui
+    cambiaaccount.ui \
+    multiplecheckdialog.ui
 RESOURCES += resources.qrc

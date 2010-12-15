@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>580</width>
-    <height>408</height>
+    <width>748</width>
+    <height>477</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -516,7 +516,7 @@ QFrame#frame_3_old{
            <attribute name="title">
             <string>Nuovo SMS</string>
            </attribute>
-           <layout class="QHBoxLayout" name="horizontalLayout_17">
+           <layout class="QVBoxLayout" name="verticalLayout_13">
             <item>
              <layout class="QGridLayout" name="gridLayout_7">
               <property name="horizontalSpacing">
@@ -529,68 +529,55 @@ QFrame#frame_3_old{
                <layout class="QVBoxLayout" name="verticalLayout">
                 <item>
                  <layout class="QGridLayout" name="gridLayout">
-                  <item row="2" column="0">
-                   <widget class="QLineEdit" name="NumeroDestinatario">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>22</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>16777215</width>
-                      <height>22</height>
-                     </size>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="2">
-                   <widget class="QComboBox" name="comboServizio">
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>22</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>16777215</width>
-                      <height>22</height>
-                     </size>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="2">
+                  <item row="0" column="3">
                    <widget class="QLabel" name="label_2">
                     <property name="text">
                      <string>Servizio</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_15">
+                  <item row="1" column="3">
+                   <layout class="QVBoxLayout" name="verticalLayout_12">
+                    <property name="spacing">
+                     <number>0</number>
+                    </property>
                     <item>
-                     <widget class="QLabel" name="label">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
+                     <widget class="QComboBox" name="comboServizio">
+                      <property name="minimumSize">
+                       <size>
+                        <width>140</width>
+                        <height>22</height>
+                       </size>
                       </property>
-                      <property name="text">
-                       <string>Destinatario</string>
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>22</height>
+                       </size>
                       </property>
                      </widget>
                     </item>
+                   </layout>
+                  </item>
+                  <item row="1" column="4">
+                   <layout class="QVBoxLayout" name="verticalLayout_14">
+                    <property name="spacing">
+                     <number>0</number>
+                    </property>
                     <item>
-                     <widget class="QLabel" name="labelNomeDest">
+                     <widget class="QPushButton" name="menuInstruments">
+                      <property name="minimumSize">
+                       <size>
+                        <width>22</width>
+                        <height>22</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>22</width>
+                        <height>22</height>
+                       </size>
+                      </property>
                       <property name="text">
                        <string/>
                       </property>
@@ -598,33 +585,131 @@ QFrame#frame_3_old{
                     </item>
                    </layout>
                   </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="label_4">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label">
                     <property name="text">
-                     <string>Testo SMS</string>
+                     <string>Destinatario</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="3">
-                   <widget class="QPushButton" name="menuInstruments">
-                    <property name="minimumSize">
-                     <size>
-                      <width>22</width>
-                      <height>22</height>
-                     </size>
+                  <item row="1" column="0">
+                   <layout class="QVBoxLayout" name="verticalLayout_9">
+                    <property name="spacing">
+                     <number>0</number>
                     </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>22</width>
-                      <height>22</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
+                    <item>
+                     <widget class="QListWidget" name="recipientListWidget">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>0</width>
+                        <height>22</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>16777215</height>
+                       </size>
+                      </property>
+                      <property name="sizeIncrement">
+                       <size>
+                        <width>0</width>
+                        <height>1</height>
+                       </size>
+                      </property>
+                      <property name="baseSize">
+                       <size>
+                        <width>1</width>
+                        <height>1</height>
+                       </size>
+                      </property>
+                      <property name="frameShape">
+                       <enum>QFrame::NoFrame</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Sunken</enum>
+                      </property>
+                      <property name="lineWidth">
+                       <number>0</number>
+                      </property>
+                      <property name="verticalScrollBarPolicy">
+                       <enum>Qt::ScrollBarAsNeeded</enum>
+                      </property>
+                      <property name="horizontalScrollBarPolicy">
+                       <enum>Qt::ScrollBarAlwaysOff</enum>
+                      </property>
+                      <property name="verticalScrollMode">
+                       <enum>QAbstractItemView::ScrollPerPixel</enum>
+                      </property>
+                      <property name="horizontalScrollMode">
+                       <enum>QAbstractItemView::ScrollPerPixel</enum>
+                      </property>
+                      <property name="flow">
+                       <enum>QListView::LeftToRight</enum>
+                      </property>
+                      <property name="isWrapping" stdset="0">
+                       <bool>true</bool>
+                      </property>
+                      <property name="resizeMode">
+                       <enum>QListView::Adjust</enum>
+                      </property>
+                      <property name="viewMode">
+                       <enum>QListView::ListMode</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <layout class="QHBoxLayout" name="horizontalLayout_15">
+                      <property name="spacing">
+                       <number>0</number>
+                      </property>
+                      <item>
+                       <widget class="QLineEdit" name="recipientLine"/>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="buttonAddContacts">
+                        <property name="maximumSize">
+                         <size>
+                          <width>24</width>
+                          <height>24</height>
+                         </size>
+                        </property>
+                        <property name="text">
+                         <string/>
+                        </property>
+                        <property name="icon">
+                         <iconset resource="resources.qrc">
+                          <normaloff>:/resource/aggiungi.png</normaloff>:/resource/aggiungi.png</iconset>
+                        </property>
+                        <property name="iconSize">
+                         <size>
+                          <width>14</width>
+                          <height>14</height>
+                         </size>
+                        </property>
+                        <property name="flat">
+                         <bool>false</bool>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_4">
+                  <property name="text">
+                   <string>Testo SMS</string>
+                  </property>
+                 </widget>
                 </item>
                 <item>
                  <widget class="QTextEdit" name="TestoSMS">
@@ -672,23 +757,6 @@ QFrame#frame_3_old{
                   </property>
                   <property name="sortingEnabled">
                    <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_3">
-                  <property name="text">
-                   <string>Destinatari invio multiplo</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QListWidget" name="destinatariListWidget">
-                  <property name="maximumSize">
-                   <size>
-                    <width>200</width>
-                    <height>16777215</height>
-                   </size>
                   </property>
                  </widget>
                 </item>
@@ -825,32 +893,6 @@ QFrame#frame_3_old{
                   </property>
                  </widget>
                 </item>
-                <item>
-                 <widget class="QPushButton" name="bottoneinviomultiplo">
-                  <property name="maximumSize">
-                   <size>
-                    <width>24</width>
-                    <height>24</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="resources.qrc">
-                    <normaloff>:/resource/ico_contact2.png</normaloff>:/resource/ico_contact2.png</iconset>
-                  </property>
-                  <property name="iconSize">
-                   <size>
-                    <width>16</width>
-                    <height>16</height>
-                   </size>
-                  </property>
-                  <property name="flat">
-                   <bool>false</bool>
-                  </property>
-                 </widget>
-                </item>
                </layout>
               </item>
               <item row="2" column="2">
@@ -858,6 +900,27 @@ QFrame#frame_3_old{
                 <property name="topMargin">
                  <number>6</number>
                 </property>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_10">
+                  <item>
+                   <widget class="QRadioButton" name="radioTutti">
+                    <property name="text">
+                     <string>Tutti</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QRadioButton" name="radioJackSMS">
+                    <property name="text">
+                     <string>JackSMS</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
                 <item>
                  <widget class="QLabel" name="label_5">
                   <property name="sizePolicy">
@@ -895,47 +958,6 @@ QFrame#frame_3_old{
                    </size>
                   </property>
                  </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="0" column="1">
-               <layout class="QHBoxLayout" name="horizontalLayout_10">
-                <item>
-                 <widget class="QLabel" name="label_6">
-                  <property name="text">
-                   <string>Componi  </string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QRadioButton" name="radioSMS">
-                  <property name="text">
-                   <string>SMS</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QRadioButton" name="radioJMS">
-                  <property name="text">
-                   <string>JMS</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_7">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
                 </item>
                </layout>
               </item>
@@ -1543,7 +1565,7 @@ p, li { white-space: pre-wrap; }
                  <enum>QListView::TopToBottom</enum>
                 </property>
                 <property name="isWrapping" stdset="0">
-                 <bool>true</bool>
+                 <bool>false</bool>
                 </property>
                 <property name="resizeMode">
                  <enum>QListView::Adjust</enum>
@@ -1684,7 +1706,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>580</width>
+     <width>748</width>
      <height>21</height>
     </rect>
    </property>
@@ -1843,8 +1865,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>password</tabstop>
   <tabstop>ricordaPassword</tabstop>
   <tabstop>loginButton</tabstop>
-  <tabstop>NumeroDestinatario</tabstop>
-  <tabstop>comboServizio</tabstop>
   <tabstop>TestoSMS</tabstop>
   <tabstop>InviaSMS</tabstop>
   <tabstop>AnnullaSMS</tabstop>

@@ -2,7 +2,7 @@
 #include "libjacksms/libJackSMS.h"
 
 #include <QLabel>
-
+#include <QCheckBox>
 
 /*contactWidgetFastBook::contactWidgetFastBook(QString _id,QString _nome,QString _numero,QPixmap _icoServ,QString _accountId):id(_id),nomeContatto(_nome),accountId(_accountId),numero(_numero)
 {
@@ -24,15 +24,22 @@
        adjustSize();
 
 }*/
-contactWidgetFastBook::contactWidgetFastBook(const libJackSMS::dataTypes::contact &_c,QPixmap _icoServ):id(_c.getId()),nomeContatto(_c.getName()),accountId(_c.getAccount()),numero(_c.getPhone().toString()),c(_c)
+contactWidgetFastBook::contactWidgetFastBook(const libJackSMS::dataTypes::contact &_c,QPixmap _icoServ,bool addCheckBox):id(_c.getId()),nomeContatto(_c.getName()),accountId(_c.getAccount()),numero(_c.getPhone().toString()),c(_c)
 {
        hLayout = new QHBoxLayout;
        hLayout->setMargin(2);
        labelIconInfo=new QLabel;
+
        nome=new QLabel(_c.getName());
        icon=new QLabel;
        icon->setMaximumSize(16,16);
        icon->setPixmap(_icoServ);
+       if(addCheckBox){
+           chbox=new QCheckBox;
+           chbox->setChecked(false);
+           chbox->setMaximumSize(16,16);
+           hLayout->addWidget(chbox);
+       }
        hLayout->addWidget(icon);
        hLayout->addWidget(nome);
        setLayout(hLayout);
@@ -76,4 +83,8 @@ contactWidgetFastBook * contactWidgetFastBook::clone() const{
     QPixmap p(*icon->pixmap());
     return new contactWidgetFastBook(c,p);
 
+}
+
+bool contactWidgetFastBook::isChecked() const{
+    return chbox->isChecked();
 }

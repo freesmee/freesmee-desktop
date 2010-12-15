@@ -12,13 +12,13 @@
 #include "plugins/JackPluginHostInterfacer.h"
 //#include "plugins/captcha/JackCaptchaPluginInterfacer.h"
 #include "libjacksms/libJackSMS.h"
-
-
 #include <QMultiMap>
 #include "smswidget.h"
 #include "messageloader.h"
 #include "accountwidget.h"
 #include "contactwidgetfastbook.h"
+#include "qrecipientwidget.h"
+#include "multiplecheckdialog.h"
 #define TYPE_SMS 1
 #define TYPE_JMS 2
 namespace Ui
@@ -65,18 +65,24 @@ public slots:
     void anotherInstanceOpened(const QString &str);
 
 private:
+    multipleCheckDialog *mcDialog;
+    int iterateSendSms(bool first,bool result=false,QString _text="");
+    int smsCount;
+    QCompleter *completer;
+    void resizeRecipientBox();
 
+    QLineEdit *newRecipientLine;
+    QListWidgetItem *newRecipientWidget;
     bool usaAssociatiPresent;
     bool popupJms;
     bool checkDoubleRecipients(libJackSMS::dataTypes::phoneNumber &_n) const;
     bool recipientAutoEdited;
     void recipientStringCalculate();
     void sendNextMessage(bool first, bool result=false, QString _text="");
-    QList<QPair<contactWidgetFastBook*,libJackSMS::dataTypes::phoneNumber> > multipleSendRecipients;
+    QList<QListWidgetItem*> multipleSendRecipients;
     bool invioMultiplo;
     QPixmap icon_jack;
     int errorSentCounter;
-
     void resizeEvent ( QResizeEvent * );
     int messageType;
     void countdownToGui();
@@ -142,23 +148,24 @@ private:
     QTimer resetCounterTimer;
 
 private slots:
+    void on_radioTutti_clicked();
+    void on_radioJackSMS_clicked();
+    void addRecipients(QList<QRecipientWidget*> l);
+    void on_buttonAddContacts_clicked();
+    void recipientRemove(QListWidgetItem* );
+    void on_recipientLine_returnPressed();
     void resetCounters();
     void svuotaTabSms();
     void on_tabWidget_currentChanged(int index);
     void on_numArchivio_currentIndexChanged(int index);
-    void on_bottoneinviomultiplo_clicked();
     void smsSaved(libJackSMS::dataTypes::logSmsMessage sms,QString t);
-
     void on_autoLogin_stateChanged(int );
-
     void on_ricordaPassword_stateChanged(int );
     void ReWriteConfiguredServicesToGui();
     void on_actionCsv_triggered();
     void on_listServiziConfigurati_itemDoubleClicked(QListWidgetItem* item);
     void on_rubricaListWidget_itemDoubleClicked(QListWidgetItem* item);
     void on_TextRapidServizi_textChanged(QString);
-
-    void on_destinatariListWidget_itemDoubleClicked(QListWidgetItem* item);
     void on_RubricaVeloce_itemDoubleClicked(QListWidgetItem* item);
     void on_ModificaServizioButton_clicked();
     void on_imRicevutiWidget_itemPressed(QListWidgetItem* item);
@@ -206,7 +213,6 @@ private slots:
     void on_RubricaElimina_clicked();
     void on_actionInfo_su_JackSMS_triggered();
     void on_TextRapidRubrica_textChanged(QString );
-    void on_NumeroDestinatario_textEdited(QString );
     void on_RispondiButton_clicked();
     void on_CitaButton_clicked();
     void on_AnnullaSMS_clicked();

@@ -22,11 +22,11 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType & _opt,QTextEdit
     libJackSMS::dataTypes::optionsType::const_iterator iter;
 
     // !!!!!!!!!!!!!!!!! disabilito momentaneamente la scheda "lingua"
-   m_ui->listWidget->item(5)->~QListWidgetItem();
+   m_ui->listWidget->item(4)->~QListWidgetItem();
    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 
     if (!loggedIn){
-        m_ui->listWidget->item(4)->~QListWidgetItem();
+        //m_ui->listWidget->item(4)->~QListWidgetItem();
         m_ui->listWidget->item(3)->~QListWidgetItem();
         m_ui->listWidget->item(2)->~QListWidgetItem();
         m_ui->listWidget->item(0)->~QListWidgetItem();
@@ -34,7 +34,7 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType & _opt,QTextEdit
         m_ui->stackedWidget->setCurrentIndex(1);
     }else{
         /*****ATTENZIONE: rimuovo momentaneamente il widget. in versioni superiori verrà reintrodotto*/
-        m_ui->listWidget->item(4)->~QListWidgetItem();
+        m_ui->listWidget->item(3)->~QListWidgetItem();
         /******/
 
         /*iter=opt.find("set-bgcolor");
@@ -78,7 +78,7 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType & _opt,QTextEdit
             if ("yes"==iter.value())
                 m_ui->suonoJMS->setChecked(true);
 
-        iter=opt.find("opz-radio-singolo");
+        /*iter=opt.find("opz-radio-singolo");
         if (iter!=opt.end()){
             if ("yes"==iter.value()){
                 m_ui->radioSingolo->setChecked(true);
@@ -87,7 +87,7 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType & _opt,QTextEdit
             }
         } else {
             m_ui->radioSingolo->setChecked(true);
-        }
+        }*/
 
         iter=opt.find("receive-im");
         if (iter!=opt.end()){
@@ -113,10 +113,10 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType & _opt,QTextEdit
 
 
 
-        iter=opt.find("textsize");
+        /*iter=opt.find("textsize");
             if (iter!=opt.end())
                 m_ui->ComboDimensione->setCurrentIndex(m_ui->ComboDimensione->findText(opt["textsize"]));
-
+*/
             m_ui->stackedWidget->setCurrentIndex(0);
     }
     iter=opt.find("use-proxy");
@@ -366,15 +366,15 @@ void OpzioniDialog::on_pushButton_2_clicked()
             //emit activateImTimer();
         }
 
-        if (opt["textsize"]!=m_ui->ComboDimensione->currentText()){
+        /*if (opt["textsize"]!=m_ui->ComboDimensione->currentText()){
             opt["textsize"]=m_ui->ComboDimensione->currentText();
             TextSms.setFont(QFont(TextSms.font().family(),m_ui->ComboDimensione->currentText().toInt(NULL,10),TextSms.font().weight(),false));
-        }
+        }*/
 
-        if (("yes"==opt["opz-radio-singolo"])!=m_ui->radioSingolo->isChecked()){
+        /*if (("yes"==opt["opz-radio-singolo"])!=m_ui->radioSingolo->isChecked()){
             opt["opz-radio-singolo"]=(m_ui->radioSingolo->isChecked())?"yes":"no";
         }
-
+*/
         if (opt["captcha-zoom"]!=m_ui->comboZoomCaptcha->currentText()){
             opt["captcha-zoom"]=m_ui->comboZoomCaptcha->currentText();
         }
@@ -412,10 +412,10 @@ void OpzioniDialog::on_listWidget_itemClicked(QListWidgetItem* item)
 
 void OpzioniDialog::on_radioSingolo_clicked()
 {
-    m_ui->radioSingolo->setChecked(true);
+    //m_ui->radioSingolo->setChecked(true);
 }
 
 void OpzioniDialog::on_radioMultiplo_clicked()
 {
-    m_ui->radioMultiplo->setChecked(true);
+    //m_ui->radioMultiplo->setChecked(true);
 }
