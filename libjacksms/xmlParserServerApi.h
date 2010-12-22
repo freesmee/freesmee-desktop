@@ -98,7 +98,7 @@ namespace libJackSMS{
                  * \return true se non ho avuto errori, false altrimenti
                  */
                 virtual bool parseServices(libJackSMS::dataTypes::servicesType &_servizi)=0;
-
+                virtual bool checkReport()=0;
                 virtual QString getVersion()=0;
 
         };

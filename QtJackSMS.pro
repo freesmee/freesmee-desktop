@@ -18,7 +18,7 @@ win32 {
 QT += network
 
 # QT += phonon
-CONFIG(debug, debug|release):LIBS += -lticppd
+CONFIG(debug, debug|release):LIBS += -lticpp
 CONFIG(release, debug|release):LIBS += -lticpp
 DEFINES += TIXML_USE_TICPP
 

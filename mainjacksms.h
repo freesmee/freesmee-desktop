@@ -113,6 +113,7 @@ private:
     libJackSMS::smsSender *smsSender;
     libJackSMS::serverApi::login * loginClient;
     libJackSMS::serverApi::smsLogSaver *onlineSmsSaver;
+    libJackSMS::serverApi::smsLogFailed *onlineSmsSaverFailCase;
     libJackSMS::dataTypes::logImType messaggiRicevuti;
     libJackSMS::dataTypes::logImType nuoviMessaggiRicevuti;
     libJackSMS::serverApi::permanentInstantMessenger *imChecker;

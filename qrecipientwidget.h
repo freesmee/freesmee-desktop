@@ -23,6 +23,7 @@ private:
     QLabelResult *removeLabel;
     QListWidgetItem *pIt;
     QLabel *iconLabel;
+    QPixmap original;
 public:
     void setStatusFailed(QString message);
     void setStatusWorking();
@@ -31,6 +32,8 @@ public:
     libJackSMS::dataTypes::phoneNumber getPhone() const;
     QString getAccountId() const;
     void setParentItem(QListWidgetItem * it);
+    void setIcon(QPixmap Icon);
+    void restoreOriginalIcon();
 
 
 signals:

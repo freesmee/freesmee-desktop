@@ -8,6 +8,7 @@ QRecipientWidget::QRecipientWidget(const QString & _contactName,const QString & 
      number(_number),
      QWidget(parent)
  {
+    original=Icon;
 
     hLayout = new QHBoxLayout;
     hLayout->setMargin(3);
@@ -16,7 +17,7 @@ QRecipientWidget::QRecipientWidget(const QString & _contactName,const QString & 
     iconLabel->setMaximumSize(16,16);
     iconStatus=new QLabel;
     iconStatus->setMaximumSize(16,16);
-    name=new QLabel(contactName);
+    name=new QLabel(contactName+" <"+number.toString()+">");
     name->setMinimumHeight(16);
     name->adjustSize();
     name->setFixedWidth(name->width()+15);
@@ -53,6 +54,9 @@ void QRecipientWidget::setStatusFailed(QString message){
     iconStatus->setCursor(Qt::WhatsThisCursor);
 
 }
+void QRecipientWidget::restoreOriginalIcon(){
+    iconLabel->setPixmap(original);
+}
 void QRecipientWidget::setStatusWorking(){
     iconStatus->setPixmap(QIcon(":/resource/jms-activing.png").pixmap(16,16));
 
@@ -67,7 +71,9 @@ void QRecipientWidget::setStatusSuccess(QString message){
 libJackSMS::dataTypes::phoneNumber QRecipientWidget::getPhone() const{
     return number;
 }
-
+void QRecipientWidget::setIcon(QPixmap Icon){
+    iconLabel->setPixmap(Icon);
+}
 QString QRecipientWidget::getAccountId() const{
     return accountId;
 }

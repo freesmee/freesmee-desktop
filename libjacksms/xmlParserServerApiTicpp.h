@@ -51,6 +51,7 @@ namespace libJackSMS{
                 bool extractImMessages(libJackSMS::dataTypes::logImType & _logIm);
                 bool loadAccounts(libJackSMS::dataTypes::configuredServicesType & _serviziConfigurati);
                 bool checkSaved(QString &_id,QString &totalForAccount);
+                bool checkReport();
                 bool checkAddNewContact(QString &_resId,bool & canReceiveJms);
                 bool checkUpdateContact();
                 bool checkDeleteContact();

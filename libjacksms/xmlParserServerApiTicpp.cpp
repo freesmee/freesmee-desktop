@@ -222,6 +222,17 @@ namespace libJackSMS{
             else
                 return true;
         }
+
+        bool xmlParserServerApiTicpp::checkReport(){
+            ticpp::Node *root=xmlResponse.FirstChild("JackSMS");
+            ticpp::Node *child=root->FirstChild("sync");
+            QString _result=QString::fromStdString(child->ToElement()->GetTextOrDefault("0"));
+            if(_result)
+                return false;
+            else
+                return true;
+        }
+
         bool xmlParserServerApiTicpp::extractImMessages(libJackSMS::dataTypes::logImType & _logIm){
             ticpp::Node *root=xmlResponse.FirstChild("JackSMS");
             ticpp::Node *child=NULL;

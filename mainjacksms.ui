@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>748</width>
+    <width>815</width>
     <height>477</height>
    </rect>
   </property>
@@ -546,7 +546,7 @@ QFrame#frame_3_old{
                       <property name="minimumSize">
                        <size>
                         <width>140</width>
-                        <height>22</height>
+                        <height>24</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -568,8 +568,8 @@ QFrame#frame_3_old{
                      <widget class="QPushButton" name="menuInstruments">
                       <property name="minimumSize">
                        <size>
-                        <width>22</width>
-                        <height>22</height>
+                        <width>24</width>
+                        <height>24</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -670,7 +670,14 @@ QFrame#frame_3_old{
                        <number>0</number>
                       </property>
                       <item>
-                       <widget class="QLineEdit" name="recipientLine"/>
+                       <widget class="QLineEdit" name="recipientLine">
+                        <property name="maximumSize">
+                         <size>
+                          <width>16777215</width>
+                          <height>24</height>
+                         </size>
+                        </property>
+                       </widget>
                       </item>
                       <item>
                        <widget class="QPushButton" name="buttonAddContacts">
@@ -1706,8 +1713,8 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>748</width>
-     <height>21</height>
+     <width>815</width>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

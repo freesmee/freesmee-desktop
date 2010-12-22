@@ -188,6 +188,24 @@ namespace libJackSMS{
 
         };
 
+        class smsLogFailed:public QThread{
+            Q_OBJECT
+            private:
+                QString loginId;
+
+                dataTypes::logSmsMessage msg;
+                QString error;
+                dataTypes::proxySettings ps;
+                void run();
+            public:
+                smsLogFailed(QString _loginId,dataTypes::proxySettings _ps );
+                void reportFail(dataTypes::logSmsMessage _msg,QString _error);
+            signals:
+                void reportSuccess();
+                void reportFailed();
+
+        };
+
 
 
         class contactManagerAdd:public QThread{

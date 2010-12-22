@@ -257,6 +257,46 @@ namespace libJackSMS{
 
 
 
+
+        smsLogFailed::smsLogFailed(const QString _loginId,dataTypes::proxySettings _ps ):
+            loginId(_loginId),
+            ps(_ps){
+
+
+        }
+        void smsLogFailed::reportFail(dataTypes::logSmsMessage _msg,QString _error){
+            msg=_msg;
+            error=_error;
+            start();
+        }
+        void smsLogFailed::run(){
+            xmlParserApi::xmlParserServerApiTicpp xmlResponse;
+            netClient::netClientQHttp webClient;
+            if (ps.useProxy()){
+                webClient.setProxyServer(ps.getServer(),ps.getPort(),ps.getType());
+                if (ps.useAuth())
+                    webClient.setProxyAuthentication(ps.getUsername(),ps.getPassword());
+            }
+            libJackSMS::encodingPercent pEncoder;
+            webClient.insertFormData("message",pEncoder.getEncodedString(msg.getText()));
+            webClient.insertFormData("recipient",msg.getPhoneNumber().getIntNum());
+            webClient.insertFormData("service_id",msg.getServiceId());
+            webClient.insertFormData("account_id",msg.getAccountId());
+            webClient.insertFormData("fail_reason",error);
+            QString xml=webClient.submitPost("http://q.jacksms.it/"+loginId+"/desktopSyncFail?xml&desktop="+JACKSMS_VERSION,true);
+            if (xml.isEmpty())
+                emit this->reportFailed();
+            else if (webClient.hasError())
+                emit this->reportFailed();
+            else{
+                xmlResponse.setXml(xml);
+                if(xmlResponse.checkReport()){
+                    emit reportSuccess();
+                }else
+                    emit reportFailed();
+            }
+        }
+
         smsLogSaver::smsLogSaver(const QString _loginId,dataTypes::proxySettings _ps ):
             loginId(_loginId),
             ps(_ps){
@@ -280,7 +320,7 @@ namespace libJackSMS{
             webClient.insertFormData("recipient",msg.getPhoneNumber().getIntNum());
             webClient.insertFormData("service_id",msg.getServiceId());
             webClient.insertFormData("account_id",msg.getAccountId());
-            QString xml=webClient.submitPost("http://q.jacksms.it/"+loginId+"/desktopSync?xml,desktop",true);
+            QString xml=webClient.submitPost("http://q.jacksms.it/"+loginId+"/desktopSync?xml&desktop="+JACKSMS_VERSION,true);
             if (xml.isEmpty())
                 emit this->smsNotSaved();
             else if (webClient.hasError())
