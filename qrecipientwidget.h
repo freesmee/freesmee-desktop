@@ -24,6 +24,7 @@ private:
     QListWidgetItem *pIt;
     QLabel *iconLabel;
     QPixmap original;
+    QString nameStr;
 public:
     void setStatusFailed(QString message);
     void setStatusWorking();
@@ -34,8 +35,8 @@ public:
     void setParentItem(QListWidgetItem * it);
     void setIcon(QPixmap Icon);
     void restoreOriginalIcon();
-
-
+    QString getName() const;
+    void clearStatus();
 signals:
     void removed(QListWidgetItem*);
 private slots:

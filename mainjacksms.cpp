@@ -230,9 +230,21 @@ void MainJackSMS::on_recipientLine_returnPressed()
     //ui->recipientListWidget->setVisible(true);
 
     QListWidgetItem *item=new QListWidgetItem;
-    QString nnn=ui->recipientLine->text();
+    QString originalStr=ui->recipientLine->text();
+    QString name=originalStr;
     libJackSMS::dataTypes::phoneNumber n;
-    n.parse(nnn);
+    bool inserted=false;
+    QRegExp r;
+    r.setPattern("^([^<]+) <([\\+\\.0-9]+)>$");
+    if (r.exactMatch(originalStr)){
+        name=r.cap(1);
+        n.parse(r.cap(2));
+
+    }else{
+        n.parse(originalStr);
+    }
+
+
 
     if (!invioMultiplo && ui->recipientListWidget->count()==1){
         ui->recipientListWidget->clear();
@@ -244,7 +256,7 @@ void MainJackSMS::on_recipientLine_returnPressed()
     for(;i!=Rubrica.end();++i){
 
 
-        if (nnn.toUpper()==i->getName().toUpper() || i->getPhone()==n){
+        if (name.toUpper()==i->getName().toUpper() || i->getPhone()==n){
             for(int a=0;a<ui->recipientListWidget->count();++a){
                 QListWidgetItem *current=ui->recipientListWidget->item(a);
                 QRecipientWidget *widget=dynamic_cast<QRecipientWidget *>(ui->recipientListWidget->itemWidget(current));
@@ -263,6 +275,7 @@ void MainJackSMS::on_recipientLine_returnPressed()
             ui->recipientListWidget->setItemWidget(item,wi);
             wi->setParentItem(item);
             inRubrica=true;
+            inserted=true;
             break;
         }
     }
@@ -278,27 +291,30 @@ void MainJackSMS::on_recipientLine_returnPressed()
             }
 
         }
-        QRecipientWidget *wi=new QRecipientWidget(nnn,"40",n,ElencoServizi["40"].getIcon().pixmap(16,16));
+        QRecipientWidget *wi=new QRecipientWidget(name,"40",n,ElencoServizi["40"].getIcon().pixmap(16,16));
         connect(wi,SIGNAL(removed(QListWidgetItem*)),this,SLOT(recipientRemove(QListWidgetItem*)));
         item->setSizeHint(wi->size());
         ui->recipientListWidget->addItem(item);
         ui->recipientListWidget->setItemWidget(item,wi);
         wi->setParentItem(item);
+        inserted=true;
 
     }
     if (ui->recipientListWidget->count()>1)
         gestiscimenuMultiplo();
 
 
+    if (inserted){
+        on_comboServizio_currentIndexChanged(ui->comboServizio->currentIndex());
+        resizeRecipientBox();
+    }
 
-    resizeRecipientBox();
     ui->recipientLine->setFocus();
 
     //Qt bug: se "pulisco" recipientLine, poi il qcompleter me lo riempie di nuovo al termine della funzione
     //soluzione..lo pulisco dopo il termine della funzione
     if (ui->recipientListWidget->count()>1)
         QTimer::singleShot(10,ui->recipientLine,SLOT(clear()));
-    //ui->recipientLine->clear();
 
 }
 void MainJackSMS::resizeRecipientBox(){
@@ -333,7 +349,7 @@ void MainJackSMS::recipientRemove(QListWidgetItem* w){
         if (ui->recipientListWidget->count()==1){
             gestiscimenuSingolo();
             QRecipientWidget *widget=dynamic_cast<QRecipientWidget *>(ui->recipientListWidget->itemWidget(ui->recipientListWidget->item(0)));
-            ui->recipientLine->setText(widget->getPhone().toString());
+            ui->recipientLine->setText(widget->getName()+" <"+widget->getPhone().toString()+">");
 
 
 
@@ -1125,7 +1141,7 @@ int MainJackSMS::iterateSendSms(bool first,bool result,QString _text){
 }
 void MainJackSMS::on_InviaSMS_clicked()
 {
-
+    clearRecipientsStatus();
     on_recipientLine_returnPressed();
     multipleSendRecipients.clear();
     if (ui->TestoSMS->toPlainText().isEmpty()){
@@ -1162,143 +1178,10 @@ void MainJackSMS::on_InviaSMS_clicked()
 
     for(int a=0;a<ui->recipientListWidget->count();++a)
         this->multipleSendRecipients.append(ui->recipientListWidget->item(a));
-    //multipleSendRecipients=ui->recipientListWidget->items();
+
     smsCount=multipleSendRecipients.size();
-    //QMessageBox::information(this,"asd",QString::number(this->multipleSendRecipients.size()));
     errorSentCounter=0;
     iterateSendSms(true);
-    /*
-    QListWidgetItem *cur=items.first();
-    QRecipientWidget *current=ui->recipientListWidget->itemWidget(cur);
-
-    ultimoSms=QMyMessage();
-    ultimoSms.setMessage(ui->TestoSMS->toPlainText());
-    ultimoSms.setAccountId(idAccount);
-    if (messageType==TYPE_JMS){
-        ultimoSms.setAccountName("JackSMS Messenger");
-        ultimoSms.setServiceId("40");
-    }
-    else if (messageType==TYPE_SMS){
-        ultimoSms.setAccountName(ui->comboServizio->itemData(ui->comboServizio->currentIndex(),Qt::UserRole).toString());
-        ultimoSms.setServiceId(ElencoServiziConfigurati[idAccount].getService());
-
-    }
-    ultimoSms.setIsReceived(false);
-    ultimoSms.setData(QDateTime::currentDateTime());
-    ultimoSms.setPhone(destinatario);
-
-    smsSender=new libJackSMS::smsSender(ElencoServizi,Opzioni);
-    smsSender->setRecipient(current->getPhone());
-    smsSender->setMessage(messaggio);
-    if (messageType==TYPE_JMS){
-        smsSender->setAccount(ElencoServiziConfigurati["0"]);
-    }else if (messageType==TYPE_SMS)
-        smsSender->setAccount(ElencoServiziConfigurati[idAccount]);
-
-    connect(smsSender,SIGNAL(captcha(QByteArray)),this,SLOT(displayCaptcha(QByteArray)));
-    connect(smsSender,SIGNAL(error(QString)),this,SLOT(invioFallito(QString)));
-    connect(smsSender,SIGNAL(success(QString)),this,SLOT(invioSuccesso(QString)));
-
-
-
-    libJackSMS::dataTypes::optionsType::const_iterator iter=Opzioni.find("dont-cookies");
-    if (iter!=Opzioni.end()){
-        if ("yes"==iter.value()){
-            smsSender->setSalvaCookies(false);
-        }
-    }
-
-    smsSender->send();
-    items.removeFirst();
-    AbilitaUi();
-
-
-    /*
-    if (!invioMultiplo){
-
-        try{
-            invioInCorso=true;
-            DisabilitaUi();
-
-            libJackSMS::dataTypes::shortMessage messaggio(ui->TestoSMS->toPlainText());
-
-            libJackSMS::dataTypes::phoneNumber destinatario;
-
-            destinatario.parse(ui->NumeroDestinatario->text());
-            QString idAccount="0";
-            if (messageType!=TYPE_JMS){
-
-
-                libJackSMS::dataTypes::configuredServicesType::const_iterator i=ElencoServiziConfigurati.begin();
-                libJackSMS::dataTypes::configuredServicesType::const_iterator i_end=ElencoServiziConfigurati.end();
-
-                for(;i!=i_end;++i){
-                    if (i.value().getName()==ui->comboServizio->itemData(ui->comboServizio->currentIndex(),Qt::UserRole).toString()){
-                        idAccount=i.key();
-                        break;
-                    }
-                }
-
-            }
-
-            ultimoSms=QMyMessage();
-            ultimoSms.setMessage(ui->TestoSMS->toPlainText());
-            ultimoSms.setAccountId(idAccount);
-            if (messageType==TYPE_JMS){
-                ultimoSms.setAccountName("JackSMS Messenger");
-                ultimoSms.setServiceId("40");
-            }
-            else if (messageType==TYPE_SMS){
-                ultimoSms.setAccountName(ui->comboServizio->itemData(ui->comboServizio->currentIndex(),Qt::UserRole).toString());
-                ultimoSms.setServiceId(ElencoServiziConfigurati[idAccount].getService());
-
-            }
-            ultimoSms.setIsReceived(false);
-            ultimoSms.setData(QDateTime::currentDateTime());
-            ultimoSms.setPhone(destinatario);
-
-
-            smsSender=new libJackSMS::smsSender(ElencoServizi,Opzioni);
-            smsSender->setRecipient(destinatario);
-            smsSender->setMessage(messaggio);
-            if (messageType==TYPE_JMS){
-
-                smsSender->setAccount(ElencoServiziConfigurati["0"]);
-            }else if (messageType==TYPE_SMS)
-                smsSender->setAccount(ElencoServiziConfigurati[idAccount]);
-
-            connect(smsSender,SIGNAL(captcha(QByteArray)),this,SLOT(displayCaptcha(QByteArray)));
-            connect(smsSender,SIGNAL(error(QString)),this,SLOT(invioFallito(QString)));
-            connect(smsSender,SIGNAL(success(QString)),this,SLOT(invioSuccesso(QString)));
-
-            libJackSMS::dataTypes::optionsType::const_iterator iter=Opzioni.find("dont-cookies");
-            if (iter!=Opzioni.end()){
-                if ("yes"==iter.value()){
-                    smsSender->setSalvaCookies(false);
-                }
-            }
-
-            smsSender->send();
-
-        }catch(libJackSMS::exceptionPhoneNumber){
-            QMessageBox::information(this,"JackSMS","Numero in formato sconosciuto");
-            invioInCorso=false;
-        }
-
-    }else{
-
-        int c=ui->destinatariListWidget->count();
-        for(int i=0;i<c;++i){
-            QListWidgetItem *item=ui->destinatariListWidget->item(i);
-            contactWidgetFastBook * w=static_cast<contactWidgetFastBook*>(ui->destinatariListWidget->itemWidget(item));
-            multipleSendRecipients.push_back(qMakePair(w,w->getContact().getPhone()));
-        }
-
-        DisabilitaUi();
-        errorSentCounter = 0;
-        sendNextMessage(true);
-
-    }*/
 }
 
 
@@ -2548,7 +2431,7 @@ void MainJackSMS::on_RubricaVeloce_currentItemChanged(QListWidgetItem* item, QLi
             newItem->setSizeHint(wi->size());
             ui->recipientListWidget->setItemWidget(newItem,wi);
             wi->setParentItem(newItem);
-            ui->recipientLine->setText(it->getContact().getPhone().toString());
+            ui->recipientLine->setText(it->getContact().getName()+" <"+it->getContact().getPhone().toString()+">");
             //this->widthRecipientWidgets+=newItem->sizeHint().width();
 
             if (Opzioni["set-account"]=="yes" && messageType==TYPE_SMS){
@@ -2606,7 +2489,6 @@ void MainJackSMS::deleteAccountOk(QString id){
     }
 
     ReWriteAddressBookToGui();
-    ricaricaDestinatariList();
     ui->EliminaServizioButton->setEnabled(true);
     ui->labelSpinDelAccount->hide();
 
@@ -3063,201 +2945,15 @@ void MainJackSMS::svuotaTabSms(){
 }
 
 void MainJackSMS::svuotaDestinatari(){
-
+    gestiscimenuSingolo();
     if(invioMultiplo)
         ui->label->setText("Destinatari");
     else
         ui->label->setText("Destinatario");
     ui->recipientListWidget->clear();
     ui->recipientListWidget->hide();
-    gestiscimenuSingolo();
-    //ui->destinatariListWidget->clear();
-    //ui->NumeroDestinatario->clear();
-    //ui->labelNomeDest->clear();
-}
+    ui->recipientLine->clear();
 
-void MainJackSMS::ricaricaDestinatariList(QStringList strings){
-
-/*    ui->destinatariListWidget->clear();
-    while(!strings.isEmpty()){
-        QString s=strings.first();
-        s=s.trimmed();
-        strings.removeFirst();
-        QRegExp r;
-        r.setPattern("^([^<]+) <([\\+\\.0-9]+)>$");
-        bool ok=false;
-        if (r.exactMatch(s)){
-            libJackSMS::dataTypes::phoneBookType::const_iterator i=Rubrica.begin();
-            for(;i!=Rubrica.end();++i){
-                libJackSMS::dataTypes::phoneNumber num;
-                num.parse(r.cap(2));
-                if (i->getPhone()==num){
-                    if (!checkDoubleRecipients(num)){
-                        QListWidgetItem *n = new QListWidgetItem;
-                        libJackSMS::dataTypes::contact cc(i->getName(),i->getPhone(),"",i->getAccount());
-                        contactWidgetFastBook * w=new contactWidgetFastBook(cc,ElencoServizi[ElencoServiziConfigurati[i->getAccount()].getService()].getIcon().pixmap(16,16));
-                        n->setSizeHint(w->size());
-                        if(ui->comboServizio->currentIndex() != 0){
-                            w->showIcon(false);
-                            n->setIcon(ui->comboServizio->itemIcon(ui->comboServizio->currentIndex()));
-                        } else {
-                            w->showIcon(true);
-                        }
-                        ui->destinatariListWidget->addItem(n);
-                        ui->destinatariListWidget->setItemWidget(n, w);
-                    }else{
-                        QMessageBox::critical(this,"JackSMS","Questo numero e' gia' presente nella lista dei destinatari.");
-                    }
-
-                    ok=true;
-                    break;
-                }
-            }
-        }
-        if (!ok){
-            r.setPattern("^([0-9]{10})$");
-            if (r.exactMatch(s)){
-                libJackSMS::dataTypes::phoneBookType::const_iterator i=Rubrica.begin();
-                libJackSMS::dataTypes::phoneNumber num;
-                num.parse(r.cap(1));
-                for(;i!=Rubrica.end();++i){
-
-                    if (i->getPhone()==num){
-                        if (!checkDoubleRecipients(num)){
-                            QListWidgetItem *n = new QListWidgetItem;
-                            libJackSMS::dataTypes::contact cc(i->getName(),i->getPhone(),"",i->getAccount());
-                            contactWidgetFastBook * w=new contactWidgetFastBook(cc,ElencoServizi[ElencoServiziConfigurati[i->getAccount()].getService()].getIcon().pixmap(16,16));
-                            n->setSizeHint(w->size());
-                            if(ui->comboServizio->currentIndex() != 0){
-                                w->showIcon(false);
-                                n->setIcon(ui->comboServizio->itemIcon(ui->comboServizio->currentIndex()));
-                            } else {
-                                w->showIcon(true);
-                            }
-                            ui->destinatariListWidget->addItem(n);
-                            ui->destinatariListWidget->setItemWidget(n, w);
-                        }else{
-                            QMessageBox::critical(this,"JackSMS","Questo numero e' gia' presente nella lista dei destinatari.");
-                        }
-
-                        ok=true;
-                        break;
-                    }
-                }
-                if (!ok){
-                    if (!checkDoubleRecipients(num)){
-                        QListWidgetItem *n = new QListWidgetItem;
-                        libJackSMS::dataTypes::contact cc(r.cap(1),num,"","0");
-                        contactWidgetFastBook * w=new contactWidgetFastBook(cc,icon_jack);
-                        n->setSizeHint(w->size());
-                        if(ui->comboServizio->currentIndex() != 0){
-                            w->showIcon(false);
-                            n->setIcon(ui->comboServizio->itemIcon(ui->comboServizio->currentIndex()));
-                        } else {
-                            w->showIcon(true);
-                        }
-                        ui->destinatariListWidget->addItem(n);
-                        ui->destinatariListWidget->setItemWidget(n, w);
-                    }else{
-                        QMessageBox::critical(this,"JackSMS","Questo numero e' gia' presente nella lista dei destinatari.");
-                    }
-
-                    ok=true;
-                }
-
-            }
-        }
-        if (!ok){
-            r.setPattern("^([0-9]{4,5})$");
-            if (r.exactMatch(s)){
-                libJackSMS::dataTypes::phoneNumber num;
-                num.parse(r.cap(1));
-                if (!checkDoubleRecipients(num)){
-                    QListWidgetItem *n = new QListWidgetItem;
-                    libJackSMS::dataTypes::contact cc(r.cap(1),num,"","0");
-                    contactWidgetFastBook * w=new contactWidgetFastBook(cc,icon_jack);
-                    n->setSizeHint(w->size());
-                    if(ui->comboServizio->currentIndex() != 0){
-                        w->showIcon(false);
-                        n->setIcon(ui->comboServizio->itemIcon(ui->comboServizio->currentIndex()));
-                    } else {
-                        w->showIcon(true);
-                    }
-                    ui->destinatariListWidget->addItem(n);
-                    ui->destinatariListWidget->setItemWidget(n, w);
-                }else{
-                    QMessageBox::critical(this,"JackSMS","Questo numero e' gia' presente nella lista dei destinatari.");
-                }
-
-                ok=true;
-
-            }
-        }
-        if (!ok){
-            r.setPattern("^([0-9]{4,5}) <([0-9]{4,5})>$");
-            if (r.exactMatch(s)){
-                libJackSMS::dataTypes::phoneNumber num;
-                num.parse(r.cap(2));
-                if (!checkDoubleRecipients(num)){
-                    QListWidgetItem *n = new QListWidgetItem;
-                    libJackSMS::dataTypes::contact cc(r.cap(1),num,"","0");
-                    contactWidgetFastBook * w=new contactWidgetFastBook(cc,icon_jack);
-                    n->setSizeHint(w->size());
-                    if(ui->comboServizio->currentIndex() != 0){
-                        w->showIcon(false);
-                        n->setIcon(ui->comboServizio->itemIcon(ui->comboServizio->currentIndex()));
-                    } else {
-                        w->showIcon(true);
-                    }
-                    ui->destinatariListWidget->addItem(n);
-                    ui->destinatariListWidget->setItemWidget(n, w);
-                }else{
-                    QMessageBox::critical(this,"JackSMS","Questo numero e' gia' presente nella lista dei destinatari.");
-                }
-
-                ok=true;
-
-            }
-        }
-        if (!ok){
-            libJackSMS::dataTypes::phoneBookType::const_iterator i=Rubrica.begin();
-            for(;i!=Rubrica.end();++i){
-                libJackSMS::dataTypes::phoneNumber num;
-                num.parse(s);
-                libJackSMS::dataTypes::phoneNumber num2=i->getPhone();
-                if ((num2==num)||(i->getName().toUpper()==s.toUpper())){
-
-                    if (!checkDoubleRecipients(num2)){
-                        QListWidgetItem *n = new QListWidgetItem;
-                        libJackSMS::dataTypes::contact cc(i->getName(),num2,"",i->getAccount());
-                        QIcon ico=ElencoServizi[ElencoServiziConfigurati[i->getAccount()].getService()].getIcon();
-                        contactWidgetFastBook * w=new contactWidgetFastBook(cc,ico.pixmap(16,16));
-                        n->setSizeHint(w->size());
-                        if(ui->comboServizio->currentIndex() != 0){
-                            w->showIcon(false);
-                            n->setIcon(ui->comboServizio->itemIcon(ui->comboServizio->currentIndex()));
-                        } else {
-                            w->showIcon(true);
-                        }
-                        ui->destinatariListWidget->addItem(n);
-                        ui->destinatariListWidget->setItemWidget(n, w);
-                    }else{
-                        QMessageBox::critical(this,"JackSMS","Questo numero e' gia' presente nella lista dei destinatari.");
-                    }
-
-                    break;
-                }
-            }
-        }
-    }*/
-}
-
-void MainJackSMS::ricaricaDestinatariList(QString str){
-    ricaricaDestinatariList(str.split(",",QString::SkipEmptyParts));
-}
-
-void MainJackSMS::ricaricaDestinatariList(){
-    //ricaricaDestinatariList(ui->NumeroDestinatario->text());
 }
 
 void MainJackSMS::on_numArchivio_currentIndexChanged(int index)
@@ -3286,23 +2982,56 @@ void MainJackSMS::anotherInstanceOpened(const QString &str){
     showNormal();
     //QMessageBox::information(this,"JackSMS","JackSMS è già aperto.");
 }
+void MainJackSMS::clearRecipientsStatus(){
+    for(int a=0;a<ui->recipientListWidget->count();++a){
+        QListWidgetItem *current=ui->recipientListWidget->item(a);
+        QRecipientWidget *widget=dynamic_cast<QRecipientWidget *>(ui->recipientListWidget->itemWidget(current));
+        widget->clearStatus();
+    }
 
+}
 void MainJackSMS::addRecipients(QList<QRecipientWidget*> l){
+    bool inserted=false;
     while(!l.isEmpty()){
         QRecipientWidget *wi=l.first();
-        connect(wi,SIGNAL(removed(QListWidgetItem*)),this,SLOT(recipientRemove(QListWidgetItem*)));
-        QListWidgetItem *newItem=new QListWidgetItem;
-        ui->recipientListWidget->addItem(newItem);
-        newItem->setSizeHint(wi->size());
-        ui->recipientListWidget->setItemWidget(newItem,wi);
-        wi->setParentItem(newItem);
+        bool duplicatedNumber=false;
+        for(int a=0;a<ui->recipientListWidget->count();++a){
+            QListWidgetItem *current=ui->recipientListWidget->item(a);
+            QRecipientWidget *widget=dynamic_cast<QRecipientWidget *>(ui->recipientListWidget->itemWidget(current));
+            if (widget->getPhone()==wi->getPhone()){
+                duplicatedNumber=true;
+                break;
+            }
+        }
+        if (!duplicatedNumber){
+            connect(wi,SIGNAL(removed(QListWidgetItem*)),this,SLOT(recipientRemove(QListWidgetItem*)));
+            QListWidgetItem *newItem=new QListWidgetItem;
+            ui->recipientListWidget->addItem(newItem);
+            newItem->setSizeHint(wi->size());
+            ui->recipientListWidget->setItemWidget(newItem,wi);
+            wi->setParentItem(newItem);
+
+            inserted=true;
+        }else{
+            wi->deleteLater();
+        }
         l.removeFirst();
 
     }
-    if (ui->recipientListWidget->count()>1)
-        gestiscimenuMultiplo();
-    resizeRecipientBox();
     ui->recipientLine->clear();
+    if (ui->recipientListWidget->count()>1){
+        gestiscimenuMultiplo();
+    
+    }else if(ui->recipientListWidget->count()==1){
+        gestiscimenuSingolo();
+        QRecipientWidget *widget=dynamic_cast<QRecipientWidget *>(ui->recipientListWidget->itemWidget(ui->recipientListWidget->item(0)));
+        ui->recipientLine->setText(widget->getName()+" <"+widget->getPhone().toString()+">");
+    }
+    if (inserted){
+        resizeRecipientBox();
+        on_comboServizio_currentIndexChanged(ui->comboServizio->currentIndex());
+    }
+
 
 }
 void MainJackSMS::on_buttonAddContacts_clicked()

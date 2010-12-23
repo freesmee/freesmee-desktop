@@ -115,7 +115,6 @@ void editcontattodialog::on_salva_clicked()
 void editcontattodialog::salvataggioOk(libJackSMS::dataTypes::contact c){
     Rubrica[c.getId()]=c;
     padre->ReWriteAddressBookToGui();
-    padre->ricaricaDestinatariList();
     this->close();
 }
 void editcontattodialog::salvataggioKo(){

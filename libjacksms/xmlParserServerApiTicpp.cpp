@@ -227,7 +227,7 @@ namespace libJackSMS{
             ticpp::Node *root=xmlResponse.FirstChild("JackSMS");
             ticpp::Node *child=root->FirstChild("sync");
             QString _result=QString::fromStdString(child->ToElement()->GetTextOrDefault("0"));
-            if(_result)
+            if(_result=="0")
                 return false;
             else
                 return true;

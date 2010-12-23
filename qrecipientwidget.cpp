@@ -6,6 +6,7 @@ QRecipientWidget::QRecipientWidget(const QString & _contactName,const QString & 
     :contactName(_contactName),
      accountId(accId),
      number(_number),
+     nameStr(contactName),
      QWidget(parent)
  {
     original=Icon;
@@ -62,6 +63,9 @@ void QRecipientWidget::setStatusWorking(){
 
     iconStatus->setCursor(Qt::WhatsThisCursor);
 }
+void QRecipientWidget::clearStatus(){
+    iconStatus->clear();
+}
 void QRecipientWidget::setStatusSuccess(QString message){
     iconStatus->setPixmap(QIcon(":/resource/jms-active.png").pixmap(16,16));
     iconStatus->setToolTip(message);
@@ -76,4 +80,7 @@ void QRecipientWidget::setIcon(QPixmap Icon){
 }
 QString QRecipientWidget::getAccountId() const{
     return accountId;
+}
+QString QRecipientWidget::getName() const{
+    return nameStr;
 }

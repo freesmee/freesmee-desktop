@@ -57,9 +57,6 @@ public:
     QSize windowSize;
     QTimer resizeTimer;
     QString result;
-    void ricaricaDestinatariList(QStringList strings);
-    void ricaricaDestinatariList(QString str);
-    void ricaricaDestinatariList();
 
 public slots:
     void anotherInstanceOpened(const QString &str);
@@ -70,7 +67,7 @@ private:
     int smsCount;
     QCompleter *completer;
     void resizeRecipientBox();
-
+    void clearRecipientsStatus();
     QLineEdit *newRecipientLine;
     QListWidgetItem *newRecipientWidget;
     bool usaAssociatiPresent;

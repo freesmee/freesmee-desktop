@@ -124,7 +124,7 @@ void AggiungiContatto::salvataggioOk(QString id,bool jms){
     contatto.setCanReceiveJms(jms);
     Rubrica.insert(id,contatto);
     padre->ReWriteAddressBookToGui();
-    padre->ricaricaDestinatariList();
+
     close();
 }
 void AggiungiContatto::salvataggioKo(){
