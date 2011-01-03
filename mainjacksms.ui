@@ -545,7 +545,7 @@ QFrame#frame_3_old{
                      <widget class="QComboBox" name="comboServizio">
                       <property name="minimumSize">
                        <size>
-                        <width>140</width>
+                        <width>160</width>
                         <height>24</height>
                        </size>
                       </property>
@@ -719,7 +719,7 @@ QFrame#frame_3_old{
                  </widget>
                 </item>
                 <item>
-                 <widget class="QTextEdit" name="TestoSMS">
+                 <widget class="SmsTextEdit" name="TestoSMS">
                   <property name="tabChangesFocus">
                    <bool>true</bool>
                   </property>
@@ -975,164 +975,13 @@ QFrame#frame_3_old{
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="tabIm">
-           <attribute name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/resource/jacksms_icona_im_24x24-3.png</normaloff>:/resource/jacksms_icona_im_24x24-3.png</iconset>
-           </attribute>
-           <attribute name="title">
-            <string>Ricevuti</string>
-           </attribute>
-           <layout class="QHBoxLayout" name="horizontalLayout_26">
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_10">
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_24">
-                <property name="spacing">
-                 <number>6</number>
-                </property>
-                <item>
-                 <widget class="QLabel" name="labelJmsRicevuti">
-                  <property name="text">
-                   <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.jacksms.it/messenger.html&quot;&gt;&lt;span style=&quot; text-decoration: none; color:#000000;&quot;&gt;Messaggi JMS ricevuti - JackSMS-Messenger&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                  </property>
-                  <property name="openExternalLinks">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_15">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_21">
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/resource/findd.png</pixmap>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="RicercaVeloceIM_2">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <widget class="QListWidget" name="imRicevutiWidget">
-                <property name="verticalScrollMode">
-                 <enum>QAbstractItemView::ScrollPerPixel</enum>
-                </property>
-                <property name="sortingEnabled">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_25">
-                <item>
-                 <widget class="QPushButton" name="RispondiIm">
-                  <property name="text">
-                   <string>Rispondi</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="resources.qrc">
-                    <normaloff>:/resource/inoltra.png</normaloff>:/resource/inoltra.png</iconset>
-                  </property>
-                  <property name="iconSize">
-                   <size>
-                    <width>20</width>
-                    <height>16</height>
-                   </size>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="CitaButton_2">
-                  <property name="text">
-                   <string>Citazione</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="resources.qrc">
-                    <normaloff>:/resource/inoltra.png</normaloff>:/resource/inoltra.png</iconset>
-                  </property>
-                  <property name="iconSize">
-                   <size>
-                    <width>20</width>
-                    <height>16</height>
-                   </size>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_16">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_9">
-                  <property name="text">
-                   <string>Stato ricezione:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="buttonStatusJms">
-                  <property name="text">
-                   <string>Disattivo</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="resources.qrc">
-                    <normaloff>:/resource/jms-not-active.png</normaloff>:/resource/jms-not-active.png</iconset>
-                  </property>
-                  <property name="flat">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
           <widget class="QWidget" name="Messaggi">
            <attribute name="icon">
             <iconset resource="resources.qrc">
              <normaloff>:/resource/jacksms_icona_im_24x24-3.png</normaloff>:/resource/jacksms_icona_im_24x24-3.png</iconset>
            </attribute>
            <attribute name="title">
-            <string>Archivio</string>
+            <string>Conversazioni</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_11">
             <item>
@@ -1145,7 +994,7 @@ p, li { white-space: pre-wrap; }
                 <item>
                  <widget class="QLabel" name="label_14">
                   <property name="text">
-                   <string>Storico dei messaggi inviati e ricevuti con JackSMS</string>
+                   <string>Messaggi Inviati e Ricevuti</string>
                   </property>
                  </widget>
                 </item>
@@ -1185,20 +1034,70 @@ p, li { white-space: pre-wrap; }
                </layout>
               </item>
               <item>
-               <widget class="QListWidget" name="smsListWidget">
-                <property name="selectionMode">
-                 <enum>QAbstractItemView::ExtendedSelection</enum>
+               <layout class="QHBoxLayout" name="horizontalLayout_28">
+                <property name="topMargin">
+                 <number>0</number>
                 </property>
-                <property name="verticalScrollMode">
-                 <enum>QAbstractItemView::ScrollPerPixel</enum>
-                </property>
-                <property name="resizeMode">
-                 <enum>QListView::Adjust</enum>
-                </property>
-                <property name="sortingEnabled">
-                 <bool>false</bool>
-                </property>
-               </widget>
+                <item>
+                 <widget class="ListNames" name="listSmsNames">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>170</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">ListNames{
+	show-decoration-selected: 1;
+}
+
+ListNames::item:selected {
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 #6a6ea9, stop: 1 #888dd9);
+ }
+
+ListNames::item:selected:active {
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 #6a6ea9, stop: 1 #888dd9);
+}</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="SmsList" name="smsListWidget">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="selectionMode">
+                   <enum>QAbstractItemView::ExtendedSelection</enum>
+                  </property>
+                  <property name="verticalScrollMode">
+                   <enum>QAbstractItemView::ScrollPerPixel</enum>
+                  </property>
+                  <property name="resizeMode">
+                   <enum>QListView::Adjust</enum>
+                  </property>
+                  <property name="sortingEnabled">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -1295,32 +1194,25 @@ p, li { white-space: pre-wrap; }
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QLabel" name="label_16">
+                 <widget class="QLabel" name="label_9">
                   <property name="text">
-                   <string>Visualizza</string>
+                   <string>Stato ricezione:</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <layout class="QVBoxLayout" name="verticalLayout_8">
-                  <property name="rightMargin">
-                   <number>0</number>
+                 <widget class="QPushButton" name="buttonStatusJms">
+                  <property name="text">
+                   <string>Disattivo</string>
                   </property>
-                  <item>
-                   <widget class="QComboBox" name="numArchivio">
-                    <item>
-                     <property name="text">
-                      <string>Ultimi 100</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>Tutti</string>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
-                 </layout>
+                  <property name="icon">
+                   <iconset resource="resources.qrc">
+                    <normaloff>:/resource/jms-not-active.png</normaloff>:/resource/jms-not-active.png</iconset>
+                  </property>
+                  <property name="flat">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
@@ -1572,10 +1464,13 @@ p, li { white-space: pre-wrap; }
                  <enum>QListView::TopToBottom</enum>
                 </property>
                 <property name="isWrapping" stdset="0">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                 <property name="resizeMode">
                  <enum>QListView::Adjust</enum>
+                </property>
+                <property name="spacing">
+                 <number>0</number>
                 </property>
                 <property name="uniformItemSizes">
                  <bool>false</bool>
@@ -1714,7 +1609,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>815</width>
-     <height>24</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1867,6 +1762,23 @@ p, li { white-space: pre-wrap; }
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>ListNames</class>
+   <extends>QListWidget</extends>
+   <header>listnames.h</header>
+  </customwidget>
+  <customwidget>
+   <class>SmsTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>smstextedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>SmsList</class>
+   <extends>QListWidget</extends>
+   <header location="global">smslist.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>username</tabstop>
   <tabstop>password</tabstop>
@@ -1890,14 +1802,9 @@ p, li { white-space: pre-wrap; }
   <tabstop>ModificaServizioButton</tabstop>
   <tabstop>EliminaServizioButton</tabstop>
   <tabstop>TextRapidServizi</tabstop>
-  <tabstop>smsListWidget</tabstop>
   <tabstop>listServiziConfigurati</tabstop>
   <tabstop>rubricaListWidget</tabstop>
   <tabstop>tabWidget</tabstop>
-  <tabstop>RicercaVeloceIM_2</tabstop>
-  <tabstop>imRicevutiWidget</tabstop>
-  <tabstop>RispondiIm</tabstop>
-  <tabstop>buttonStatusJms</tabstop>
  </tabstops>
  <resources>
   <include location="resources.qrc"/>

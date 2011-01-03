@@ -40,6 +40,8 @@ namespace libJackSMS{
                 QString account;
                 QString id;
                 bool canReceiveJms;
+                phoneNumber virtuale;
+
             public:
                 contact();
                 contact(const QString & _nome,const phoneNumber & _telefono,const QString & _gruppo, const QString & _account);
@@ -92,6 +94,14 @@ namespace libJackSMS{
                  * \return l'id del contatto
                  */
                 bool getCanReceiveJms()const;
+
+                void setVirtualNumber(QString strVirtual);
+                /**
+                  * Preleva il numumero virtuale del contatto
+                  * \return il numero virtuale del contatto
+                  */
+                phoneNumber getVirtualNumber()const;
+
 
                 /**
                  * Imposta l'account per il contatto

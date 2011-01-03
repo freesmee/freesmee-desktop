@@ -13,81 +13,69 @@ SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QStr
         readed(_letto),
         dateTim(time)
 {
+    name = user;
+    labelGroup = new QLabel(user);
+    labelGroup->setFont(QFont(labelGroup->font().family(),-1,QFont::Bold,false));
+    labelGroup->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
+    labelGroup->setMaximumSize(10000,18);
 
-       labelGroup = new QLabel(user);
+    labelIco=new QLabel();
+    if (!service.isEmpty())
+        service=service+" - ";
+    labelService=new QLabel(service);
+    labelService->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
+    labelService->setMaximumSize(10000,18);
 
-       labelGroup->setFont(QFont(labelGroup->font().family(),-1,QFont::Bold,false));
+    labelIcoReceived=new QLabel();
+    labelIcoReceived->setMaximumSize(16,16);
+    labelIcoReceived->setMinimumSize(16,16);
+    createBubble(_letto, received);
 
-       labelGroup->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
-       labelGroup->setMaximumSize(10000,18);
+    labelIco->setPixmap(_ico);
+    labelIco->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
+    labelIco->setMaximumSize(16,16);
+    labelIco->setMinimumSize(16,16);
 
+    labelTime = new QLabel(time.toString("dd/MM/yyyy hh:mm:ss"));
 
-       labelIco=new QLabel();
-       if (!service.isEmpty())
-           service=service+" - ";
-       labelService=new QLabel(service);
-       labelService->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
-       labelService->setMaximumSize(10000,18);
+    labelTime->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
+    labelTime->setMaximumSize(10000,18);
 
+    _txt=_txt.replace("<","&lt;");
+    _txt=_txt.replace(">","&gt;");
 
-       labelIcoReceived=new QLabel();
-       labelIcoReceived->setMaximumSize(16,16);
-       labelIcoReceived->setMinimumSize(16,16);
-       if (!_letto){
-           labelIcoReceived->setPixmap(QPixmap(":/resource/go-down-notify.png"));
-       }
-       else{
-           if (received)
-               labelIcoReceived->setPixmap(QPixmap(":/resource/go-down.png"));
-           else
-               labelIcoReceived->setPixmap(QPixmap(":/resource/go-up.png"));
-       }
-       labelIco->setPixmap(_ico);
-       labelIco->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
-       labelIco->setMaximumSize(16,16);
-       labelIco->setMinimumSize(16,16);
+    _txt=this->parseLinks(_txt);
+    _txt=this->parseAts(_txt);
 
+    labelTxt = new QLabel(_txt);
 
-       labelTime = new QLabel(time.toString("dd/MM/yyyy hh:mm:ss"));
+    labelTxt->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
+    labelTxt->setWordWrap (true);
+    labelTxt->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+    connect(labelTxt,SIGNAL(linkActivated(QString)),this,SLOT(openUrl(QString)));
 
-       labelTime->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
-       labelTime->setMaximumSize(10000,18);
+    hLayout = new QHBoxLayout;
+    vLayout = new QVBoxLayout;
 
-       _txt=_txt.replace("<","&lt;");
-       _txt=_txt.replace(">","&gt;");
+    labelGroup->adjustSize();
+    labelIco->adjustSize();
+    labelIcoReceived->adjustSize();
+    labelTxt->adjustSize();
+    labelTime->adjustSize();
 
-       _txt=this->parseLinks(_txt);
-       _txt=this->parseAts(_txt);
+    hLayout->addWidget(labelIcoReceived);
+    hLayout->addWidget(labelGroup);
+    hLayout->addWidget(labelIco);
+    hLayout->addWidget(labelService);
+    hLayout->addWidget(labelTime);
+    vLayout->addLayout(hLayout);
+    vLayout->addWidget(labelTxt);
 
-       labelTxt = new QLabel(_txt);
-
-       labelTxt->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
-       labelTxt->setWordWrap (true);
-       labelTxt->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-       connect(labelTxt,SIGNAL(linkActivated(QString)),this,SLOT(openUrl(QString)));
-
-       hLayout = new QHBoxLayout;
-       vLayout = new QVBoxLayout;
-
-       labelGroup->adjustSize();
-       labelIco->adjustSize();
-       labelIcoReceived->adjustSize();
-       labelTxt->adjustSize();
-       labelTime->adjustSize();
-
-       hLayout->addWidget(labelIcoReceived);
-       hLayout->addWidget(labelGroup);
-       hLayout->addWidget(labelIco);
-       hLayout->addWidget(labelService);
-       hLayout->addWidget(labelTime);
-       vLayout->addLayout(hLayout);
-       vLayout->addWidget(labelTxt);
-
-       setLayout(vLayout);
-       setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-       adjustSize();
-
+    setLayout(vLayout);
+    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+    adjustSize();
 }
+
 SmsWidget::SmsWidget(QMyMessage _sms,QPixmap _ico,bool received) :
         originalText(_sms.getMessage()),
         msg(_sms),
@@ -96,11 +84,11 @@ SmsWidget::SmsWidget(QMyMessage _sms,QPixmap _ico,bool received) :
         readed(_sms.getReaded())
 {
 
-    id=_sms.getId();
+    id = _sms.getId();
+    name = _sms.getParsedName();
+
     labelGroup = new QLabel(_sms.getParsedName());
-
     labelGroup->setFont(QFont(labelGroup->font().family(),-1,QFont::Bold,false));
-
     labelGroup->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
     labelGroup->setMaximumSize(10000,18);
 
@@ -113,19 +101,11 @@ SmsWidget::SmsWidget(QMyMessage _sms,QPixmap _ico,bool received) :
     labelService->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
     labelService->setMaximumSize(10000,18);
 
-
     labelIcoReceived=new QLabel();
     labelIcoReceived->setMaximumSize(16,16);
     labelIcoReceived->setMinimumSize(16,16);
-    if (!_sms.getReaded()){
-        labelIcoReceived->setPixmap(QPixmap(":/resource/go-down-notify.png"));
-    }
-    else{
-        if (received)
-            labelIcoReceived->setPixmap(QPixmap(":/resource/go-down.png"));
-        else
-            labelIcoReceived->setPixmap(QPixmap(":/resource/go-up.png"));
-    }
+    createBubble(_sms.getReaded(), received);
+
     labelIco->setPixmap(_ico);
     labelIco->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
     labelIco->setMaximumSize(16,16);
@@ -133,7 +113,6 @@ SmsWidget::SmsWidget(QMyMessage _sms,QPixmap _ico,bool received) :
 
 
     labelTime = new QLabel(msg.getData().toString("dd/MM/yyyy hh:mm:ss"));
-
     labelTime->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
     labelTime->setMaximumSize(10000,18);
     QString _txt=msg.getMessage();
@@ -225,17 +204,10 @@ libJackSMS::dataTypes::phoneNumber SmsWidget::getPhoneNum() const{
     return number;
 }
 void SmsWidget::setReaded(bool _r){
-    readed=_r;
-    if (!_r){
-        labelIcoReceived->setPixmap(QPixmap(":/resource/go-down-notify.png"));
-    }
-    else{
-        if (type)
-            labelIcoReceived->setPixmap(QPixmap(":/resource/go-down.png"));
-        else
-            labelIcoReceived->setPixmap(QPixmap(":/resource/go-up.png"));
-    }
+    readed = _r;
+    createBubble(_r, type);
 }
+
 bool SmsWidget::searchMatch(QString _txt)
 {
     /*if (_txt.isEmpty())
@@ -249,11 +221,89 @@ bool SmsWidget::searchMatch(QString _txt)
     return msg.messageContains(_txt);
 
 }
+
 QString SmsWidget::getText()const{
     return originalText;
 }
+
 void SmsWidget::resizeEvent ( QResizeEvent * s ){
+}
 
+void::SmsWidget::createBubble(bool isread, bool isreceived){
 
+    if (!isread){
+        setStyleSheet("SmsWidget{"
+                      "background-color: #FFCC00;"
+                      "border-style: outset;"
+                      "border-width: 2px;"
+                      "border-radius: 10px;"
+                      "border-color: #FF9900;"
+                      "font: bold 14px;"
+                      "min-width: 10em;"
+                      "padding: 6px;"
+                      "margin-left: 0px;"
+                      "margin-top: 1px;"
+                      "margin-right: 60px;"
+                      "margin-bottom: 1px;"
+                      "}");
+        setContentsMargins(0, 1, 60, 1);
 
+        labelIcoReceived->setPixmap(QPixmap(":/resource/go-down-notify.png"));
+    }
+    else{
+
+        if (isreceived){
+            setStyleSheet("SmsWidget{"
+                          "background-color: #FEF2BF;"
+                          "border-style: outset;"
+                          "border-width: 2px;"
+                          "border-radius: 10px;"
+                          "border-color: #FFCC00;"
+                          "font: bold 14px;"
+                          "min-width: 10em;"
+                          "padding: 6px;"
+                          "margin-left: 0px;"
+                          "margin-top: 1px;"
+                          "margin-right: 60px;"
+                          "margin-bottom: 1px;"
+                          "}");
+            setContentsMargins(0, 1, 60, 1);
+            labelIcoReceived->setPixmap(QPixmap(":/resource/go-down.png"));
+
+        } else {
+
+            setStyleSheet("SmsWidget{"
+                          "background-color: #DFF1FE;"
+                          "border-style: outset;"
+                          "border-width: 2px;"
+                          "border-radius: 10px;"
+                          "border-color: #00477D;"
+                          "font: bold 14px;"
+                          "min-width: 10em;"
+                          "padding: 6px;"
+                          "margin-left: 60px;"
+                          "margin-top: 1px;"
+                          "margin-right: 0px;"
+                          "margin-bottom: 1px;"
+                          "}");
+            setContentsMargins(60, 1, 0, 1);
+            labelIcoReceived->setPixmap(QPixmap(":/resource/go-up.png"));
+        }
+    }
+}
+
+void SmsWidget::setNameFilteredHidden(bool _nf){
+    nameFiltered = _nf;
+}
+
+bool SmsWidget::isNameFilteredHidden(){
+    return nameFiltered;
+}
+
+QDateTime SmsWidget::getDateTime() const{
+    return dateTim;
+}
+
+QString SmsWidget::getName() const{
+    return name;
 }

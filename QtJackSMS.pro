@@ -90,7 +90,11 @@ SOURCES += main.cpp \
     qtsingleapplication/qtlocalpeer.cpp \
     qrecipientwidget.cpp \
     faderwidget.cpp \
-    multiplecheckdialog.cpp
+    multiplecheckdialog.cpp \
+    listnames.cpp \
+    namewidget.cpp \
+    smstextedit.cpp \
+    smslist.cpp
 HEADERS += mainjacksms.h \
     Types.h \
     captchadialog.h \
@@ -174,7 +178,11 @@ HEADERS += mainjacksms.h \
     qtsingleapplication/qtlocalpeer.h \
     qrecipientwidget.h \
     faderwidget.h \
-    multiplecheckdialog.h
+    multiplecheckdialog.h \
+    listnames.h \
+    namewidget.h \
+    smstextedit.h \
+    smslist.h
 FORMS += mainjacksms.ui \
     captchadialog.ui \
     servicesdialog.ui \

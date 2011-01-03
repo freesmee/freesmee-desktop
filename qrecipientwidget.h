@@ -15,11 +15,11 @@ private:
     QHBoxLayout *hLayout;
     QLabel *name;
     QFrame *f1;
-    libJackSMS::dataTypes::phoneNumber number;
     QLabel *iconStatus;
     QLabel *iconService;
-    QString accountId;
     QString contactName;
+    QString accountId;
+    libJackSMS::dataTypes::phoneNumber number;
     QLabelResult *removeLabel;
     QListWidgetItem *pIt;
     QLabel *iconLabel;

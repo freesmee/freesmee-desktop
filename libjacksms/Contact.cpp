@@ -23,7 +23,16 @@ namespace libJackSMS{
 
     namespace dataTypes{
             contact::contact(){}
-            contact::contact(const QString & _nome,const phoneNumber & _telefono,const QString & _gruppo, const QString & _account):nome(_nome),telefono(_telefono),gruppo(_gruppo),account(_account),canReceiveJms(false){}
+            contact::contact(const QString & _nome,const phoneNumber & _telefono,const QString & _gruppo, const QString & _account)
+                :nome(_nome),
+                telefono(_telefono),
+                gruppo(_gruppo),
+                account(_account),
+                canReceiveJms(false)
+            {
+                //per evitare errori (da togliere il seguito quando si sarà certi che se CanReceiveJMS = false non si accede al virtuale
+                virtuale.parse("0000000000");
+            }
 
             QString contact::getName() const{
                 return nome;
@@ -52,6 +61,14 @@ namespace libJackSMS{
 
             bool contact::getCanReceiveJms()const{
                 return canReceiveJms;
+            }
+
+            void contact::setVirtualNumber(QString strVirtual){
+                virtuale.parse(strVirtual);
+            }
+
+            phoneNumber contact::getVirtualNumber()const{
+                return virtuale;
             }
 
             void contact::setAccount(QString _account){

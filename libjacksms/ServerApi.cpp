@@ -108,7 +108,7 @@ namespace libJackSMS{
                     webClient->setProxyAuthentication(ps.getUsername(),ps.getPassword());
 
             }
-            webClient->setUrl("http://q.jacksms.it/"+utilities::Base64Encode(username)+"/"+utilities::Base64Encode(password)+"/fullLoginJMS?xml,desktop");
+            webClient->setUrl("http://q.jacksms.it/"+utilities::Base64Encode(username)+"/"+utilities::Base64Encode(password)+"/desktopLogin?xml,desktop");
             try{
                 QString xml=webClient->readPage(true);
                 if (xml.isEmpty())

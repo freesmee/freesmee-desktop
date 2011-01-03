@@ -7,9 +7,9 @@
 #include <QListWidgetItem>
 #include "libjacksms/libJackSMS.h"
 #include <QResizeEvent>
-#include <QListWidgetItem>
 #include <qmymessage.h>
-class SmsWidget : public QWidget
+
+class SmsWidget : public QFrame
 {
 Q_OBJECT
 
@@ -21,11 +21,15 @@ private:
     QMyMessage msg;
     bool type;
     QString id;
+    QString name;
+    bool nameFiltered;
 
     libJackSMS::dataTypes::phoneNumber number;
     bool readed;
     QString parseLinks(QString _s);
     QString parseAts(QString _s);
+
+    void createBubble(bool isread, bool isreceived);
 
 private slots:
      void openUrl(QString _url);
@@ -39,9 +43,13 @@ public:
     bool isReaded()const;
     void setReaded(bool _r);
     QString getText()const;
-    libJackSMS::dataTypes::phoneNumber getPhoneNum() const;
+    QString getName()const;
+    libJackSMS::dataTypes::phoneNumber getPhoneNum()const;
     void resizeEvent ( QResizeEvent *  );
     QSize getSize();
+    void setNameFilteredHidden(bool _nf);
+    bool isNameFilteredHidden();
+    QDateTime getDateTime()const;
 
 
 };

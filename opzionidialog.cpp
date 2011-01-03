@@ -409,13 +409,3 @@ void OpzioniDialog::on_listWidget_itemClicked(QListWidgetItem* item)
 {
 
 }
-
-void OpzioniDialog::on_radioSingolo_clicked()
-{
-    //m_ui->radioSingolo->setChecked(true);
-}
-
-void OpzioniDialog::on_radioMultiplo_clicked()
-{
-    //m_ui->radioMultiplo->setChecked(true);
-}

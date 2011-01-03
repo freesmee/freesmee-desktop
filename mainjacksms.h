@@ -57,6 +57,7 @@ public:
     QSize windowSize;
     QTimer resizeTimer;
     QString result;
+    QString phone2name(const libJackSMS::dataTypes::phoneNumber &_number);
 
 public slots:
     void anotherInstanceOpened(const QString &str);
@@ -88,7 +89,6 @@ private:
     bool imServiceActive;
     void setTrayIcon();
     int countReceivedUnreaded;
-    QString phone2name(const libJackSMS::dataTypes::phoneNumber &_number);
     bool invioInCorso;
 
 
@@ -121,13 +121,16 @@ private:
     void WriteAddressBookToGui();
     void WriteConfiguredServicesToGui();
     void WriteMessagesToGui(bool limit100=true);
-    void WriteImToGui();
     void loadPlugins();
     void disableUibeforeLogin();
     void enableUiAfterLogin();
     bool loggedIn;
     void ReWriteMessagesToGui(bool limit100=true);
-    void ReWriteImToGui();
+
+    //DEPRECATED
+    //void WriteImToGui();
+    //void ReWriteImToGui();
+
     QString esitoInvio;
 
     libJackSMS::localApi::xmlLoader *xmlLoader;
@@ -144,8 +147,13 @@ private:
 
     void svuotaDestinatari();
     QTimer resetCounterTimer;
+    void caricaAltriMessaggi();
 
 private slots:
+    void on_smsListWidget_itemPressed(QListWidgetItem* item);
+    void on_listSmsNames_currentRowChanged(int currentRow);
+    void on_listSmsNames_itemClicked(QListWidgetItem* item);
+    void on_listSmsNames_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void on_radioTutti_clicked();
     void on_radioJackSMS_clicked();
     void addRecipients(QList<QRecipientWidget*> l);
@@ -155,7 +163,6 @@ private slots:
     void resetCounters();
     void svuotaTabSms();
     void on_tabWidget_currentChanged(int index);
-    void on_numArchivio_currentIndexChanged(int index);
     void smsSaved(libJackSMS::dataTypes::logSmsMessage sms,QString t);
     void on_autoLogin_stateChanged(int );
     void on_ricordaPassword_stateChanged(int );
@@ -166,14 +173,16 @@ private slots:
     void on_TextRapidServizi_textChanged(QString);
     void on_RubricaVeloce_itemDoubleClicked(QListWidgetItem* item);
     void on_ModificaServizioButton_clicked();
-    void on_imRicevutiWidget_itemPressed(QListWidgetItem* item);
     void resized();
     void on_buttonNoAccount_clicked();
     void on_buttonLostPassword_clicked();
-    void on_CitaButton_2_clicked();
-    void on_radioJMS_clicked();
-    void on_radioSMS_clicked();
 
+    //DEPRECATED
+    //void on_CitaButton_2_clicked();
+    //void on_imRicevutiWidget_itemPressed(QListWidgetItem* item);
+    //void on_imRicevutiWidget_itemClicked(QListWidgetItem* item);
+    //void on_RispondiIm_clicked();
+    //void on_RicercaVeloceIM_2_textChanged(QString );
 
     void on_actionElimina_cookies_triggered();
     void servicesReLoaded(libJackSMS::dataTypes::servicesType);
@@ -182,7 +191,6 @@ private slots:
     void jmsActive();
     void jmsNotActive(bool,QString);
     void jmsActiving();
-    void on_imRicevutiWidget_itemClicked(QListWidgetItem* item);
     void on_actionPlugins_triggered();
     void on_actionStatistiche_triggered();
     void on_actionTutti_i_messaggi_triggered();
@@ -190,9 +198,7 @@ private slots:
     void startIm();
     void stopIm();
     void on_password_returnPressed();
-    void on_RicercaVeloceIM_2_textChanged(QString );
     void on_comboServizio_currentIndexChanged(QString );
-    void on_RispondiIm_clicked();
     void on_TextRapidServizi_textEdited(QString );
     void on_actionLogout_triggered();
     void on_RubricaVeloce_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
@@ -258,6 +264,8 @@ private slots:
     void errorUpdates(QString);
 
     void username_returnPressed();
+    void testoSmsRichiestoInvio();
+    void catchSmsListCanc();
 
 };
 

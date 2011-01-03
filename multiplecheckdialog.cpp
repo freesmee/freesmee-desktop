@@ -4,16 +4,13 @@
 #include <QMultiMap>
 multipleCheckDialog::multipleCheckDialog(const libJackSMS::dataTypes::phoneBookType & _rubrica,const libJackSMS::dataTypes::configuredServicesType & _elencoServiziConfigurati,const libJackSMS::dataTypes::servicesType & _elencoServizi,QWidget *parent) :
     QDialog(parent),
+    ui(new Ui::multipleCheckDialog),
     rubrica(_rubrica),
     elencoServiziConfigurati(_elencoServiziConfigurati),
-    elencoServizi(_elencoServizi),
-
-    ui(new Ui::multipleCheckDialog)
+    elencoServizi(_elencoServizi)
 {
     ui->setupUi(this);
     writeToGui();
-
-
 }
 
 multipleCheckDialog::~multipleCheckDialog()
