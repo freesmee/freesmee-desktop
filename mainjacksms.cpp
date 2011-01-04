@@ -1242,7 +1242,7 @@ void MainJackSMS::on_EliminaServizioButton_clicked()
 
     QListWidgetItem *wid=ui->listServiziConfigurati->currentItem();
     if (wid!=NULL){
-        if (QMessageBox::Yes==QMessageBox::question(this,"JackSMS","Eliminare questo account?",QMessageBox::Yes,QMessageBox::No)){
+        if (0 == QMessageBox::question(this, "JackSMS", "Eliminare questo account?", tr("&Si"), tr("&No"))){
             QWidget * wi=ui->listServiziConfigurati->itemWidget(wid);
             accountWidget* cw=static_cast<accountWidget*>(wi);
             //QMessageBox::information(this,"JackSMS",cw->getName());
@@ -1528,7 +1528,7 @@ void MainJackSMS::on_RubricaElimina_clicked()
 {
     QListWidgetItem *wid=ui->rubricaListWidget->currentItem();
     if (wid!=NULL){
-        if (QMessageBox::Yes==QMessageBox::question(this,"JackSMS","Eliminare questo contatto?",QMessageBox::Yes,QMessageBox::No)){
+        if (0 == QMessageBox::question(this, "JackSMS", "Eliminare questo contatto?", tr("&Si"), tr("&No"))){
             QWidget * wi=ui->rubricaListWidget->itemWidget(wid);
             ContactWidget* cw=static_cast<ContactWidget*>(wi);
 
@@ -1590,7 +1590,7 @@ void MainJackSMS::on_EliminaButton_clicked()
 
     if (!ls.isEmpty()){
         QString questionmessage = (ls.count() == 1 ? "Eliminare questo messaggio?" : "Eliminare questi messaggi?");
-        if (QMessageBox::Yes==QMessageBox::question(this,"JackSMS",questionmessage,QMessageBox::Yes,QMessageBox::No)){
+        if (0 == QMessageBox::question(this, "JackSMS", questionmessage, tr("&Si"), tr("&No"))){
 
             while (!ls.isEmpty()){
                 QListWidgetItem *it=ls.front();
@@ -2177,6 +2177,11 @@ void MainJackSMS::countdownToGui(){
        usaAssociatiPresent = false;
        gestiscimenuSingolo(true);
 
+       //questo mi permette di abilitare il servizio jms sempre e non abilitarlo solo se è esplicitamente "no"
+       if (Opzioni["receive-im"]!="no"){
+           startIm();
+       }
+
        updateChecker=new libJackSMS::serverApi::updateServicesManager(this->current_login_id,Opzioni,ElencoServizi);
        connect(updateChecker,SIGNAL(updatesAvailable(libJackSMS::dataTypes::servicesType,QString,QString)),this,SLOT(updatesAvailable(libJackSMS::dataTypes::servicesType,QString,QString)));
        connect(updateChecker,SIGNAL(criticalError(QString)),this,SLOT(errorUpdates(QString)));
@@ -2224,12 +2229,6 @@ void MainJackSMS::optionsLoaded(libJackSMS::dataTypes::optionsType op){
     Opzioni=op;
 
     //ui->TestoSMS->setFont(QFont(ui->TestoSMS->font().family(),Opzioni["textsize"].toInt(NULL,10),ui->TestoSMS->font().weight(),false));
-
-    //questo mi permette di abilitare il servizio jms sempre e non abilitarlo solo se è esplicitamente "no"
-    if (Opzioni["receive-im"]!="no"){
-        startIm();
-    }
-
 
     if (ui->ricordaPassword->isChecked()){
         GlobalOptions["save-passwd"]="yes";
