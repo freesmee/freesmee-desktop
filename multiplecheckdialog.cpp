@@ -29,7 +29,8 @@ void multipleCheckDialog::writeToGui(){
             QIcon ico;
             libJackSMS::dataTypes::configuredServicesType::const_iterator x=elencoServiziConfigurati.find(i->getAccount());
             if (x==elencoServiziConfigurati.end()){
-                ico=QIcon(":/resource/ico_contact.png");
+                libJackSMS::dataTypes::servicesType::const_iterator tmp=elencoServizi.find("40");
+                ico=tmp->getIcon();
 
             }else{
                 QString serv=x.value().getService();

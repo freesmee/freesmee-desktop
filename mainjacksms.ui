@@ -500,7 +500,7 @@ QFrame#frame_3_old{
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <property name="iconSize">
            <size>
@@ -1609,7 +1609,7 @@ ListNames::item:selected:active {
      <x>0</x>
      <y>0</y>
      <width>815</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

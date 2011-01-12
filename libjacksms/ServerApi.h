@@ -495,6 +495,60 @@ namespace libJackSMS{
             void serviceActiving();
 
     };
+
+        class Streamer:public QObject
+        {
+            Q_OBJECT
+        private:
+
+
+            QString username;
+            QString password;
+            QString error;
+            QString  userDir;
+            QTimer pingTimer;
+            QTimer signalCountdown;
+            QTimer pingTimeout;
+            QTimer reconnectTimer;
+            QTimer dataTimeout;
+            QTcpSocket sock;
+            QNetworkProxy proxy;
+            dataTypes::proxySettings ps;
+            libJackSMS::dataTypes::logImType imLog;
+            int id;
+            QByteArray buffer;
+            QString loginString;
+            QStringList idList;
+
+            enum streamerState{waitConnResponse=1,receivingQueue=2,queueProcessed=3,waitForMessages=4};
+            //waitformessages e' solo un nome mnemonico.. 3 e 4 indicano la stessa cosa.
+            streamerState status;
+            int queueCount;
+        public:
+
+            Streamer(QString _username,QString _password,QString _loginString,dataTypes::proxySettings _ps );
+            ~Streamer();
+            void activateServ();
+            void stop();
+        private slots:
+            void launchSignal();
+            void connectDone();
+            void parseLine();
+            void relaunchDisconnected();
+            void errorDisconnected(QAbstractSocket::SocketError);
+            void state(QAbstractSocket::SocketState e);
+            void ping();
+            void pingTimeoutError();
+            void tryReconnect();
+            void dataReceived();
+        signals:
+            void newJMS(libJackSMS::dataTypes::logImType);
+
+            void serviceActive();
+            void serviceNotActive(bool err=false,QString errStr="");
+            void serviceActiving();
+
+        };
     }
 }
 #endif //SERVERAPI_H

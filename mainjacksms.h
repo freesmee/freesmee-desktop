@@ -113,7 +113,8 @@ private:
     libJackSMS::serverApi::smsLogFailed *onlineSmsSaverFailCase;
     libJackSMS::dataTypes::logImType messaggiRicevuti;
     libJackSMS::dataTypes::logImType nuoviMessaggiRicevuti;
-    libJackSMS::serverApi::permanentInstantMessenger *imChecker;
+    //libJackSMS::serverApi::permanentInstantMessenger *imChecker;
+    libJackSMS::serverApi::Streamer *imChecker;
     QMyMessage ultimoSms;
     QSystemTrayIcon *trayIco;
     QStringList stringList;

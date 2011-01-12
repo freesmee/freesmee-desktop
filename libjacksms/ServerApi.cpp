@@ -1065,6 +1065,278 @@ namespace libJackSMS{
         }
 
 
+
+
+        /*************************streamer*****************************/
+
+        Streamer::Streamer(QString _username,QString _password,QString _loginString,dataTypes::proxySettings _ps):
+                username(_username),
+                password(_password),
+                loginString(_loginString),
+                ps(_ps),
+                status(waitConnResponse),
+                queueCount(0)
+
+        {
+
+
+            qRegisterMetaType<libJackSMS::dataTypes::dateTime>("libJackSMS::dataTypes::dateTime");
+            qRegisterMetaType<libJackSMS::dataTypes::logImMessage>("libJackSMS::dataTypes::logImMessage");
+            qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
+            connect(&signalCountdown,SIGNAL(timeout()),this,SLOT(launchSignal()));
+            connect(&sock,SIGNAL(disconnected()),this,SLOT(relaunchDisconnected()));
+            connect(&sock,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(errorDisconnected(QAbstractSocket::SocketError)));
+            connect(&sock,SIGNAL(readyRead()),this,SLOT(dataReceived()));
+            connect(&sock,SIGNAL(connected()),this,SLOT(connectDone()));
+            connect(&sock,SIGNAL(aboutToClose()),this,SLOT(relaunchDisconnected()));
+            connect(&sock,SIGNAL(stateChanged(QAbstractSocket::SocketState)),this,SLOT(state(QAbstractSocket::SocketState)));
+            connect(&pingTimer,SIGNAL(timeout()),this,SLOT(ping()));
+            connect(&pingTimeout,SIGNAL(timeout()),this,SLOT(pingTimeoutError()));
+            pingTimeout.setSingleShot(true);
+            connect(&reconnectTimer,SIGNAL(timeout()),this,SLOT(tryReconnect()));
+            reconnectTimer.setSingleShot(true);
+            //connect(jmsgr,SIGNAL(newJms(libJackSMS::dataTypes::logImMessage)),this,SLOT(newMessage(libJackSMS::dataTypes::logImMessage)));
+
+        }
+        void Streamer::relaunchDisconnected() {
+            emit serviceNotActive(false);
+        }
+        void Streamer::tryReconnect() {
+            activateServ();
+        }
+        void Streamer::errorDisconnected(QAbstractSocket::SocketError) {
+            emit serviceNotActive(true,sock.errorString());
+        }
+        void Streamer::state(QAbstractSocket::SocketState){
+
+        }
+        void Streamer::pingTimeoutError(){
+
+            try{
+                sock.abort();
+                pingTimer.stop();
+                pingTimeout.stop();
+                reconnectTimer.start(3*60*1000);
+                emit serviceNotActive(true,"Timeout");
+            }catch(...){
+                emit serviceNotActive(true,"Errore sconosciuto: section 3");
+
+            }
+        }
+
+
+        void Streamer::stop(){
+
+            sock.disconnectFromHost();
+            pingTimer.stop();
+            pingTimeout.stop();
+            sock.abort();
+        }
+        void Streamer::ping(){
+            if (sock.write("GET /ping\n\n")!=-1)
+                pingTimeout.start(60*1000);
+            else
+                emit serviceNotActive(true,"Ping failed");
+        }
+        void Streamer::dataReceived(){
+            dataTimeout.stop();
+            buffer=buffer.append(sock.readAll());
+            dataTimeout.singleShot(500,this,SLOT(parseLine()));
+
+        }
+        void  Streamer::parseLine(){
+
+            try{
+                QList<QByteArray> finalLines;
+
+                QList<QByteArray> lines=buffer.split('\0');
+                for (QList<QByteArray>::iterator i=lines.begin();i!=lines.end();++i){
+                    QList<QByteArray> ll=i->split('\n');
+                    finalLines.append(ll);
+                }
+                buffer.clear();
+                QRegExp r;
+
+                while (!finalLines.isEmpty()){
+                    QString line=QString(finalLines.first());
+                    finalLines.removeFirst();
+
+                    if (status==waitConnResponse){
+                         r.setPattern("^K\\t([0-9]*)$");
+
+                         if (r.exactMatch(line)){
+                            bool ok;
+                            queueCount=r.cap(1).toInt(&ok,10);
+                            if (!ok){
+                                emit serviceNotActive(true,"Unexpected message counter");
+                                return;
+                            }else{
+                                emit serviceActive();
+                                if (queueCount>0)
+                                   status=receivingQueue;
+                                else
+                                   status=queueProcessed;
+                            }
+                         }else{
+                            r.setPattern("^E\\t(.{1,})$");
+                            if (r.exactMatch(line))
+                                emit serviceNotActive(true,r.cap(1));
+                            else
+                                emit serviceNotActive(true,"Unexpected response");
+                            return;
+                         }
+
+                    }else if (status==receivingQueue){
+
+                        r.setPattern("^Q\\t([0-9]+)\\t([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})\\t([^\\t]{1,})\\t([^\\t]{1,})\\t(.{1,})$");
+                        if (r.exactMatch(line)){
+                            QString id=r.cap(1);
+                            QString year=r.cap(2);
+                            QString month=r.cap(3);
+                            QString day=r.cap(4);
+                            QString hour=r.cap(5);
+                            QString min=r.cap(6);
+                            QString sec=r.cap(7);
+                            QString recipName=r.cap(8);
+                            QString recipNumber=r.cap(9);
+                            QString text=QString::fromUtf8(r.cap(10).toAscii(),r.cap(10).length());
+                            idList.push_back(id);
+                            this->queueCount--;
+                            if(queueCount==0){
+                                QString idl=idList.join(",");
+                                QString sn=QString("GET /queueAck?id=")+idl+QString("\n\n");
+                                sock.write(sn.toAscii());
+                                status=queueProcessed;
+
+                            }
+
+                            libJackSMS::dataTypes::phoneNumber num;
+                            num.parse(recipNumber);
+                            num.setAltName(recipName);
+                            libJackSMS::dataTypes::dateTime dat(year+"/"+month+"/"+day+" "+hour+":"+min+":"+sec);
+                            libJackSMS::dataTypes::logImMessage im(num,dat,"",text);
+                            signalCountdown.stop();
+                            im.setId(id);
+                            imLog.insert(im.getId(),im);
+                            signalCountdown.start(1500);
+                        }
+                    }else if (status==queueProcessed || status==waitForMessages){
+                        status=waitForMessages;
+                        r.setPattern("^R\\t([0-9]+)\\t([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})\\t([^\\t]{1,})\\t([^\\t]{1,})\\t(.{1,})$");
+                        if (r.exactMatch(line)){
+                            QString id=r.cap(1);
+                            QString year=r.cap(2);
+                            QString month=r.cap(3);
+                            QString day=r.cap(4);
+                            QString hour=r.cap(5);
+                            QString min=r.cap(6);
+                            QString sec=r.cap(7);
+                            QString recipName=r.cap(8);
+                            QString recipNumber=r.cap(9);
+                            QString text=QString::fromUtf8(r.cap(10).toAscii(),r.cap(10).length());
+
+                            QString sn=QString("GET /ack?id=")+id+QString("\n\n");
+                            sock.write(sn.toAscii());
+
+                            libJackSMS::dataTypes::phoneNumber num;
+                            num.parse(recipNumber);
+                            num.setAltName(recipName);
+                            libJackSMS::dataTypes::dateTime dat(year+"/"+month+"/"+day+" "+hour+":"+min+":"+sec);
+                            libJackSMS::dataTypes::logImMessage im(num,dat,"",text);
+                            signalCountdown.stop();
+                            im.setId(id);
+                            imLog.insert(im.getId(),im);
+                            signalCountdown.start(1500);
+
+                        }else{
+                            r.setPattern("^P\\t0$");
+                            if (r.exactMatch(line))
+                                pingTimeout.stop();
+                            else{
+                                r.setPattern("^E\\t(.{1,})$");
+                                if (r.exactMatch(line))
+                                    emit this->serviceNotActive(true,r.cap(1));
+
+
+                            }
+                        }
+                        //std::cout << line.toStdString()<<std::endl;
+
+                    }
+
+                }
+
+
+            }catch (...){
+                emit serviceNotActive(true,"Unknown error");
+            }
+
+
+        }
+        Streamer::~Streamer(){
+            if (sock.state()!=QAbstractSocket::UnconnectedState)
+                sock.waitForDisconnected(10000);
+
+
+        }
+
+
+        void Streamer::connectDone(){
+            try{
+
+                //QString sn=QString("GET /")+loginString+
+                QString sn=QString("GET /")+username.toAscii().toBase64()+"/"+password.toAscii().toBase64()+QString("/stream?desktop=")+QString(JACKSMS_VERSION)+QString("\n\n");
+                sock.write(sn.toAscii());
+                pingTimer.start(1000*60);
+            }catch(...){
+                emit serviceNotActive(true,"Errore sconosciuto: section 6");
+
+            }
+        }
+
+        void Streamer::launchSignal(){
+            try{
+                signalCountdown.stop();
+                emit newJMS(imLog);
+                imLog.clear();
+                id=0;
+            }catch(...){
+                emit serviceNotActive(true,"Errore sconosciuto: section 5");
+
+            }
+        }
+
+        void Streamer::activateServ(){
+            try{
+                id=0;
+                reconnectTimer.stop();
+                emit serviceActiving();
+                if (ps.useProxy()){
+                    proxy.setHostName(ps.getServer());
+                    bool ok;
+                    proxy.setPort(ps.getPort().toInt(&ok,10));
+                    if (ps.getType().toUpper()=="HTTP")
+                        proxy.setType(QNetworkProxy::HttpProxy);
+                    else if (ps.getType().toUpper()=="SOCKS5")
+                        proxy.setType(QNetworkProxy::Socks5Proxy);
+                    if (ps.useAuth()){
+                        proxy.setUser(ps.getUsername());
+                        proxy.setPassword(ps.getPassword());
+                    }
+                    sock.setProxy(proxy);
+
+                }
+                sock.connectToHost("stream.jacksms.it",80);
+            }catch(...){
+
+                emit serviceNotActive(true,"Errore sconosciuto: section 4");
+
+            }
+
+
+        }
+
+
     }
 
 }
