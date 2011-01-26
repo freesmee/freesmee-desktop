@@ -1,6 +1,10 @@
 #include "messageloader.h"
 #include "libjacksms/libJackSMS.h"
-messageLoader::messageLoader(QString _ud):ud(_ud),aborted(false)
+
+messageLoader::messageLoader(QString _ud, MainJackSMS* _mainjack) :
+        ud(_ud),
+        mainjack(_mainjack),
+        aborted(false)
 {
     qRegisterMetaType<QList<QMyMessage> >("QList<QMyMessage>");
 }
@@ -13,8 +17,6 @@ void messageLoader::run(){
         loader.loadImLog(ArchivioIm);
         loader.loadSmsLog(ArchivioMessaggi);
 
-
-
         {
            libJackSMS::dataTypes::logImType::const_iterator i=ArchivioIm.begin();
            libJackSMS::dataTypes::logImType::const_iterator i_end=ArchivioIm.end();
@@ -26,10 +28,12 @@ void messageLoader::run(){
                 QDateTime data=i.value().getDate().getData();
                 msg.setData(data);
                 msg.setMessage(i.value().getText());
-
                 msg.setId(i.value().getId());
                 msg.setIsReceived(true);
                 msg.setPhone(i.value().getPhoneNumber());
+                msg.setAccountName("JackSMS Messenger");
+                msg.setParsedName(mainjack->phone2name(msg.getPhone()));
+
                 messaggi.push_back(msg);
             }
         }
@@ -46,11 +50,15 @@ void messageLoader::run(){
                 msg.setIsReceived(false);
                 msg.setPhone(i.value().getPhoneNumber());
                 msg.setServiceId(i.value().getServiceId());
+                msg.setParsedName(mainjack->phone2name(msg.getPhone()));
+
                 messaggi.push_back(msg);
             }
         }
-        if (!aborted)
+        if (!aborted){
+            qSort(messaggi.begin(), messaggi.end(), compareMessages);
             emit messagesLoaded(messaggi);
+        }
 }
 
 void messageLoader::loadMessages(){
@@ -59,4 +67,9 @@ void messageLoader::loadMessages(){
 
 void messageLoader::abort(){
     aborted=true;
+}
+
+bool messageLoader::compareMessages(QMyMessage &s1, QMyMessage &s2)
+{
+    return (s1.getData() < s2.getData());
 }

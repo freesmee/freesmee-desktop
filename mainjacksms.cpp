@@ -2062,8 +2062,6 @@ void MainJackSMS::countdownToGui(){
 
         WriteAddressBookToGui();
         WriteConfiguredServicesToGui();
-
-        qSort(Messaggi.begin(), Messaggi.end(), compareMessages);
         WriteMessagesToGui();
 
         enableUiAfterLogin();
@@ -2096,36 +2094,28 @@ void MainJackSMS::setTrayIcon(){
 
     }
 }
-void MainJackSMS::messagesLoaded(QList<QMyMessage> msgs){
-    types::QMessageListType::iterator i=msgs.begin();
-    types::QMessageListType::iterator i_end=msgs.end();
-    for(;i!=i_end;++i){
-        if (i->getIsReceived())
-            i->setAccountName("JackSMS Messenger");
-        i->setParsedName(phone2name(i->getPhone()));
-    }
-    Messaggi=msgs;
+void MainJackSMS::messagesLoaded(QList<QMyMessage> msgs) {
+    Messaggi = msgs;
     countdownToGui();
 }
 void MainJackSMS::servicesLoaded(libJackSMS::dataTypes::servicesType s){
     ElencoServizi=s;
     icon_jack=ElencoServizi["40"].getIcon().pixmap(16,16);
 
-    loaderMessages=new messageLoader(current_user_directory);
+    messageLoader* loaderMessages = new messageLoader(current_user_directory, this);
     connect(loaderMessages,SIGNAL(messagesLoaded(QList<QMyMessage>)),this,SLOT(messagesLoaded(QList<QMyMessage>)));
     loaderMessages->loadMessages();
 
     countdownToGui();
-
-
 }
+
 void MainJackSMS::optionsLoaded(libJackSMS::dataTypes::optionsType op){
 
     Opzioni=op;
 
     //ui->TestoSMS->setFont(QFont(ui->TestoSMS->font().family(),Opzioni["textsize"].toInt(NULL,10),ui->TestoSMS->font().weight(),false));
 
-    if (ui->ricordaPassword->isChecked()){
+    if (ui->ricordaPassword->isChecked()) {
         GlobalOptions["save-passwd"]="yes";
         Opzioni["save-passwd"]="yes";
         Opzioni["password"]=ui->password->text();
@@ -2156,7 +2146,7 @@ void MainJackSMS::loginSuccess(QString sessionId){
     libJackSMS::localApi::userDirectoryManager man(current_user_username);
     if (!man.userDirectoryExists()){
         man.createUser();
-        current_user_directory=man.getUserDir();
+        current_user_directory = man.getUserDir();
     }
     libJackSMS::localApi::cookieManager m(current_user_directory);
     m.deleteCookies();
@@ -2418,7 +2408,6 @@ void MainJackSMS::closeEvent(QCloseEvent *event){
 
     if (loggedIn){
         loginClient->deleteLater();
-        loaderMessages->deleteLater();
         pingator->deleteLater();
         if (imChecker!=NULL && Opzioni["receive-im"]!="no"){
            imChecker->stop();
@@ -2434,7 +2423,6 @@ void MainJackSMS::on_actionLogout_triggered()
 {
     loggedIn=false;
     loginClient->deleteLater();
-    loaderMessages->deleteLater();
     pingator->deleteLater();
     Rubrica.clear();
     if (imChecker!=NULL && Opzioni["receive-im"]!="no"){
@@ -3054,9 +3042,4 @@ void MainJackSMS::on_smsListWidget_itemPressed(QListWidgetItem* current)
             setTrayIcon();
         }
     }
-}
-
-bool MainJackSMS::compareMessages(QMyMessage &s1, QMyMessage&s2)
-{
-    return (s1.getData() < s2.getData());
 }

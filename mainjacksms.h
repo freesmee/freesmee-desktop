@@ -14,7 +14,6 @@
 #include "libjacksms/libJackSMS.h"
 #include <QMultiMap>
 #include "smswidget.h"
-#include "messageloader.h"
 #include "accountwidget.h"
 #include "contactwidgetfastbook.h"
 #include "qrecipientwidget.h"
@@ -85,7 +84,6 @@ private:
     int messageType;
     void countdownToGui();
     int countdownToGuiCount;
-    messageLoader * loaderMessages;
     bool imServiceActive;
     void setTrayIcon();
     int countReceivedUnreaded;
@@ -147,7 +145,6 @@ private:
     void svuotaDestinatari();
     QTimer resetCounterTimer;
     void caricaAltriMessaggi();
-    static bool compareMessages(QMyMessage &s1, QMyMessage &s2);
 
 private slots:
     void on_smsListWidget_itemPressed(QListWidgetItem* item);

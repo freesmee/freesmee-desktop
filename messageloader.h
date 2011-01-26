@@ -1,8 +1,8 @@
 #ifndef MESSAGELOADER_H
 #define MESSAGELOADER_H
-#include "qmymessage.h"
 
 #include <QThread>
+#include "mainjacksms.h"
 
 class messageLoader : public QThread
 {
@@ -10,9 +10,11 @@ class messageLoader : public QThread
 private:
     void run();
     QString ud;
+    MainJackSMS* mainjack;
     bool aborted;
+    static bool compareMessages(QMyMessage &s1, QMyMessage &s2);
 public:
-    messageLoader(QString _userDir);
+    messageLoader(QString _userDir, MainJackSMS* _mainjack);
     void loadMessages();
     void abort();
 signals:
