@@ -95,8 +95,6 @@ private:
     int currentMaxLength;
     int currentSingleLength;
     libJackSMS::serverApi::updateServicesManager *updateChecker;
-    QMultiMap<QDateTime,SmsWidget*> mapWidgets;
-    QMultiMap<QDateTime,SmsWidget*> mapWidgetsReceived;
     QMap<QString,accountWidget*> mapWidgetsAccount;
     libJackSMS::serverApi::contactManager *deleteContect;
     libJackSMS::serverApi::accountManager *accountManager;
@@ -149,6 +147,7 @@ private:
     void svuotaDestinatari();
     QTimer resetCounterTimer;
     void caricaAltriMessaggi();
+    static bool compareMessages(QMyMessage &s1, QMyMessage &s2);
 
 private slots:
     void on_smsListWidget_itemPressed(QListWidgetItem* item);

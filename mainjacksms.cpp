@@ -728,92 +728,43 @@ QString MainJackSMS::phone2name(const libJackSMS::dataTypes::phoneNumber &_numbe
 
 void MainJackSMS::WriteMessagesToGui(bool limit100){
 
-    int section=1;
     try{
         ui->smsListWidget->clear();
-        mapWidgets.clear();
 
+        if(Messaggi.isEmpty())
+            return;
 
-        types::QMessageListType::const_iterator i=Messaggi.begin();
-        types::QMessageListType::const_iterator i_end=Messaggi.end();
+        types::QMessageListType::const_iterator i = Messaggi.end();
+        types::QMessageListType::const_iterator i_end = Messaggi.begin();
+        int count = 0;
 
-        for(;i!=i_end;++i){
-            QString user_num_name=phone2name(i->getPhone());
-            if (i->getIsReceived()){
+        for(--i; i >= i_end; --i){
+            count++;
+            SmsWidget *wid = NULL;
 
-                SmsWidget *wid=new SmsWidget(*i,icon_jack,true);
-                mapWidgets.insert(i->getData(),wid);
-            }else{
-                QPixmap ico=ElencoServizi[i->getServiceId()].getIcon().pixmap(16,16);
-                SmsWidget *wid=new SmsWidget(*i,ico,false);
-                mapWidgets.insert(i->getData(),wid);
-            }
-         }
-         section++;
-         if (mapWidgets.size()>0){
-            QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx=mapWidgets.end();
-            QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx_end=mapWidgets.begin();
-
-            if(limit100){
-                for(int c=0; c<100; c++){
-                    --xx;
-                    QListWidgetItem *item = new QListWidgetItem;
-                    item->setSizeHint(xx.value()->getSize());
-                    static_cast<SmsWidget*>(xx.value())->setNameFilteredHidden(false);
-                    ui->smsListWidget->addItem(item);
-                    ui->smsListWidget->setItemWidget(item, xx.value());
-
-                    if(xx==xx_end)
-                        break;
-                }
-            }else{
-                do{
-                    --xx;
-                    QListWidgetItem *item = new QListWidgetItem;
-                    item->setSizeHint(xx.value()->getSize());
-                    ui->smsListWidget->addItem(item);
-                    ui->smsListWidget->setItemWidget(item, xx.value());
-
-                }while(xx!=xx_end);
+            if (i->getIsReceived()) {
+                wid = new SmsWidget(*i, icon_jack, true);
+            } else {
+                QPixmap ico=ElencoServizi[i->getServiceId()].getIcon().pixmap(16, 16);
+                wid = new SmsWidget(*i, ico, false);
             }
 
-            ui->listSmsNames->refreshAll(this, ui->smsListWidget);
-
-        }
-     }catch(...){
-         QMessageBox::critical(this,"JackSMS","JackSMS ha rilevato un errore grave durante la procedura WriteMessagesToGui().\nDettagli: unknown error, section: "+QString::number(section));
-     }
-}
-
-/*DEPRECATED
-void MainJackSMS::WriteImToGui(){
-
-    ui->imRicevutiWidget->clear();
-    mapWidgetsReceived.clear();
-
-
-    types::QMessageListType::const_iterator i=MessaggiRicevuti.begin();
-    types::QMessageListType::const_iterator i_end=MessaggiRicevuti.end();
-    for(;i!=i_end;++i){
-        QString user_num_name=phone2name(i->getPhone());
-        SmsWidget *wid=new SmsWidget(*i,icon_jack,true);
-        mapWidgetsReceived.insert(i->getData(),wid);
-
-    }
-
-     if (mapWidgetsReceived.size()>0){
-        QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx=mapWidgetsReceived.end();
-        QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx_end=mapWidgetsReceived.begin();
-        do{
-            --xx;
             QListWidgetItem *item = new QListWidgetItem;
-            item->setSizeHint(xx.value()->getSize());
-            ui->imRicevutiWidget->addItem(item);
-            ui->imRicevutiWidget->setItemWidget(item, xx.value());
-        }while(xx!=xx_end);
+            item->setSizeHint(wid->getSize());
+            wid->setNameFilteredHidden(false);
+            ui->smsListWidget->addItem(item);
+            ui->smsListWidget->setItemWidget(item, wid);
+
+            if(limit100 && (count >= 100))
+                break;
+        }
+
+        ui->listSmsNames->refreshAll(this, ui->smsListWidget);
+
+    }catch(...){
+        QMessageBox::critical(this,"JackSMS","JackSMS ha rilevato un errore grave durante la procedura WriteMessagesToGui().");
     }
 }
-*/
 
 void MainJackSMS::on_RubricaAggiungi_clicked()
 {
@@ -956,7 +907,6 @@ void MainJackSMS::invioSuccesso(QString _text){
 
             QPixmap icona=ElencoServizi[ultimoSms.getServiceId()].getIcon().pixmap(16,16);
             SmsWidget *wid=new SmsWidget(ultimoSms,icona,false);
-            mapWidgets.insert(ultimoSms.getData(),wid);
 
             QListWidgetItem *item = new QListWidgetItem;
             item->setSizeHint(wid->getSize());
@@ -1771,10 +1721,6 @@ void MainJackSMS::on_comboServizio_currentIndexChanged(int index)
            widget->restoreOriginalIcon();
         }
     }
-
-
-
-
 }
 
 //carica i plugin
@@ -1932,15 +1878,12 @@ void MainJackSMS::startIm(){
         messaggiRicevuti.clear();
         imServiceActive=false;
 
-
         imChecker=new libJackSMS::serverApi::Streamer(current_user_username,ui->password->text(),"",Opzioni);
         connect(imChecker,SIGNAL(newJMS(libJackSMS::dataTypes::logImType)),this,SLOT(checkInstantMessengerReceived(libJackSMS::dataTypes::logImType)));
         connect(imChecker,SIGNAL(serviceActive()),this,SLOT(jmsActive()));
         connect(imChecker,SIGNAL(serviceNotActive(bool,QString)),this,SLOT(jmsNotActive(bool,QString)));
         connect(imChecker,SIGNAL(serviceActiving()),this,SLOT(jmsActiving()));
         imChecker->activateServ();
-
-
 }
 
 /*
@@ -1999,74 +1942,9 @@ void MainJackSMS::endLogin(){
     }
 }*/
 
-/*DEPRECATED
-void MainJackSMS::appendImToGui(){
-    mapWidgetsReceivedNew.clear();
-    mapWidgetsNew.clear();
-    QPixmap icon_jack=ElencoServizi["40"].getIcon().pixmap(16,16);
-    libJackSMS::dataTypes::logImType::const_iterator i=nuoviMessaggiRicevuti.begin();
-    libJackSMS::dataTypes::logImType::const_iterator i_end=nuoviMessaggiRicevuti.end();
-    for(;i!=i_end;++i){
-        QString user_num_name=phone2name(i.value().getPhoneNumber());
-        SmsWidget *wid=new SmsWidget(
-                                     i.value().getText(),
-                                     icon_jack,
-                                     true,
-                                     i.value().getDate().getData(),
-                                     user_num_name,
-                                     QString("JackSMS Messenger"),
-                                     i.value().getId(),
-                                     i.value().getPhoneNumber(),
-                                     false
-                                     );
-        mapWidgetsReceived.insert(i.value().getDate().getData(),wid);
-        mapWidgetsReceivedNew.insert(i.value().getDate().getData(),wid);
-
-        SmsWidget *wid2=new SmsWidget(
-                                     i.value().getText(),
-                                     icon_jack,
-                                     true,
-                                     i.value().getDate().getData(),
-                                     user_num_name,
-                                     QString("JackSMS Messenger"),
-                                     i.value().getId(),
-                                     i.value().getPhoneNumber(),
-                                     true
-                                     );
-        mapWidgets.insert(i.value().getDate().getData(),wid2);
-        mapWidgetsNew.insert(i.value().getDate().getData(),wid2);
-    }
-
-    if (mapWidgetsReceivedNew.size()>0){
-        QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx=mapWidgetsReceivedNew.begin();
-        QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx_end=mapWidgetsReceivedNew.end();
-        for(;xx!=xx_end;++xx){
-
-            QListWidgetItem *item = new QListWidgetItem;
-            item->setSizeHint(xx.value()->size());
-            ui->imRicevutiWidget->insertItem(0,item);
-            ui->imRicevutiWidget->setItemWidget(item, xx.value());
-        }
-    }
-    if (mapWidgetsNew.size()>0){
-        QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx=mapWidgetsNew.begin();
-        QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx_end=mapWidgetsNew.end();
-        for(;xx!=xx_end;++xx){
-
-            QListWidgetItem *item = new QListWidgetItem;
-            item->setSizeHint(xx.value()->size());
-            ui->smsListWidget->insertItem(0,item);
-            ui->smsListWidget->setItemWidget(item, xx.value());
-            ui->listSmsNames->itemAdded(static_cast<SmsWidget*>(xx.value()), true);
-        }
-    }
-}*/
 void MainJackSMS::checkInstantMessengerReceived(libJackSMS::dataTypes::logImType jmsList){
     int section=1;
     try{
-
-        QMultiMap<QDateTime,SmsWidget*> mapWidgetsReceivedNew;
-
         QMultiMap<QDateTime,SmsWidget*> mapWidgetsNew;
 
         libJackSMS::dataTypes::logImType::iterator i=jmsList.begin();
@@ -2082,7 +1960,7 @@ void MainJackSMS::checkInstantMessengerReceived(libJackSMS::dataTypes::logImType
             Opzioni["save-local"]="no";
         }
         for(;i!=i_end;++i){
-            if( save){
+            if(save){
                 manager->setMessage(i.value());
                 manager->appendToLogFile();
                 i.value().setId(manager->getSavedId());
@@ -2092,11 +1970,10 @@ void MainJackSMS::checkInstantMessengerReceived(libJackSMS::dataTypes::logImType
             }
 
             QMyMessage msg;
+
             msg.setParsedName(phone2name(i.value().getPhoneNumber()));
-
-
             msg.setAccountId(QString::number(0));
-            msg.setData( i.value().getDate().getData());
+            msg.setData(i.value().getDate().getData());
             msg.setMessage(i.value().getText());
             msg.setId(i.value().getId());
             msg.setIsReceived(true);
@@ -2108,16 +1985,7 @@ void MainJackSMS::checkInstantMessengerReceived(libJackSMS::dataTypes::logImType
             countReceivedUnreaded++;
             ui->tabWidget->setTabText(1,"Conversazioni ("+QString::number(countReceivedUnreaded)+")");
 
-            /*DEPRECATED
-            SmsWidget *wid=new SmsWidget(msg,icon_jack, true);
-            mapWidgetsReceived.insert(i.value().getDate().getData(),wid);
-            mapWidgetsReceivedNew.insert(i.value().getDate().getData(),wid);
-
-            msg.setReaded(true);
-            */
-
             SmsWidget *wid2=new SmsWidget(msg,icon_jack, true);
-            mapWidgets.insert(i.value().getDate().getData(),wid2);
             mapWidgetsNew.insert(i.value().getDate().getData(),wid2);
 
             //relays to listening plugins the received message
@@ -2125,21 +1993,6 @@ void MainJackSMS::checkInstantMessengerReceived(libJackSMS::dataTypes::logImType
 
         }
         section++;
-
-        /*DEPRECATED
-        if (mapWidgetsReceivedNew.size()>0){
-            QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx=mapWidgetsReceivedNew.begin();
-            QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx_end=mapWidgetsReceivedNew.end();
-            for(;xx!=xx_end;++xx){
-
-                QListWidgetItem *item = new QListWidgetItem;
-                item->setSizeHint(xx.value()->getSize());
-                ui->imRicevutiWidget->insertItem(0,item);
-                ui->imRicevutiWidget->setItemWidget(item, xx.value());
-            }
-        }
-        section++;
-        */
 
         if (mapWidgetsNew.size()>0){
             QMultiMap<QDateTime,SmsWidget*>::ConstIterator xx=mapWidgetsNew.begin();
@@ -2200,30 +2053,35 @@ void MainJackSMS::errorUpdates(QString err){
         QMessageBox::critical(this,"JackSMS","si e' verificato un errore grave durante l'aggiornamnto dei servizi.\nErrore: "+err);
 }
 void MainJackSMS::countdownToGui(){
+
     countdownToGuiCount--;
+
     if (countdownToGuiCount==0){
+
         libJackSMS::serverApi::synchronizeVariables(ElencoServiziConfigurati,ElencoServizi);
-       this->WriteAddressBookToGui();
 
-       usaAssociatiPresent = false;
-       this->WriteConfiguredServicesToGui();
-       this->WriteMessagesToGui();
-       enableUiAfterLogin();
-       ui->widgetSchermate->setCurrentIndex(2);
-       invioMultiplo = false;
-       usaAssociatiPresent = false;
-       gestiscimenuSingolo(true);
+        WriteAddressBookToGui();
+        WriteConfiguredServicesToGui();
 
-       //questo mi permette di abilitare il servizio jms sempre e non abilitarlo solo se è esplicitamente "no"
-       if (Opzioni["receive-im"]!="no"){
-           startIm();
-       }
+        qSort(Messaggi.begin(), Messaggi.end(), compareMessages);
+        WriteMessagesToGui();
 
-       updateChecker=new libJackSMS::serverApi::updateServicesManager(this->current_login_id,Opzioni,ElencoServizi);
-       connect(updateChecker,SIGNAL(updatesAvailable(libJackSMS::dataTypes::servicesType,QString,QString)),this,SLOT(updatesAvailable(libJackSMS::dataTypes::servicesType,QString,QString)));
-       connect(updateChecker,SIGNAL(criticalError(QString)),this,SLOT(errorUpdates(QString)));
-       updateChecker->checkUpdates();
-       countdownToGuiCount=COUNTDOWNTOGUICOUNTDEFINE;
+        enableUiAfterLogin();
+        ui->widgetSchermate->setCurrentIndex(2);
+        invioMultiplo = false;
+        usaAssociatiPresent = false;
+        gestiscimenuSingolo(true);
+
+        //questo mi permette di abilitare il servizio jms sempre e non abilitarlo solo se è esplicitamente "no"
+        if (Opzioni["receive-im"]!="no"){
+            startIm();
+        }
+
+        updateChecker=new libJackSMS::serverApi::updateServicesManager(this->current_login_id,Opzioni,ElencoServizi);
+        connect(updateChecker,SIGNAL(updatesAvailable(libJackSMS::dataTypes::servicesType,QString,QString)),this,SLOT(updatesAvailable(libJackSMS::dataTypes::servicesType,QString,QString)));
+        connect(updateChecker,SIGNAL(criticalError(QString)),this,SLOT(errorUpdates(QString)));
+        updateChecker->checkUpdates();
+        countdownToGuiCount=COUNTDOWNTOGUICOUNTDEFINE;
 
     }
 
@@ -3196,4 +3054,9 @@ void MainJackSMS::on_smsListWidget_itemPressed(QListWidgetItem* current)
             setTrayIcon();
         }
     }
+}
+
+bool MainJackSMS::compareMessages(QMyMessage &s1, QMyMessage&s2)
+{
+    return (s1.getData() < s2.getData());
 }

@@ -12,14 +12,14 @@ macx {
     TARGET = JackSMS
 }
 win32 { 
-    LIBS += -L"./lib/win32"
+    LIBS += -L$$PWD/lib/win32
     RC_FILE = icon.rc
 }
-QT += network
 
-# QT += phonon
-CONFIG(debug, debug|release):LIBS += -lticpp
+CONFIG(debug, debug|release):LIBS += -lticppd
 CONFIG(release, debug|release):LIBS += -lticpp
+
+QT += network
 DEFINES += TIXML_USE_TICPP
 
 # DEFINES += PORTABLE

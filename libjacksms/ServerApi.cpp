@@ -1241,7 +1241,7 @@ namespace libJackSMS{
                             libJackSMS::dataTypes::phoneNumber num;
                             num.parse(recipNumber);
                             num.setAltName(recipName);
-                            libJackSMS::dataTypes::dateTime dat(year+"/"+month+"/"+day+" "+hour+":"+min+":"+sec);
+                            libJackSMS::dataTypes::dateTime dat(day+"/"+month+"/"+year+" "+hour+":"+min+":"+sec);
                             libJackSMS::dataTypes::logImMessage im(num,dat,"",text);
                             signalCountdown.stop();
                             im.setId(id);
@@ -1256,8 +1256,6 @@ namespace libJackSMS{
                                 r.setPattern("^E\\t(.{1,})$");
                                 if (r.exactMatch(line))
                                     emit this->serviceNotActive(true,r.cap(1));
-
-
                             }
                         }
                         //std::cout << line.toStdString()<<std::endl;
