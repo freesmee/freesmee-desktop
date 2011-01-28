@@ -32,8 +32,8 @@ class MainJackSMS : public QMainWindow
 
 signals:
     void abortSendSms();
-public:
 
+public:
     Ui::MainJackSMS *ui;
     MainJackSMS(QWidget *parent = 0);
     ~MainJackSMS();
@@ -89,7 +89,6 @@ private:
     int countReceivedUnreaded;
     bool invioInCorso;
 
-
     int currentMaxLength;
     int currentSingleLength;
     libJackSMS::serverApi::updateServicesManager *updateChecker;
@@ -117,16 +116,11 @@ private:
     QString selectedService;
     void WriteAddressBookToGui();
     void WriteConfiguredServicesToGui();
-    void WriteMessagesToGui(bool limit100=true);
+    void WriteMessagesToGui();
     void loadPlugins();
     void disableUibeforeLogin();
     void enableUiAfterLogin();
     bool loggedIn;
-    void ReWriteMessagesToGui(bool limit100=true);
-
-    //DEPRECATED
-    //void WriteImToGui();
-    //void ReWriteImToGui();
 
     QString esitoInvio;
 
@@ -144,12 +138,13 @@ private:
 
     void svuotaDestinatari();
     QTimer resetCounterTimer;
+
+    bool altriMessaggi;
+    types::QMessageListType::const_iterator iterMess;
     void caricaAltriMessaggi();
 
 private slots:
     void on_smsListWidget_itemPressed(QListWidgetItem* item);
-    void on_listSmsNames_currentRowChanged(int currentRow);
-    void on_listSmsNames_itemClicked(QListWidgetItem* item);
     void on_listSmsNames_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void on_radioTutti_clicked();
     void on_radioJackSMS_clicked();

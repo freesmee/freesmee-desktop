@@ -4,14 +4,14 @@
 #include <QDateTime>
 #include <QDesktopServices>
 
-
 SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QString user,QString service,QString _id,libJackSMS::dataTypes::phoneNumber _number,bool _letto) :
         originalText(_txt),
         type(received),
         id(_id),
         number(_number),
         readed(_letto),
-        dateTim(time)
+        dateTim(time),
+        caricaAltri(false)
 {
     name = user;
     labelGroup = new QLabel(user);
@@ -81,7 +81,8 @@ SmsWidget::SmsWidget(QMyMessage _sms,QPixmap _ico,bool received) :
         msg(_sms),
         type(received),
         number(_sms.getPhone()),
-        readed(_sms.getReaded())
+        readed(_sms.getReaded()),
+        caricaAltri(false)
 {
 
     id = _sms.getId();
@@ -152,6 +153,42 @@ SmsWidget::SmsWidget(QMyMessage _sms,QPixmap _ico,bool received) :
     adjustSize();
 
 }
+
+SmsWidget::SmsWidget(QString _txt) :
+        originalText(_txt),
+        caricaAltri(true)
+{
+    nameFiltered = false;
+
+    labelTxt = new QLabel(originalText);
+    labelTxt->setFont(QFont(labelTxt->font().family(),-1,QFont::Bold,false));
+    labelTxt->setAlignment(Qt::AlignCenter);
+    labelTxt->setWordWrap(true);
+    labelTxt->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+    labelTxt->adjustSize();
+    setStyleSheet("SmsWidget{"
+                  "background-color: #C1FFC1;"
+                  "border-style: outset;"
+                  "border-width: 2px;"
+                  "border-radius: 10px;"
+                  "border-color: #4CBB17;"
+                  "font: bold 14px;"
+                  "min-width: 10em;"
+                  "padding: 6px;"
+                  "margin-left: 0px;"
+                  "margin-top: 10px;"
+                  "margin-right: 0px;"
+                  "margin-bottom: 0px;"
+                  "}");
+    setContentsMargins(0, 10, 0, 0);
+    setCursor(Qt::PointingHandCursor);
+    vLayout = new QVBoxLayout;
+    vLayout->addWidget(labelTxt);
+    setLayout(vLayout);
+    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+    adjustSize();
+}
+
 QSize SmsWidget::getSize(){
 
     //size-by size a tentativi
@@ -247,11 +284,12 @@ void::SmsWidget::createBubble(bool isread, bool isreceived){
                       "margin-bottom: 1px;"
                       "}");
         setContentsMargins(0, 1, 60, 1);
-
         labelIcoReceived->setPixmap(QPixmap(":/resource/go-down-notify.png"));
-    }
-    else{
+        setCursor(Qt::PointingHandCursor);
 
+    } else {
+
+        setCursor(Qt::ArrowCursor);
         if (isreceived){
             setStyleSheet("SmsWidget{"
                           "background-color: #FEF2BF;"
@@ -306,4 +344,8 @@ QDateTime SmsWidget::getDateTime() const{
 
 QString SmsWidget::getName() const{
     return name;
+}
+
+bool SmsWidget::isCaricaAltri() const{
+    return caricaAltri;
 }

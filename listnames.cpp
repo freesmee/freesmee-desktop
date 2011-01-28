@@ -39,9 +39,10 @@ void ListNames::svuota()
     addName("Tutti i contatti");
 }
 
-void ListNames::refreshAll(MainJackSMS* main, QListWidget* smslist)
+void ListNames::refreshAll(MainJackSMS* main, QListWidget* smslist, bool clean)
 {
-    svuota();
+    if (clean)
+        svuota();
 
     QString nameToInsert;
     bool alreadyFound;
@@ -50,22 +51,23 @@ void ListNames::refreshAll(MainJackSMS* main, QListWidget* smslist)
 
     for(int j = 0; j < smslist->count(); j++){
         sms = static_cast<SmsWidget*>(smslist->itemWidget(smslist->item(j)));
-        nameToInsert = main->phone2name(sms->getPhoneNum());
+        if (!sms->isCaricaAltri()) {
+            nameToInsert = main->phone2name(sms->getPhoneNum());
 
-        alreadyFound = false;
-        for(int i = 1; i < count(); ++i){
-            namewid = static_cast<NameWidget*>(itemWidget(item(i)));
-            if(namewid->getName() == nameToInsert){
-                alreadyFound = true;
-                if(!sms->isReaded())
-                    namewid->increaseUnreadCount();
+            alreadyFound = false;
+            for(int i = 1; i < count(); ++i){
+                namewid = static_cast<NameWidget*>(itemWidget(item(i)));
+                if(namewid->getName() == nameToInsert){
+                    alreadyFound = true;
+                    if(!sms->isReaded())
+                        namewid->increaseUnreadCount();
 
-                break;
+                    break;
+                }
             }
+            if(!alreadyFound)
+                addName(nameToInsert, sms->getText(), sms->getDateTime(), sms->getId(), (sms->isReaded() ? 0 : 1));
         }
-        if(!alreadyFound)
-            addName(nameToInsert, sms->getText(), sms->getDateTime(), sms->getId(), (sms->isReaded() ? 0 : 1));
-
     }
 }
 
