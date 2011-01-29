@@ -30,12 +30,9 @@
 #ifndef DATATYPES_HH
 #define DATATYPES_HH 1
 
-
-
 namespace libJackSMS{
 
     namespace dataTypes{
-
 
         typedef QList<content> contentType;
         typedef QMap<QString,QString> creditsType;
@@ -48,10 +45,8 @@ namespace libJackSMS{
         typedef QMap<QString,QString> optionsType;
         typedef QMap<QString,service> servicesType;
 
-
-
-
     }
 
 }
+
 #endif //DATATYPES_HH

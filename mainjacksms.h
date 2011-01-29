@@ -75,7 +75,6 @@ private:
     bool checkDoubleRecipients(libJackSMS::dataTypes::phoneNumber &_n) const;
     bool recipientAutoEdited;
     void recipientStringCalculate();
-    void sendNextMessage(bool first, bool result=false, QString _text="");
     QList<QListWidgetItem*> multipleSendRecipients;
     bool invioMultiplo;
     QPixmap icon_jack;
