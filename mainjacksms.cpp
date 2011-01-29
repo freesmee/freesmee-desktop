@@ -1584,17 +1584,18 @@ void MainJackSMS::deleteContactOk(QString id){
 
 void MainJackSMS::on_RicercaVeloceIM_textChanged(QString text)
 {
-    //QString text=ui->RicercaVeloceIM->text().toUpper();
+    int c = ui->smsListWidget->count();
+    if (altriMessaggi)
+        c--;
 
-    int c=ui->smsListWidget->count();
-    for(int x=0;x<c;x++){
-        QListWidgetItem *item=ui->smsListWidget->item(x);
-        SmsWidget *w=static_cast<SmsWidget*>(ui->smsListWidget->itemWidget(item));
-        if (!w->isCaricaAltri() && w->isNameFilteredHidden() == false){
+    for (int x = 0; x < c; x++) {
+        QListWidgetItem *item = ui->smsListWidget->item(x);
+        SmsWidget* w = static_cast<SmsWidget*>(ui->smsListWidget->itemWidget(item));
+        if (!w->isCaricaAltri() && (w->isNameFilteredHidden() == false)) {
             if (w->searchMatch(text))
-                ui->smsListWidget->setItemHidden(item,false);
+                ui->smsListWidget->setItemHidden(item, false);
             else
-                ui->smsListWidget->setItemHidden(item,true);
+                ui->smsListWidget->setItemHidden(item, true);
         }
     }
 }
@@ -1621,9 +1622,9 @@ void MainJackSMS::on_EliminaButton_clicked() {
 
             while (!ls.isEmpty()){
 
-                QListWidgetItem *it=ls.front();
+                QListWidgetItem *it = ls.front();
 
-                SmsWidget * ww=static_cast<SmsWidget*>(ui->smsListWidget->itemWidget(it));
+                SmsWidget * ww = static_cast<SmsWidget*>(ui->smsListWidget->itemWidget(it));
                 if(!ww->isCaricaAltri()){
 
                     if (ww->isReceived()){
@@ -1641,17 +1642,17 @@ void MainJackSMS::on_EliminaButton_clicked() {
                 ls.removeFirst();
             }
 
-            types::QMessageListType::iterator i=Messaggi.begin();
 
-            for (;i!=Messaggi.end();++i){
-                QString id=i->getId();
-                int found=-1;
+
+            for (types::QMessageListType::iterator i = Messaggi.begin(); i != Messaggi.end(); ++i){
+                QString id = i->getId();
+                int found = -1;
                 if (!i->getIsReceived())
-                    found=smsIds.indexOf(id);
+                    found = smsIds.indexOf(id);
                 else
-                    found=imIds.indexOf(id);
-                if (found>=0){
-                    i=Messaggi.erase(i);
+                    found = imIds.indexOf(id);
+                if (found >= 0){
+                    i = Messaggi.erase(i);
                     i--;
                 }
             }
@@ -1666,10 +1667,34 @@ void MainJackSMS::on_EliminaButton_clicked() {
                 val=val && man.deleteSms(smsIds);
             }
 
-            if(needRefresh)
+            if (needRefresh) {
+                QString nameBefore;
+                if (ui->listSmsNames->currentRow() > 0)
+                    nameBefore = static_cast<NameWidget*>(ui->listSmsNames->itemWidget(ui->listSmsNames->item(ui->listSmsNames->currentRow())))->getName();
+                else
+                    nameBefore = "_AllContacts_";
+
+                ui->listSmsNames->clearSelection();
                 ui->listSmsNames->refreshAll(this, ui->smsListWidget);
 
-            ui->smsListWidget->scrollToTop();
+                if (nameBefore == "_AllContacts_") {
+                    ui->listSmsNames->setCurrentRow(0);
+                } else {
+                    bool found = false;
+                    for (int i = 1; i < ui->listSmsNames->count(); i++) {
+                        if (static_cast<NameWidget*>(ui->listSmsNames->itemWidget(ui->listSmsNames->item(i)))->getName() == nameBefore) {
+                            found = true;
+                            ui->listSmsNames->setCurrentRow(i);
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                        ui->listSmsNames->setCurrentRow(0);
+
+                }
+                ui->smsListWidget->scrollToTop();
+            }
         }
     }
 }
@@ -1735,9 +1760,8 @@ void MainJackSMS::on_TestoSMS_textChanged()
     }
 }
 
-void MainJackSMS::on_comboServizio_activated(QString )
+void MainJackSMS::on_comboServizio_activated(QString)
 {
-
 }
 
 void MainJackSMS::on_comboServizio_currentIndexChanged(int index)
@@ -2921,8 +2945,6 @@ void MainJackSMS::on_radioTutti_clicked()
 
 void MainJackSMS::on_listSmsNames_currentItemChanged(QListWidgetItem* item, QListWidgetItem* previous)
 {
-    if(!ui->RicercaVeloceIM->text().isEmpty())
-        ui->RicercaVeloceIM->setText("");
 
     if(item == NULL){
         ui->listSmsNames->setCurrentRow(0);
@@ -2930,7 +2952,7 @@ void MainJackSMS::on_listSmsNames_currentItemChanged(QListWidgetItem* item, QLis
     }
 
     int to = ui->smsListWidget->count();
-    if(altriMessaggi)
+    if (altriMessaggi)
         --to;
 
     if(ui->listSmsNames->currentRow() > 0){
@@ -2940,8 +2962,11 @@ void MainJackSMS::on_listSmsNames_currentItemChanged(QListWidgetItem* item, QLis
 
         for(int i = 0; i < to; i++){
             if( name == phone2name(static_cast<SmsWidget*>(ui->smsListWidget->itemWidget(ui->smsListWidget->item(i)))->getPhoneNum())){
-                ui->smsListWidget->setItemHidden(ui->smsListWidget->item(i), false);
                 static_cast<SmsWidget*>(ui->smsListWidget->itemWidget(ui->smsListWidget->item(i)))->setNameFilteredHidden(false);
+                if (static_cast<SmsWidget*>(ui->smsListWidget->itemWidget(ui->smsListWidget->item(i)))->searchMatch(ui->RicercaVeloceIM->text()))
+                    ui->smsListWidget->setItemHidden(ui->smsListWidget->item(i), false);
+                else
+                    ui->smsListWidget->setItemHidden(ui->smsListWidget->item(i), true);
             }else{
                 ui->smsListWidget->setItemHidden(ui->smsListWidget->item(i), true);
                 static_cast<SmsWidget*>(ui->smsListWidget->itemWidget(ui->smsListWidget->item(i)))->setNameFilteredHidden(true);
@@ -2952,8 +2977,11 @@ void MainJackSMS::on_listSmsNames_currentItemChanged(QListWidgetItem* item, QLis
 
         // tutti i contatti
         for(int i = 0; i < to; i++){
-            ui->smsListWidget->setItemHidden(ui->smsListWidget->item(i), false);
             static_cast<SmsWidget*>(ui->smsListWidget->itemWidget(ui->smsListWidget->item(i)))->setNameFilteredHidden(false);
+            if (static_cast<SmsWidget*>(ui->smsListWidget->itemWidget(ui->smsListWidget->item(i)))->searchMatch(ui->RicercaVeloceIM->text()))
+                ui->smsListWidget->setItemHidden(ui->smsListWidget->item(i), false);
+            else
+                ui->smsListWidget->setItemHidden(ui->smsListWidget->item(i), true);
         }
     }
 
