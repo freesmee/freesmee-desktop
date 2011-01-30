@@ -143,6 +143,9 @@ private:
     void caricaAltriMessaggi();
 
 private slots:
+    void on_ServiziCercaButton_clicked();
+    void on_RicercaButton_clicked();
+    void on_RicercaImButton_clicked();
     void on_smsListWidget_itemPressed(QListWidgetItem* item);
     void on_listSmsNames_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void on_radioTutti_clicked();
@@ -161,7 +164,7 @@ private slots:
     void on_actionCsv_triggered();
     void on_listServiziConfigurati_itemDoubleClicked(QListWidgetItem* item);
     void on_rubricaListWidget_itemDoubleClicked(QListWidgetItem* item);
-    void on_TextRapidServizi_textChanged(QString);
+    void on_TextRapidServizi_textChanged(QString text);
     void on_RubricaVeloce_itemDoubleClicked(QListWidgetItem* item);
     void on_ModificaServizioButton_clicked();
     void resized();
@@ -190,7 +193,6 @@ private slots:
     void stopIm();
     void on_password_returnPressed();
     void on_comboServizio_currentIndexChanged(QString );
-    void on_TextRapidServizi_textEdited(QString );
     void on_actionLogout_triggered();
     void on_RubricaVeloce_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void on_smsListWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
@@ -212,7 +214,7 @@ private slots:
     void on_CitaButton_clicked();
     void on_AnnullaSMS_clicked();
     void on_InoltraButton_clicked();
-    void on_RicercaVeloce_textChanged(QString );
+    void on_RicercaVeloce_textChanged(QString text);
     void on_actionOpzioni_triggered();
     void on_EliminaServizioButton_clicked();
     void on_AggiungiServizioButton_clicked();

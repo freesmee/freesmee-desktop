@@ -77,5 +77,6 @@
         <file>resource/arrow.png</file>
         <file>resource/arrow-unread.png</file>
         <file>resource/60_5.png</file>
+        <file>resource/finde.png</file>
     </qresource>
 </RCC>

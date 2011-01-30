@@ -1338,7 +1338,7 @@ void MainJackSMS::ReloadConfiguredServices(){
 
 
 
-void MainJackSMS::on_RicercaVeloce_textChanged(QString )
+void MainJackSMS::on_RicercaVeloce_textChanged(QString text)
 {
     ui->RubricaVeloce->clear();
     QMultiMap<QString,contactWidgetFastBook*> fastList;
@@ -1519,6 +1519,7 @@ void MainJackSMS::ClickBaloon(){
 
 
 }
+
 bool MainJackSMS::checkDoubleRecipients(libJackSMS::dataTypes::phoneNumber &_n) const{
     /*int c=ui->destinatariListWidget->count();
     for(int i=0;i<c;++i){
@@ -1526,21 +1527,24 @@ bool MainJackSMS::checkDoubleRecipients(libJackSMS::dataTypes::phoneNumber &_n) 
         contactWidgetFastBook * w=static_cast<contactWidgetFastBook*>(ui->destinatariListWidget->itemWidget(item));
         if (_n==w->getContact().getPhone())
             return true;
-
-
     }*/
     return false;
-
 }
-
-
-
 
 void MainJackSMS::on_TextRapidRubrica_textChanged(QString txt)
 {
+    if (txt == "") {
+        ui->RicercaButton->setEnabled(false);
+        ui->RicercaButton->setIcon(QIcon(":/resource/findd.png"));
+        ui->RicercaButton->setCursor(Qt::ArrowCursor);
+    } else {
+        ui->RicercaButton->setEnabled(true);
+        ui->RicercaButton->setIcon(QIcon(":/resource/finde.png"));
+        ui->RicercaButton->setCursor(Qt::PointingHandCursor);
+    }
+
     //ui->rubricaListWidget->clear();
      //QMultiMap<QString,ContactWidget*> list;
-
 
      int c=ui->rubricaListWidget->count();
      for(int x=0;x<c;x++){
@@ -1551,18 +1555,12 @@ void MainJackSMS::on_TextRapidRubrica_textChanged(QString txt)
          else
              ui->rubricaListWidget->setItemHidden(item,true);
      }
-
-
 }
-
 
 void MainJackSMS::on_actionInfo_su_JackSMS_triggered()
 {
-
     //QMessageBox::about(this,"JackSMS","JackSMS beta 1.2\n\nComunicazione libera e gratuita per tutti: questo e' il proposito di JackSMS.\nComunicare, chiacchierare, scambiarci idee e' una nostra necessita', un nostro diritto, un bisogno a cui nessuno puo' fare a meno.\nNon sarebbe bello se la piu' minuta delle forme di comunicazione, gli sms, potesse diventare gratuita per tutti?\nIn nome di quest'idea e' nato JackSMS.\nE quel gigantesco contatore che ogni giorno cresce e' il simbolo che, in fondo, quest'idea non e' poi cosi' assurda come potrebbe sembrare.");
     QDesktopServices::openUrl(QUrl("http://www.jacksms.it", QUrl::TolerantMode));
-
-
 }
 
 void MainJackSMS::on_RubricaElimina_clicked()
@@ -1602,10 +1600,18 @@ void MainJackSMS::deleteContactOk(QString id){
 
 }
 
-
-
 void MainJackSMS::on_RicercaVeloceIM_textChanged(QString text)
 {
+    if (text == "") {
+        ui->RicercaImButton->setEnabled(false);
+        ui->RicercaImButton->setIcon(QIcon(":/resource/findd.png"));
+        ui->RicercaImButton->setCursor(Qt::ArrowCursor);
+    } else {
+        ui->RicercaImButton->setEnabled(true);
+        ui->RicercaImButton->setIcon(QIcon(":/resource/finde.png"));
+        ui->RicercaImButton->setCursor(Qt::PointingHandCursor);
+    }
+
     int c = ui->smsListWidget->count();
     if (altriMessaggi)
         c--;
@@ -2485,20 +2491,28 @@ void MainJackSMS::on_actionLogout_triggered()
     ui->widgetSchermate->setCurrentIndex(0);
 }
 
-void MainJackSMS::on_TextRapidServizi_textEdited(QString text )
-{
-    int c=ui->listServiziConfigurati->count();
-    for(int x=0;x<c;x++){
-        QListWidgetItem *item=ui->listServiziConfigurati->item(x);
-        accountWidget *w=static_cast<accountWidget*>(ui->listServiziConfigurati->itemWidget(item));
-        if (w->getName().contains(text,Qt::CaseInsensitive))
-            ui->listServiziConfigurati->setItemHidden(item,false);
-        else
-            ui->listServiziConfigurati->setItemHidden(item,true);
-    }
-}
+void MainJackSMS::on_TextRapidServizi_textChanged(QString text) {
 
-void MainJackSMS::on_TextRapidServizi_textChanged(QString){
+    if (text == "") {
+        ui->ServiziCercaButton->setEnabled(false);
+        ui->ServiziCercaButton->setIcon(QIcon(":/resource/findd.png"));
+        ui->ServiziCercaButton->setCursor(Qt::ArrowCursor);
+    } else {
+        ui->ServiziCercaButton->setEnabled(true);
+        ui->ServiziCercaButton->setIcon(QIcon(":/resource/finde.png"));
+        ui->ServiziCercaButton->setCursor(Qt::PointingHandCursor);
+    }
+
+    int c = ui->listServiziConfigurati->count();
+    for(int x = 0; x < c; x++){
+        QListWidgetItem* item = ui->listServiziConfigurati->item(x);
+        accountWidget* w = static_cast<accountWidget*>(ui->listServiziConfigurati->itemWidget(item));
+        if (w->getName().contains(text, Qt::CaseInsensitive))
+            ui->listServiziConfigurati->setItemHidden(item, false);
+        else
+            ui->listServiziConfigurati->setItemHidden(item, true);
+    }
+
 }
 
 /*DEPRECATED
@@ -3068,4 +3082,19 @@ void MainJackSMS::on_smsListWidget_itemPressed(QListWidgetItem* current)
             setTrayIcon();
         }
     }
+}
+
+void MainJackSMS::on_RicercaImButton_clicked()
+{
+    ui->RicercaVeloceIM->setText("");
+}
+
+void MainJackSMS::on_RicercaButton_clicked()
+{
+    ui->TextRapidRubrica->setText("");
+}
+
+void MainJackSMS::on_ServiziCercaButton_clicked()
+{
+    ui->TextRapidServizi->setText("");
 }

@@ -500,7 +500,7 @@ QFrame#frame_3_old{
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>3</number>
           </property>
           <property name="iconSize">
            <size>
@@ -1012,12 +1012,55 @@ QFrame#frame_3_old{
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QLabel" name="label_13">
+                 <widget class="QPushButton" name="RicercaImButton">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>20</horstretch>
+                    <verstretch>20</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="sizeIncrement">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="baseSize">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
-                  <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/resource/findd.png</pixmap>
+                  <property name="icon">
+                   <iconset resource="resources.qrc">
+                    <normaloff>:/resource/findd.png</normaloff>:/resource/findd.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="flat">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -1025,9 +1068,27 @@ QFrame#frame_3_old{
                  <widget class="QLineEdit" name="RicercaVeloceIM">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
+                    <horstretch>200</horstretch>
+                    <verstretch>20</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>200</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>200</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
                   </property>
                  </widget>
                 </item>
@@ -1254,12 +1315,43 @@ ListNames::item:selected:active {
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QLabel" name="label_8">
+                 <widget class="QPushButton" name="RicercaButton">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>20</horstretch>
+                    <verstretch>20</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
-                  <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/resource/findd.png</pixmap>
+                  <property name="icon">
+                   <iconset resource="resources.qrc">
+                    <normaloff>:/resource/findd.png</normaloff>:/resource/findd.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="flat">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -1267,9 +1359,27 @@ ListNames::item:selected:active {
                  <widget class="QLineEdit" name="TextRapidRubrica">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
+                    <horstretch>200</horstretch>
+                    <verstretch>20</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>200</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>200</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
                   </property>
                  </widget>
                 </item>
@@ -1431,12 +1541,43 @@ ListNames::item:selected:active {
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QLabel" name="label_12">
+                 <widget class="QPushButton" name="ServiziCercaButton">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>20</horstretch>
+                    <verstretch>20</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
-                  <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/resource/findd.png</pixmap>
+                  <property name="icon">
+                   <iconset resource="resources.qrc">
+                    <normaloff>:/resource/findd.png</normaloff>:/resource/findd.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="flat">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -1444,9 +1585,27 @@ ListNames::item:selected:active {
                  <widget class="QLineEdit" name="TextRapidServizi">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
+                    <horstretch>200</horstretch>
+                    <verstretch>20</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>200</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>200</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
                   </property>
                  </widget>
                 </item>
