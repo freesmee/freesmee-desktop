@@ -191,6 +191,8 @@ SmsWidget::SmsWidget(QString _txt) :
 
 QSize SmsWidget::getSize(){
 
+    //TODO: sistemare!
+    /*
     //size-by size a tentativi
     if (size().height()<60)
         return size();
@@ -204,8 +206,10 @@ QSize SmsWidget::getSize(){
         return QSize(size().width(),size().height()*0.70);
     else
         return QSize(size().width(),size().height()*0.65);
-
+    */
+    return size();
 }
+
 QString SmsWidget::parseLinks(QString _s){
     QRegExp r;
     r.setPattern("^(.*)(http|https|ftp|ftps)\\:\\/\\/([^ ]+)(.*)$");
@@ -215,15 +219,17 @@ QString SmsWidget::parseLinks(QString _s){
         return _s;
     }
 }
+
 QString SmsWidget::parseAts(QString _s){
     QRegExp r;
-    r.setPattern("^(.*)@([^ ]+)(.*)$");
+    r.setPattern("^(.*)@([^ .]+) (.*)$");
     if (r.exactMatch(_s)){
-        return parseAts(r.cap(1))+"<b><i>@"+r.cap(2)+"</i></b> "+parseAts(r.cap(3));
+        return parseAts(r.cap(1)) + " <b>@" + r.cap(2) + "</b>  " + parseAts(r.cap(3));
     }else{
         return _s;
     }
 }
+
 QString SmsWidget::getId() const{
     return id;
 }
@@ -240,6 +246,7 @@ void SmsWidget::openUrl(QString _url){
 libJackSMS::dataTypes::phoneNumber SmsWidget::getPhoneNum() const{
     return number;
 }
+
 void SmsWidget::setReaded(bool _r){
     readed = _r;
     createBubble(_r, type);

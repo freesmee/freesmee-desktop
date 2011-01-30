@@ -234,88 +234,99 @@ void MainJackSMS::on_recipientLine_returnPressed()
 {
     //ui->recipientListWidget->setVisible(true);
 
-    QListWidgetItem *item=new QListWidgetItem;
-    QString originalStr=ui->recipientLine->text();
-    QString name=originalStr;
+    QListWidgetItem* item = new QListWidgetItem;
+    QString originalStr = ui->recipientLine->text();
+    QString name = originalStr;
     libJackSMS::dataTypes::phoneNumber n;
-    bool inserted=false;
+    bool inserted = false;
+
     QRegExp r;
     r.setPattern("^([^<]+) <([\\+\\.0-9]+)>$");
-    if (r.exactMatch(originalStr)){
-        name=r.cap(1);
-        n.parse(r.cap(2));
 
+    if (r.exactMatch(originalStr)){
+        name = r.cap(1);
+        n.parse(r.cap(2));
     }else{
         n.parse(originalStr);
     }
 
-
-
-    if (!invioMultiplo && ui->recipientListWidget->count()==1){
+    if (!invioMultiplo && (ui->recipientListWidget->count() == 1))
         ui->recipientListWidget->clear();
-    }
-    bool inRubrica=false;
-    libJackSMS::dataTypes::phoneBookType::const_iterator i=Rubrica.begin();
-    QRecipientWidget *wi=NULL;
-    for(;i!=Rubrica.end();++i){
 
+    bool inRubrica = false;
+    QRecipientWidget* wi = NULL;
+    for (libJackSMS::dataTypes::phoneBookType::const_iterator i = Rubrica.begin(); i != Rubrica.end(); ++i) {
 
-        if (name.toUpper()==i->getName().toUpper() || i->getPhone()==n){
-            for(int a=0;a<ui->recipientListWidget->count();++a){
-                QListWidgetItem *current=ui->recipientListWidget->item(a);
-                QRecipientWidget *widget=dynamic_cast<QRecipientWidget *>(ui->recipientListWidget->itemWidget(current));
-                if (i->getPhone() == widget->getPhone()){
-                    if (ui->recipientListWidget->count() > 1)
-                        QTimer::singleShot(10,ui->recipientLine,SLOT(clear()));
+        if (name.toUpper() == i->getName().toUpper() || i->getPhone() == n) {
+
+            //Controllo se è già presente nella lista
+            for (int a = 0; a < ui->recipientListWidget->count(); ++a) {
+                QListWidgetItem* current = ui->recipientListWidget->item(a);
+                QRecipientWidget* widget = dynamic_cast<QRecipientWidget*>(ui->recipientListWidget->itemWidget(current));
+                if (i->getPhone() == widget->getPhone()) {
+                    if (ui->recipientListWidget->count() > 1) {
+                        QTimer::singleShot(10, ui->recipientLine, SLOT(clear()));
+                    }
                     return;
                 }
             }
-            libJackSMS::dataTypes::configuredServicesType::const_iterator serv=this->ElencoServiziConfigurati.find(i->getAccount());
+
+            libJackSMS::dataTypes::configuredServicesType::const_iterator serv = ElencoServiziConfigurati.find(i->getAccount());
             QPixmap icon;
-            if (serv!=this->ElencoServiziConfigurati.end())
-                icon=ElencoServizi[serv->getService()].getIcon().pixmap(16,16);
+
+            if (serv != ElencoServiziConfigurati.end())
+                icon = ElencoServizi[serv->getService()].getIcon().pixmap(16,16);
             else
-                icon=ElencoServizi["40"].getIcon().pixmap(16,16);
+                icon = ElencoServizi["40"].getIcon().pixmap(16,16);
 
-            wi=new QRecipientWidget(i->getName(),i->getAccount(),i->getPhone(),icon);
+            wi = new QRecipientWidget(i->getName(), i->getAccount(), i->getPhone(), icon);
 
-            connect(wi,SIGNAL(removed(QListWidgetItem*)),this,SLOT(recipientRemove(QListWidgetItem*)));
+            connect(wi, SIGNAL(removed(QListWidgetItem*)), this, SLOT(recipientRemove(QListWidgetItem*)));
 
             item->setSizeHint(wi->size());
             ui->recipientListWidget->addItem(item);
             ui->recipientListWidget->setItemWidget(item,wi);
             wi->setParentItem(item);
-            inRubrica=true;
-            inserted=true;
+            inRubrica = true;
+            inserted = true;
+
+            if (ui->recipientListWidget->count() <= 1) {
+                if (Opzioni["set-account"] == "yes" && messageType == TYPE_SMS) {
+                    if (serv != ElencoServiziConfigurati.end()) {
+                        int index = ui->comboServizio->findData(serv.value().getName(), Qt::UserRole);
+                        if (index >= 0)
+                            ui->comboServizio->setCurrentIndex(index);
+                    }
+                }
+            }
             break;
         }
     }
-    if (!inRubrica && n.getIsValid()){
+    if (!inRubrica && n.getIsValid()) {
 
-        for(int a=0;a<ui->recipientListWidget->count();++a){
-            QListWidgetItem *current=ui->recipientListWidget->item(a);
-            QRecipientWidget *widget=dynamic_cast<QRecipientWidget *>(ui->recipientListWidget->itemWidget(current));
-            if (n==widget->getPhone()){
-                if (ui->recipientListWidget->count()>1)
-                    QTimer::singleShot(10,ui->recipientLine,SLOT(clear()));
+        for (int a = 0; a < ui->recipientListWidget->count(); ++a) {
+            QListWidgetItem* current = ui->recipientListWidget->item(a);
+            QRecipientWidget* widget = dynamic_cast<QRecipientWidget*>(ui->recipientListWidget->itemWidget(current));
+            if (n == widget->getPhone()) {
+                if (ui->recipientListWidget->count() > 1)
+                    QTimer::singleShot(10, ui->recipientLine, SLOT(clear()));
                 return;
             }
-
         }
-        wi=new QRecipientWidget(name,"40",n,ElencoServizi["40"].getIcon().pixmap(16,16));
-        connect(wi,SIGNAL(removed(QListWidgetItem*)),this,SLOT(recipientRemove(QListWidgetItem*)));
+
+        wi = new QRecipientWidget(name, "40", n, ElencoServizi["40"].getIcon().pixmap(16,16));
+        connect(wi, SIGNAL(removed(QListWidgetItem*)), this, SLOT(recipientRemove(QListWidgetItem*)));
         item->setSizeHint(wi->size());
         ui->recipientListWidget->addItem(item);
         ui->recipientListWidget->setItemWidget(item,wi);
         wi->setParentItem(item);
-        inserted=true;
-
+        inserted = true;
     }
-    if (ui->recipientListWidget->count()>1)
+
+    if (ui->recipientListWidget->count() > 1)
         gestiscimenuMultiplo();
 
-
-    if (inserted){
+    if (inserted) {
         on_comboServizio_currentIndexChanged(ui->comboServizio->currentIndex());
         resizeRecipientBox();
     }
@@ -324,52 +335,63 @@ void MainJackSMS::on_recipientLine_returnPressed()
 
     //Qt bug: se "pulisco" recipientLine, poi il qcompleter me lo riempie di nuovo al termine della funzione
     //soluzione..lo pulisco dopo il termine della funzione
-    if (ui->recipientListWidget->count()>1)
-        QTimer::singleShot(10,ui->recipientLine,SLOT(clear()));
+    if (ui->recipientListWidget->count() > 1)
+        QTimer::singleShot(10, ui->recipientLine, SLOT(clear()));
     else
-        if(wi!=NULL)ui->recipientLine->setText(wi->getName()+" <"+wi->getPhone().toString()+">");
-
+        if(wi != NULL)
+            ui->recipientLine->setText(wi->getName()+" <"+wi->getPhone().toString()+">");
 }
-void MainJackSMS::resizeRecipientBox(){
-    if (ui->recipientListWidget->count()>1){
+
+void MainJackSMS::resizeRecipientBox() {
+    if (ui->recipientListWidget->count() > 1) {
         ui->recipientListWidget->show();
 
-        int rCount=1;
-        int sum=0;
+        int rCount = 1;
+        int sum = 0;
         //int ww=ui->recipientListWidget->width();
-        for(int a=0;a<ui->recipientListWidget->count();++a){
-            sum=sum+ui->recipientListWidget->itemWidget(ui->recipientListWidget->item(a))->width()+2;
-            if (sum>ui->recipientListWidget->width()){
-                sum=ui->recipientListWidget->itemWidget(ui->recipientListWidget->item(a))->width();
+        for (int a = 0; a < ui->recipientListWidget->count(); ++a) {
+            sum = sum + ui->recipientListWidget->itemWidget(ui->recipientListWidget->item(a))->width() + 2;
+            if (sum > ui->recipientListWidget->width()) {
+                sum = ui->recipientListWidget->itemWidget(ui->recipientListWidget->item(a))->width();
                 rCount++;
             }
         }
-        rCount=(rCount<5)?rCount:4;
+
+        rCount = ((rCount < 5) ? rCount : 4);
         ui->recipientListWidget->setMinimumHeight(22*rCount);
         ui->recipientListWidget->setMaximumHeight(22*rCount);
-    } else
+    } else {
         ui->recipientListWidget->hide();
-
     }
-void MainJackSMS::recipientRemove(QListWidgetItem* w){
-    if (!invioInCorso){
+}
+
+void MainJackSMS::recipientRemove(QListWidgetItem* w) {
+    if (!invioInCorso) {
         ui->recipientListWidget->takeItem(ui->recipientListWidget->row(w));
         if(ui->recipientListWidget->count()<2)
             ui->recipientListWidget->hide();
         else{
            resizeRecipientBox();
         }
-        if (ui->recipientListWidget->count()==1){
+        if (ui->recipientListWidget->count()==1) {
             gestiscimenuSingolo();
-            QRecipientWidget *widget=dynamic_cast<QRecipientWidget *>(ui->recipientListWidget->itemWidget(ui->recipientListWidget->item(0)));
+
+            QRecipientWidget *widget=dynamic_cast<QRecipientWidget*>(ui->recipientListWidget->itemWidget(ui->recipientListWidget->item(0)));
             ui->recipientLine->setText(widget->getName()+" <"+widget->getPhone().toString()+">");
 
-
+            if (Opzioni["set-account"] == "yes" && messageType == TYPE_SMS) {
+                libJackSMS::dataTypes::configuredServicesType::const_iterator i = ElencoServiziConfigurati.find(widget->getAccountId());
+                if (i != ElencoServiziConfigurati.end()) {
+                    int index = ui->comboServizio->findData(i.value().getName(), Qt::UserRole);
+                    if (index >= 0)
+                        ui->comboServizio->setCurrentIndex(index);
+                }
+            }
 
         }
     }
-
 }
+
 void MainJackSMS::resized(){
     resizeTimer.stop();
 

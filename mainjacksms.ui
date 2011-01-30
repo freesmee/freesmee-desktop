@@ -500,7 +500,7 @@ QFrame#frame_3_old{
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <property name="iconSize">
            <size>
@@ -745,7 +745,7 @@ QFrame#frame_3_old{
                 <item>
                  <widget class="QListWidget" name="RubricaVeloce">
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
                     <horstretch>5</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
