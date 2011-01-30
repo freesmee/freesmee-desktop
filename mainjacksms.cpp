@@ -290,12 +290,14 @@ void MainJackSMS::on_recipientLine_returnPressed()
             inRubrica = true;
             inserted = true;
 
-            if (ui->recipientListWidget->count() <= 1) {
-                if (Opzioni["set-account"] == "yes" && messageType == TYPE_SMS) {
-                    if (serv != ElencoServiziConfigurati.end()) {
-                        int index = ui->comboServizio->findData(serv.value().getName(), Qt::UserRole);
-                        if (index >= 0)
-                            ui->comboServizio->setCurrentIndex(index);
+            if (!invioInCorso) {
+                if (ui->recipientListWidget->count() <= 1) {
+                    if (Opzioni["set-account"] == "yes" && messageType == TYPE_SMS) {
+                        if (serv != ElencoServiziConfigurati.end()) {
+                            int index = ui->comboServizio->findData(serv.value().getName(), Qt::UserRole);
+                            if (index >= 0)
+                                ui->comboServizio->setCurrentIndex(index);
+                        }
                     }
                 }
             }
@@ -1179,6 +1181,7 @@ int MainJackSMS::iterateSendSms(bool first, bool result, QString _text) {
 
 void MainJackSMS::on_InviaSMS_clicked()
 {
+    invioInCorso = true;
     ui->listSmsNames->clearSelection();
     ui->smsListWidget->clearSelection();
     if (ui->RicercaVeloceIM->text() != "")
@@ -1190,14 +1193,16 @@ void MainJackSMS::on_InviaSMS_clicked()
     multipleSendRecipients.clear();
     if (ui->TestoSMS->toPlainText().isEmpty()) {
         QMessageBox::information(this, "JackSMS","Il testo del messaggio e' vuoto");
+        invioInCorso = false;
         return;
     }
 
     if (ui->recipientListWidget->count() == 0) {
         QMessageBox::information(this, "JackSMS", "Il destinatario non e' stato specificato.");
+        invioInCorso = false;
         return;
     }
-    invioInCorso = true;
+
     DisabilitaUi();
 
     //libJackSMS::dataTypes::shortMessage messaggio(ui->TestoSMS->toPlainText());
