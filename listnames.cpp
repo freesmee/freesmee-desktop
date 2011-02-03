@@ -49,17 +49,17 @@ void ListNames::refreshAll(MainJackSMS* main, QListWidget* smslist, bool clean)
     SmsWidget* sms;
     NameWidget* namewid;
 
-    for(int j = 0; j < smslist->count(); j++){
+    for (int j = 0; j < smslist->count(); j++) {
         sms = static_cast<SmsWidget*>(smslist->itemWidget(smslist->item(j)));
         if (!sms->isCaricaAltri()) {
             nameToInsert = main->phone2name(sms->getPhoneNum());
 
             alreadyFound = false;
-            for(int i = 1; i < count(); ++i){
+            for (int i = 1; i < count(); ++i) {
                 namewid = static_cast<NameWidget*>(itemWidget(item(i)));
-                if(namewid->getName() == nameToInsert){
+                if (namewid->getName() == nameToInsert) {
                     alreadyFound = true;
-                    if(!sms->isReaded())
+                    if (!sms->isReaded())
                         namewid->increaseUnreadCount();
 
                     break;
@@ -71,11 +71,30 @@ void ListNames::refreshAll(MainJackSMS* main, QListWidget* smslist, bool clean)
     }
 }
 
-void ListNames::nascondiCaricaAltriMessaggi(){
-    varNascondiCaricaAltriMessaggi = false;
+void ListNames::refreshOne(MainJackSMS* main, SmsWidget *sms)
+{
+    if (sms->isCaricaAltri())
+        return;
+
+    QString nameToInsert = main->phone2name(sms->getPhoneNum());
+    bool alreadyFound = false;
+    NameWidget* namewid;
+
+    for (int i = 1; i < count(); ++i) {
+        namewid = static_cast<NameWidget*>(itemWidget(item(i)));
+        if (namewid->getName() == nameToInsert) {
+            alreadyFound = true;
+            if (!sms->isReaded())
+                namewid->increaseUnreadCount();
+            break;
+        }
+    }
+    if(!alreadyFound)
+        addName(nameToInsert, sms->getText(), sms->getDateTime(), sms->getId(), (sms->isReaded() ? 0 : 1));
 }
 
-bool ListNames::checkNeedRefresh(QString _id, QListWidget* smslist){
+bool ListNames::checkNeedRefresh(QString _id, QListWidget* smslist)
+{
 
     // scorro la listanomi (il primo no perchè è "Tutti i contatti")
     for(int i = 1; i < count(); i++){

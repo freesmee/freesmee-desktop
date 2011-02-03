@@ -140,6 +140,7 @@ private:
 
     bool altriMessaggi;
     types::QMessageListType::const_iterator iterMess;
+    int tempCount;
     void caricaAltriMessaggi();
 
 private slots:
@@ -248,7 +249,7 @@ private slots:
     void phoneBookReceived(libJackSMS::dataTypes::phoneBookType);
     void loginFailed(QString);
     void loginStarted();
-    void updatesAvailable(libJackSMS::dataTypes::servicesType,QString,QString);
+    void updatesAvailable(libJackSMS::dataTypes::servicesType, QString, QString);
     void servicesLoaded(libJackSMS::dataTypes::servicesType);
     void optionsLoaded(libJackSMS::dataTypes::optionsType);
     //void initialOptionsLoaded(libJackSMS::dataTypes::optionsType);
@@ -259,6 +260,7 @@ private slots:
     void username_returnPressed();
     void testoSmsRichiestoInvio();
     void catchSmsListCanc();
+    void stepWriteMessageToGui();
 
 };
 

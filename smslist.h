@@ -12,7 +12,8 @@ class SmsList : public QListWidget
     Q_OBJECT
 public:
     explicit SmsList(QWidget *parent = 0);
-    void hideCaricaAltri();
+    void takeCaricaAltri();
+    void hideCaricaAltri(bool hide);
     void addItem(QListWidgetItem *item);
 
 private:

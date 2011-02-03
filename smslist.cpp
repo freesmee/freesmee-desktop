@@ -39,7 +39,7 @@ void SmsList::addItem(QListWidgetItem *item) {
 
 }
 
-void SmsList::hideCaricaAltri() {
+void SmsList::takeCaricaAltri() {
     if (caricaAltriPresent) {
         QListWidgetItem* it = item(count()-1);
         QWidget* wid = itemWidget(it);
@@ -47,5 +47,14 @@ void SmsList::hideCaricaAltri() {
         takeItem(count()-1);
         delete it;
         delete wid;
+    }
+}
+
+void SmsList::hideCaricaAltri(bool hide) {
+    if (caricaAltriPresent) {
+        if (hide)
+            setItemHidden(item(count()-1), true);
+        else
+            setItemHidden(item(count()-1), true);
     }
 }
