@@ -3,13 +3,11 @@
 SmsList::SmsList(QWidget *parent) :
     QListWidget(parent)
 {
-    caricaAltriPresent = false;
     SmsWidget* wid = new SmsWidget("Carica altri messaggi");
     QListWidgetItem *item = new QListWidgetItem;
     item->setSizeHint(QSize(80,50));
-    addItem(item);
+    QListWidget::addItem(item);
     setItemWidget(item, wid);
-    caricaAltriPresent = true;
 }
 
 void SmsList::keyPressEvent(QKeyEvent* e){
@@ -30,31 +28,27 @@ void SmsList::keyPressEvent(QKeyEvent* e){
     QListWidget::keyPressEvent(e);
 }
 
-void SmsList::addItem(QListWidgetItem *item) {
-
-    if (caricaAltriPresent)
-        insertItem(count()-1, item);
-    else
-        QListWidget::addItem(item);
-
+void SmsList::addItem(QListWidgetItem *item)
+{
+    insertItem(count()-1, item);
 }
 
-void SmsList::takeCaricaAltri() {
-    if (caricaAltriPresent) {
-        QListWidgetItem* it = item(count()-1);
-        QWidget* wid = itemWidget(it);
-        caricaAltriPresent = false;
-        takeItem(count()-1);
-        delete it;
-        delete wid;
-    }
+void SmsList::clear() {
+
+    clearSelection();
+    scrollToTop();
+    QListWidget::clear();
+
+    SmsWidget* wid = new SmsWidget("Carica altri messaggi");
+    QListWidgetItem *item = new QListWidgetItem;
+    item->setSizeHint(QSize(80,50));
+    QListWidget::addItem(item);
+    setItemWidget(item, wid);
 }
 
 void SmsList::hideCaricaAltri(bool hide) {
-    if (caricaAltriPresent) {
-        if (hide)
-            setItemHidden(item(count()-1), true);
-        else
-            setItemHidden(item(count()-1), false);
-    }
+    if (hide)
+        setItemHidden(item(count()-1), true);
+    else
+        setItemHidden(item(count()-1), false);
 }

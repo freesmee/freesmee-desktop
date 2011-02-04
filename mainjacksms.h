@@ -172,13 +172,6 @@ private slots:
     void on_buttonNoAccount_clicked();
     void on_buttonLostPassword_clicked();
 
-    //DEPRECATED
-    //void on_CitaButton_2_clicked();
-    //void on_imRicevutiWidget_itemPressed(QListWidgetItem* item);
-    //void on_imRicevutiWidget_itemClicked(QListWidgetItem* item);
-    //void on_RispondiIm_clicked();
-    //void on_RicercaVeloceIM_2_textChanged(QString );
-
     void on_actionElimina_cookies_triggered();
     void servicesReLoaded(libJackSMS::dataTypes::servicesType);
     void on_actionRicarica_servizi_triggered();
@@ -215,7 +208,6 @@ private slots:
     void on_CitaButton_clicked();
     void on_AnnullaSMS_clicked();
     void on_InoltraButton_clicked();
-    void on_RicercaVeloce_textChanged(QString text);
     void on_actionOpzioni_triggered();
     void on_EliminaServizioButton_clicked();
     void on_AggiungiServizioButton_clicked();

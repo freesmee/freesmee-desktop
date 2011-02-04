@@ -15,7 +15,7 @@ public:
     void addName(QString name, QString lastMessage, QDateTime lastTime, QString lastId, int unreadCount = 0);
     void insertName(QString name, QString lastMessage, QDateTime lastTime, QString lastId, int row, int unreadCount = 0);
     void insertName(QString name, int row, int unreadCount = 0);
-    void svuota();
+    void clear();
     void refreshAll(MainJackSMS* main, QListWidget* smslist, bool clean = true);
     void refreshOneBottom(MainJackSMS* main, SmsWidget* sms);
     bool checkNeedRefresh(QString _id, QListWidget* smslist);

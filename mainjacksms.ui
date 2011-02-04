@@ -928,44 +928,6 @@ QFrame#frame_3_old{
                   </item>
                  </layout>
                 </item>
-                <item>
-                 <widget class="QLabel" name="label_5">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>50</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="layoutDirection">
-                   <enum>Qt::RightToLeft</enum>
-                  </property>
-                  <property name="text">
-                   <string>Filtra</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="RicercaVeloce">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>140</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                 </widget>
-                </item>
                </layout>
               </item>
               <item row="0" column="2">
@@ -1768,7 +1730,7 @@ ListNames::item:selected:active {
      <x>0</x>
      <y>0</y>
      <width>815</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1942,28 +1904,43 @@ ListNames::item:selected:active {
   <tabstop>username</tabstop>
   <tabstop>password</tabstop>
   <tabstop>ricordaPassword</tabstop>
+  <tabstop>autoLogin</tabstop>
   <tabstop>loginButton</tabstop>
+  <tabstop>buttonNoAccount</tabstop>
+  <tabstop>buttonLostPassword</tabstop>
+  <tabstop>recipientLine</tabstop>
   <tabstop>TestoSMS</tabstop>
   <tabstop>InviaSMS</tabstop>
   <tabstop>AnnullaSMS</tabstop>
+  <tabstop>comboServizio</tabstop>
+  <tabstop>menuInstruments</tabstop>
+  <tabstop>buttonAddContacts</tabstop>
+  <tabstop>recipientListWidget</tabstop>
   <tabstop>RubricaVeloce</tabstop>
-  <tabstop>RicercaVeloce</tabstop>
+  <tabstop>radioTutti</tabstop>
+  <tabstop>radioJackSMS</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>buttonStatusJms</tabstop>
+  <tabstop>listSmsNames</tabstop>
+  <tabstop>smsListWidget</tabstop>
   <tabstop>RispondiButton</tabstop>
   <tabstop>CitaButton</tabstop>
   <tabstop>InoltraButton</tabstop>
   <tabstop>EliminaButton</tabstop>
   <tabstop>RicercaVeloceIM</tabstop>
+  <tabstop>RicercaImButton</tabstop>
+  <tabstop>rubricaListWidget</tabstop>
   <tabstop>RubricaAggiungi</tabstop>
   <tabstop>RubricaModifica</tabstop>
   <tabstop>RubricaElimina</tabstop>
   <tabstop>TextRapidRubrica</tabstop>
+  <tabstop>RicercaButton</tabstop>
+  <tabstop>listServiziConfigurati</tabstop>
   <tabstop>AggiungiServizioButton</tabstop>
   <tabstop>ModificaServizioButton</tabstop>
   <tabstop>EliminaServizioButton</tabstop>
   <tabstop>TextRapidServizi</tabstop>
-  <tabstop>listServiziConfigurati</tabstop>
-  <tabstop>rubricaListWidget</tabstop>
-  <tabstop>tabWidget</tabstop>
+  <tabstop>ServiziCercaButton</tabstop>
  </tabstops>
  <resources>
   <include location="resources.qrc"/>

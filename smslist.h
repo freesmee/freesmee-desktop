@@ -12,13 +12,12 @@ class SmsList : public QListWidget
     Q_OBJECT
 public:
     explicit SmsList(QWidget *parent = 0);
-    void takeCaricaAltri();
     void hideCaricaAltri(bool hide);
     void addItem(QListWidgetItem *item);
+    void clear();
 
 private:
     void keyPressEvent(QKeyEvent* e);
-    bool caricaAltriPresent;
 
 signals:
     void smsListCanc();

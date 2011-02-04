@@ -66,8 +66,6 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     ui->verticalLayout_14->setAlignment(ui->menuInstruments,Qt::AlignTop);
     ui->widgetSchermate->setCurrentIndex(0);
     ui->tabWidget->setCurrentIndex(0);
-    ui->label_5->hide();
-    ui->RicercaVeloce->hide();
 
     loggedIn=false;
     recipientAutoEdited=false;
@@ -462,7 +460,6 @@ void MainJackSMS::translateGui(){
             ui->label->setText(lm->getString("8"));
             ui->label_2->setText(lm->getString("9"));
             ui->label_7->setText(lm->getString("10"));
-            ui->label_5->setText(lm->getString("11"));
             ui->InviaSMS->setText(lm->getString("12"));
             ui->AnnullaSMS->setText(lm->getString("13"));
             ui->tabWidget->setTabText(2,lm->getString("14"));
@@ -524,25 +521,22 @@ void MainJackSMS::showContactByTypeInFastAbook(){
         libJackSMS::dataTypes::phoneBookType::const_iterator i_end=Rubrica.end();
 
         QMultiMap<QString,contactWidgetFastBook*> fastList;
-        QString filter=ui->RicercaVeloce->text();
         for(;i!=i_end;++i){
-            if (i->getName().contains(filter,Qt::CaseInsensitive)){
-                QIcon ico;
-                libJackSMS::dataTypes::configuredServicesType::const_iterator x=ElencoServiziConfigurati.find(i->getAccount());
-                if (x==ElencoServiziConfigurati.end()){
-                    ico=ElencoServizi["40"].getIcon();
+            QIcon ico;
+            libJackSMS::dataTypes::configuredServicesType::const_iterator x=ElencoServiziConfigurati.find(i->getAccount());
+            if (x==ElencoServiziConfigurati.end()){
+                ico=ElencoServizi["40"].getIcon();
 
-                }else{
-                    ico=ElencoServizi[x.value().getService()].getIcon();
+            }else{
+                ico=ElencoServizi[x.value().getService()].getIcon();
 
 
-                }
-                contactWidgetFastBook *ww=new contactWidgetFastBook(i.value(),ico.pixmap(16,16));
-                if ((i->getCanReceiveJms()) && (messageType==TYPE_JMS))
-                    fastList.insert(i->getName().toUpper(),ww);
-                else if (messageType==TYPE_SMS)
-                    fastList.insert(i->getName().toUpper(),ww);
             }
+            contactWidgetFastBook *ww=new contactWidgetFastBook(i.value(),ico.pixmap(16,16));
+            if ((i->getCanReceiveJms()) && (messageType==TYPE_JMS))
+                fastList.insert(i->getName().toUpper(),ww);
+            else if (messageType==TYPE_SMS)
+                fastList.insert(i->getName().toUpper(),ww);
         }
 
         section++;
@@ -550,11 +544,11 @@ void MainJackSMS::showContactByTypeInFastAbook(){
             QMultiMap<QString,contactWidgetFastBook*>::ConstIterator xx=fastList.end();
             QMultiMap<QString,contactWidgetFastBook*>::ConstIterator xx_end=fastList.begin();
             do{
-               --xx;
-               QListWidgetItem *item = new QListWidgetItem;
-               item->setSizeHint(xx.value()->size());
-               ui->RubricaVeloce->addItem(item);
-               ui->RubricaVeloce->setItemWidget(item, xx.value());
+                --xx;
+                QListWidgetItem *item = new QListWidgetItem;
+                item->setSizeHint(xx.value()->size());
+                ui->RubricaVeloce->addItem(item);
+                ui->RubricaVeloce->setItemWidget(item, xx.value());
             }while(xx!=xx_end);
         }
 
@@ -809,7 +803,7 @@ void MainJackSMS::stepWriteMessageToGui()
 
         if (iterMess <= Messaggi.begin()) {
             //era l'ultimo
-            ui->smsListWidget->takeCaricaAltri();
+            ui->smsListWidget->hideCaricaAltri(true);
             altriMessaggi = false;
             setCursor(Qt::ArrowCursor);
             return;
@@ -1348,48 +1342,6 @@ void MainJackSMS::ReloadConfiguredServices(){
     WriteConfiguredServicesToGui();
 }
 
-
-
-void MainJackSMS::on_RicercaVeloce_textChanged(QString text)
-{
-    ui->RubricaVeloce->clear();
-    QMultiMap<QString,contactWidgetFastBook*> fastList;
-
-    libJackSMS::dataTypes::phoneBookType::const_iterator i=Rubrica.begin();
-    libJackSMS::dataTypes::phoneBookType::const_iterator i_end=Rubrica.end();
-    QString newText=ui->RicercaVeloce->text().toUpper();
-    for(;i!=i_end;++i){
-        if (i->getName().toUpper().contains(newText) || i->getPhone().toString().toUpper().contains(newText)){
-            //QString accountName="Nessun servizio associato";
-            QIcon ico;
-            libJackSMS::dataTypes::configuredServicesType::const_iterator x=ElencoServiziConfigurati.find(i->getAccount());
-            if (x==ElencoServiziConfigurati.end())
-                ico=ElencoServizi["40"].getIcon();
-            else
-                ico=ElencoServizi[x.value().getService()].getIcon();
-
-
-            contactWidgetFastBook *ww=new contactWidgetFastBook(i.value(),ico.pixmap(16,16));
-            if ((i->getCanReceiveJms()) && (messageType==TYPE_JMS))
-                fastList.insert(i->getName().toUpper(),ww);
-            else if (messageType==TYPE_SMS)
-                fastList.insert(i->getName().toUpper(),ww);
-        }
-    }
-    if (fastList.size()>0){
-       QMultiMap<QString,contactWidgetFastBook*>::ConstIterator xx=fastList.end();
-       QMultiMap<QString,contactWidgetFastBook*>::ConstIterator xx_end=fastList.begin();
-       do{
-           --xx;
-           QListWidgetItem *item = new QListWidgetItem;
-           item->setSizeHint(xx.value()->size());
-           ui->RubricaVeloce->addItem(item);
-           ui->RubricaVeloce->setItemWidget(item, xx.value());
-       }while(xx!=xx_end);
-   }
-
-}
-
 void MainJackSMS::on_InoltraButton_clicked() {
 
     QList<QListWidgetItem *> ls=ui->smsListWidget->selectedItems();
@@ -1870,7 +1822,6 @@ void MainJackSMS::DisabilitaUi(){
     ui->TestoSMS->setEnabled(false);
     ui->comboServizio->setEnabled(false);
     //ui->NumeroDestinatario->setEnabled(false);
-    ui->RicercaVeloce->setEnabled(false);
 
     ui->menuInstruments->setEnabled(false);
     ui->radioJackSMS->setEnabled(false);
@@ -1898,7 +1849,6 @@ void MainJackSMS::AbilitaUi(){
     ui->TestoSMS->setEnabled(true);
     ui->comboServizio->setEnabled(true);
     //ui->NumeroDestinatario->setEnabled(true);
-    ui->RicercaVeloce->setEnabled(true);
     //ui->bottoneinviomultiplo->setEnabled(true);
     ui->menuInstruments->setEnabled(true);
     ui->radioJackSMS->setEnabled(true);
@@ -2472,6 +2422,7 @@ void MainJackSMS::on_actionLogout_triggered()
     loginClient->deleteLater();
     pingator->deleteLater();
     Rubrica.clear();
+
     if (imChecker!=NULL && Opzioni["receive-im"]!="no"){
        imChecker->stop();
        imChecker->deleteLater();
@@ -2492,15 +2443,42 @@ void MainJackSMS::on_actionLogout_triggered()
     }
 
     ui->tabWidget->setCurrentIndex(0);
+
+    on_radioTutti_clicked();
+
     Messaggi.clear();
     Opzioni.clear();
     Opzioni = GlobalOptions;
-    ui->RubricaVeloce->clear();
+
+    ui->recipientListWidget->scrollToTop();
+    ui->recipientListWidget->clearSelection();
+    ui->recipientListWidget->clear();
+
+    completer->deleteLater();
+    ui->recipientLine->setText("");
+
     ui->comboServizio->clear();
+
+    ui->TestoSMS->setText("");
+
+    ui->RubricaVeloce->scrollToTop();
+    ui->RubricaVeloce->clearSelection();
+    ui->RubricaVeloce->clear();
+
+    ui->RicercaVeloceIM->setText("");
     ui->smsListWidget->clear();
-    ui->listSmsNames->svuota();
+    ui->listSmsNames->clear();
+
+    ui->TextRapidRubrica->setText("");
+    ui->rubricaListWidget->scrollToTop();
+    ui->rubricaListWidget->clearSelection();
     ui->rubricaListWidget->clear();
+
+    ui->TextRapidServizi->setText("");
+    ui->listServiziConfigurati->scrollToTop();
+    ui->listServiziConfigurati->clearSelection();
     ui->listServiziConfigurati->clear();
+
     disableUibeforeLogin();
     ui->widgetSchermate->setCurrentIndex(0);
 }

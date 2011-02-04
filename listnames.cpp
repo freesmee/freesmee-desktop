@@ -3,7 +3,7 @@
 ListNames::ListNames(QWidget *parent) :
     QListWidget(parent)
 {
-    svuota();
+    addName("Tutti i contatti");
 }
 
 void ListNames::addName(QString name, int unreadCount)
@@ -33,16 +33,18 @@ void ListNames::insertName(QString name, int row, int unreadCount)
     insertName(name, "", QDateTime(), "", row, unreadCount);
 }
 
-void ListNames::svuota()
+void ListNames::clear()
 {
-    clear();
+    clearSelection();
+    scrollToTop();
+    QListWidget::clear();
     addName("Tutti i contatti");
 }
 
 void ListNames::refreshAll(MainJackSMS* main, QListWidget* smslist, bool clean)
 {
     if (clean)
-        svuota();
+        clear();
 
     QString nameToInsert;
     bool alreadyFound;
