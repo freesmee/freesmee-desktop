@@ -1072,11 +1072,10 @@ namespace libJackSMS{
         Streamer::Streamer(QString _username ,QString _password, QString _loginString, dataTypes::proxySettings _ps):
                 username(_username),
                 password(_password),
-                loginString(_loginString),
                 ps(_ps),
+                loginString(_loginString),
                 status(waitConnResponse),
                 queueCount(0)
-
         {
             qRegisterMetaType<libJackSMS::dataTypes::dateTime>("libJackSMS::dataTypes::dateTime");
             qRegisterMetaType<libJackSMS::dataTypes::logImMessage>("libJackSMS::dataTypes::logImMessage");

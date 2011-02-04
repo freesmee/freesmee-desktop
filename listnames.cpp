@@ -71,7 +71,7 @@ void ListNames::refreshAll(MainJackSMS* main, QListWidget* smslist, bool clean)
     }
 }
 
-void ListNames::refreshOne(MainJackSMS* main, SmsWidget *sms)
+void ListNames::refreshOneBottom(MainJackSMS* main, SmsWidget *sms)
 {
     if (sms->isCaricaAltri())
         return;

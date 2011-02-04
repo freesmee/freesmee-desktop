@@ -55,6 +55,6 @@ void SmsList::hideCaricaAltri(bool hide) {
         if (hide)
             setItemHidden(item(count()-1), true);
         else
-            setItemHidden(item(count()-1), true);
+            setItemHidden(item(count()-1), false);
     }
 }

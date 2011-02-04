@@ -17,7 +17,7 @@ public:
     void insertName(QString name, int row, int unreadCount = 0);
     void svuota();
     void refreshAll(MainJackSMS* main, QListWidget* smslist, bool clean = true);
-    void refreshOne(MainJackSMS* main, SmsWidget* sms);
+    void refreshOneBottom(MainJackSMS* main, SmsWidget* sms);
     bool checkNeedRefresh(QString _id, QListWidget* smslist);
     void itemAdded(SmsWidget* sms, bool unread);
 };

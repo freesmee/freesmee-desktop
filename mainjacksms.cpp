@@ -803,10 +803,9 @@ void MainJackSMS::stepWriteMessageToGui()
                 ui->smsListWidget->setItemHidden(item, true);
         }
 
-        ui->listSmsNames->refreshOne(this, wid);
+        ui->listSmsNames->refreshOneBottom(this, wid);
 
         if (iterMess <= Messaggi.begin()) {
-
             //era l'ultimo
             ui->smsListWidget->takeCaricaAltri();
             altriMessaggi = false;

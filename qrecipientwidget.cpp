@@ -2,12 +2,13 @@
 #include <QStyle>
 #include "faderwidget.h"
 #include "qlabelresult.h"
+
 QRecipientWidget::QRecipientWidget(const QString & _contactName,const QString & accId,const libJackSMS::dataTypes::phoneNumber &_number,QPixmap Icon,QWidget *parent)
-    :contactName(_contactName),
+    :QWidget(parent),
+     contactName(_contactName),
      accountId(accId),
      number(_number),
-     nameStr(contactName),
-     QWidget(parent)
+     nameStr(contactName)
  {
     original=Icon;
 
@@ -37,11 +38,12 @@ QRecipientWidget::QRecipientWidget(const QString & _contactName,const QString & 
     adjustSize();
     FaderWidget *faderWidget = new FaderWidget(this, Qt::white);
     faderWidget->start();
-
 }
-void QRecipientWidget::setParentItem(QListWidgetItem * it){
+
+void QRecipientWidget::setParentItem(QListWidgetItem * it) {
     pIt=it;
 }
+
 void QRecipientWidget::remove(){
     emit removed(pIt);
 }
@@ -53,34 +55,39 @@ void QRecipientWidget::setStatusFailed(QString message){
     iconStatus->setPixmap(QIcon(":/resource/jms-not-active.png").pixmap(16,16));
     iconStatus->setToolTip(message);
     iconStatus->setCursor(Qt::WhatsThisCursor);
-
 }
+
 void QRecipientWidget::restoreOriginalIcon(){
     iconLabel->setPixmap(original);
 }
+
 void QRecipientWidget::setStatusWorking(){
     iconStatus->setPixmap(QIcon(":/resource/jms-activing.png").pixmap(16,16));
 
     iconStatus->setCursor(Qt::WhatsThisCursor);
 }
+
 void QRecipientWidget::clearStatus(){
     iconStatus->clear();
 }
-void QRecipientWidget::setStatusSuccess(QString message){
+
+void QRecipientWidget::setStatusSuccess(QString message) {
     iconStatus->setPixmap(QIcon(":/resource/jms-active.png").pixmap(16,16));
     iconStatus->setToolTip(message);
     iconStatus->setCursor(Qt::WhatsThisCursor);
 }
 
-libJackSMS::dataTypes::phoneNumber QRecipientWidget::getPhone() const{
+libJackSMS::dataTypes::phoneNumber QRecipientWidget::getPhone() const {
     return number;
 }
-void QRecipientWidget::setIcon(QPixmap Icon){
+
+void QRecipientWidget::setIcon(QPixmap Icon) {
     iconLabel->setPixmap(Icon);
 }
-QString QRecipientWidget::getAccountId() const{
+QString QRecipientWidget::getAccountId() const {
     return accountId;
 }
-QString QRecipientWidget::getName() const{
+
+QString QRecipientWidget::getName() const {
     return nameStr;
 }
