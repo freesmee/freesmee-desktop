@@ -796,11 +796,13 @@ void MainJackSMS::stepWriteMessageToGui()
         }
 
         //controllo se è filtrato dal cerca
-        if (wid->isNameFilteredHidden() == false){
-            if (wid->searchMatch(ui->RicercaVeloceIM->text()))
-                ui->smsListWidget->setItemHidden(item, false);
-            else
-                ui->smsListWidget->setItemHidden(item, true);
+        if(ui->RicercaVeloceIM->text() != "") {
+            if (wid->isNameFilteredHidden() == false){
+                if (wid->searchMatch(ui->RicercaVeloceIM->text()))
+                    ui->smsListWidget->setItemHidden(item, false);
+                else
+                    ui->smsListWidget->setItemHidden(item, true);
+            }
         }
 
         ui->listSmsNames->refreshOneBottom(this, wid);

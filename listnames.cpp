@@ -89,6 +89,7 @@ void ListNames::refreshOneBottom(MainJackSMS* main, SmsWidget *sms)
             break;
         }
     }
+
     if(!alreadyFound)
         addName(nameToInsert, sms->getText(), sms->getDateTime(), sms->getId(), (sms->isReaded() ? 0 : 1));
 }
