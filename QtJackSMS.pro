@@ -94,7 +94,8 @@ SOURCES += main.cpp \
     listnames.cpp \
     namewidget.cpp \
     smstextedit.cpp \
-    smslist.cpp
+    smslist.cpp \
+    destinatariline.cpp
 HEADERS += mainjacksms.h \
     Types.h \
     captchadialog.h \
@@ -182,7 +183,8 @@ HEADERS += mainjacksms.h \
     listnames.h \
     namewidget.h \
     smstextedit.h \
-    smslist.h
+    smslist.h \
+    destinatariline.h
 FORMS += mainjacksms.ui \
     captchadialog.ui \
     servicesdialog.ui \

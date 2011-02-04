@@ -500,7 +500,7 @@ QFrame#frame_3_old{
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>3</number>
+           <number>0</number>
           </property>
           <property name="iconSize">
            <size>
@@ -670,7 +670,7 @@ QFrame#frame_3_old{
                        <number>0</number>
                       </property>
                       <item>
-                       <widget class="QLineEdit" name="recipientLine">
+                       <widget class="DestinatariLine" name="recipientLine">
                         <property name="maximumSize">
                          <size>
                           <width>16777215</width>
@@ -1730,7 +1730,7 @@ ListNames::item:selected:active {
      <x>0</x>
      <y>0</y>
      <width>815</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1897,7 +1897,12 @@ ListNames::item:selected:active {
   <customwidget>
    <class>SmsList</class>
    <extends>QListWidget</extends>
-   <header location="global">smslist.h</header>
+   <header>smslist.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DestinatariLine</class>
+   <extends>QLineEdit</extends>
+   <header>destinatariline.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

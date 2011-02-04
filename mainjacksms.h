@@ -252,6 +252,7 @@ private slots:
     void username_returnPressed();
     void testoSmsRichiestoInvio();
     void catchSmsListCanc();
+    void RecipientTabPressed();
     void stepWriteMessageToGui();
 
 };

@@ -99,9 +99,10 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     ui->horizontalLayout_16->addWidget(ui->LabelEsito);
     ui->LabelEsito->hide();
     ui->LabelEsito->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-    connect(ui->LabelEsito,SIGNAL(clicked()),this,SLOT(popupInvio()));
-    connect(ui->TestoSMS,SIGNAL(richiestoInvio()),this,SLOT(testoSmsRichiestoInvio()));
-    connect(ui->smsListWidget,SIGNAL(smsListCanc()),this,SLOT(catchSmsListCanc()));
+    connect(ui->LabelEsito, SIGNAL(clicked()), this, SLOT(popupInvio()));
+    connect(ui->TestoSMS, SIGNAL(richiestoInvio()), this, SLOT(testoSmsRichiestoInvio()));
+    connect(ui->smsListWidget, SIGNAL(smsListCanc()), this, SLOT(catchSmsListCanc()));
+    connect(ui->recipientLine, SIGNAL(tabKeyPressed()), this, SLOT(RecipientTabPressed()));
 
     /*imposto la tray icon*/
     trayIco=new QSystemTrayIcon(this);
@@ -1009,6 +1010,7 @@ void MainJackSMS::invioSuccesso(QString _text){
         }
         clickText(_text, "Messaggio inviato");
         invioInCorso = false;
+        ui->recipientLine->setFocus();
     }
 }
 
@@ -1040,7 +1042,8 @@ void MainJackSMS::invioFallito(QString _text){
             trayIco->showMessage("JackSMS","Messaggio non inviato" + (_text.isEmpty() ? "" : "\n" + _text),QSystemTrayIcon::Critical);
         }
         clickText(_text,"Messaggio non inviato");
-        invioInCorso=false;
+        invioInCorso = false;
+        ui->InviaSMS->setFocus();
     }
 
 }
@@ -1156,6 +1159,7 @@ int MainJackSMS::iterateSendSms(bool first, bool result, QString _text) {
             }
 
             clickText("","Messaggi inviati");
+            ui->recipientLine->setFocus();
 
         }else{
             //alcuni messaggi non inviati
@@ -1165,6 +1169,7 @@ int MainJackSMS::iterateSendSms(bool first, bool result, QString _text) {
             }
 
             clickText(QString::number(errorSentCounter) + ((errorSentCounter==1) ? " messaggio non inviato!" : " messaggi non inviati!"), "Attenzione");
+            ui->InviaSMS->setFocus();
         }
 
         return -1;
@@ -1195,12 +1200,14 @@ void MainJackSMS::on_InviaSMS_clicked()
     if (ui->TestoSMS->toPlainText().isEmpty()) {
         QMessageBox::information(this, "JackSMS","Il testo del messaggio e' vuoto");
         invioInCorso = false;
+        ui->TestoSMS->setFocus();
         return;
     }
 
     if (ui->recipientListWidget->count() == 0) {
         QMessageBox::information(this, "JackSMS", "Il destinatario non e' stato specificato.");
         invioInCorso = false;
+        ui->recipientLine->setFocus();
         return;
     }
 
@@ -1369,7 +1376,8 @@ void MainJackSMS::on_AnnullaSMS_clicked()
         multipleSendRecipients.clear();
 
     ui->LabelEsito->setText("Invio annullato dall'utente.");
-    invioInCorso=false;
+    invioInCorso = false;
+    ui->InviaSMS->setFocus();
     AbilitaUi();
 }
 
@@ -2987,13 +2995,20 @@ void MainJackSMS::on_listSmsNames_currentItemChanged(QListWidgetItem* item, QLis
 
 }
 
-void MainJackSMS::testoSmsRichiestoInvio(){
+void MainJackSMS::testoSmsRichiestoInvio() {
     ui->InviaSMS->setFocus();
     ui->InviaSMS->animateClick();
 }
 
-void MainJackSMS::catchSmsListCanc(){
+void MainJackSMS::catchSmsListCanc()
+{
     return on_EliminaButton_clicked();
+}
+
+void MainJackSMS::RecipientTabPressed()
+{
+    on_recipientLine_returnPressed();
+    ui->TestoSMS->setFocus();
 }
 
 void MainJackSMS::on_smsListWidget_itemPressed(QListWidgetItem* current)
