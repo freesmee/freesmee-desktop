@@ -42,7 +42,7 @@ StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType & _opzioni,con
         {
             QTextEdit *l=new QTextEdit;
 
-            QString result="<b>"+i.value().getName()+"</b><br>Inviati con JackSMS Desktop: "+i.value().getStat("sent")+"<br>Inviati in totale con "+i.value().getName()+": "+i.value().getStat("sent-all");
+            QString result="<b>"+i.value().getName()+"</b><br>Inviati oggi da tutti i client: "+i.value().getStat("sent-all")+"<br>Totale inviati da JackSMS Desktop: "+i.value().getStat("sent");
             /*
             QString id=i.value().getService();
 

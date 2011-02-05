@@ -62,7 +62,7 @@ namespace libJackSMS{
         l.setString("23","Aggiungi");
         l.setString("24","Modifica");
         l.setString("25","Elimina");
-        l.setString("26","Servizi d'invio SMS");
+        l.setString("26","Servizi Configurati");
         l.setString("27","Stato ricezione:");
         l.setString("28","Attivo");
         l.setString("29","Connessione...");
