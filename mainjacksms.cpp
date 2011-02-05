@@ -2955,9 +2955,13 @@ void MainJackSMS::on_radioTutti_clicked()
 void MainJackSMS::on_listSmsNames_currentItemChanged(QListWidgetItem* item, QListWidgetItem* previous)
 {
 
-    if(item == NULL){
+    if (item == NULL) {
         ui->listSmsNames->setCurrentRow(0);
         item = ui->listSmsNames->item(0);
+    }
+
+    if (previous == NULL) {
+        previous = item;
     }
 
     int to = ui->smsListWidget->count();
@@ -2994,6 +2998,7 @@ void MainJackSMS::on_listSmsNames_currentItemChanged(QListWidgetItem* item, QLis
         }
     }
 
+    ui->smsListWidget->scrollToTop();
 }
 
 void MainJackSMS::testoSmsRichiestoInvio() {
