@@ -1730,7 +1730,7 @@ ListNames::item:selected:active {
      <x>0</x>
      <y>0</y>
      <width>815</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1913,6 +1913,7 @@ ListNames::item:selected:active {
   <tabstop>loginButton</tabstop>
   <tabstop>buttonNoAccount</tabstop>
   <tabstop>buttonLostPassword</tabstop>
+  <tabstop>recipientListWidget</tabstop>
   <tabstop>recipientLine</tabstop>
   <tabstop>TestoSMS</tabstop>
   <tabstop>InviaSMS</tabstop>
@@ -1920,7 +1921,6 @@ ListNames::item:selected:active {
   <tabstop>comboServizio</tabstop>
   <tabstop>menuInstruments</tabstop>
   <tabstop>buttonAddContacts</tabstop>
-  <tabstop>recipientListWidget</tabstop>
   <tabstop>RubricaVeloce</tabstop>
   <tabstop>radioTutti</tabstop>
   <tabstop>radioJackSMS</tabstop>

@@ -2303,6 +2303,7 @@ void MainJackSMS::enableUiAfterLogin(){
     ui->actionElimina_cookies->setEnabled(true);
     ui->actionPlugins->setEnabled(true);
     ui->actionCsv->setEnabled(true);
+    ui->recipientLine->setFocus();
 }
 
 void MainJackSMS::on_smsListWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous)
