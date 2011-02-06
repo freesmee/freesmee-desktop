@@ -196,30 +196,35 @@ MainJackSMS::MainJackSMS(QWidget *parent)
         } else {
             ui->username->setFocus();
         }
-        i= GlobalOptions.find("window-height");
-        if (i!=GlobalOptions.end()){
-            bool ok;
-            int h=i.value().toInt(&ok,10);
-            bool ok2;
-            int w=GlobalOptions["window-width"].toInt(&ok2,10);
-            if (ok&&ok2)
-               this->resize(w,h);
-        }
-        i= GlobalOptions.find("window-maximized");
-        if (i!=GlobalOptions.end()){
-            if (i.value()=="yes")
-                showMaximized();
 
+        i = GlobalOptions.find("window-height");
+        if (i != GlobalOptions.end()) {
+            bool ok, ok2;
+            int h = i.value().toInt(&ok, 10);
+            int w = GlobalOptions["window-width"].toInt(&ok2, 10);
+            if (ok && ok2)
+                resize(w,h);
+        }
+
+        i = GlobalOptions.find("window-xpos");
+        if (i != GlobalOptions.end()) {
+            bool ok, ok2;
+            int xpos = GlobalOptions["window-xpos"].toInt(&ok, 10);
+            int ypos = GlobalOptions["window-ypos"].toInt(&ok2, 10);
+            if (ok && ok2)
+                move(xpos, ypos);
+        }
+
+        i = GlobalOptions.find("window-maximized");
+        if (i != GlobalOptions.end()){
+            if (i.value() == "yes")
+                showMaximized();
         }
 
         firstResize=false;
-
-        connect( ui->username->lineEdit(), SIGNAL(returnPressed()), this, SLOT(username_returnPressed()));
-
     }
-    if (!QSslSocket::supportsSsl()){
-        QMessageBox::critical(this,"JackSMS","Il sistema in uso non supporta la modalità di connessione sicura (SSL).\nIn queste condizioni, alcuni servizi potrebbero non funzionare correttamente.");
-    }
+
+    connect( ui->username->lineEdit(), SIGNAL(returnPressed()), this, SLOT(username_returnPressed()));
 
     QDateTime midnight;
     midnight.setTime(QTime(23,59,59,999));
@@ -228,6 +233,10 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     resetCounterTimer.singleShot(secToMidnight*1000,this,SLOT(resetCounters()));
     ui->recipientListWidget->setVisible(false);
     ui->radioTutti->setChecked(true);
+
+    if (!QSslSocket::supportsSsl()){
+        QMessageBox::critical(this,"JackSMS","Il sistema in uso non supporta la modalità di connessione sicura (SSL).\nIn queste condizioni, alcuni servizi potrebbero non funzionare correttamente.");
+    }
 }
 
 void MainJackSMS::on_recipientLine_returnPressed()
@@ -394,21 +403,23 @@ void MainJackSMS::recipientRemove(QListWidgetItem* w) {
     }
 }
 
-void MainJackSMS::resized(){
+void MainJackSMS::resized() {
     resizeTimer.stop();
 
-    if (isMaximized())
-        GlobalOptions["window-maximized"] ="yes";
-    else{
-        GlobalOptions["window-maximized"] ="no";
-        GlobalOptions["window-height"]=QString::number(size().height());
-        GlobalOptions["window-width"]=QString::number(size().width());
+    if (isMaximized()) {
+        GlobalOptions["window-maximized"] = "yes";
+    } else {
+        GlobalOptions["window-maximized"] = "no";
+        GlobalOptions["window-height"] = QString::number(size().height());
+        GlobalOptions["window-width"] = QString::number(size().width());
+        GlobalOptions["window-xpos"] = QString::number(pos().x());
+        GlobalOptions["window-ypos"] = QString::number(pos().y());
     }
-
 
     libJackSMS::localApi::optionManager man("",GlobalOptions);
     man.save();
 }
+
 void MainJackSMS::resizeEvent ( QResizeEvent * s){
     resizeRecipientBox();
     if (!firstResize){
@@ -416,6 +427,7 @@ void MainJackSMS::resizeEvent ( QResizeEvent * s){
         resizeTimer.start(1000);
     }
 }
+
 MainJackSMS::~MainJackSMS()
 {
     if (updateChecker!=NULL)
@@ -2409,12 +2421,25 @@ void MainJackSMS::deleteAccountOk(QString id){
     ui->labelSpinDelAccount->hide();
 }
 
-void MainJackSMS::closeEvent(QCloseEvent *event){
+void MainJackSMS::closeEvent(QCloseEvent *event)
+{
+    if (isMaximized()) {
+        GlobalOptions["window-maximized"] = "yes";
+    } else {
+        GlobalOptions["window-maximized"] = "no";
+        GlobalOptions["window-height"] = QString::number(size().height());
+        GlobalOptions["window-width"] = QString::number(size().width());
+        GlobalOptions["window-xpos"] = QString::number(pos().x());
+        GlobalOptions["window-ypos"] = QString::number(pos().y());
+    }
 
-    if (loggedIn){
+    libJackSMS::localApi::optionManager man("",GlobalOptions);
+    man.save();
+
+    if (loggedIn) {
         loginClient->deleteLater();
         pingator->deleteLater();
-        if (imChecker!=NULL && Opzioni["receive-im"]!="no"){
+        if (imChecker != NULL && Opzioni["receive-im"] != "no") {
            imChecker->stop();
            imChecker->deleteLater();
         }
