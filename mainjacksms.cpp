@@ -748,6 +748,8 @@ QString MainJackSMS::phone2name(const libJackSMS::dataTypes::phoneNumber &_numbe
 // aggiunge 100 sms alla lista degli SmsWidget ogni volta che la chiamo
 void MainJackSMS::WriteMessagesToGui(){
 
+    ui->smsListWidget->hideCaricaAltri(true);
+
     if (Messaggi.isEmpty())
         return;
 
@@ -755,8 +757,6 @@ void MainJackSMS::WriteMessagesToGui(){
         return;
 
     tempCount = 0;
-    ui->smsListWidget->hideCaricaAltri(true);
-
     QTimer::singleShot(MILLISECONDSDELTASMSLOAD, this, SLOT(stepWriteMessageToGui()));
 }
 
