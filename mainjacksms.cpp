@@ -2662,14 +2662,15 @@ void MainJackSMS::on_buttonStatusJms_clicked()
 
 void MainJackSMS::on_actionRicarica_servizi_triggered()
 {
-
+    xmlReLoader = new libJackSMS::localApi::xmlLoader(current_user_directory);
+    connect(xmlReLoader, SIGNAL(servicesLoaded(libJackSMS::dataTypes::servicesType)), this, SLOT(servicesReLoaded(libJackSMS::dataTypes::servicesType)));
+    xmlReLoader->loadServices();
 }
 
 void MainJackSMS::servicesReLoaded(libJackSMS::dataTypes::servicesType s){
     ElencoServizi=s;
     QMessageBox::information(this,"JackSMS","Servizi ricaricati");
     xmlReLoader->deleteLater();
-
 }
 
 void MainJackSMS::on_actionElimina_cookies_triggered()
