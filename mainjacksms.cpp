@@ -23,7 +23,7 @@
 #include <QMap>
 #include "libjacksms/libJackSMS.h"
 #include "smswidget.h"
-
+#include "importgmaildialog.h"
 #include "contactwidget.h"
 #include "editaccountdialog.h"
 #include "contactwidgetfastbook.h"
@@ -3108,4 +3108,12 @@ void MainJackSMS::on_RicercaButton_clicked()
 void MainJackSMS::on_ServiziCercaButton_clicked()
 {
     ui->TextRapidServizi->setText("");
+}
+
+void MainJackSMS::on_actionGmail_triggered()
+{
+    importGmailDialog *dialog=new importGmailDialog(current_login_id,Opzioni,Rubrica,this);
+    connect(dialog,SIGNAL(rewritePhoneBook()),this,SLOT(ReWriteAddressBookToGui()));
+    dialog->exec();
+    dialog->deleteLater();
 }

@@ -467,8 +467,8 @@ namespace libJackSMS{
         };
 
 
-        class reloader {
-
+        class reloader :public QObject{
+            Q_OBJECT
             private:
                 xmlParserApi::xmlParserServerApiGeneric *xmlDocument;
                 QString loginId;
@@ -482,7 +482,11 @@ namespace libJackSMS{
 
                   */
                 reloader(const QString & _loginId,dataTypes::proxySettings _ps );
-                bool reloadPhoneBook(libJackSMS::dataTypes::phoneBookType & _rubrica);
+                bool reloadPhoneBook();
+        signals:
+                void errorReload();
+                void phoneBookReloaded(libJackSMS::dataTypes::phoneBookType);
+
         };
 
         class permanentInstantMessenger : public QObject
@@ -581,6 +585,30 @@ namespace libJackSMS{
             void serviceActive();
             void serviceNotActive(bool err=false,QString errStr="");
             void serviceActiving();
+        };
+
+
+        class gmailAddressBookImporter : public QThread
+        {
+            Q_OBJECT
+
+            private:
+                xmlParserApi::xmlParserServerApiGeneric *xmlDocument;
+                QString loginId;
+                netClient::netClientGeneric *webClient;
+                dataTypes::proxySettings ps;
+                void run();
+                QString gmailuser;
+                QString gmailpsw;
+
+            public:
+                gmailAddressBookImporter(QString _loginId,dataTypes::proxySettings _ps=dataTypes::proxySettings() );
+                void import(QString _user,QString _psw);
+
+            signals:
+                void importDone(int numberOfimports);
+                void importError(QString error);
+                void wrongCredentials();
         };
     }
 }

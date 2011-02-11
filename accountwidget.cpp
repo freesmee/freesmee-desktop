@@ -21,6 +21,7 @@ accountWidget::accountWidget(QString _id,QString _nome,QPixmap _icoServ):id(_id)
        hLayout->addWidget(nome);
        setLayout(hLayout);
        //setMaximumSize(1000,16);
+       setMinimumSize(200,16);
        setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
        adjustSize();
 

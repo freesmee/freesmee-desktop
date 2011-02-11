@@ -78,5 +78,8 @@
         <file>resource/arrow-unread.png</file>
         <file>resource/60_5.png</file>
         <file>resource/finde.png</file>
+        <file>resource/gmail_ico.png</file>
+        <file>resource/gmail_logo.gif</file>
+        <file>resource/ball-grey.png</file>
     </qresource>
 </RCC>

@@ -36,6 +36,8 @@ namespace libJackSMS{
                 virtual bool checkIsLogged()=0;
                 virtual QString getSessionId()=0;
                 virtual QString getError()=0;
+                virtual bool checkGmailImport(int &)=0;
+                virtual QString gmailError()=0;
                 virtual bool loadErrors(dataTypesApi::errorsType & _errors)=0;
                 virtual bool loadPhoneBook(libJackSMS::dataTypes::phoneBookType & _rubrica)=0;
                 virtual bool loadPhoneBook2(libJackSMS::dataTypes::phoneBookType & _rubrica)=0;

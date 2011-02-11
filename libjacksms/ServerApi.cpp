@@ -676,17 +676,26 @@ namespace libJackSMS{
             loginId(_loginId),
             webClient(new netClient::netClientQHttp()),
             ps(_ps){
+                qRegisterMetaType<libJackSMS::dataTypes::phoneBookType>("libJackSMS::dataTypes::phoneBookType");
             }
-        bool reloader::reloadPhoneBook(libJackSMS::dataTypes::phoneBookType & _rubrica){
+        bool reloader::reloadPhoneBook(){
             if (ps.useProxy()){
                 webClient->setProxyServer(ps.getServer(),ps.getPort(),ps.getType());
                 if (ps.useAuth())
                     webClient->setProxyAuthentication(ps.getUsername(),ps.getPassword());
             }
-            webClient->setUrl("http://q.jacksms.it/"+loginId+"/getAbookFull?xml");
+            webClient->setUrl("http://q.jacksms.it/"+loginId+"/getAbookFullJMS?xml,desktop");
             QString xml=webClient->readPage(true);
             xmlDocument->setXml(xml);
-            return xmlDocument->loadPhoneBook2(_rubrica);
+            libJackSMS::dataTypes::phoneBookType _rubrica;
+            if (xmlDocument->loadPhoneBook2(_rubrica)){
+                emit phoneBookReloaded(_rubrica);
+                return true;
+            }else{
+                emit errorReload();
+                return false;
+            }
+
         }
 
         conversationManager::conversationManager(const QString & _loginId,dataTypes::proxySettings _ps )
@@ -1317,6 +1326,51 @@ namespace libJackSMS{
             }
         }
 
+
+
+        /**********************gmaail importer***********************/
+
+        void gmailAddressBookImporter::run(){
+            libJackSMS::xmlParserApi::xmlParserServerApiTicpp xmlDocument;
+            netClient::netClientQHttp webClient;
+
+            libJackSMS::encodingPercent pEncoder;
+            webClient.insertFormData("email",pEncoder.getEncodedString(gmailuser));
+            webClient.insertFormData("password",pEncoder.getEncodedString(gmailpsw));
+            QString xml=webClient.submitPost("http://q.jacksms.it/"+loginId+"/importAbookFromGoogle?xml,desktop",true);
+            if (xml.isEmpty())
+                emit importError("Empty response");
+            else if (webClient.hasError())
+                emit importError("Unexpected response");
+            else{
+                xmlDocument.setXml(xml);
+                int count;
+                if(xmlDocument.checkGmailImport(count)){
+                    emit importDone(count);
+                }else{
+                    QString e=xmlDocument.gmailError();
+                    if (e=="1")
+                        emit this->wrongCredentials();
+                    else
+                        emit importError("Unexpected XML");
+                }
+            }
+        }
+        gmailAddressBookImporter::gmailAddressBookImporter(QString _loginId,dataTypes::proxySettings _ps )
+            :xmlDocument(new libJackSMS::xmlParserApi::xmlParserServerApiTicpp()),
+            loginId(_loginId),
+            webClient(new netClient::netClientQHttp()),
+            ps(_ps)
+            {
+
+
+        }
+
+        void gmailAddressBookImporter::import(QString _user,QString _psw){
+            gmailuser=_user;
+            gmailpsw=_psw;
+            run();
+        }
 
     }
 }

@@ -15,10 +15,8 @@ win32 {
     LIBS += -L$$PWD/lib/win32
     RC_FILE = icon.rc
 }
-
 CONFIG(debug, debug|release):LIBS += -lticppd
 CONFIG(release, debug|release):LIBS += -lticpp
-
 QT += network
 DEFINES += TIXML_USE_TICPP
 
@@ -95,7 +93,8 @@ SOURCES += main.cpp \
     namewidget.cpp \
     smstextedit.cpp \
     smslist.cpp \
-    destinatariline.cpp
+    destinatariline.cpp \
+    importgmaildialog.cpp
 HEADERS += mainjacksms.h \
     Types.h \
     captchadialog.h \
@@ -184,7 +183,8 @@ HEADERS += mainjacksms.h \
     namewidget.h \
     smstextedit.h \
     smslist.h \
-    destinatariline.h
+    destinatariline.h \
+    importgmaildialog.h
 FORMS += mainjacksms.ui \
     captchadialog.ui \
     servicesdialog.ui \
@@ -196,5 +196,6 @@ FORMS += mainjacksms.ui \
     plugindialog.ui \
     editaccountdialog.ui \
     cambiaaccount.ui \
-    multiplecheckdialog.ui
+    multiplecheckdialog.ui \
+    importgmaildialog.ui
 RESOURCES += resources.qrc

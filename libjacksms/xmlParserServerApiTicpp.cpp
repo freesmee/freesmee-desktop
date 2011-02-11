@@ -62,6 +62,38 @@ namespace libJackSMS{
             }
             return false;
         }
+        bool xmlParserServerApiTicpp::checkGmailImport(int &num){
+            try{
+                ticpp::Node * subRoot=xmlResponse.FirstChild("JackSMS");
+                ticpp::Node * countIdNode=subRoot->FirstChild("imported",false);
+                if (countIdNode==NULL){
+                    num=0;
+                    return false;
+                }
+                else{
+                    bool ok;
+                    num=QString::fromStdString(countIdNode->ToElement()->GetText()).toInt(&ok,10);
+                    return true;
+                }
+            }catch(ticpp::Exception e){
+                throw libJackSMS::exceptionXmlError(e.what());
+            }
+            return false;
+        }
+        QString xmlParserServerApiTicpp::gmailError(){
+            QString ret="-1";
+            try{
+                ticpp::Node * subRoot=xmlResponse.FirstChild("JackSMS");
+                ticpp::Node * node=subRoot->FirstChild("error",false);
+                if (node!=NULL){
+                    ret=QString::fromStdString(node->ToElement()->GetText());
+                   
+                }
+            }catch(ticpp::Exception e){
+                throw libJackSMS::exceptionXmlError(e.what());
+            }
+            return ret;
+        }
         QString xmlParserServerApiTicpp::getVersion(){
              try{
                  ticpp::Node * subRoot=xmlResponse.FirstChild("JackSMS");
@@ -143,9 +175,11 @@ namespace libJackSMS{
 
                 dataTypes::contact contatto(name,num,"Contatti", srv);
                 contatto.setId(QString::fromStdString(curElem->GetAttribute("id")));
+                //contatto.setCanReceiveJms(curElem->GetAttributeOrDefault("jms","0")=="1");
                 if (curElem->GetAttributeOrDefault("jms","0")=="1"){
                     contatto.setCanReceiveJms(true);
                     tmp=curElem->GetAttribute("virtual_number");
+                    
                     contatto.setVirtualNumber(QString::fromUtf8(tmp.c_str(),tmp.length()));
                 }
 
@@ -155,14 +189,16 @@ namespace libJackSMS{
 
         }
         bool xmlParserServerApiTicpp::loadPhoneBook2(libJackSMS::dataTypes::phoneBookType & _rubrica){
-            /*try{
+            try{
                 ticpp::Node * subRoot=xmlResponse.FirstChild("JackSMS");
                 loadPhoneBookBase(_rubrica,subRoot);
+                return true;
             }catch(ticpp::Exception e){
                 throw libJackSMS::exceptionXmlError(e.what());
-            }*/
+            }
             return true;
         }
+
         bool xmlParserServerApiTicpp::loadPhoneBook(libJackSMS::dataTypes::phoneBookType & _rubrica){
             try{
                 ticpp::Node * subRoot=xmlResponse.FirstChild("JackSMS");

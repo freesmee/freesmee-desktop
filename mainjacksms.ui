@@ -1730,7 +1730,7 @@ ListNames::item:selected:active {
      <x>0</x>
      <y>0</y>
      <width>815</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1758,9 +1758,16 @@ ListNames::item:selected:active {
       </property>
       <addaction name="actionCsv"/>
      </widget>
+     <widget class="QMenu" name="menuImporta_rubrica">
+      <property name="title">
+       <string>Importa rubrica</string>
+      </property>
+      <addaction name="actionGmail"/>
+     </widget>
      <addaction name="actionRicarica_servizi"/>
      <addaction name="actionElimina_cookies"/>
      <addaction name="menuEsporta_rubrica"/>
+     <addaction name="menuImporta_rubrica"/>
     </widget>
     <addaction name="actionOpzioni"/>
     <addaction name="separator"/>
@@ -1879,6 +1886,15 @@ ListNames::item:selected:active {
   <action name="actionCsv">
    <property name="text">
     <string>csv</string>
+   </property>
+  </action>
+  <action name="actionGmail">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/resource/gmail_ico.png</normaloff>:/resource/gmail_ico.png</iconset>
+   </property>
+   <property name="text">
+    <string>Gmail</string>
    </property>
   </action>
  </widget>

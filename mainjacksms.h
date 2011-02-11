@@ -51,7 +51,7 @@ public:
     QString current_user_username;
     QString current_login_id;
     libJackSMS::serverApi::login *signin;
-    void ReWriteAddressBookToGui();
+
 
     QSize windowSize;
     QTimer resizeTimer;
@@ -142,8 +142,11 @@ private:
     types::QMessageListType::const_iterator iterMess;
     int tempCount;
     void caricaAltriMessaggi();
-
+public slots:
+    void ReWriteAddressBookToGui();
 private slots:
+
+    void on_actionGmail_triggered();
     void on_ServiziCercaButton_clicked();
     void on_RicercaButton_clicked();
     void on_RicercaImButton_clicked();
