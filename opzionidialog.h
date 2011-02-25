@@ -29,7 +29,6 @@ private:
     const bool loggedIn;
     Ui::OpzioniDialog *m_ui;
 private slots:
-    void on_listWidget_itemClicked(QListWidgetItem* item);
     void on_pushButton_3_clicked();
     void on_pushButton_2_clicked();
     void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);

@@ -74,7 +74,6 @@ private:
     bool popupJms;
     bool checkDoubleRecipients(libJackSMS::dataTypes::phoneNumber &_n) const;
     bool recipientAutoEdited;
-    void recipientStringCalculate();
     QList<QListWidgetItem*> multipleSendRecipients;
     bool invioMultiplo;
     QPixmap icon_jack;
@@ -169,7 +168,6 @@ private slots:
     void on_listServiziConfigurati_itemDoubleClicked(QListWidgetItem* item);
     void on_rubricaListWidget_itemDoubleClicked(QListWidgetItem* item);
     void on_TextRapidServizi_textChanged(QString text);
-    void on_RubricaVeloce_itemDoubleClicked(QListWidgetItem* item);
     void on_ModificaServizioButton_clicked();
     void resized();
     void on_buttonNoAccount_clicked();
