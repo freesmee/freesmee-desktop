@@ -44,8 +44,8 @@ SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QStr
     _txt=_txt.replace("<","&lt;");
     _txt=_txt.replace(">","&gt;");
 
-    _txt=this->parseLinks(_txt);
-    _txt=this->parseAts(_txt);
+    _txt = parseLinks(_txt);
+    _txt = parseAts(_txt);
 
     labelTxt = new QLabel(_txt);
 
@@ -222,9 +222,9 @@ QString SmsWidget::parseLinks(QString _s){
 
 QString SmsWidget::parseAts(QString _s){
     QRegExp r;
-    r.setPattern("^(.*)@([^ .]+) (.*)$");
+    r.setPattern("^(.*)@([^ .:]+)([: ])(.*)$");
     if (r.exactMatch(_s)){
-        return parseAts(r.cap(1)) + " <b>@" + r.cap(2) + "</b>  " + parseAts(r.cap(3));
+        return parseAts(r.cap(1)) + " <b>@" + r.cap(2) + "</b>" + r.cap(3) + " " + parseAts(r.cap(4));
     }else{
         return _s;
     }
