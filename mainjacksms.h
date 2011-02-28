@@ -141,10 +141,14 @@ private:
     types::QMessageListType::const_iterator iterMess;
     int tempCount;
     void caricaAltriMessaggi();
+    void RicaricaServizi(bool hideDialog = false);
+    void EndRicaricaServizi(libJackSMS::dataTypes::servicesType s, bool hideDialog = false);
+
 public slots:
     void ReWriteAddressBookToGui();
-private slots:
 
+private slots:
+    void recipientPopupSelected(QString);
     void on_actionGmail_triggered();
     void on_ServiziCercaButton_clicked();
     void on_RicercaButton_clicked();
@@ -175,6 +179,7 @@ private slots:
 
     void on_actionElimina_cookies_triggered();
     void servicesReLoaded(libJackSMS::dataTypes::servicesType);
+    void servicesReLoadedDialog(libJackSMS::dataTypes::servicesType);
     void on_actionRicarica_servizi_triggered();
     void on_buttonStatusJms_clicked();
     void jmsActive();

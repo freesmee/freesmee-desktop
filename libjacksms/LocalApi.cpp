@@ -177,7 +177,7 @@ namespace libJackSMS{
             return xmlDocument->loadPhoneBook(_rubrica);
         }
         void xmlLoader::loadServices(){
-            lo=new serviceLoader;
+            lo = new serviceLoader;
             connect(lo,SIGNAL(endLoad(libJackSMS::dataTypes::servicesType)),this,SIGNAL(servicesLoaded(libJackSMS::dataTypes::servicesType)));
             connect(lo,SIGNAL(criticalError(QString)),this,SIGNAL(criticalError(QString)));
             lo->load();

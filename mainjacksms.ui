@@ -500,7 +500,7 @@ QFrame#frame_3_old{
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>3</number>
+           <number>0</number>
           </property>
           <property name="iconSize">
            <size>
@@ -1585,7 +1585,7 @@ ListNames::item:selected:active {
                  <enum>QListView::TopToBottom</enum>
                 </property>
                 <property name="isWrapping" stdset="0">
-                 <bool>true</bool>
+                 <bool>false</bool>
                 </property>
                 <property name="resizeMode">
                  <enum>QListView::Adjust</enum>
@@ -1766,8 +1766,8 @@ ListNames::item:selected:active {
      </widget>
      <addaction name="actionRicarica_servizi"/>
      <addaction name="actionElimina_cookies"/>
-     <addaction name="menuEsporta_rubrica"/>
      <addaction name="menuImporta_rubrica"/>
+     <addaction name="menuEsporta_rubrica"/>
     </widget>
     <addaction name="actionOpzioni"/>
     <addaction name="separator"/>

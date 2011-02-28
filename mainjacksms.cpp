@@ -844,12 +844,13 @@ void MainJackSMS::on_RubricaAggiungi_clicked()
         l<<i->getName();
     }
     completer->deleteLater();
-    completer=new QCompleter(l);
+    completer = new QCompleter(l);
+    connect(completer, SIGNAL(activated(QString)), this, SLOT(recipientPopupSelected(QString)));
     completer->setCaseSensitivity(Qt::CaseInsensitive);
-    completer->setCompletionMode(QCompleter::InlineCompletion);
+    completer->setCompletionMode(QCompleter::PopupCompletion);
     ui->recipientLine->setCompleter(completer);
-
 }
+
 void MainJackSMS::displayCaptcha(QByteArray data){
     /*
             //cerca se c'è un plugin captcha per questo servizio
@@ -2038,8 +2039,12 @@ void MainJackSMS::checkInstantMessengerReceived(libJackSMS::dataTypes::logImType
     }
 }
 
-void MainJackSMS::errorUpdates(QString err){
+void MainJackSMS::errorUpdates(QString err) {
+
+    on_actionRicarica_servizi_triggered();
+
     libJackSMS::dataTypes::optionsType::const_iterator iter=Opzioni.find("hide-service-update");
+
     if (iter==Opzioni.end())
         QMessageBox::critical(this,"JackSMS","si e' verificato un errore grave durante l'aggiornamnto dei servizi.\nErrore: "+err);
     else if ("no"==iter.value())
@@ -2179,7 +2184,9 @@ void MainJackSMS::updatesAvailable(libJackSMS::dataTypes::servicesType serv,QStr
 
     libJackSMS::localApi::serviceManager man;
     man.mergeServices(xml);
-    ElencoServizi=serv;
+    ElencoServizi = serv;
+
+    on_actionRicarica_servizi_triggered();
 
     libJackSMS::dataTypes::optionsType::const_iterator iter=Opzioni.find("hide-service-update");
     if (iter==Opzioni.end())
@@ -2218,16 +2225,21 @@ void MainJackSMS::phoneBookReceived(libJackSMS::dataTypes::phoneBookType r){
         l<<i->getName();
     }
 
-    completer=new QCompleter(l);
+    completer = new QCompleter(l);
+    connect(completer, SIGNAL(activated(QString)), this, SLOT(recipientPopupSelected(QString)));
 
     completer->setCaseSensitivity(Qt::CaseInsensitive);
-    completer->setCompletionMode(QCompleter::InlineCompletion);
+    completer->setCompletionMode(QCompleter::PopupCompletion);
     ui->recipientLine->setCompleter(completer);
     countdownToGui();
 }
 
 void MainJackSMS::loginStarted(){
     ui->widgetSchermate->setCurrentIndex(1);
+}
+
+void MainJackSMS::recipientPopupSelected(QString selected) {
+    RecipientTabPressed();
 }
 
 void MainJackSMS::loginFailed(QString err){
@@ -2442,7 +2454,7 @@ void MainJackSMS::on_actionLogout_triggered()
     pingator->deleteLater();
     Rubrica.clear();
 
-    if (imChecker!=NULL && Opzioni["receive-im"]!="no"){
+    if (imChecker!=NULL && Opzioni["receive-im"]!="no") {
        imChecker->stop();
        imChecker->deleteLater();
     }
@@ -2584,14 +2596,34 @@ void MainJackSMS::on_buttonStatusJms_clicked()
 
 void MainJackSMS::on_actionRicarica_servizi_triggered()
 {
+    RicaricaServizi();
+}
+
+void MainJackSMS::RicaricaServizi(bool hideDialog) {
     xmlReLoader = new libJackSMS::localApi::xmlLoader(current_user_directory);
-    connect(xmlReLoader, SIGNAL(servicesLoaded(libJackSMS::dataTypes::servicesType)), this, SLOT(servicesReLoaded(libJackSMS::dataTypes::servicesType)));
+
+    if(hideDialog)
+        connect(xmlReLoader, SIGNAL(servicesLoaded(libJackSMS::dataTypes::servicesType)), this, SLOT(servicesReLoaded(libJackSMS::dataTypes::servicesType)));
+    else
+        connect(xmlReLoader, SIGNAL(servicesLoaded(libJackSMS::dataTypes::servicesType)), this, SLOT(servicesReLoadedDialog(libJackSMS::dataTypes::servicesType)));
+
     xmlReLoader->loadServices();
 }
 
-void MainJackSMS::servicesReLoaded(libJackSMS::dataTypes::servicesType s){
-    ElencoServizi=s;
-    QMessageBox::information(this,"JackSMS","Servizi ricaricati");
+void MainJackSMS::servicesReLoadedDialog(libJackSMS::dataTypes::servicesType s) {
+    EndRicaricaServizi(s, false);
+}
+
+void MainJackSMS::servicesReLoaded(libJackSMS::dataTypes::servicesType s) {
+    EndRicaricaServizi(s, true);
+}
+
+void MainJackSMS::EndRicaricaServizi(libJackSMS::dataTypes::servicesType s, bool hideDialog) {
+    ElencoServizi = s;
+
+    if(!hideDialog)
+        QMessageBox::information(this,"JackSMS","Servizi ricaricati");
+
     xmlReLoader->deleteLater();
 }
 
@@ -2599,9 +2631,9 @@ void MainJackSMS::on_actionElimina_cookies_triggered()
 {
     libJackSMS::localApi::cookieManager m(current_user_directory);
     if (m.deleteCookies())
-        QMessageBox::information(this,"JackSMS","Cookies eliminati.");
+        QMessageBox::information(this,"JackSMS", "Cookies eliminati.");
     else
-        QMessageBox::critical(this,"JackSMS","Errore durante l'eliminazione dei cookie.");
+        QMessageBox::critical(this,"JackSMS", "Errore durante l'eliminazione dei cookie.");
 }
 
 void MainJackSMS::on_buttonLostPassword_clicked()
@@ -2796,6 +2828,8 @@ void MainJackSMS::addRecipients(QList<QRecipientWidget*> l){
         resizeRecipientBox();
         on_comboServizio_currentIndexChanged(ui->comboServizio->currentIndex());
     }
+
+    ui->TestoSMS->setFocus();
 }
 
 void MainJackSMS::on_buttonAddContacts_clicked()
