@@ -10,6 +10,7 @@ namespace Ui {
 
 class importGmailDialog : public QDialog {
     Q_OBJECT
+
 public:
     importGmailDialog(QString _lid,const libJackSMS::dataTypes::optionsType &o,libJackSMS::dataTypes::phoneBookType &_phoneBook,QWidget *parent = 0);
     ~importGmailDialog();
@@ -18,14 +19,14 @@ protected:
     void changeEvent(QEvent *e);
 
 private:
+    Ui::importGmailDialog *ui;
     QString logid;
     const libJackSMS::dataTypes::optionsType &opt;
-
-    Ui::importGmailDialog *ui;
     libJackSMS::serverApi::gmailAddressBookImporter *importer;
     libJackSMS::serverApi::reloader *reloader;
     libJackSMS::dataTypes::phoneBookType &phoneBook;
     QMovie* spinner;
+
 private slots:
     void on_importButton_clicked();
     void on_pushButton_clicked();
@@ -34,6 +35,7 @@ private slots:
     void wrongCredentials();
     void phoneBookReloaded(libJackSMS::dataTypes::phoneBookType);
     void errorReload();
+
 signals:
     void rewritePhoneBook();
 

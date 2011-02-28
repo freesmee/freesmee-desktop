@@ -2,11 +2,11 @@
 #include "ui_importgmaildialog.h"
 
 importGmailDialog::importGmailDialog(QString _lid,const libJackSMS::dataTypes::optionsType &o,libJackSMS::dataTypes::phoneBookType &_phoneBook,QWidget *parent) :
+        QDialog(parent),
+        ui(new Ui::importGmailDialog),
         logid(_lid),
         opt(o),
-        phoneBook(_phoneBook),
-        QDialog(parent),
-    ui(new Ui::importGmailDialog)
+        phoneBook(_phoneBook)
 {
     ui->setupUi(this);
     ui->labelImport->setPixmap(QPixmap(":/resource/ball-grey.png","png"));
