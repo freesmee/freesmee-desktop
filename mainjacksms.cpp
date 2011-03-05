@@ -3021,3 +3021,8 @@ void MainJackSMS::on_actionGmail_triggered()
     dialog->exec();
     dialog->deleteLater();
 }
+
+void MainJackSMS::on_recipientLine_textEdited(QString)
+{
+    ui->RubricaVeloce->clearSelection();
+}

@@ -148,6 +148,7 @@ public slots:
     void ReWriteAddressBookToGui();
 
 private slots:
+    void on_recipientLine_textEdited(QString);
     void recipientPopupSelected(QString);
     void on_actionGmail_triggered();
     void on_ServiziCercaButton_clicked();
