@@ -24,39 +24,50 @@
        adjustSize();
 
 }*/
-contactWidgetFastBook::contactWidgetFastBook(const libJackSMS::dataTypes::contact &_c,QPixmap _icoServ,bool addCheckBox):id(_c.getId()),nomeContatto(_c.getName()),accountId(_c.getAccount()),numero(_c.getPhone().toString()),c(_c)
+
+contactWidgetFastBook::contactWidgetFastBook(const libJackSMS::dataTypes::contact &_c, QPixmap _icoServ, bool addCheckBox) :
+        id(_c.getId()),
+        nomeContatto(_c.getName()),
+        accountId(_c.getAccount()),
+        numero(_c.getPhone().toString()),
+        c(_c)
 {
        hLayout = new QHBoxLayout;
        hLayout->setMargin(2);
-       labelIconInfo=new QLabel;
+       labelIconInfo = new QLabel;
 
-       nome=new QLabel(_c.getName());
-       icon=new QLabel;
-       icon->setMaximumSize(16,16);
+       nome = new QLabel(_c.getName());
+       icon = new QLabel;
+       icon->setMaximumSize(16, 16);
        icon->setPixmap(_icoServ);
-       if(addCheckBox){
-           chbox=new QCheckBox;
+
+       if (addCheckBox) {
+           chbox = new QCheckBox;
            chbox->setChecked(false);
-           chbox->setMaximumSize(16,16);
+           chbox->setMaximumSize(16, 16);
            hLayout->addWidget(chbox);
        }
+
        hLayout->addWidget(icon);
        hLayout->addWidget(nome);
        setLayout(hLayout);
-       setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+       setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
        adjustSize();
-
 }
-libJackSMS::dataTypes::contact contactWidgetFastBook::getContact()const{
+
+libJackSMS::dataTypes::contact contactWidgetFastBook::getContact() const {
     return c;
 }
-QPixmap contactWidgetFastBook::getIcon()const{
+
+QPixmap contactWidgetFastBook::getIcon() const {
     return  QPixmap(*icon->pixmap());
 }
-void contactWidgetFastBook::setIcon(QPixmap _pix){
+
+void contactWidgetFastBook::setIcon(QPixmap _pix) {
     icon->setPixmap(_pix);
 }
-void contactWidgetFastBook::showIcon(bool value){
+
+void contactWidgetFastBook::showIcon(bool value) {
     if(value)
         icon->show();
     else
@@ -64,27 +75,33 @@ void contactWidgetFastBook::showIcon(bool value){
     return;
 }
 
-void contactWidgetFastBook::setInfoIcon(QPixmap _infoicon, const QString &_tooltip){
+void contactWidgetFastBook::setInfoIcon(QPixmap _infoicon, const QString &_tooltip) {
     labelIconInfo->deleteLater();
-    labelIconInfo=new QLabel;
+    labelIconInfo = new QLabel;
     labelIconInfo->setMaximumSize(16,16);
     labelIconInfo->setPixmap(_infoicon);
     labelIconInfo->setToolTip(_tooltip);
     labelIconInfo->setCursor(Qt::WhatsThisCursor);
     hLayout->addWidget(labelIconInfo);
 }
-QString contactWidgetFastBook:: getName()const{
-    return this->nomeContatto;
+
+QString contactWidgetFastBook:: getName() const {
+    return nomeContatto;
 }
-QString contactWidgetFastBook:: getContactId()const{
-    return this->id;
+
+QString contactWidgetFastBook:: getContactId() const {
+    return id;
 }
-contactWidgetFastBook * contactWidgetFastBook::clone() const{
+
+contactWidgetFastBook *contactWidgetFastBook::clone() const {
     QPixmap p(*icon->pixmap());
     return new contactWidgetFastBook(c,p);
-
 }
 
-bool contactWidgetFastBook::isChecked() const{
+bool contactWidgetFastBook::isChecked() const {
     return chbox->isChecked();
+}
+
+bool contactWidgetFastBook:: searchMatch(QString _txt) const {
+    return (!(-1 == nomeContatto.indexOf(_txt, 0, Qt::CaseInsensitive))) || (!(-1 == numero.indexOf(_txt, 0, Qt::CaseInsensitive))) ;
 }

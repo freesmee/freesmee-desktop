@@ -1,8 +1,8 @@
 #ifndef MAINJACKSMS_H
 #define MAINJACKSMS_H
+
 #include <QListWidgetItem>
 #include <QtGui/QMainWindow>
-
 #include <list>
 #include "Types.h"
 #include <QSystemTrayIcon>
@@ -18,8 +18,11 @@
 #include "contactwidgetfastbook.h"
 #include "qrecipientwidget.h"
 #include "multiplecheckdialog.h"
+#include "recipientcompleter.h"
+
 #define TYPE_SMS 1
 #define TYPE_JMS 2
+
 namespace Ui
 {
     class MainJackSMS;
@@ -65,7 +68,7 @@ private:
     multipleCheckDialog *mcDialog;
     int iterateSendSms(bool first,bool result=false,QString _text="");
     int smsCount;
-    QCompleter *completer;
+    RecipientCompleter *completer;
     void resizeRecipientBox();
     void clearRecipientsStatus();
     QLineEdit *newRecipientLine;
@@ -141,13 +144,14 @@ private:
     types::QMessageListType::const_iterator iterMess;
     int tempCount;
     void caricaAltriMessaggi();
-    void RicaricaServizi(bool hideDialog = false);
-    void EndRicaricaServizi(libJackSMS::dataTypes::servicesType s, bool hideDialog = false);
+    bool nascondiProssimoDialogRicarica;
 
 public slots:
     void ReWriteAddressBookToGui();
 
 private slots:
+    void on_RicercaVeloceButton_clicked();
+    void on_RicercaVeloce_textChanged(QString txt);
     void on_recipientLine_textEdited(QString);
     void recipientPopupSelected(QString);
     void on_actionGmail_triggered();
@@ -180,7 +184,6 @@ private slots:
 
     void on_actionElimina_cookies_triggered();
     void servicesReLoaded(libJackSMS::dataTypes::servicesType);
-    void servicesReLoadedDialog(libJackSMS::dataTypes::servicesType);
     void on_actionRicarica_servizi_triggered();
     void on_buttonStatusJms_clicked();
     void jmsActive();

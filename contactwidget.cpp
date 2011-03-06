@@ -31,15 +31,16 @@ ContactWidget::ContactWidget(QString _id,QString _nome,QString _numero,QPixmap _
        setLayout(hLayout);
        setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
        adjustSize();
-
-}
-QString ContactWidget:: getName()const{
-    return this->nomeContatto;
-}
-QString ContactWidget:: getContactId()const{
-    return this->id;
 }
 
-bool ContactWidget:: searchMatch(QString _txt)const{
+QString ContactWidget:: getName() const {
+    return nomeContatto;
+}
+
+QString ContactWidget:: getContactId() const {
+    return id;
+}
+
+bool ContactWidget::searchMatch(QString _txt) const {
     return (!(-1==nome->text().indexOf(_txt,0,Qt::CaseInsensitive))) || (!(-1==numero->text().indexOf(_txt,0,Qt::CaseInsensitive)))|| (!(-1==nomeAccount->text().indexOf(_txt,0,Qt::CaseInsensitive))) ;
 }

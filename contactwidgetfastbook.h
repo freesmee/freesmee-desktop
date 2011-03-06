@@ -22,6 +22,7 @@ private:
     libJackSMS::dataTypes::contact c;
     QLabel *labelIconInfo;
     QCheckBox *chbox;
+
 public:
     //contactWidgetFastBook(QString _id,QString _nome,QString _numero,QPixmap _icoServ,QString _accountId);
     contactWidgetFastBook(const libJackSMS::dataTypes::contact &_c,QPixmap _icoServ,bool addCheckBox=false);
@@ -35,6 +36,7 @@ public:
     void showIcon(bool value);
     void setInfoIcon(QPixmap _infoicon, const QString &_tooltip);
     bool isChecked() const;
+    bool searchMatch(QString _txt) const;
 };
 
 

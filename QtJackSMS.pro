@@ -94,7 +94,8 @@ SOURCES += main.cpp \
     smstextedit.cpp \
     smslist.cpp \
     destinatariline.cpp \
-    importgmaildialog.cpp
+    importgmaildialog.cpp \
+    recipientcompleter.cpp
 HEADERS += mainjacksms.h \
     Types.h \
     captchadialog.h \
@@ -184,7 +185,8 @@ HEADERS += mainjacksms.h \
     smstextedit.h \
     smslist.h \
     destinatariline.h \
-    importgmaildialog.h
+    importgmaildialog.h \
+    recipientcompleter.h
 FORMS += mainjacksms.ui \
     captchadialog.ui \
     servicesdialog.ui \

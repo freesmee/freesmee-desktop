@@ -141,8 +141,6 @@ namespace libJackSMS{
             }
         }
 
-
-
         pingator::pingator(const QString &_idsessione,dataTypes::proxySettings _ps):
                 idsessione(_idsessione),
                 ps(_ps),
@@ -194,10 +192,6 @@ namespace libJackSMS{
             }
         }
 
-
-
-
-
         bool synchronizeVariables(dataTypes::configuredServicesType & _serviziConfigurati,const dataTypes::servicesType & _servizi){
             dataTypes::configuredServicesType::iterator i=_serviziConfigurati.begin();
             dataTypes::configuredServicesType::iterator i_end =_serviziConfigurati.end();
@@ -218,7 +212,6 @@ namespace libJackSMS{
 
             return true;
         }
-
 
         instantMessenger::instantMessenger(const QString &_loginId,dataTypes::proxySettings _ps ):
             loginId(_loginId),
@@ -722,18 +715,16 @@ namespace libJackSMS{
         void updateServicesManager::run(){
 
             try{
-                updateServicesManagerBase man(loginId,ps);
-                connect(this,SIGNAL(abortSignal()),&man,SLOT(abort()));
+                updateServicesManagerBase man(loginId, ps);
+                connect(this, SIGNAL(abortSignal()), &man, SLOT(abort()));
 
-                if (man.downloadUpdates(servizi)){
-
+                if (man.downloadUpdates(servizi)) {
                     if (!aborted)
-                    emit updatesAvailable(servizi,man.getXml(),man.getMessage());
+                    emit updatesAvailable(servizi, man.getXml(), man.getMessage());
                 }
-            }catch(libJackSMS::exceptionXmlError e){
+            } catch(libJackSMS::exceptionXmlError e) {
                 emit criticalError(e.what());
-
-            }catch(...){
+            } catch(...) {
                 emit criticalError("error too critical: section 2");
             }
         }
@@ -1282,7 +1273,7 @@ namespace libJackSMS{
 
         void Streamer::connectDone() {
             try{
-                QString sn = QString("GET /")+username.toAscii().toBase64()+"/"+password.toAscii().toBase64()+QString("/stream?desktop=")+QString(JACKSMS_VERSION)+QString("\n\n");
+                QString sn = QString("GET /") + username.toAscii().toBase64() + "/" + password.toAscii().toBase64() + QString("/stream?desktop=") + QString(JACKSMS_VERSION) + QString(" HTTP/1.1\n\n");
                 sock.write(sn.toAscii());
                 pingTimer.start(1000*60);
             }catch(...){
@@ -1328,7 +1319,7 @@ namespace libJackSMS{
 
 
 
-        /**********************gmaail importer***********************/
+        /**********************gmail importer***********************/
 
         void gmailAddressBookImporter::run(){
             libJackSMS::xmlParserApi::xmlParserServerApiTicpp xmlDocument;
