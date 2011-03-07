@@ -150,6 +150,7 @@ public slots:
     void ReWriteAddressBookToGui();
 
 private slots:
+    void on_recipientListWidget_itemDoubleClicked(QListWidgetItem* item);
     void on_RicercaVeloceButton_clicked();
     void on_RicercaVeloce_textChanged(QString txt);
     void on_recipientLine_textEdited(QString);
@@ -202,8 +203,8 @@ private slots:
     void on_smsListWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void on_username_currentIndexChanged(int index);
     void on_loginButton_clicked();
-    void gestiscimenuSingolo(bool starting=false);
-    void gestiscimenuMultiplo(bool starting=false);
+    void gestiscimenuSingolo();
+    void gestiscimenuMultiplo();
     void on_comboServizio_currentIndexChanged(int index);
     void on_comboServizio_activated(QString );
     void on_TestoSMS_textChanged();

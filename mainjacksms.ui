@@ -529,6 +529,9 @@ QFrame#frame_3_old{
                <layout class="QVBoxLayout" name="verticalLayout">
                 <item>
                  <layout class="QGridLayout" name="gridLayout">
+                  <property name="horizontalSpacing">
+                   <number>4</number>
+                  </property>
                   <item row="0" column="3">
                    <widget class="QLabel" name="label_2">
                     <property name="text">
@@ -540,6 +543,9 @@ QFrame#frame_3_old{
                    <layout class="QVBoxLayout" name="verticalLayout_12">
                     <property name="spacing">
                      <number>0</number>
+                    </property>
+                    <property name="leftMargin">
+                     <number>2</number>
                     </property>
                     <item>
                      <widget class="QComboBox" name="comboServizio">
@@ -554,32 +560,6 @@ QFrame#frame_3_old{
                         <width>16777215</width>
                         <height>22</height>
                        </size>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="1" column="4">
-                   <layout class="QVBoxLayout" name="verticalLayout_14">
-                    <property name="spacing">
-                     <number>0</number>
-                    </property>
-                    <item>
-                     <widget class="QPushButton" name="menuInstruments">
-                      <property name="minimumSize">
-                       <size>
-                        <width>24</width>
-                        <height>24</height>
-                       </size>
-                      </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>22</width>
-                        <height>22</height>
-                       </size>
-                      </property>
-                      <property name="text">
-                       <string/>
                       </property>
                      </widget>
                     </item>
@@ -709,6 +689,32 @@ QFrame#frame_3_old{
                     </item>
                    </layout>
                   </item>
+                  <item row="1" column="4">
+                   <layout class="QVBoxLayout" name="verticalLayout_14">
+                    <property name="spacing">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QPushButton" name="menuInstruments">
+                      <property name="minimumSize">
+                       <size>
+                        <width>24</width>
+                        <height>24</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>22</width>
+                        <height>22</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
                  </layout>
                 </item>
                 <item>
@@ -733,7 +739,7 @@ QFrame#frame_3_old{
               <item row="1" column="2">
                <layout class="QVBoxLayout" name="verticalLayout_2">
                 <property name="spacing">
-                 <number>0</number>
+                 <number>1</number>
                 </property>
                 <property name="sizeConstraint">
                  <enum>QLayout::SetDefaultConstraint</enum>
@@ -1818,7 +1824,7 @@ ListNames::item:selected:active {
      <x>0</x>
      <y>0</y>
      <width>815</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

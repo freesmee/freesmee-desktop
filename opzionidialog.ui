@@ -97,7 +97,7 @@
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>3</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="generali">
           <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -169,13 +169,6 @@
               <widget class="QCheckBox" name="hideServiceUpdate">
                <property name="text">
                 <string>Nascondi i messaggi di aggiornamento servizi</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="suonoJMS">
-               <property name="text">
-                <string>Emetti un suono alla ricezione di un nuovo JMS</string>
                </property>
               </widget>
              </item>
@@ -319,6 +312,13 @@
               <widget class="QCheckBox" name="CheckAbilitaIM">
                <property name="text">
                 <string>Attiva ricezione messaggi JMS all'avvio di JackSMS</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="suonoJMS">
+               <property name="text">
+                <string>Emetti un suono alla ricezione di un nuovo JMS</string>
                </property>
               </widget>
              </item>

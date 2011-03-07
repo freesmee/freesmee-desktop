@@ -9,4 +9,3 @@ RecipientCompleter::RecipientCompleter(const QStringList &completions, QObject *
     QCompleter(completions, parent)
 {
 }
-
