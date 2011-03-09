@@ -146,6 +146,9 @@ private:
     void caricaAltriMessaggi();
     bool nascondiProssimoDialogRicarica;
 
+    void rubricaBarTutti();
+    void rubricaBarJMS();
+
 public slots:
     void ReWriteAddressBookToGui();
 
@@ -161,8 +164,6 @@ private slots:
     void on_RicercaImButton_clicked();
     void on_smsListWidget_itemPressed(QListWidgetItem* item);
     void on_listSmsNames_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
-    void on_radioTutti_clicked();
-    void on_radioJackSMS_clicked();
     void addRecipients(QList<QRecipientWidget*> l);
     void on_buttonAddContacts_clicked();
     void recipientRemove(QListWidgetItem* );
@@ -265,6 +266,7 @@ private slots:
     void catchSmsListCanc();
     void RecipientTabPressed();
     void stepWriteMessageToGui();
+    void rubricaBarCurrentChanged(int index);
 
 };
 
