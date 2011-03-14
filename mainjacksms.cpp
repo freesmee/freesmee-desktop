@@ -295,7 +295,7 @@ void MainJackSMS::on_recipientLine_returnPressed()
             if (serv != ElencoServiziConfigurati.end())
                 icon = ElencoServizi[serv->getService()].getIcon().pixmap(16,16);
             else
-                icon = ElencoServizi["40"].getIcon().pixmap(16,16);
+                icon = QIcon(":/resource/ico_contact.png").pixmap(16, 16);
 
             wi = new QRecipientWidget(i->getName(), i->getAccount(), i->getPhone(), icon);
 
@@ -538,7 +538,7 @@ void MainJackSMS::showContactByTypeInFastAbook(){
             QIcon ico;
             libJackSMS::dataTypes::configuredServicesType::const_iterator x = ElencoServiziConfigurati.find(i->getAccount());
             if (x == ElencoServiziConfigurati.end())
-                ico = ElencoServizi["40"].getIcon();
+                ico = QIcon(":/resource/ico_contact.png");
             else
                 ico = ElencoServizi[x.value().getService()].getIcon();
 
@@ -582,9 +582,9 @@ void MainJackSMS::WriteAddressBookToGui() {
             {
                 libJackSMS::dataTypes::configuredServicesType::const_iterator x=ElencoServiziConfigurati.find(i->getAccount());
                 if (x == ElencoServiziConfigurati.end())
-                    ico = ElencoServizi["40"].getIcon();
+                    ico = QIcon(":/resource/ico_contact.png");
                 else
-                    ico=ElencoServizi[x.value().getService()].getIcon();
+                    ico = ElencoServizi[x.value().getService()].getIcon();
 
                 contactWidgetFastBook *ww = new contactWidgetFastBook(i.value(), ico.pixmap(16, 16));
 
@@ -2333,10 +2333,10 @@ void MainJackSMS::on_RubricaVeloce_currentItemChanged(QListWidgetItem* item, QLi
 
             libJackSMS::dataTypes::configuredServicesType::const_iterator ser=this->ElencoServiziConfigurati.find(it->getContact().getAccount());
             QIcon icon;
-            if (ser!=this->ElencoServiziConfigurati.end())
+            if (ser != ElencoServiziConfigurati.end())
                 icon = ElencoServizi[ser->getService()].getIcon();
             else
-                icon=ElencoServizi["40"].getIcon();
+                icon = QIcon(":/resource/ico_contact.png");
             QRecipientWidget *wi=new QRecipientWidget(it->getName(),it->getContact().getAccount(),it->getContact().getPhone(),icon.pixmap(16,16));
 
             connect(wi,SIGNAL(removed(QListWidgetItem*)),this,SLOT(recipientRemove(QListWidgetItem*)));

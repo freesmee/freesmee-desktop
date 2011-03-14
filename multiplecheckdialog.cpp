@@ -29,14 +29,11 @@ void multipleCheckDialog::writeToGui(){
             QIcon ico;
             libJackSMS::dataTypes::configuredServicesType::const_iterator x=elencoServiziConfigurati.find(i->getAccount());
             if (x==elencoServiziConfigurati.end()){
-                libJackSMS::dataTypes::servicesType::const_iterator tmp=elencoServizi.find("40");
-                ico=tmp->getIcon();
-
+                ico = QIcon(":/resource/ico_contact.png");
             }else{
                 QString serv=x.value().getService();
                 libJackSMS::dataTypes::servicesType::const_iterator tmp=elencoServizi.find(serv);
                 ico=tmp->getIcon();
-
             }
             contactWidgetFastBook *ww=new contactWidgetFastBook(i.value(),ico.pixmap(16,16),true);
             fastList.insert(i->getName().toUpper(),ww);
