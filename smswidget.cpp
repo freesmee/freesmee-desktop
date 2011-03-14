@@ -39,11 +39,11 @@ SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QStr
     labelTime = new QLabel(time.toString("dd/MM/yyyy hh:mm:ss"));
 
     labelTime->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
-    labelTime->setMaximumSize(10000,18);
+    labelTime->setMaximumSize(10000, 18);
 
-    _txt=_txt.replace("<","&lt;");
-    _txt=_txt.replace(">","&gt;");
-
+    _txt = _txt.replace("<", "&lt;");
+    _txt = _txt.replace(">", "&gt;");
+    _txt = parseQuotes(_txt);
     _txt = parseLinks(_txt);
     _txt = parseAts(_txt);
 
@@ -76,7 +76,7 @@ SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QStr
     adjustSize();
 }
 
-SmsWidget::SmsWidget(QMyMessage _sms,QPixmap _ico,bool received) :
+SmsWidget::SmsWidget(QMyMessage _sms, QPixmap _ico, bool received) :
         originalText(_sms.getMessage()),
         msg(_sms),
         type(received),
@@ -89,47 +89,47 @@ SmsWidget::SmsWidget(QMyMessage _sms,QPixmap _ico,bool received) :
     name = _sms.getParsedName();
 
     labelGroup = new QLabel(_sms.getParsedName());
-    labelGroup->setFont(QFont(labelGroup->font().family(),-1,QFont::Bold,false));
-    labelGroup->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
-    labelGroup->setMaximumSize(10000,18);
+    labelGroup->setFont(QFont(labelGroup->font().family(), -1, QFont::Bold, false));
+    labelGroup->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    labelGroup->setMaximumSize(10000, 18);
 
-
-    labelIco=new QLabel();
-    QString service=_sms.getAccountName();
+    labelIco = new QLabel();
+    QString service = _sms.getAccountName();
     if (!service.isEmpty())
-        service=service+" - ";
-    labelService=new QLabel(service);
-    labelService->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
-    labelService->setMaximumSize(10000,18);
+        service = service + " - ";
 
-    labelIcoReceived=new QLabel();
-    labelIcoReceived->setMaximumSize(16,16);
-    labelIcoReceived->setMinimumSize(16,16);
+    labelService = new QLabel(service);
+    labelService->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+    labelService->setMaximumSize(10000, 18);
+
+    labelIcoReceived = new QLabel();
+    labelIcoReceived->setMaximumSize(16, 16);
+    labelIcoReceived->setMinimumSize(16, 16);
     createBubble(_sms.getReaded(), received);
 
     labelIco->setPixmap(_ico);
-    labelIco->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
-    labelIco->setMaximumSize(16,16);
-    labelIco->setMinimumSize(16,16);
-
+    labelIco->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    labelIco->setMaximumSize(16, 16);
+    labelIco->setMinimumSize(16, 16);
 
     labelTime = new QLabel(msg.getData().toString("dd/MM/yyyy hh:mm:ss"));
-    labelTime->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
-    labelTime->setMaximumSize(10000,18);
-    QString _txt=msg.getMessage();
-    int l=_txt.length();
-    _txt=_txt.replace("<","&lt;");
-    _txt=_txt.replace(">","&gt;");
+    labelTime->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+    labelTime->setMaximumSize(10000, 18);
+    QString _txt = msg.getMessage();
+    int l = _txt.length();
 
-    _txt=this->parseLinks(_txt);
-    _txt=this->parseAts(_txt);
+    _txt = _txt.replace("<","&lt;");
+    _txt = _txt.replace(">","&gt;");
+    _txt = parseQuotes(_txt);
+    _txt = parseLinks(_txt);
+    _txt = parseAts(_txt);
 
     labelTxt = new QLabel(_txt);
-    l=_txt.length();
+    l = _txt.length();
     labelTxt->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
-    labelTxt->setWordWrap (true);
-    labelTxt->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-    connect(labelTxt,SIGNAL(linkActivated(QString)),this,SLOT(openUrl(QString)));
+    labelTxt->setWordWrap(true);
+    labelTxt->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    connect(labelTxt, SIGNAL(linkActivated(QString)), this, SLOT(openUrl(QString)));
 
     hLayout = new QHBoxLayout;
     vLayout = new QVBoxLayout;
@@ -149,9 +149,8 @@ SmsWidget::SmsWidget(QMyMessage _sms,QPixmap _ico,bool received) :
     vLayout->addWidget(labelTxt);
 
     setLayout(vLayout);
-    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     adjustSize();
-
 }
 
 SmsWidget::SmsWidget(QString _txt) :
@@ -210,24 +209,31 @@ QSize SmsWidget::getSize(){
     return size();
 }
 
-QString SmsWidget::parseLinks(QString _s){
+QString SmsWidget::parseLinks(QString _s) {
     QRegExp r;
     r.setPattern("^(.*)(http|https|ftp|ftps)\\:\\/\\/([^ ]+)(.*)$");
-    if (r.exactMatch(_s)){
-        return parseLinks(r.cap(1))+"<a href=\""+r.cap(2)+"://"+r.cap(3)+"\">"+r.cap(2)+"://"+r.cap(3)+"</a> "+parseLinks(r.cap(4));
-    }else{
+    if (r.exactMatch(_s))
+        return parseLinks(r.cap(1)) + "<a href=\"" + r.cap(2) + "://" + r.cap(3) + "\">" + r.cap(2) + "://" + r.cap(3) + "</a> " + parseLinks(r.cap(4));
+    else
         return _s;
-    }
 }
 
-QString SmsWidget::parseAts(QString _s){
+QString SmsWidget::parseAts(QString _s) {
     QRegExp r;
     r.setPattern("^(.*)@([^ .:]+)([: ])(.*)$");
-    if (r.exactMatch(_s)){
+    if (r.exactMatch(_s))
         return parseAts(r.cap(1)) + " <b>@" + r.cap(2) + "</b>" + r.cap(3) + " " + parseAts(r.cap(4));
-    }else{
+    else
         return _s;
-    }
+}
+
+QString SmsWidget::parseQuotes(QString _s) {
+    QRegExp r;
+    r.setPattern("^(.*)&lt;&lt;(.*)&gt;&gt;(.*)$");
+    if (r.exactMatch(_s))
+        return parseQuotes(r.cap(1)) + "<font color=\"#0E459C\"><i>&lt;&lt;" + r.cap(2) + "&gt;&gt;</i></font>" + parseQuotes(r.cap(3));
+    else
+        return _s;
 }
 
 QString SmsWidget::getId() const{

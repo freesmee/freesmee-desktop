@@ -27,6 +27,7 @@ private:
     bool readed;
     QString parseLinks(QString _s);
     QString parseAts(QString _s);
+    QString parseQuotes(QString _s);
     void createBubble(bool isread, bool isreceived);
     const QDateTime dateTim;
     bool caricaAltri;
