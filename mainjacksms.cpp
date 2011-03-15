@@ -370,7 +370,7 @@ void MainJackSMS::resizeRecipientBox() {
         int rCount = 1;
         int sum = 0;
         for (int a = 0; a < ui->recipientListWidget->count(); ++a) {
-            sum = sum + ui->recipientListWidget->itemWidget(ui->recipientListWidget->item(a))->width() + 2;
+            sum = sum + ui->recipientListWidget->itemWidget(ui->recipientListWidget->item(a))->width() + 9;
             if (sum > ui->recipientListWidget->width()) {
                 sum = ui->recipientListWidget->itemWidget(ui->recipientListWidget->item(a))->width();
                 rCount++;
