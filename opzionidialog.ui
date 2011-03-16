@@ -106,7 +106,7 @@
              <item>
               <widget class="QCheckBox" name="checkSalvalocale">
                <property name="text">
-                <string>Salva i messaggi sms in locale</string>
+                <string>Salva i messaggi in locale</string>
                </property>
               </widget>
              </item>

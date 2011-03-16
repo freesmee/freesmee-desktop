@@ -51,8 +51,8 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     //1-fine caricamento servizi
     //2-fine login
     //3-fine caricamento messaggi
-    //4-fine caricamento account di lofin
-    //5 -fine caricamento rubrica login
+    //4-fine caricamento account di login
+    //5-fine caricamento rubrica login
     countdownToGuiCount = COUNTDOWNTOGUICOUNTDEFINE;
 
     popupJms = false;
@@ -2190,7 +2190,7 @@ void MainJackSMS::newVersionAvailable(){
 }
 
 void MainJackSMS::accountsReceived(libJackSMS::dataTypes::configuredServicesType accounts){
-    ElencoServiziConfigurati=accounts;
+    ElencoServiziConfigurati = accounts;
 
 /*    libJackSMS::dataTypes::configuredAccount *acc=new libJackSMS::dataTypes::configuredAccount();
     acc->setId("0");

@@ -52,7 +52,7 @@ namespace libJackSMS{
         }
         void login::run(){
             emit loginStarted();
-            l=new loginBase(username,password,ps);
+            l = new loginBase(username,password,ps);
             //connect(this,SIGNAL(abortSignal()),&man,SLOT(abort()));
             connect(l,SIGNAL(accountsReceived(libJackSMS::dataTypes::configuredServicesType)),this,SLOT(slotAccountsReceived(libJackSMS::dataTypes::configuredServicesType)));
             connect(l,SIGNAL(loginFailed(QString)),this,SLOT(slotLoginFailed(QString)));
@@ -63,13 +63,13 @@ namespace libJackSMS{
 
         }
         void login::slotLoginSuccess(QString loginId){
-            emit this->loginSuccess(loginId);
+            emit loginSuccess(loginId);
         }
         void login::slotLoginFailed(QString error){
-            emit this->loginFailed(error);
+            emit loginFailed(error);
         }
         void login::slotPhoneBookReceived(libJackSMS::dataTypes::phoneBookType rubrica){
-            emit this->phoneBookReceived(rubrica);
+            emit phoneBookReceived(rubrica);
 
         }
         void login::slotAccountsReceived(libJackSMS::dataTypes::configuredServicesType serviziConfigurati){
@@ -80,10 +80,10 @@ namespace libJackSMS{
             account.setData("data1",username);
             account.setData("data2",password);
             serviziConfigurati.insert(account.getId(),account);*/
-            emit this->accountsReceived(serviziConfigurati);
+            emit accountsReceived(serviziConfigurati);
         }
         void login::slotNewVersionAvailable(){
-            emit this->newVersionAvailable();
+            emit newVersionAvailable();
         }
 
 

@@ -18,9 +18,9 @@ QRecipientWidget::QRecipientWidget(const QString & _contactName, const QString &
     iconLabel->setPixmap(Icon);
     iconLabel->setMaximumSize(16, 16);
     iconStatus = new QLabel;
-    iconStatus->setMaximumSize(16, 16);
+    iconStatus->setFixedSize(16, 16);
     //name = new QLabel(contactName + " <" + number.toString() + ">");
-    name = new QLabel(contactName + "  ");
+    name = new QLabel(contactName);
     name->setCursor(Qt::WhatsThisCursor);
     name->setToolTip(number.toString());
     name->setMinimumHeight(16);

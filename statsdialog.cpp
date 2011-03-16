@@ -6,6 +6,8 @@
 #include <QTextEdit>
 #include "libjacksms/libJackSMS.h"
 #include <QHBoxLayout>
+#include "libjacksms/ConfiguredAccount.h"
+
 StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType & _opzioni,const libJackSMS::dataTypes::configuredServicesType & _servizi,const libJackSMS::dataTypes::servicesType &_ElencoServizi,QWidget *parent) :
 
     QDialog(parent),
@@ -17,26 +19,29 @@ StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType & _opzioni,con
     m_ui->setupUi(this);
 
     {
-        libJackSMS::dataTypes::optionsType::const_iterator i=opzioni.find("sent-count");
-        QString n="0";
-        if (i!=opzioni.end())
-            n=i.value();
+        libJackSMS::dataTypes::optionsType::const_iterator i = opzioni.find("sent-count");
+        QString n = "0";
+        if (i != opzioni.end())
+            n = i.value();
 
-        m_ui->labelTotal->setText("Sms inviati con JackSMS Desktop: <b>"+n+"</b>");
+        m_ui->labelTotal->setText("Sms inviati con JackSMS Desktop: <b>" + n + "</b>");
     }
-    libJackSMS::dataTypes::configuredServicesType::const_iterator i=servizi.begin();
-    libJackSMS::dataTypes::configuredServicesType::const_iterator i_end=servizi.end();
-    for(;i!=i_end;++i){
+
+    QMap<QString, libJackSMS::dataTypes::configuredAccount> tempMap;
+    for(libJackSMS::dataTypes::configuredServicesType::const_iterator i = servizi.begin(); i != servizi.end(); ++i) {
+        tempMap.insert(i.value().getName(), i.value());
+    }
+
+    for(libJackSMS::dataTypes::configuredServicesType::const_iterator i = tempMap.begin(); i != tempMap.end(); ++i) {
         QHBoxLayout *hLayout = new QHBoxLayout;
         {
-            QLabel *l=new QLabel;
+            QLabel *l = new QLabel;
             /*QMap<QString,QPixmap>::const_iterator x=Icone.find(i.value().getService());
             if (x!=Icone.end())
                 l->setPixmap(x.value());
 */
             l->setPixmap(ElencoServizi[i.value().getService()].getIcon().pixmap(16,16));
-            l->setMaximumSize(16,16);
-            l->setMinimumSize(16,16);
+            l->setFixedSize(16,16);
             hLayout->addWidget(l);
         }
         {
@@ -63,7 +68,6 @@ StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType & _opzioni,con
         }
         m_ui->layoutStatistiche->addLayout(hLayout);
     }
-
 }
 
 StatsDialog::~StatsDialog()
