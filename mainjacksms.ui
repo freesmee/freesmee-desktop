@@ -500,7 +500,7 @@ QFrame#frame_3_old{
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <property name="iconSize">
            <size>
@@ -1285,6 +1285,17 @@ ListNames::item:selected:active {
                  </layout>
                 </item>
                 <item>
+                 <widget class="QPushButton" name="SalvaNumeroButton">
+                  <property name="text">
+                   <string>Salva numero</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="resources.qrc">
+                    <normaloff>:/resource/ico_contact.png</normaloff>:/resource/ico_contact.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QPushButton" name="EliminaButton">
                   <property name="text">
                    <string>Elimina selezionati</string>
@@ -2041,7 +2052,6 @@ ListNames::item:selected:active {
   <tabstop>comboServizio</tabstop>
   <tabstop>menuInstruments</tabstop>
   <tabstop>buttonAddContacts</tabstop>
-  <tabstop>tabWidget</tabstop>
   <tabstop>buttonStatusJms</tabstop>
   <tabstop>listSmsNames</tabstop>
   <tabstop>smsListWidget</tabstop>
@@ -2064,6 +2074,8 @@ ListNames::item:selected:active {
   <tabstop>TextRapidServizi</tabstop>
   <tabstop>ServiziCercaButton</tabstop>
   <tabstop>RubricaVeloce</tabstop>
+  <tabstop>RicercaVeloce</tabstop>
+  <tabstop>RicercaVeloceButton</tabstop>
  </tabstops>
  <resources>
   <include location="resources.qrc"/>

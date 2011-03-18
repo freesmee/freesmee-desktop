@@ -8,29 +8,37 @@ ListNames::ListNames(QWidget *parent) :
 
 void ListNames::addName(QString name, int unreadCount)
 {
-    addName(name, "", QDateTime(), "", unreadCount);
+    //workaround
+    libJackSMS::dataTypes::phoneNumber ph;
+    ph.parse("+00.00.000000");
+
+    addName(name, ph, "", QDateTime(), "", unreadCount);
 }
 
-void ListNames::addName(QString name, QString lastMessage, QDateTime lastTime, QString lastId, int unreadCount)
+void ListNames::addName(QString name, libJackSMS::dataTypes::phoneNumber numero, QString lastMessage, QDateTime lastTime, QString lastId, int unreadCount)
 {
-    NameWidget* namewid = new NameWidget(name, lastMessage, lastTime, lastId, unreadCount);
+    NameWidget* namewid = new NameWidget(name, numero, lastMessage, lastTime, lastId, unreadCount);
     QListWidgetItem *item = new QListWidgetItem;
-    item->setSizeHint(QSize(100,18+18+5+5+5));
+    item->setSizeHint(QSize(100, 18+18+5+5+5));
     addItem(item);
     setItemWidget(item, namewid);
 }
 
-void ListNames::insertName(QString name, QString lastMessage, QDateTime lastTime, QString lastId, int row, int unreadCount){
-    NameWidget* namewid = new NameWidget(name, lastMessage, lastTime, lastId, unreadCount);
+void ListNames::insertName(QString name, libJackSMS::dataTypes::phoneNumber numero, QString lastMessage, QDateTime lastTime, QString lastId, int row, int unreadCount){
+    NameWidget* namewid = new NameWidget(name, numero, lastMessage, lastTime, lastId, unreadCount);
     QListWidgetItem *item = new QListWidgetItem;
-    item->setSizeHint(QSize(100,18+18+5+5+5));
+    item->setSizeHint(QSize(100, 18+18+5+5+5));
     insertItem(row, item);
     setItemWidget(item, namewid);
 }
 
 void ListNames::insertName(QString name, int row, int unreadCount)
 {
-    insertName(name, "", QDateTime(), "", row, unreadCount);
+    //workaround
+    libJackSMS::dataTypes::phoneNumber ph;
+    ph.parse("+00.00.000000");
+
+    insertName(name, ph, "", QDateTime(), "", row, unreadCount);
 }
 
 void ListNames::clear()
@@ -68,7 +76,7 @@ void ListNames::refreshAll(MainJackSMS* main, QListWidget* smslist, bool clean)
                 }
             }
             if(!alreadyFound)
-                addName(nameToInsert, sms->getText(), sms->getDateTime(), sms->getId(), (sms->isReaded() ? 0 : 1));
+                addName(nameToInsert, sms->getPhoneNum(), sms->getText(), sms->getDateTime(), sms->getId(), (sms->isReaded() ? 0 : 1));
         }
     }
 }
@@ -93,7 +101,7 @@ void ListNames::refreshOneBottom(MainJackSMS* main, SmsWidget *sms)
     }
 
     if(!alreadyFound)
-        addName(nameToInsert, sms->getText(), sms->getDateTime(), sms->getId(), (sms->isReaded() ? 0 : 1));
+        addName(nameToInsert, sms->getPhoneNum(), sms->getText(), sms->getDateTime(), sms->getId(), (sms->isReaded() ? 0 : 1));
 }
 
 bool ListNames::checkNeedRefresh(QString _id, QListWidget* smslist)
@@ -151,7 +159,7 @@ void ListNames::itemAdded(SmsWidget* sms, bool unread){
         }
     }
     //aggiungo un nuovo nome
-    insertName(sms->getName(), sms->getText(), sms->getDateTime(), sms->getId(), 1, unreadToSet);
+    insertName(sms->getName(), sms->getPhoneNum(), sms->getText(), sms->getDateTime(), sms->getId(), 1, unreadToSet);
 
     //se unread allora setto l'unread anche su "tutti i contatti"
     if(unread){
@@ -165,4 +173,34 @@ void ListNames::itemAdded(SmsWidget* sms, bool unread){
         insertName("Tutti i contatti", 0, unreadAllToSet);
     }
 
+}
+
+NameWidget* ListNames::findNameWidget(libJackSMS::dataTypes::phoneNumber numero) {
+    NameWidget* result = NULL;
+
+    //parto dal primo perchè lo zeresimo è Tutti i Contatti
+    for (int i = 1; i < count(); ++i) {
+        NameWidget* namewid = static_cast<NameWidget*>(itemWidget(item(i)));
+        if (namewid->getPhoneNum() == numero) {
+            result = namewid;
+            break;
+        }
+    }
+
+    return result;
+}
+
+NameWidget* ListNames::findNameWidget(libJackSMS::dataTypes::contact c) {
+    NameWidget* result = NULL;
+
+    //parto dal primo perchè lo zeresimo è Tutti i Contatti
+    for (int i = 1; i < count(); ++i) {
+        NameWidget* namewid = static_cast<NameWidget*>(itemWidget(item(i)));
+        if ((namewid->getPhoneNum() == c.getPhone()) || (namewid->getPhoneNum() == c.getVirtualNumber())) {
+            result = namewid;
+            break;
+        }
+    }
+
+    return result;
 }

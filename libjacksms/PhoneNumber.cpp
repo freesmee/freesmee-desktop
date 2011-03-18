@@ -28,156 +28,166 @@
 #include "PhoneNumber.h"
 #include <QRegExp>
 
-namespace libJackSMS{
-    namespace dataTypes{
-        phoneNumber::phoneNumber():valid(false),specialNumber(false),virtualNumber(false){
+namespace libJackSMS {
+
+    namespace dataTypes {
+
+        phoneNumber::phoneNumber() :
+                valid(false),
+                specialNumber(false),
+                virtualNumber(false)
+        {
         }
 
-        bool
-        phoneNumber::parse(QString _phoneNum){
+        bool phoneNumber::parse(QString _phoneNum) {
+            QRegExp regExp;
 
-            QRegExp  regExp;
             regExp.setPattern(QString("^\\+([0-9]{1,4})\\.([0-9]{1,4})\\.([0-9]{6,8})$"));
-            if (regExp.exactMatch(_phoneNum)){
-                intcode=regExp.cap(1);
-
-                intpref="+"+intcode;
-                pref=regExp.cap(2);
-                if (pref=="555")
-                    virtualNumber=true;
-                num=regExp.cap(3);
-                valid=true;
+            if (regExp.exactMatch(_phoneNum)) {
+                intcode = regExp.cap(1);
+                intpref = "+" + intcode;
+                pref = regExp.cap(2);
+                if (pref == "555")
+                    virtualNumber = true;
+                num = regExp.cap(3);
+                valid = true;
                 return valid;
             }
 
             regExp.setPattern(QString("^([0-9]{1,4})\\.([0-9]{1,4})\\.([0-9]{6,8})$"));
-            if (regExp.exactMatch(_phoneNum)){
-                intcode=regExp.cap(1);
-                intpref=intcode;
-                pref=regExp.cap(2);
-                num=regExp.cap(3);
-                valid=true;
+            if (regExp.exactMatch(_phoneNum)) {
+                intcode = regExp.cap(1);
+                intpref = intcode;
+                pref = regExp.cap(2);
+                num = regExp.cap(3);
+                valid = true;
                 return valid;
             }
 
             regExp.setPattern(QString("^([0-9]{1,4})\\.([0-9]{6,8})$"));
-            if (regExp.exactMatch(_phoneNum)){
-                intcode="39";
-                intpref="+39";
-                pref=regExp.cap(2);
-                if (pref=="555")
-                    virtualNumber=true;
-                num=regExp.cap(3);
-                valid=true;
+            if (regExp.exactMatch(_phoneNum)) {
+                intcode = "39";
+                intpref = "+39";
+                pref = regExp.cap(2);
+                if (pref == "555")
+                    virtualNumber = true;
+                num = regExp.cap(3);
+                valid = true;
                 return valid;
             }
 
             regExp.setPattern("^([0-9]{10})$");
-            if (regExp.exactMatch(_phoneNum)){
-                intcode="39";
-                intpref="+39";
-                pref=_phoneNum.left(3);
-                if (pref=="555")
-                    virtualNumber=true;
-                num=_phoneNum.right(7);
-                valid=true;
+            if (regExp.exactMatch(_phoneNum)) {
+                intcode = "39";
+                intpref = "+39";
+                pref = _phoneNum.left(3);
+                if (pref == "555")
+                    virtualNumber = true;
+                num = _phoneNum.right(7);
+                valid = true;
                 return valid;
             }
 
             regExp.setPattern("^\\+([0-9]{12})$");
-            if (regExp.exactMatch(_phoneNum)){
-                intcode=_phoneNum.mid(1,2);
-                intpref="+"+intcode;
-                pref=_phoneNum.mid(3,3);
-                num=_phoneNum.mid(6);
-                valid=true;
+            if (regExp.exactMatch(_phoneNum)) {
+                intcode = _phoneNum.mid(1, 2);
+                intpref = "+" + intcode;
+                pref = _phoneNum.mid(3, 3);
+                num = _phoneNum.mid(6);
+                valid = true;
                 return valid;
             }
+
             regExp.setPattern("^([0-9]{4,5})$");
-            if (regExp.exactMatch(_phoneNum)){
-                intcode="";
-                intpref="";
-                pref="";
-                num=_phoneNum;
-                valid=true;
-                specialNumber=true;
-                virtualNumber=true;
+            if (regExp.exactMatch(_phoneNum)) {
+                intcode = "";
+                intpref = "";
+                pref = "";
+                num = _phoneNum;
+                valid = true;
+                specialNumber = true;
+                virtualNumber = true;
                 return valid;
             }
-            valid=false;
-            alternativeName=_phoneNum;
+
+            regExp.setPattern("^.([0-9]{4,5})$");
+            if (regExp.exactMatch(_phoneNum)) {
+                intcode = "";
+                intpref = "";
+                pref = "";
+                num = regExp.cap(1);
+                valid = true;
+                specialNumber = true;
+                virtualNumber = true;
+                return valid;
+            }
+
+            valid = false;
+            alternativeName = _phoneNum;
             return valid;
         }
 
-
-        QString
-        phoneNumber::getIntCode() const {
-                return intcode;
+        QString phoneNumber::getIntCode() const {
+            return intcode;
         }
 
-        QString
-        phoneNumber::getIntNum() const {
+        QString phoneNumber::getIntNum() const {
             return pref+num;
         }
 
-        QString
-        phoneNumber::getNum() const {
+        QString phoneNumber::getNum() const {
             return num;
         }
 
-        QString
-        phoneNumber::getIntPref()const {
+        QString phoneNumber::getIntPref()const {
             return intpref;
         }
 
-        QString
-        phoneNumber::getPref() const {
+        QString phoneNumber::getPref() const {
             return pref;
         }
 
-        QString
-        phoneNumber::toString() const {
+        QString phoneNumber::toString() const {
             if (specialNumber)
-                return (valid)?num:QString("");
+                return (valid) ? num : QString("");
             else
-                return (valid)?intpref+QString(".")+pref+QString(".")+num:QString("");
+                return (valid) ? intpref + QString(".") + pref + QString(".") + num:QString("");
         }
 
-
-        void phoneNumber::setAltName(const QString &_name){
-            alternativeName=_name;
-
+        void phoneNumber::setAltName(const QString &_name) {
+            alternativeName = _name;
         }
-        QString phoneNumber::getAltName() const{
+
+        QString phoneNumber::getAltName() const {
             return alternativeName;
-
-
         }
-        void phoneNumber::setIsValid(bool v){
-            valid=v;
+
+        void phoneNumber::setIsValid(bool v) {
+            valid = v;
         }
-        bool phoneNumber::getIsValid() const{
+
+        bool phoneNumber::getIsValid() const {
             return valid;
         }
-        void phoneNumber::setVirtual(bool v){
-            virtualNumber=v;
+
+        void phoneNumber::setVirtual(bool v) {
+            virtualNumber = v;
         }
-        bool phoneNumber::getVirtual() const{
+        bool phoneNumber::getVirtual() const {
             return virtualNumber;
-
         }
-        bool phoneNumber::operator==(const phoneNumber &_other){
-            if (intcode!=_other.intcode) return false;
-            if ( intpref!=_other.intpref) return false;
-            if ( num!=_other.num) return false;
-            if ( intnum!=_other.intnum) return false;
-            if ( pref!=_other.pref) return false;
-            if ( alternativeName!=_other.alternativeName) return false;
-            if ( valid!=_other.valid) return false;
-            if ( specialNumber!=_other.specialNumber) return false;
-            if ( virtualNumber!=_other.virtualNumber) return false;
-            return true;
 
+        bool phoneNumber::operator==(const phoneNumber &_other) {
+            if (intcode != _other.intcode) return false;
+            if ( intpref != _other.intpref) return false;
+            if ( num != _other.num) return false;
+            if ( intnum != _other.intnum) return false;
+            if ( pref != _other.pref) return false;
+            if ( alternativeName != _other.alternativeName) return false;
+            if ( valid != _other.valid) return false;
+            if ( specialNumber != _other.specialNumber) return false;
+            if ( virtualNumber != _other.virtualNumber) return false;
+            return true;
         }
     }
 }

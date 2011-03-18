@@ -40,6 +40,7 @@ public:
     SmsWidget(QMyMessage _sms,QPixmap _ico,bool received);
     //solo per il "Carica Altri Messaggi"
     SmsWidget(QString _txt);
+
     bool isCaricaAltri()const;
     QString getId()const;
     bool isReceived()const;
@@ -48,6 +49,7 @@ public:
     void setReaded(bool _r);
     QString getText()const;
     QString getName()const;
+    void setName(QString newname);
     libJackSMS::dataTypes::phoneNumber getPhoneNum()const;
     void resizeEvent ( QResizeEvent *  );
     QSize getSize();

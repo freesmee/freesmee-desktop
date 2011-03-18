@@ -15,8 +15,8 @@ namespace Ui {
 class AggiungiContatto : public QDialog {
     Q_OBJECT
 public:
-    AggiungiContatto(QWidget *parent , MainJackSMS * _padre,libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati,libJackSMS::dataTypes::phoneBookType &_Rubrica,libJackSMS::dataTypes::servicesType &_ElencoServizi,libJackSMS::dataTypes::optionsType & _opzioni);
-
+    AggiungiContatto(QWidget *parent , MainJackSMS *_padre, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati,libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::optionsType & _opzioni);
+    AggiungiContatto(QWidget *parent , MainJackSMS *_padre, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati,libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::optionsType & _opzioni, QString nome, libJackSMS::dataTypes::phoneNumber numero, bool onlyJMS);
     ~AggiungiContatto();
 
 protected:

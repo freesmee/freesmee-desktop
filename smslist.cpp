@@ -52,3 +52,21 @@ void SmsList::hideCaricaAltri(bool hide) {
     else
         setItemHidden(item(count()-1), false);
 }
+
+void SmsList::changeNameForGivenNumber(libJackSMS::dataTypes::phoneNumber numero, QString newname) {
+    for (int i = 0; i < count()-1; ++i) {
+        SmsWidget* smswid = dynamic_cast<SmsWidget*>(itemWidget(item(i)));
+        if (smswid->getPhoneNum() == numero) {
+            smswid->setName(newname);
+        }
+    }
+}
+
+void SmsList::changeNameForGivenContact(libJackSMS::dataTypes::contact c, QString newname) {
+    for (int i = 0; i < count()-1; ++i) {
+        SmsWidget* smswid = dynamic_cast<SmsWidget*>(itemWidget(item(i)));
+        if ((smswid->getPhoneNum() == c.getPhone()) || (smswid->getPhoneNum() == c.getVirtualNumber())) {
+            smswid->setName(newname);
+        }
+    }
+}

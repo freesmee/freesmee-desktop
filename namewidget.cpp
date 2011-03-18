@@ -1,20 +1,23 @@
 #include "namewidget.h"
 
-NameWidget::NameWidget(QString _name, QString _lastMessage, QDateTime _lastTime, QString _lastId, int _unreadCount)
+NameWidget::NameWidget(QString _name, libJackSMS::dataTypes::phoneNumber _numero, QString _lastMessage, QDateTime _lastTime, QString _lastId, int _unreadCount)
 {
     setStyleSheet("NameWidget{"
                   "background-image: url(:/resource/bg_top.png);"
                   "background-repeat:repeat-x;"
                   "}");
+
     unreadCount = _unreadCount;
     name = _name;
+    numero = _numero;
+
     if(_name.length() > 16)
         _name = _name.left(13) + "...";
 
     labelName = new QLabel(_name);
-    labelName->setFont(QFont(labelName->font().family(),-1,QFont::Bold,false));
+    labelName->setFont(QFont(labelName->font().family(), -1, QFont::Bold, false));
     labelName->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
-    labelName->setMaximumSize(150,15);
+    labelName->setMaximumSize(150, 15);
 
     lastMessage = _lastMessage;
     if(_lastMessage.length() > 20)
@@ -59,6 +62,19 @@ NameWidget::NameWidget(QString _name, QString _lastMessage, QDateTime _lastTime,
 
 QString NameWidget::getName() const{
     return name;
+}
+
+void NameWidget::setName(QString newname) {
+    name = newname;
+
+    if(newname.length() > 16)
+        newname = newname.left(13) + "...";
+
+    labelName->setText(newname);
+}
+
+libJackSMS::dataTypes::phoneNumber NameWidget::getPhoneNum() const{
+    return numero;
 }
 
 QString NameWidget::getId() const{

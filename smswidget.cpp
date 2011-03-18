@@ -4,7 +4,7 @@
 #include <QDateTime>
 #include <QDesktopServices>
 
-SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QString user,QString service,QString _id,libJackSMS::dataTypes::phoneNumber _number,bool _letto) :
+SmsWidget::SmsWidget(QString _txt, QPixmap _ico, bool received, QDateTime time ,QString user, QString service, QString _id, libJackSMS::dataTypes::phoneNumber _number, bool _letto) :
         originalText(_txt),
         type(received),
         id(_id),
@@ -15,30 +15,30 @@ SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QStr
 {
     name = user;
     labelGroup = new QLabel(user);
-    labelGroup->setFont(QFont(labelGroup->font().family(),-1,QFont::Bold,false));
+    labelGroup->setFont(QFont(labelGroup->font().family(), -1, QFont::Bold, false));
     labelGroup->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
     labelGroup->setMaximumSize(10000,18);
 
-    labelIco=new QLabel();
+    labelIco = new QLabel();
     if (!service.isEmpty())
-        service=service+" - ";
-    labelService=new QLabel(service);
-    labelService->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
-    labelService->setMaximumSize(10000,18);
+        service = service + " - ";
+    labelService = new QLabel(service);
+    labelService->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+    labelService->setMaximumSize(10000, 18);
 
-    labelIcoReceived=new QLabel();
-    labelIcoReceived->setMaximumSize(16,16);
-    labelIcoReceived->setMinimumSize(16,16);
+    labelIcoReceived = new QLabel();
+    labelIcoReceived->setMaximumSize(16, 16);
+    labelIcoReceived->setMinimumSize(16, 16);
     createBubble(_letto, received);
 
     labelIco->setPixmap(_ico);
-    labelIco->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
-    labelIco->setMaximumSize(16,16);
-    labelIco->setMinimumSize(16,16);
+    labelIco->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    labelIco->setMaximumSize(16, 16);
+    labelIco->setMinimumSize(16, 16);
 
     labelTime = new QLabel(time.toString("dd/MM/yyyy hh:mm:ss"));
 
-    labelTime->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
+    labelTime->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     labelTime->setMaximumSize(10000, 18);
 
     _txt = _txt.replace("<", "&lt;");
@@ -50,9 +50,9 @@ SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QStr
     labelTxt = new QLabel(_txt);
 
     labelTxt->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
-    labelTxt->setWordWrap (true);
-    labelTxt->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-    connect(labelTxt,SIGNAL(linkActivated(QString)),this,SLOT(openUrl(QString)));
+    labelTxt->setWordWrap(true);
+    labelTxt->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    connect(labelTxt, SIGNAL(linkActivated(QString)), this, SLOT(openUrl(QString)));
 
     hLayout = new QHBoxLayout;
     vLayout = new QVBoxLayout;
@@ -72,7 +72,7 @@ SmsWidget::SmsWidget(QString _txt,QPixmap _ico,bool received,QDateTime time,QStr
     vLayout->addWidget(labelTxt);
 
     setLayout(vLayout);
-    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     adjustSize();
 }
 
@@ -160,10 +160,10 @@ SmsWidget::SmsWidget(QString _txt) :
     nameFiltered = false;
 
     labelTxt = new QLabel(originalText);
-    labelTxt->setFont(QFont(labelTxt->font().family(),-1,QFont::Bold,false));
+    labelTxt->setFont(QFont(labelTxt->font().family(), -1, QFont::Bold, false));
     labelTxt->setAlignment(Qt::AlignCenter);
     labelTxt->setWordWrap(true);
-    labelTxt->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+    labelTxt->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     labelTxt->adjustSize();
     setStyleSheet("SmsWidget{"
                   "background-color: #C1FFC1;"
@@ -184,7 +184,7 @@ SmsWidget::SmsWidget(QString _txt) :
     vLayout = new QVBoxLayout;
     vLayout->addWidget(labelTxt);
     setLayout(vLayout);
-    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     adjustSize();
 }
 
@@ -357,6 +357,13 @@ QDateTime SmsWidget::getDateTime() const{
 
 QString SmsWidget::getName() const{
     return name;
+}
+
+void SmsWidget::setName(QString newname) {
+    if (!caricaAltri) {
+        name = newname;
+        labelGroup->setText(name);
+    }
 }
 
 bool SmsWidget::isCaricaAltri() const{

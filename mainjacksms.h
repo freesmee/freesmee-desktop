@@ -55,11 +55,15 @@ public:
     QString current_login_id;
     libJackSMS::serverApi::login *signin;
 
-
     QSize windowSize;
     QTimer resizeTimer;
     QString result;
     QString phone2name(const libJackSMS::dataTypes::phoneNumber &_number);
+    bool isInRubrica(const libJackSMS::dataTypes::phoneNumber &_number);
+
+    void updateSmsListAfterContactEdited(libJackSMS::dataTypes::contact c);
+    void updateSmsListAfterContactAdded(libJackSMS::dataTypes::contact c);
+    void updateSmsListAfterContactRemoved(libJackSMS::dataTypes::contact c);
 
 public slots:
     void anotherInstanceOpened(const QString &str);
@@ -148,11 +152,14 @@ private:
 
     void rubricaBarTutti();
     void rubricaBarJMS();
+    void addServiceToServiceComboBox(accountWidget *acc, bool isJacksmsMessenger = false);
+    void checkSalvaButtonStatusToSet();
 
 public slots:
     void ReWriteAddressBookToGui();
 
 private slots:
+    void on_SalvaNumeroButton_clicked();
     void on_recipientListWidget_itemDoubleClicked(QListWidgetItem* item);
     void on_RicercaVeloceButton_clicked();
     void on_RicercaVeloce_textChanged(QString txt);
@@ -198,7 +205,6 @@ private slots:
     void startIm();
     void stopIm();
     void on_password_returnPressed();
-    void on_comboServizio_currentIndexChanged(QString );
     void on_actionLogout_triggered();
     void on_RubricaVeloce_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void on_smsListWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
@@ -207,7 +213,6 @@ private slots:
     void gestiscimenuSingolo();
     void gestiscimenuMultiplo();
     void on_comboServizio_currentIndexChanged(int index);
-    void on_comboServizio_activated(QString );
     void on_TestoSMS_textChanged();
     void on_actionImporta_Backup_triggered();
     void on_actionCrea_backup_configurazione_triggered();

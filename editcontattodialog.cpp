@@ -33,12 +33,13 @@ editcontattodialog::editcontattodialog(QWidget *parent , MainJackSMS * _padre,co
     libJackSMS::dataTypes::contact contatto(Rubrica[contactId]);
 
     {
-        libJackSMS::dataTypes::configuredServicesType::const_iterator i=ElencoServiziConfigurati.begin();
-        libJackSMS::dataTypes::configuredServicesType::const_iterator i_end=ElencoServiziConfigurati.end();
-        for(;i!=i_end;++i){
-            m_ui->comboaccount->addItem(_ElencoServizi[i->getService()].getIcon(),i->getName());
+        for (libJackSMS::dataTypes::configuredServicesType::const_iterator i = ElencoServiziConfigurati.begin(); i != ElencoServiziConfigurati.end(); ++i) {
+            if (i.value().getId() != "0") {
+                m_ui->comboaccount->addItem(ElencoServizi[i.value().getService()].getIcon(),i.value().getName());
+            }
         }
         m_ui->comboaccount->model()->sort(0);
+        m_ui->comboaccount->insertItem(0, ElencoServizi[ElencoServiziConfigurati["0"].getService()].getIcon(), ElencoServiziConfigurati["0"].getName());
     }
 
     m_ui->nome->setText(contatto.getName());
@@ -113,9 +114,10 @@ void editcontattodialog::on_salva_clicked()
 }
 
 void editcontattodialog::salvataggioOk(libJackSMS::dataTypes::contact c){
-    Rubrica[c.getId()]=c;
+    Rubrica[c.getId()] = c;
     padre->ReWriteAddressBookToGui();
-    this->close();
+    padre->updateSmsListAfterContactEdited(c);
+    close();
 }
 void editcontattodialog::salvataggioKo(){
     m_ui->salva->setEnabled(true);

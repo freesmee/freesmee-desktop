@@ -30,7 +30,7 @@ namespace libJackSMS{
                 account(_account),
                 canReceiveJms(false)
             {
-                //per evitare errori (da togliere il seguito quando si sarà certi che se CanReceiveJMS = false non si accede al virtuale
+                //workaround per evitare errori (da togliere il seguito quando si sarà certi che se CanReceiveJMS = false non si accede al virtuale
                 virtuale.parse("0000000000");
             }
 
