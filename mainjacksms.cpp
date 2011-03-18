@@ -2319,20 +2319,36 @@ void MainJackSMS::on_smsListWidget_currentItemChanged(QListWidgetItem* current, 
 
         SmsWidget *www = static_cast<SmsWidget*>(ui->smsListWidget->itemWidget(current));
 
-        if (www->isReceived()) {
-            ui->InoltraButton->setVisible(false);
-            ui->RispondiButton->setVisible(true);
-            ui->CitaButton->setVisible(true);
-        } else {
+        if (www->isCaricaAltri()) {
+
             ui->RispondiButton->setVisible(false);
             ui->CitaButton->setVisible(false);
-            ui->InoltraButton->setVisible(true);
+            ui->InoltraButton->setVisible(false);
+            ui->SalvaNumeroButton->setVisible(false);
+
+        } else {
+
+            if (www->isReceived()) {
+                ui->InoltraButton->setVisible(false);
+                ui->RispondiButton->setVisible(true);
+                ui->CitaButton->setVisible(true);
+            } else {
+                ui->RispondiButton->setVisible(false);
+                ui->CitaButton->setVisible(false);
+                ui->InoltraButton->setVisible(true);
+            }
+
+            if (isInRubrica(www->getPhoneNum()))
+                ui->SalvaNumeroButton->setVisible(false);
+            else
+                ui->SalvaNumeroButton->setVisible(true);
         }
 
-        if (isInRubrica(www->getPhoneNum()))
-            ui->SalvaNumeroButton->setVisible(false);
-        else
-            ui->SalvaNumeroButton->setVisible(true);
+    } else {
+        ui->RispondiButton->setVisible(false);
+        ui->CitaButton->setVisible(false);
+        ui->InoltraButton->setVisible(false);
+        ui->SalvaNumeroButton->setVisible(false);
     }
 }
 
@@ -3089,8 +3105,15 @@ void MainJackSMS::updateSmsListAfterContactRemoved(libJackSMS::dataTypes::contac
 }
 
 void MainJackSMS::checkSalvaButtonStatusToSet() {
-    if (isInRubrica(static_cast<SmsWidget*>(ui->smsListWidget->itemWidget(ui->smsListWidget->item(ui->smsListWidget->currentRow())))->getPhoneNum()))
-        ui->SalvaNumeroButton->setVisible(false);
-    else
-        ui->SalvaNumeroButton->setVisible(true);
+    if (ui->smsListWidget->currentRow() != -1) {
+        SmsWidget* smswid = static_cast<SmsWidget*>(ui->smsListWidget->itemWidget(ui->smsListWidget->item(ui->smsListWidget->currentRow())));
+        if (smswid->isCaricaAltri()) {
+            ui->SalvaNumeroButton->setVisible(false);
+        } else {
+            if (isInRubrica(smswid->getPhoneNum()))
+                ui->SalvaNumeroButton->setVisible(false);
+            else
+                ui->SalvaNumeroButton->setVisible(true);
+        }
+    }
 }
