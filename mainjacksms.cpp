@@ -3091,20 +3091,27 @@ void MainJackSMS::updateSmsListAfterContactEdited(libJackSMS::dataTypes::contact
 }
 
 void MainJackSMS::updateSmsListAfterContactRemoved(libJackSMS::dataTypes::contact c) {
-    NameWidget* namewid = ui->listSmsNames->findNameWidget(c);
-    QString newname = phone2name(c.getPhone());
 
-    if (namewid != NULL) {
-        namewid->setName(newname);
+    try {
+        NameWidget* namewid = ui->listSmsNames->findNameWidget(c);
 
-        // se c'è il namewidget ci sono anche dei messaggi già caricati
-        ui->smsListWidget->changeNameForGivenContact(c, newname);
-    }
+        if (namewid != NULL) {
+            QString newname = c.getPhone().toString();
+            if (c.getPhone().getAltName() != "")
+                newname = newname + " (" + c.getPhone().getAltName() + ")";
 
-    checkSalvaButtonStatusToSet();
+            namewid->setName(newname);
+
+            // se c'è il namewidget ci sono anche dei messaggi già caricati
+            ui->smsListWidget->changeNameForGivenContact(c, newname);
+        }
+
+        checkSalvaButtonStatusToSet();
+    } catch (...) {/*non beccherà mai niente ma sempre meglio non rischiare*/}
 }
 
 void MainJackSMS::checkSalvaButtonStatusToSet() {
+
     if (ui->smsListWidget->currentRow() != -1) {
         SmsWidget* smswid = static_cast<SmsWidget*>(ui->smsListWidget->itemWidget(ui->smsListWidget->item(ui->smsListWidget->currentRow())));
         if (smswid->isCaricaAltri()) {
@@ -3116,4 +3123,5 @@ void MainJackSMS::checkSalvaButtonStatusToSet() {
                 ui->SalvaNumeroButton->setVisible(true);
         }
     }
+
 }
