@@ -28,15 +28,16 @@
 #include "ProxyConfig.h"
 #include "Encoding.h"
 #include "NetClient.h"
+#include <QMutex>
+
 #ifndef SMSSENDER_HH
 #define SMSSENDER_HH 1
 
-
-
 namespace libJackSMS{
 
-    class smsSender:public QThread{
+    class smsSender:public QThread {
         Q_OBJECT
+
         private:
             dataTypes::phoneNumber destinatario;
             dataTypes::shortMessage messaggio;
@@ -49,6 +50,7 @@ namespace libJackSMS{
             QString captchaValue;
             dataTypes::contentType contenuti;
             bool SalvaCookies;
+
         public:
             smsSender(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps=dataTypes::proxySettings());
             void setRecipient(const dataTypes::phoneNumber & _dest);
@@ -58,6 +60,7 @@ namespace libJackSMS{
             void continueSend(QString captcha_value);
             void abort();
             void setSalvaCookies(bool value);
+
         private slots:
             void slotOperation();
             void slotOperation(QString);
@@ -72,16 +75,13 @@ namespace libJackSMS{
             void error(QString);
             void success(QString);
             void captcha(QByteArray);
-
-
-
     };
 
 
-    class smsSenderBase:public QObject{
+    class smsSenderBase:public QObject {
         Q_OBJECT
-        private:
 
+        private:
             dataTypes::phoneNumber destinatario;
             dataTypes::shortMessage messaggio;
             QString messagiofinale;
@@ -95,6 +95,8 @@ namespace libJackSMS{
             bool captchaInterrupt;
             dataTypes::contentType elenco_contenuti;
             bool SalvaCookies;
+            QMutex mutex;
+
         public:
             smsSenderBase(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps=dataTypes::proxySettings());
             void setNumberOfFirstPage(int _pn);
@@ -111,6 +113,7 @@ namespace libJackSMS{
 
         public slots:
             void abort();
+
         signals:
             void operation();
             void operation(QString);

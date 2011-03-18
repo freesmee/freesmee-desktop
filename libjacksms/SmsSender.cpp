@@ -33,6 +33,7 @@
 #include "FilesDirectory.h"
 #include "Utilities.h"
 #include "Exceptions.h"
+#include <QWaitCondition>
 
 namespace libJackSMS{
 
@@ -279,6 +280,18 @@ namespace libJackSMS{
                         throw netClient::abortedException();
 
                     dataTypes::paginaServizio &paginaCorrente = servizioDaUsare.currentPage();
+
+                    // se la pagina dice di aspettare si aspetta.
+                    if (paginaCorrente.getSleepbefore() > 0) {
+                        mutex.lock();
+
+                        // ricordando che lo sleepbefore è espresso in secondi si moltiplica per 1000 per ottenere i millisecondi
+                        QWaitCondition waitCondition;
+                        waitCondition.wait(&mutex, paginaCorrente.getSleepbefore()*1000);
+
+                        mutex.unlock();
+                    }
+
                     bool doPage = false;
 
                     if (pageCounter >= pageIndex)
@@ -484,13 +497,9 @@ namespace libJackSMS{
                                         webClient->insertFormData(var_name,var_value);
                                         log.addNotice("Aggiunta variabile: "+var_name+" - "+var_value);
                                     }
-
-
-
                                 }
 
                                 {
-
                                     QString html;
                                     if (paginaCorrente.getMethod()=="POST"){
                                         log.addNotice("Inviata richiesta post...");
@@ -567,7 +576,7 @@ namespace libJackSMS{
             //log.save();
 
         } catch(...) {
-            emit error("Impossibile accedere alla rete.");
+            emit error("Errore Generico. Verificare la Connessione.");
 
             //cancello il webclient se è già stato creato
             if(webClient != NULL)

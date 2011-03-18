@@ -29,13 +29,12 @@
 #ifndef PAGINASERVIZIO_HH
 #define PAGINASERVIZIO_HH 1
 
+namespace libJackSMS {
 
+    namespace dataTypes {
 
+        class paginaServizio {
 
-namespace libJackSMS{
-    namespace dataTypes{
-
-        class paginaServizio{
             private:
                 QString url;
                 QString metodo;
@@ -55,14 +54,14 @@ namespace libJackSMS{
                 QList<pageContent>::const_iterator iter_contents;
                 pageError currentError;
                 pageAccept currentAccept;
-                QPair<int,int> currentContentPosition;
+                QPair<int, int> currentContentPosition;
                 bool ha_condizione;
-
+                //Nota: il parametro sleepbefore è in secondi (come passato dal server)
+                int sleepbefore;
 
                 QList<pageCommand> comandi;
                 QList<pageCommand>::const_iterator iter_commands;
                 int counter_iter_commands;
-
 
             public:
                 paginaServizio();
@@ -72,30 +71,31 @@ namespace libJackSMS{
                 QString getMethod() const;
                 void setIsCaptcha(bool _iscaptcha);
                 bool getIsCaptcha() const;
-                void setError(const pageError & _error);
-                void setRetreivedHtml(const QString & _html);
+                void setSleepbefore(int _sleepbefore);
+                int getSleepbefore() const;
+                void setError(const pageError &_error);
+                void setRetreivedHtml(const QString &_html);
                 bool checkErrors();
                 dataTypes::pageError getError();
                 bool checkAccepts();
                 dataTypes::pageAccept getAccept();
                 void setCondition(const QString &_condizione);
-                QString getCondition()const;
+                QString getCondition() const;
                 bool hasCondition() const;
-                void setVariable(const pageVariable & _var);
-                void setContent(const pageContent & _con);
+                void setVariable(const pageVariable &_var);
+                void setContent(const pageContent &_con);
                 bool nextContent();
                 QString currentContentName() const;
                 QString currentContentValue() const;
                 bool currentContentFound();
-                void setAccept(const pageAccept & _acc);
-                void setHeader(const pageHeader & _header);
+                void setAccept(const pageAccept &_acc);
+                void setHeader(const pageHeader &_header);
                 bool nextHeader();
                 pageHeader currentHeader();
                 bool nextVariable();
                 pageVariable currentVariable();
 
-
-                void setCommand(const pageCommand & _cmd);
+                void setCommand(const pageCommand &_cmd);
                 bool nextCommand();
                 pageCommand currentCommand();
                 bool hasRawCommands() const;

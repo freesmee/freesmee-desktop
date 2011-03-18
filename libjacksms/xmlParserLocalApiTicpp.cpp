@@ -312,6 +312,12 @@ namespace libJackSMS{
                                         page.setIsCaptcha(true);
                                 if (thisPageElem->HasAttribute("condition"))
                                     page.setCondition(QString::fromStdString(thisPageElem->GetAttribute("condition")));
+                                if (thisPageElem->HasAttribute("sleepbefore")) {
+                                    bool intConversionCheck = false;
+                                    int intConversion = QString::fromStdString(thisPageElem->GetAttribute("sleepbefore")).toInt(&intConversionCheck);
+                                    if (intConversionCheck)
+                                        page.setSleepbefore(intConversion);
+                                }
 
                                 /*************************/
                                 {
