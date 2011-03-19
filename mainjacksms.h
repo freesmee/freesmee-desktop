@@ -154,6 +154,9 @@ private:
     void rubricaBarJMS();
     void addServiceToServiceComboBox(accountWidget *acc, bool isJacksmsMessenger = false);
     void checkSalvaButtonStatusToSet();
+    void elaboraRecipientLine(bool StealFocus = true);
+
+    QList<QString> JMSServicesDropped;
 
 public slots:
     void ReWriteAddressBookToGui();

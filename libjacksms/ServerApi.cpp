@@ -73,13 +73,6 @@ namespace libJackSMS{
 
         }
         void login::slotAccountsReceived(libJackSMS::dataTypes::configuredServicesType serviziConfigurati){
-            /*dataTypes::configuredAccount account;
-            account.setId("0");
-            account.setName("JackSMS Messenger");
-            account.setService("40");
-            account.setData("data1",username);
-            account.setData("data2",password);
-            serviziConfigurati.insert(account.getId(),account);*/
             emit accountsReceived(serviziConfigurati);
         }
         void login::slotNewVersionAvailable(){
@@ -118,13 +111,13 @@ namespace libJackSMS{
                 else{
                     xmlResponse->setXml(xml);
                     if (xmlResponse->checkIsLogged()){
-                        emit this->loginSuccess(xmlResponse->getSessionId());
+                        emit loginSuccess(xmlResponse->getSessionId());
                         dataTypes::phoneBookType _rubrica;
                         xmlResponse->loadPhoneBook(_rubrica);
-                        emit this->phoneBookReceived(_rubrica);
+                        emit phoneBookReceived(_rubrica);
                         dataTypes::configuredServicesType _serviziConfigurati;
                         xmlResponse->loadAccounts(_serviziConfigurati);
-                        emit this->accountsReceived(_serviziConfigurati);
+                        emit accountsReceived(_serviziConfigurati);
                         dataTypesApi::clientVersion v(xmlResponse->getVersion());
                         dataTypesApi::clientVersion thisVersion(JACKSMS_VERSION);
                         if (thisVersion<v)
@@ -192,25 +185,18 @@ namespace libJackSMS{
             }
         }
 
-        bool synchronizeVariables(dataTypes::configuredServicesType & _serviziConfigurati,const dataTypes::servicesType & _servizi){
-            dataTypes::configuredServicesType::iterator i=_serviziConfigurati.begin();
-            dataTypes::configuredServicesType::iterator i_end =_serviziConfigurati.end();
-            for(;i!=i_end;++i){
-                dataTypes::servicesType::const_iterator iter=_servizi.find(i.value().getService());
-                if (iter!=_servizi.end()){
-                    dataTypes::service servizio=iter.value();
-                    while(servizio.nextVar()){
-                        dataTypes::variabileServizio var=servizio.currentVar();
-
+        void synchronizeVariables(dataTypes::configuredServicesType &_serviziConfigurati, const dataTypes::servicesType &_servizi) {
+            for (dataTypes::configuredServicesType::iterator i = _serviziConfigurati.begin(); i != _serviziConfigurati.end(); ++i) {
+                dataTypes::servicesType::const_iterator iter = _servizi.find(i.value().getService());
+                if (iter != _servizi.end()) {
+                    dataTypes::service servizio = iter.value();
+                    while (servizio.nextVar()) {
+                        dataTypes::variabileServizio var = servizio.currentVar();
                         i.value().setData(var.getName(),i.value().getData("data"+var.getProgressive()));
                         //std::cout<<(servizio.getName()+" sostituita data"+var.getProgressive()+" con "+var.getName()+" (valore "+i.value().getData("data"+var.getProgressive())+")")<<std::endl;;
                     }
-                }else{
-                    return false;
                 }
             }
-
-            return true;
         }
 
         instantMessenger::instantMessenger(const QString &_loginId,dataTypes::proxySettings _ps ):
@@ -1129,7 +1115,7 @@ namespace libJackSMS{
         }
 
         void Streamer::ping() {
-            if (sock.write("GET /ping\n\n")!=-1)
+            if (sock.write("GET /ping HTTP/1.1\n\n")!=-1)
                 pingTimeout.start(60*1000);
             else
                 emit serviceNotActive(true,"Ping failed");
@@ -1204,7 +1190,7 @@ namespace libJackSMS{
 
                             if(queueCount == 0){
                                 QString idl = idList.join(",");
-                                QString sn = QString("GET /queueAck?id=") + idl + QString("\n\n");
+                                QString sn = QString("GET /queueAck?id=") + idl + QString(" HTTP/1.1\n\n");
                                 sock.write(sn.toAscii());
                                 status = queueProcessed;
                             }
@@ -1235,7 +1221,7 @@ namespace libJackSMS{
                             QString recipNumber = r.cap(9);
                             QString text = QString::fromUtf8(r.cap(10).toAscii(), r.cap(10).length());
 
-                            QString sn = QString("GET /ack?id=") + id + QString("\n\n");
+                            QString sn = QString("GET /ack?id=") + id + QString(" HTTP/1.1\n\n");
                             sock.write(sn.toAscii());
 
                             libJackSMS::dataTypes::phoneNumber num;

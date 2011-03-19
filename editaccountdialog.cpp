@@ -4,7 +4,7 @@
 #include <QLabel>
 #include <libjacksms/libJackSMS.h>
 #include <QMessageBox>
-editAccountDialog::editAccountDialog(libJackSMS::dataTypes::configuredServicesType &_acc,libJackSMS::dataTypes::servicesType &_services ,QString _id,QString _current_login_id,libJackSMS::dataTypes::optionsType &_opzioni,QWidget *parent) :
+editAccountDialog::editAccountDialog(libJackSMS::dataTypes::configuredServicesType &_acc, libJackSMS::dataTypes::servicesType &_services, QString _id, QString _current_login_id, libJackSMS::dataTypes::optionsType &_opzioni, QWidget *parent) :
     QDialog(parent),
     accounts(_acc),
     services(_services),
@@ -15,20 +15,19 @@ editAccountDialog::editAccountDialog(libJackSMS::dataTypes::configuredServicesTy
 {
     ui->setupUi(this);
 
-    spinner=new QMovie(":/resource/loading-spinner.gif",QByteArray("gif"),this);
+    spinner = new QMovie(":/resource/loading-spinner.gif",QByteArray("gif"),this);
     spinner->setScaledSize(QSize(16,16));
     spinner->start();
     ui->labelSpin->setMovie(spinner);
     ui->labelSpin->hide();
 
-    libJackSMS::dataTypes::configuredServicesType::const_iterator iterator=accounts.find(id);
-    libJackSMS::dataTypes::servicesType::iterator iterator_serv=services.find(iterator->getService());
-    if (iterator_serv!=services.end()){
-        currentAccount=accounts[id];
-        QString nomeServizio=currentAccount.getName();
+    libJackSMS::dataTypes::configuredServicesType::const_iterator iterator = accounts.find(id);
+    libJackSMS::dataTypes::servicesType::iterator iterator_serv = services.find(iterator->getService());
+    if (iterator_serv != services.end()) {
+        currentAccount = accounts[id];
+        QString nomeServizio = currentAccount.getName();
 
-
-        for(int i = ui->serviceDataForms->rowCount() - 1; i >= 0; i--){
+        for (int i = ui->serviceDataForms->rowCount() - 1; i >= 0; i--) {
             QWidget* w1 = ui->serviceDataForms->itemAt(i, QFormLayout::LabelRole)->widget();
             QWidget* w2 = ui->serviceDataForms->itemAt(i, QFormLayout::FieldRole)->widget();
 
@@ -39,14 +38,16 @@ editAccountDialog::editAccountDialog(libJackSMS::dataTypes::configuredServicesTy
            delete w2;
         }
 
-        ui->serviceDataForms->addRow("descrizione", new QLineEdit(nomeServizio));
+        ui->serviceDataForms->addRow("Nome", new QLineEdit(nomeServizio));
         QLineEdit* linePtr;
-        while(iterator_serv.value().nextVar()){
-            libJackSMS::dataTypes::variabileServizio i=iterator_serv.value().currentVar();
+        while (iterator_serv.value().nextVar()) {
+            libJackSMS::dataTypes::variabileServizio i = iterator_serv.value().currentVar();
             linePtr = new QLineEdit();
-            linePtr->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
+            linePtr->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+
             if(i.getName() == "password" || i.getName() == "passwd" || i.getName() == "psw")
                 linePtr->setEchoMode(QLineEdit::Password);
+
             linePtr->setToolTip(i.getDescription());
             linePtr->setText(iterator->getData(i.getName()));
 

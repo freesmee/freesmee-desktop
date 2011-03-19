@@ -7,6 +7,7 @@
 #include "Configuration.h"
 #include "libjacksms/libJackSMS.h"
 #include "mainjacksms.h"
+#include <QTextCursor>
 
 AggiungiContatto::AggiungiContatto(QWidget *parent, MainJackSMS *_padre, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::optionsType &_opzioni) :
     QDialog(parent),
@@ -41,7 +42,7 @@ AggiungiContatto::AggiungiContatto(QWidget *parent, MainJackSMS *_padre, libJack
 }
 
 //questo è il costruttore per quando si usa il "Salva contatto"
-AggiungiContatto::AggiungiContatto(QWidget *parent, MainJackSMS *_padre, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::optionsType &_opzioni, QString nome, libJackSMS::dataTypes::phoneNumber numero, bool onlyJMS) :
+AggiungiContatto::AggiungiContatto(QWidget *parent, MainJackSMS *_padre, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::optionsType &_opzioni, libJackSMS::dataTypes::phoneNumber numero) :
         QDialog(parent),
         m_ui(new Ui::AggiungiContatto),
         padre(_padre),
@@ -56,7 +57,7 @@ AggiungiContatto::AggiungiContatto(QWidget *parent, MainJackSMS *_padre, libJack
     m_ui->radioEsistente->hide();
     m_ui->radioNuovo->hide();
     {
-        if (onlyJMS) {
+        if (numero.getVirtual()) {
 
             m_ui->comboaccount->addItem(ElencoServizi[ElencoServiziConfigurati["0"].getService()].getIcon(), ElencoServiziConfigurati["0"].getName());
             m_ui->comboaccount->setCurrentIndex(0);
@@ -84,14 +85,13 @@ AggiungiContatto::AggiungiContatto(QWidget *parent, MainJackSMS *_padre, libJack
         m_ui->labelSpin->hide();
     }
 
-    m_ui->nome->setText(nome);
+    m_ui->nome->setText(numero.getAltName());
     m_ui->intPref->setText(numero.getIntPref());
     m_ui->pref->setText(numero.getPref());
     m_ui->num->setText(numero.getNum());
     m_ui->intPref->setEnabled(false);
     m_ui->pref->setEnabled(false);
     m_ui->num->setEnabled(false);
-    m_ui->nome->setFocus();
 }
 
 AggiungiContatto::~AggiungiContatto()

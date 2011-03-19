@@ -36,20 +36,32 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType & _opt,QTextEdit
         m_ui->listWidget->item(3)->~QListWidgetItem();
         /******/
 
-        iter=opt.find("set-account");
-        if (iter!=opt.end())
-            if ("yes"==iter.value())
+        iter = opt.find("set-account");
+        if (iter != opt.end()) {
+            if ("yes" == iter.value()) {
                 m_ui->checkAccountDefault->setChecked(true);
+            } else {
+                m_ui->checkAccountDefault->setChecked(false);
+            }
+        } else {
+            m_ui->checkAccountDefault->setChecked(true);
+        }
 
         iter=opt.find("auto-login");
         if (iter!=opt.end())
             if ("yes"==iter.value())
                 m_ui->opzAutoLogin->setChecked(true);
 
-        iter=opt.find("save-local");
-        if (iter!=opt.end())
-            if ("yes"==iter.value())
+        iter = opt.find("save-local");
+        if (iter != opt.end()) {
+            if ("yes" == iter.value()) {
                 m_ui->checkSalvalocale->setChecked(true);
+            } else {
+                m_ui->checkSalvalocale->setChecked(false);
+            }
+        } else {
+            m_ui->checkSalvalocale->setChecked(true);
+        }
 
         iter=opt.find("opz-svuota-invio-corretto");
         if (iter!=opt.end())
@@ -114,9 +126,15 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType & _opt,QTextEdit
             m_ui->captchaPopup->setChecked(true);
 
     iter=opt.find("error-send-popup");
-    if (iter!=opt.end())
-        if (iter.value()=="yes")
+    if (iter!=opt.end()) {
+        if (iter.value()=="yes") {
             m_ui->errorSmsPopup->setChecked(true);
+        } else {
+            m_ui->errorSmsPopup->setChecked(false);
+        }
+    } else {
+        m_ui->errorSmsPopup->setChecked(true);
+    }
 
     iter=opt.find("proxy-port");
     if (iter!=opt.end())
@@ -185,7 +203,7 @@ void OpzioniDialog::on_pushButton_clicked()
 
 void OpzioniDialog::on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem*)
 {
-  QString ss=current->text();
+  QString ss = current->text();
 
     if (ss.contains("Generali"))
         m_ui->stackedWidget->setCurrentIndex(0);
@@ -295,11 +313,9 @@ void OpzioniDialog::on_pushButton_2_clicked()
 
     if (loggedIn) {
 
-        if (("yes" == opt["set-account"]) != m_ui->checkAccountDefault->isChecked())
-            opt["set-account"]=(m_ui->checkAccountDefault->isChecked())?"yes":"no";
+        opt["set-account"] = (m_ui->checkAccountDefault->isChecked()) ? "yes" : "no";
 
-        if (("yes"==opt["save-local"])!=m_ui->checkSalvalocale->isChecked())
-            opt["save-local"]=(m_ui->checkSalvalocale->isChecked())?"yes":"no";
+        opt["save-local"] = (m_ui->checkSalvalocale->isChecked()) ? "yes" : "no";
 
         if (("yes"==opt["successfull-send-popup"])!=m_ui->successSmsPopup->isChecked())
                 opt["successfull-send-popup"]=(m_ui->successSmsPopup->isChecked())?"yes":"no";
@@ -307,8 +323,7 @@ void OpzioniDialog::on_pushButton_2_clicked()
         if (("yes"==opt["display-captcha-popup"])!=m_ui->captchaPopup->isChecked())
                 opt["display-captcha-popup"]=(m_ui->captchaPopup->isChecked())?"yes":"no";
 
-        if (("yes"==opt["error-send-popup"])!=m_ui->errorSmsPopup->isChecked())
-                opt["error-send-popup"]=(m_ui->errorSmsPopup->isChecked())?"yes":"no";
+        opt["error-send-popup"] = (m_ui->errorSmsPopup->isChecked()) ? "yes" : "no";
 
         if (("yes"==opt["dont-cookies"])!=m_ui->nonSalvaCookies->isChecked())
             opt["dont-cookies"]=(m_ui->nonSalvaCookies->isChecked())?"yes":"no";

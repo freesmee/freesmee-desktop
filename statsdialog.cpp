@@ -29,37 +29,44 @@ StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType & _opzioni,con
 
     QMap<QString, libJackSMS::dataTypes::configuredAccount> tempMap;
     for(libJackSMS::dataTypes::configuredServicesType::const_iterator i = servizi.begin(); i != servizi.end(); ++i) {
-        tempMap.insert(i.value().getName(), i.value());
+        if (i.value().getId() != "0")
+            tempMap.insert(i.value().getName(), i.value());
     }
+
+    // Aggiungo Jacksms Messenger separatamente in modo che sia in cima alla lista
+    libJackSMS::dataTypes::configuredServicesType::const_iterator i = servizi.find("0");
+    QHBoxLayout *hLayout = new QHBoxLayout;
+    {
+        QLabel *l = new QLabel;
+        l->setPixmap(ElencoServizi[i.value().getService()].getIcon().pixmap(16,16));
+        l->setFixedSize(16,16);
+        hLayout->addWidget(l);
+    }
+    {
+        QTextEdit *l = new QTextEdit;
+
+        QString result="<b>"+i.value().getName()+"</b><br>Inviati oggi da tutti i client: "+i.value().getStat("sent-all")+"<br>Totale inviati da JackSMS Desktop: "+i.value().getStat("sent");
+        l->setText(result);
+        l->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::MinimumExpanding);
+        l->setMaximumHeight(50);
+        l->setReadOnly(true);
+        hLayout->addWidget(l);
+    }
+    m_ui->layoutStatistiche->addLayout(hLayout);
+
 
     for(libJackSMS::dataTypes::configuredServicesType::const_iterator i = tempMap.begin(); i != tempMap.end(); ++i) {
         QHBoxLayout *hLayout = new QHBoxLayout;
         {
             QLabel *l = new QLabel;
-            /*QMap<QString,QPixmap>::const_iterator x=Icone.find(i.value().getService());
-            if (x!=Icone.end())
-                l->setPixmap(x.value());
-*/
             l->setPixmap(ElencoServizi[i.value().getService()].getIcon().pixmap(16,16));
             l->setFixedSize(16,16);
             hLayout->addWidget(l);
         }
         {
-            QTextEdit *l=new QTextEdit;
+            QTextEdit *l = new QTextEdit;
 
             QString result="<b>"+i.value().getName()+"</b><br>Inviati oggi da tutti i client: "+i.value().getStat("sent-all")+"<br>Totale inviati da JackSMS Desktop: "+i.value().getStat("sent");
-            /*
-            QString id=i.value().getService();
-
-            QString reset=_ElencoServizi[id].getReset();
-            if (reset.toUpper()=="DAILY"){
-                result=result.append("<br>Inviati oggi: "+i.value().getStat("sent-partial"));
-            }else if (reset.toUpper()=="MONTHLY"){
-                result=result.append("<br>Inviati in questo mese: "+i.value().getStat("sent-partial"));
-            }else if (reset.toUpper()=="WEEKLY"){
-                result=result.append("<br>Inviati in questa settimana: "+i.value().getStat("sent-partial"));
-            }*/
-
             l->setText(result);
             l->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::MinimumExpanding);
             l->setMaximumHeight(50);

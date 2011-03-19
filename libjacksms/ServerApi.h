@@ -140,7 +140,7 @@ namespace libJackSMS{
                 void pinged();
         };
 
-        bool synchronizeVariables(dataTypes::configuredServicesType & _serviziConfigurati,const dataTypes::servicesType & _servizi);
+        void synchronizeVariables(dataTypes::configuredServicesType & _serviziConfigurati,const dataTypes::servicesType & _servizi);
 
         /*! \brief riceve i messaggi JMS in coda
           \ingroup serverApi

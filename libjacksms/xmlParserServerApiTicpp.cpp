@@ -212,32 +212,33 @@ namespace libJackSMS{
         }
         bool xmlParserServerApiTicpp::loadAccounts(libJackSMS::dataTypes::configuredServicesType & _serviziConfigurati){
             try{
-                ticpp::Node * subRoot=xmlResponse.FirstChild("JackSMS");
-                ticpp::Node * accountsNode=subRoot->FirstChild("Services");
+                ticpp::Node * subRoot = xmlResponse.FirstChild("JackSMS");
+                ticpp::Node * accountsNode = subRoot->FirstChild("Services");
 
                 ticpp::Node *child=NULL;
-                while( (child = accountsNode->IterateChildren(child)) ){
-                    ticpp::Element * curElem= child->ToElement();
+                while((child = accountsNode->IterateChildren(child))) {
+                    ticpp::Element * curElem = child->ToElement();
                     dataTypes::configuredAccount account;
                     account.setId(QString::fromStdString(curElem->GetAttribute("account_id")));
-                    std::string tmp=curElem->GetAttribute("account_name");
-                    account.setName(QString::fromUtf8(tmp.c_str(),tmp.length()));
+                    std::string tmp = curElem->GetAttribute("account_name");
+                    account.setName(QString::fromUtf8(tmp.c_str(), tmp.length()));
                     account.setService(QString::fromStdString(curElem->GetAttribute("service_id")));
                     {
-                        int counter=1;
-                        bool attributeNotFound=false;
-                        while(!attributeNotFound){
-                            if (curElem->HasAttribute("data"+QString::number(counter).toStdString())){
-                                account.setData(QString("data")+QString::number(counter),utilities::Base64Decode(QString::fromStdString(curElem->GetAttribute("data"+QString::number(counter).toStdString()))));
+                        int counter = 1;
+                        bool attributeNotFound = false;
+                        while (!attributeNotFound) {
+                            QString stringa = "data" + QString::number(counter);
+                            if (curElem->HasAttribute(stringa.toStdString())) {
+                                account.setData(stringa, utilities::Base64Decode(QString::fromStdString(curElem->GetAttribute(stringa.toStdString()))));
                                 counter++;
-                            }else{
-                                attributeNotFound=true;
+                            } else {
+                                attributeNotFound = true;
                             }
                         }
                     }
                     account.setStat("sent-all",QString::fromStdString(curElem->GetAttributeOrDefault("n","0")));
 
-                    _serviziConfigurati.insert(account.getId(),account);
+                    _serviziConfigurati.insert(account.getId(), account);
                 }
 
             }catch(ticpp::Exception e){

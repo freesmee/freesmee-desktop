@@ -500,7 +500,7 @@ QFrame#frame_3_old{
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <property name="iconSize">
            <size>
@@ -562,7 +562,7 @@ QFrame#frame_3_old{
                        <widget class="QComboBox" name="comboServizio">
                         <property name="minimumSize">
                          <size>
-                          <width>160</width>
+                          <width>170</width>
                           <height>24</height>
                          </size>
                         </property>

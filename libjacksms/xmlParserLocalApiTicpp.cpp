@@ -31,8 +31,6 @@
 #include <iostream>
 #include <QFile>
 
-
-
 namespace libJackSMS{
 
     namespace xmlParserApi{
@@ -449,7 +447,7 @@ namespace libJackSMS{
                     {
                         ticpp::Node *node=child->FirstChild("data");
                         ticpp::Node *thisNode=NULL;
-                        while( (thisNode = node->IterateChildren( thisNode )) ){
+                        while((thisNode = node->IterateChildren(thisNode))) {
                             account.setData(QString::fromStdString(thisNode->Value()),utilities::Base64Decode(QString::fromStdString(thisNode->ToElement()->GetTextOrDefault(""))));
                         }
                     }
@@ -883,9 +881,12 @@ namespace libJackSMS{
                                 else
                                     r="0";
                                 i.value().setStat("sent-partial",r);
-                                //se=child->FirstChild("sent-all");
-                                //r=QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));
-                                //i.value().setStat("sent-all",r);
+                                se=child->FirstChild("sent-all");
+                                if(se!=NULL)
+                                    r=QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));
+                                else
+                                    r="0";
+                                i.value().setStat("sent-all",r);
                             }
 
                         }

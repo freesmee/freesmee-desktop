@@ -180,9 +180,14 @@ namespace libJackSMS{
                     cookies->saveToDisk(cookieFilename);
                 }
 
-                QVariant redirect=reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
-                if (redirect.isValid()){
-                    url=redirect.toUrl();
+                QVariant redirect = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
+                if (redirect.isValid()) {
+
+                    QUrl redurl = redirect.toUrl();
+                    if (redurl.isRelative())
+                        redurl = url.resolved(redurl);
+
+                    url = redurl;
                     readPage(false);
                 }
 
@@ -242,7 +247,12 @@ namespace libJackSMS{
 
                 QVariant redirect=reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
                 if (redirect.isValid()){
-                    url=redirect.toUrl();
+
+                    QUrl redurl = redirect.toUrl();
+                    if (redurl.isRelative())
+                        redurl = url.resolved(redurl);
+
+                    url = redurl;
                     readPage(false);
                 }
 
@@ -320,8 +330,12 @@ namespace libJackSMS{
 
                 QVariant redirect=reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
                 if (redirect.isValid()){
-                    url=redirect.toUrl();
 
+                    QUrl redurl = redirect.toUrl();
+                    if (redurl.isRelative())
+                        redurl = url.resolved(redurl);
+
+                    url = redurl;
                     readPage(false);
                 }
 

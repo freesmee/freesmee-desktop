@@ -108,19 +108,28 @@
                <property name="text">
                 <string>Salva i messaggi in locale</string>
                </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item>
               <widget class="QCheckBox" name="checkAccountDefault">
                <property name="text">
-                <string>Imposta l'account di default quando selezioni un contatto</string>
+                <string>Imposta l'account associato quando selezioni un contatto</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QCheckBox" name="errorSmsPopup">
                <property name="text">
-                <string>Segnala con un popup l'errore sull'invio di un SMS oJMS</string>
+                <string>Segnala con un popup l'errore sull'invio di un SMS o JMS</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -312,6 +321,9 @@
               <widget class="QCheckBox" name="CheckAbilitaIM">
                <property name="text">
                 <string>Attiva ricezione messaggi JMS all'avvio di JackSMS</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
                </property>
               </widget>
              </item>

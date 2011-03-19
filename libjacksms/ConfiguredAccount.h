@@ -70,6 +70,7 @@ namespace libJackSMS{
 
                 bool nextStat();
                 QString currentStat() const;
+                void sumStats(configuredAccount other);
         };
 
     }
