@@ -115,6 +115,7 @@ private:
     libJackSMS::dataTypes::logImType nuoviMessaggiRicevuti;
     //libJackSMS::serverApi::permanentInstantMessenger *imChecker;
     libJackSMS::serverApi::Streamer *imChecker;
+    libJackSMS::serverApi::cyclicMessengerChecker *backupImChecker;
     QMyMessage ultimoSms;
     QSystemTrayIcon *trayIco;
     QStringList stringList;

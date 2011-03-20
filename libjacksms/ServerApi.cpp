@@ -24,7 +24,7 @@
 #include "xmlParserServerApiTicpp.h"
 #include "VariabileServizio.h"
 #include "LogSmsMessage.h"
-
+#include <QTimer>
 #include "EncodingPercent.h"
 #include "Exceptions.h"
 namespace libJackSMS{
@@ -1051,6 +1051,30 @@ namespace libJackSMS{
         }
 
 
+        void cyclicMessengerChecker::run(){
+            libJackSMS::serverApi::instantMessenger im(loginString,ps);
+            if(im.checkMessages()){
+                libJackSMS::dataTypes::logImType msgs;
+                im.getMessages(msgs);
+                emit newJMS(msgs);
+            }
+        }
+
+        cyclicMessengerChecker::cyclicMessengerChecker(QString _loginString,dataTypes::proxySettings _ps ):loginString(_loginString),ps(_ps){
+            connect(&timeout,SIGNAL(timeout()),this,SLOT(run()));
+        }
+        cyclicMessengerChecker::~cyclicMessengerChecker(){
+        }
+        void cyclicMessengerChecker::activateServ(){
+            emit serviceActive();
+            run();
+            timeout.start(60*1000);
+            emit
+        }
+        void cyclicMessengerChecker::stop(){
+            timeout.stop();
+            emit serviceNotActive("false","");
+        }
 
 
         /*************************streamer*****************************/
@@ -1089,6 +1113,7 @@ namespace libJackSMS{
         }
 
         void Streamer::errorDisconnected(QAbstractSocket::SocketError) {
+            pingTimeout.stop();
             emit serviceNotActive(true,sock.errorString());
         }
 
@@ -1096,10 +1121,11 @@ namespace libJackSMS{
         }
 
         void Streamer::pingTimeoutError() {
+            pingTimeout.stop();
+            pingTimer.stop();
             try{
                 sock.abort();
-                pingTimer.stop();
-                pingTimeout.stop();
+
                 reconnectTimer.start(3*60*1000);
                 emit serviceNotActive(true,"Timeout");
             }catch(...){
@@ -1115,7 +1141,9 @@ namespace libJackSMS{
         }
 
         void Streamer::ping() {
+
             if (sock.write("GET /ping HTTP/1.1\n\n")!=-1)
+
                 pingTimeout.start(60*1000);
             else
                 emit serviceNotActive(true,"Ping failed");
@@ -1153,6 +1181,7 @@ namespace libJackSMS{
                             bool ok;
                             queueCount = r.cap(1).toInt(&ok,10);
                             if (!ok) {
+                                pingTimer.stop();
                                 emit serviceNotActive(true,"Unexpected message counter");
                                 return;
                             } else {
@@ -1164,6 +1193,7 @@ namespace libJackSMS{
                             }
                          } else {
                             r.setPattern("^E\\t(.{1,})$");
+                            pingTimer.stop();
                             if (r.exactMatch(line))
                                 emit serviceNotActive(true, r.cap(1));
                             else
@@ -1240,14 +1270,19 @@ namespace libJackSMS{
                                 pingTimeout.stop();
                             else{
                                 r.setPattern("^E\\t(.{1,})$");
-                                if (r.exactMatch(line))
+                                if (r.exactMatch(line)){
+                                    pingTimer.stop();
+                                    pingTimeout.stop();
                                     emit this->serviceNotActive(true, r.cap(1));
+                                }
                             }
                         }
                     }
                 }
 
             }catch (...){
+                pingTimeout.stop();
+                pingTimer.stop();
                 emit serviceNotActive(true,"Unknown error");
             }
         }
@@ -1274,6 +1309,8 @@ namespace libJackSMS{
                 imLog.clear();
                 id=0;
             }catch(...){
+                pingTimeout.stop();
+                pingTimer.stop();
                 emit serviceNotActive(true,"Errore sconosciuto: section 5");
             }
         }
@@ -1299,6 +1336,7 @@ namespace libJackSMS{
                 }
                 sock.connectToHost("stream.jacksms.it",80);
             }catch(...){
+
                 emit serviceNotActive(true,"Errore sconosciuto: section 4");
             }
         }

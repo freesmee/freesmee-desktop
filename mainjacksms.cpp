@@ -246,6 +246,7 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     if (!QSslSocket::supportsSsl()){
         QMessageBox::critical(this,"JackSMS","Il sistema in uso non supporta la modalità di connessione sicura (SSL).\nIn queste condizioni, alcuni servizi potrebbero non funzionare correttamente.");
     }
+    backupImChecker=NULL;
 }
 
 void MainJackSMS::on_recipientLine_returnPressed()
@@ -1784,22 +1785,40 @@ void MainJackSMS::stopIm(){
 void MainJackSMS::jmsActive(){
     //libJackSMS::LanguageManager *lm=libJackSMS::LanguageManager::getIstance();
     //ui->buttonStatusJms->setText(lm->getString(28));
+    if (backupImChecker!=NULL){
+        backupImChecker->stop();
+        connect(imChecker,SIGNAL(serviceNotActive(bool,QString)),this,SLOT(jmsNotActive(bool,QString)));
+        connect(imChecker,SIGNAL(serviceActiving()),this,SLOT(jmsActiving()));
+        backupImChecker->deleteLater();
+        backupImChecker=NULL;
+    }
     ui->buttonStatusJms->setText("Attivo");
     ui->buttonStatusJms->setIcon(QIcon(":/resource/jms-active.png"));
     imServiceActive=true;
 }
 
 void MainJackSMS::jmsNotActive(bool err,QString str){
+
+
     //libJackSMS::LanguageManager *lm=libJackSMS::LanguageManager::getIstance();
     if (err){
+        disconnect(imChecker,SIGNAL(serviceNotActive(bool,QString)),this,SLOT(jmsNotActive(bool,QString)));
+        disconnect(imChecker,SIGNAL(serviceActiving()),this,SLOT(jmsActiving()));
+        backupImChecker=new libJackSMS::serverApi::cyclicMessengerChecker(current_login_id,Opzioni);
+        connect(backupImChecker,SIGNAL(newJMS(libJackSMS::dataTypes::logImType)),this,SLOT(checkInstantMessengerReceived(libJackSMS::dataTypes::logImType)));
+        backupImChecker->activateServ();
+        ui->buttonStatusJms->setText("Attivo");
+        ui->buttonStatusJms->setIcon(QIcon(":/resource/jms-active.png"));
         popupJms=false;
-        trayIco->showMessage("JackSMS Messenger","Il servizio e' stato disattivato temporaneamente a causa di un errore.\nDettagli: "+str);
-    }
+        imServiceActive=false;
+        trayIco->showMessage("JackSMS Messenger","Il servizio e' stato disattivato temporaneamente a causa di un errore.\nDettagli: "+str+"\nVerrà attivato ora il servizio di emergenza.");
+    }else{
 
-    //ui->buttonStatusJms->setText(lm->getString(30));
-    ui->buttonStatusJms->setText("Disattivo");
-    ui->buttonStatusJms->setIcon(QIcon(":/resource/jms-not-active.png"));
-    imServiceActive=false;
+        //ui->buttonStatusJms->setText(lm->getString(30));
+        ui->buttonStatusJms->setText("Disattivo");
+        ui->buttonStatusJms->setIcon(QIcon(":/resource/jms-not-active.png"));
+        imServiceActive=false;
+    }
 }
 
 void MainJackSMS::jmsActiving(){

@@ -535,6 +535,29 @@ namespace libJackSMS{
             void serviceActiving();
     };
 
+        class cyclicMessengerChecker:public QThread
+        {
+            Q_OBJECT
+
+        private:
+            QString loginString;
+            dataTypes::proxySettings ps;
+            QTimer timeout;
+        public:
+            cyclicMessengerChecker(QString _loginString,dataTypes::proxySettings _ps );
+            ~cyclicMessengerChecker();
+            void activateServ();
+            void stop();
+        private slots:
+             void run();
+        signals:
+            void newJMS(libJackSMS::dataTypes::logImType);
+            void serviceActive();
+            void serviceNotActive(bool err=false,QString errStr="");
+            void serviceActiving();
+        };
+
+
         class Streamer:public QObject
         {
             Q_OBJECT
