@@ -390,12 +390,11 @@ namespace libJackSMS{
         bool xmlParserServerApiTicpp::parseServices(libJackSMS::dataTypes::servicesType &_servizi){
             try{
 
-                ticpp::Node *subRoot=xmlResponse.FirstChild("JackSMS");
+                ticpp::Node *subRoot = xmlResponse.FirstChild("JackSMS");
 
                 ticpp::Node *child=NULL;
                 while( (child = subRoot->IterateChildren(child)) ){
                     ticpp::Element * thisService=child->ToElement();
-                    QString serviceId=QString::fromStdString(thisService->GetAttribute("id"));
                     libJackSMS::dataTypes::service servizio;
                     servizio.setId(QString::fromStdString(thisService->GetAttribute("id")));
                     /************************/

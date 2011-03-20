@@ -160,7 +160,7 @@
              <item>
               <widget class="QCheckBox" name="opzAutoLogin">
                <property name="toolTip">
-                <string>Questa opzione viene disattivata automaticamente se si usa il tasto logout dal menu.</string>
+                <string>Questa opzione viene disattivata automaticamente se si usa il tasto logout dal menu. Usando questa opzione vengono salvate le credenziali di accesso.</string>
                </property>
                <property name="text">
                 <string>Effettua il login automaticamente</string>

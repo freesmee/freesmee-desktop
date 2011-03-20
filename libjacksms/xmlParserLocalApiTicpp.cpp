@@ -235,31 +235,26 @@ namespace libJackSMS{
             }
             return true;
         }
-        bool xmlParserLocalApiTicpp::loadServices(libJackSMS::dataTypes::servicesType & _servizi){
+        bool xmlParserLocalApiTicpp::loadServices(libJackSMS::dataTypes::servicesType &_servizi) {
             try{
-
 
                 ticpp::Document services;
 
-                QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),"services.xml");
-                services.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
+                QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(), "services.xml");
+                services.LoadFile(path.toStdString(), TIXML_ENCODING_UTF8);
 
-
-                ticpp::Node *subRoot=services.FirstChild("services",false);
-                if (subRoot==NULL)
-                    subRoot=services.FirstChild("JackSMS");
+                ticpp::Node *subRoot = services.FirstChild("services", false);
+                if (subRoot == NULL)
+                    subRoot = services.FirstChild("JackSMS");
                 ticpp::Node *child=NULL;
-                while( (child = subRoot->IterateChildren( child )) ){
-                        ticpp::Element * thisService=child->ToElement();
-                        QString serviceId=QString::fromStdString(thisService->GetAttribute("id"));
+                while ((child = subRoot->IterateChildren(child))) {
+                        ticpp::Element *thisService = child->ToElement();
                         libJackSMS::dataTypes::service servizio;
                         servizio.setId(QString::fromStdString(thisService->GetAttribute("id")));
                         /************************/
-                        //std::cout <<std::endl<<thisService->GetAttribute("name")<<std::endl;
                         servizio.setName(QString::fromStdString(thisService->GetAttribute("name")));
                         servizio.setVersion(QString::fromStdString(thisService->GetAttribute("v")));
                         servizio.setEncoding(QString::fromStdString(thisService->GetAttributeOrDefault("output_encoding","auto")));
-
                         servizio.setMaxSms(QString::fromStdString(thisService->GetAttribute("maxsms")));
                         servizio.setReset(QString::fromStdString(thisService->GetAttribute("reset")));
                         servizio.setMaxLength(QString::fromStdString(thisService->GetAttribute("maxlen")));
@@ -655,36 +650,34 @@ namespace libJackSMS{
             return true;
         }
 
+        bool xmlParserLocalApiTicpp::loadUsers(QList<dataTypes::stringTriplet> &_utenti) {
 
-
-        bool xmlParserLocalApiTicpp::loadUsers(QList<dataTypes::stringTriplet> &_utenti){
-
-            QString oldDirectory=userDirectory;
+            QString oldDirectory = userDirectory;
 
             try{
                 ticpp::Document log;
-                QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),"users.xml");
+                QString path = libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(), "users.xml");
                 if (!QFile::exists(path))
                     throw libJackSMS::exceptionXmlNotFound();
                 log.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
 
-                ticpp::Node *subRoot=log.FirstChild("users");
-                ticpp::Node *child=NULL;
+                ticpp::Node *subRoot = log.FirstChild("users");
+                ticpp::Node *child = NULL;
 
-                while( (child = subRoot->IterateChildren( child )) ){
-                    ticpp::Element * childElem=child->ToElement();
+                while((child = subRoot->IterateChildren( child ))) {
+                    ticpp::Element *childElem = child->ToElement();
 
                     dataTypes::optionsType opzioni;
-                    userDirectory=QString::fromStdString(childElem->GetAttribute("directory"));
-                    try{
+                    userDirectory = QString::fromStdString(childElem->GetAttribute("directory"));
+
+                    try {
                         loadOptions(opzioni);
-                    }catch(libJackSMS::exceptionXmlNotFound){
+                    } catch(libJackSMS::exceptionXmlNotFound){
 
                     }
-                    QString password=opzioni["password"];
+                    QString password = opzioni["password"];
 
-
-                    dataTypes::stringTriplet trip(utilities::Base64Decode(QString::fromStdString(childElem->GetAttribute("username"))),password,QString::fromStdString(childElem->GetAttribute("directory")));
+                    dataTypes::stringTriplet trip(utilities::Base64Decode(QString::fromStdString(childElem->GetAttribute("username"))), password, QString::fromStdString(childElem->GetAttribute("directory")));
                     _utenti.push_back(trip);
                 }
 
@@ -1057,45 +1050,45 @@ namespace libJackSMS{
             }
             return false;
         }
-        bool xmlParserLocalApiTicpp::createUsersFile(){
+
+        bool xmlParserLocalApiTicpp::createUsersFile() {
             try{
                 ticpp::Document doc;
-                ticpp::Element *newRoot=new ticpp::Element("users");
+                ticpp::Element *newRoot = new ticpp::Element("users");
                 doc.LinkEndChild(newRoot);
-                QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),"users.xml");
+                QString path = libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(), "users.xml");
                 doc.SaveFile(path.toStdString());
             }catch(ticpp::Exception e){
                 return false;
             }
             return true;
         }
-        bool xmlParserLocalApiTicpp::saveOptions(const dataTypes::optionsType &_opzioni){
-            try{
+
+        bool xmlParserLocalApiTicpp::saveOptions(const dataTypes::optionsType &_opzioni) {
+
+            try {
                 ticpp::Document options;
-                QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),userDirectory);
-                path=libJackSMS::directories::concatDirectoryAndFile(path,"config.xml");
-                try{
-                    options.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
-                }catch(ticpp::Exception e){
+                QString path = libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(), userDirectory);
+                path = libJackSMS::directories::concatDirectoryAndFile(path, "config.xml");
+
+                try {
+                    options.LoadFile(path.toStdString(), TIXML_ENCODING_UTF8);
+                } catch(ticpp::Exception e) {
                     ticpp::Document doc;
-                    ticpp::Element *newRoot=new ticpp::Element("config");
+                    ticpp::Element *newRoot = new ticpp::Element("config");
                     doc.LinkEndChild(newRoot);
                     doc.SaveFile(path.toStdString());
-                    doc.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
-                    options=ticpp::Document(doc);
-
-
-
+                    doc.LoadFile(path.toStdString(), TIXML_ENCODING_UTF8);
+                    options = ticpp::Document(doc);
                 }
 
                 //options.LoadFile();
 
-                ticpp::Node * subRoot=options.FirstChild("config");
+                ticpp::Node *subRoot = options.FirstChild("config");
                 subRoot->Clear();
-                dataTypes::optionsType::const_iterator i=_opzioni.begin();
-                dataTypes::optionsType::const_iterator i_end=_opzioni.end();
-                for(;i!=i_end;++i){
-                    ticpp::Element *el=new ticpp::Element(i.key().toStdString());
+
+                for (dataTypes::optionsType::const_iterator i = _opzioni.begin(); i != _opzioni.end(); ++i) {
+                    ticpp::Element *el = new ticpp::Element(i.key().toStdString());
 
                     if (!i.value().isEmpty())
                         el->SetText(i.value().toStdString());
@@ -1103,13 +1096,15 @@ namespace libJackSMS{
                 }
 
                 options.SaveFile();
+
             }catch(ticpp::Exception e){
                 throw exceptionXmlError(e.what());
                 return false;
             }
-            return true;
 
+            return true;
         }
+
         bool xmlParserLocalApiTicpp::deleteSmsMessage(const QList<QString> &idList){
                     try{
                         QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),userDirectory);

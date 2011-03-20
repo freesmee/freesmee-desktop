@@ -23,22 +23,37 @@ namespace libJackSMS{
     namespace dataTypes{
 
 
-            /*********definitions for stringTriplet****************/
-            stringTriplet::stringTriplet(const QString &_first,const QString &_second,const QString &_third):one(_first),two(_second),three(_third){
-            }
-            QString stringTriplet::getFirst() const{
-                return one;
-            }
-            QString stringTriplet::getSecond() const{
-                return two;
-            }
-            void stringTriplet::setSecond(const QString &_str){
-                two=_str;
-            }
-            QString stringTriplet::getThird() const{
-                return three;
-            }
+        /*********definitions for stringTriplet****************/
+        stringTriplet::stringTriplet(const QString &_first, const QString &_second, const QString &_third) :
+                one(_first),
+                two(_second),
+                three(_third)
+        {
+        }
 
+        QString stringTriplet::getFirst() const {
+            return one;
+        }
+
+        void stringTriplet::setFirst(const QString &_str) {
+            one = _str;
+        }
+
+        QString stringTriplet::getSecond() const {
+            return two;
+        }
+
+        void stringTriplet::setSecond(const QString &_str) {
+            two = _str;
+        }
+
+        QString stringTriplet::getThird() const {
+            return three;
+        }
+
+        void stringTriplet::setThird(const QString &_str) {
+            three = _str;
+        }
 
     }
 

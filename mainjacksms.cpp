@@ -35,11 +35,8 @@
 #include "messageloader.h"
 #include <QSslSocket>
 #include <QTabBar>
-
 #include "cambiaaccount.h"
 #include "smstextedit.h"
-
-
 
 #define COUNTDOWNTOGUICOUNTDEFINE 5
 #define MILLISECONDSDELTASMSLOAD 25
@@ -161,46 +158,66 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     ui->menuInstruments->setMenu(menu);
 
     try{
-        finder=new libJackSMS::localApi::userFinder;
+
+        finder = new libJackSMS::localApi::userFinder;
         finder->findUsers();
+
         while(finder->nextUser()){
-            ui->username->addItem(QIcon(),finder->currentUsername());
+            ui->username->addItem(QIcon(), finder->currentUsername());
         }
+
+        ui->username->setEditText("");
+        ui->password->setText("");
+
     }catch(libJackSMS::exceptionXmlError){
         QMessageBox::critical(this,"JackSMS","Il file degli utenti sembra essere corrotto. Non posso caricare la lista degli utenti e le loro opzioni");
     }catch(libJackSMS::exceptionXmlNotFound){
-        /*non trovare il file significa che non ci sono utenti(tipico dell'installazione fresca) */
+        /*non trovare il file significa che non ci sono utenti (tipico dell'installazione fresca) */
     }
-    translateGui();
-    firstResize=true;
-    connect(&resizeTimer,SIGNAL(timeout()),this,SLOT(resized()));
 
+    translateGui();
+    firstResize = true;
+    connect(&resizeTimer, SIGNAL(timeout()), this, SLOT(resized()));
 
     /*questo carica le opzioni globali*/
     libJackSMS::localApi::synchronousOptionLoader l("");
-    if(l.load(GlobalOptions)){
-        Opzioni=GlobalOptions;
+    if(l.load(GlobalOptions)) {
+        Opzioni = GlobalOptions;
 
         /*l'utente di default potrebbe non essere impostato, caso tipico del primo avvio*/
-        libJackSMS::dataTypes::optionsType::const_iterator i= GlobalOptions.find("default-user");
-        if (i!=GlobalOptions.end()) {
-            bool tointcheck;
-            int userindex = i.value().toInt(&tointcheck, 10);
-            if (tointcheck)
-                ui->username->setCurrentIndex(userindex);
+        libJackSMS::dataTypes::optionsType::const_iterator i = GlobalOptions.find("default-user");
+        if (i != GlobalOptions.end()) {
 
-        }
+            if (!i.value().isEmpty()) {
 
-        if (GlobalOptions["save-passwd"]=="yes") {
-            ui->ricordaPassword->setChecked(true);
-            ui->loginButton->setDefault(true);
-            ui->loginButton->setFocus();
+                QString user = libJackSMS::utilities::Base64Decode(i.value());
+                ui->username->setEditText(user);
+                QString pass = finder->getPassword(user);
 
-            if (GlobalOptions["auto-login"]=="yes"){
-                ui->autoLogin->setChecked(true);
-                ui->loginButton->animateClick();
+                if (!pass.isEmpty()) {
+                    // c'è una password
+                    ui->password->setText(pass);
+                    ui->autoLogin->setChecked(false);
+                    ui->ricordaPassword->setChecked(true);
+                    ui->loginButton->setDefault(true);
+                    ui->loginButton->setFocus();
+
+                    // controllo auto-login
+                    if (GlobalOptions["auto-login"] == "yes") {
+                        ui->autoLogin->setChecked(true);
+                        ui->loginButton->animateClick();
+                    }
+
+                } else {
+                    // non c'è settata una password
+                    ui->autoLogin->setChecked(false);
+                    ui->ricordaPassword->setChecked(false);
+                    ui->password->setFocus();
+                }
+
+            } else {
+                ui->username->setFocus();
             }
-
         } else {
             ui->username->setFocus();
         }
@@ -847,15 +864,11 @@ void MainJackSMS::invioSuccesso(QString _text) {
     us.setAccountId(ultimoSms.getAccountId());
 
     libJackSMS::dataTypes::optionsType::const_iterator iter = Opzioni.find("save-local");
-    bool salvaMessaggi = false;
+    bool salvaMessaggi = true;
 
-    if (iter != Opzioni.end()) {
-        if ("yes" == iter.value()) {
-            salvaMessaggi = true;
-        }
-    } else {
-        salvaMessaggi = true;
-    }
+    if (iter != Opzioni.end())
+        if ("no" == iter.value())
+            salvaMessaggi = false;
 
     if (salvaMessaggi) {
         libJackSMS::localApi::smsLogSaver sav(current_user_directory);
@@ -1189,36 +1202,29 @@ void MainJackSMS::on_EliminaServizioButton_clicked()
             accountManager->deleteAccount(id);
 
         }
-
-
     }
-
-
-
 }
 
 void MainJackSMS::on_actionOpzioni_triggered()
 {
-   //QMessageBox::information(this,"asd",current_user_directory);
-   OpzioniDialog * dial=new OpzioniDialog(Opzioni,*ui->TestoSMS,current_user_directory,this,loggedIn);
-   //connect(dial,SIGNAL(activateImTimer()),this,SLOT(startIm()));
-   //connect(dial,SIGNAL(deactivateImTimer()),this,SLOT(stopIm()));
-   //connect(dial,SIGNAL(reactivateImTimer()),this,SLOT(restartIm()));
-   connect(dial,SIGNAL(translate()),this,SLOT(translateGui()));
+   OpzioniDialog *dial = new OpzioniDialog(Opzioni, GlobalOptions, current_user_directory, this, loggedIn, ui->password->text());
+   connect(dial, SIGNAL(translate()), this, SLOT(translateGui()));
    dial->exec();
    dial->deleteLater();
-
 }
+
 void MainJackSMS::ReWriteAddressBookToGui(){
     ui->rubricaListWidget->clear();
     ui->RubricaVeloce->clear();
     WriteAddressBookToGui();
 }
+
 void MainJackSMS::ReWriteConfiguredServicesToGui(){
     ui->listServiziConfigurati->clear();
     ui->comboServizio->clear();
     WriteConfiguredServicesToGui();
 }
+
 void MainJackSMS::ReloadRubrica(){
 
 
@@ -1854,15 +1860,11 @@ void MainJackSMS::checkInstantMessengerReceived(libJackSMS::dataTypes::logImType
         ui->listSmsNames->setCurrentRow(0);
 
         QMultiMap<QDateTime,SmsWidget*> mapWidgetsNew;
-        libJackSMS::localApi::imLogSaver *manager = NULL;
-        bool save = false;
+        libJackSMS::localApi::imLogSaver *manager = new libJackSMS::localApi::imLogSaver(current_user_directory);
+        bool save = true;
 
-        if (Opzioni["save-local"] != "no") {
-            save = true;
-            manager = new libJackSMS::localApi::imLogSaver(current_user_directory);
-        } else {
-            Opzioni["save-local"] = "no";
-        }
+        if (Opzioni["save-local"] == "no")
+            save = false;
 
         for (libJackSMS::dataTypes::logImType::iterator i = jmsList.begin(); i != jmsList.end(); ++i) {
             if (save) {
@@ -1966,7 +1968,7 @@ void MainJackSMS::errorUpdates(QString err) {
     */
 }
 
-void MainJackSMS::countdownToGui(){
+void MainJackSMS::countdownToGui() {
 
     countdownToGuiCount--;
 
@@ -1984,19 +1986,18 @@ void MainJackSMS::countdownToGui(){
         gestiscimenuSingolo();
 
         //questo mi permette di abilitare il servizio jms sempre e non abilitarlo solo se è esplicitamente "no"
-        if (Opzioni["receive-im"] != "no"){
+        if (Opzioni["receive-im"] != "no") {
             startIm();
         }
 
         WriteMessagesToGui();
 
-        updateChecker = new libJackSMS::serverApi::updateServicesManager(this->current_login_id,Opzioni,ElencoServizi);
+        updateChecker = new libJackSMS::serverApi::updateServicesManager(current_login_id, Opzioni, ElencoServizi);
         connect(updateChecker, SIGNAL(updatesAvailable(libJackSMS::dataTypes::servicesType, QString, QString)), this, SLOT(updatesAvailable(libJackSMS::dataTypes::servicesType, QString, QString)));
         connect(updateChecker, SIGNAL(criticalError(QString)), this, SLOT(errorUpdates(QString)));
         updateChecker->checkUpdates();
         countdownToGuiCount = COUNTDOWNTOGUICOUNTDEFINE;
     }
-
 }
 
 void MainJackSMS::setTrayIcon(){
@@ -2027,51 +2028,28 @@ void MainJackSMS::servicesLoaded(libJackSMS::dataTypes::servicesType s) {
     countdownToGui();
 }
 
-void MainJackSMS::optionsLoaded(libJackSMS::dataTypes::optionsType op){
+void MainJackSMS::optionsLoaded(libJackSMS::dataTypes::optionsType op) {
 
-    Opzioni=op;
-
-    //ui->TestoSMS->setFont(QFont(ui->TestoSMS->font().family(),Opzioni["textsize"].toInt(NULL,10),ui->TestoSMS->font().weight(),false));
-
-    if (ui->ricordaPassword->isChecked()) {
-        GlobalOptions["save-passwd"]="yes";
-        Opzioni["save-passwd"]="yes";
-        Opzioni["password"]=ui->password->text();
-    }else{
-        GlobalOptions["save-passwd"]="no";
-        Opzioni["save-passwd"]="no";
-        Opzioni["password"]="";
-    }
-
-    if (ui->autoLogin->isChecked()){
-        GlobalOptions["auto-login"]="yes";
-        Opzioni["auto-login"]="yes";
-    } else {
-        GlobalOptions["auto-login"]="no";
-        Opzioni["auto-login"]="no";
-    }
-
-    GlobalOptions["default-user"]=QString::number(ui->username->currentIndex());
-
-    libJackSMS::localApi::optionManager man("",GlobalOptions);
+    Opzioni = op;
+    libJackSMS::localApi::optionManager man("", GlobalOptions);
     man.save();
-    libJackSMS::localApi::optionManager man2(current_user_directory,Opzioni);
+    libJackSMS::localApi::optionManager man2(current_user_directory, Opzioni);
     man2.save();
-
 }
 
-void MainJackSMS::loginSuccess(QString sessionId){
+void MainJackSMS::loginSuccess(QString sessionId) {
 
     libJackSMS::localApi::userDirectoryManager man(current_user_username);
-    if (!man.userDirectoryExists()){
+
+    if (!man.userDirectoryExists()) {
         man.createUser();
         current_user_directory = man.getUserDir();
     }
+
     libJackSMS::localApi::cookieManager m(current_user_directory);
     m.deleteCookies();
 
-
-    current_login_id=sessionId;
+    current_login_id = sessionId;
 
 
     xmlLoader = new libJackSMS::localApi::xmlLoader(current_user_directory);
@@ -2083,6 +2061,19 @@ void MainJackSMS::loginSuccess(QString sessionId){
 
     loggedIn = true;
 
+    GlobalOptions["auto-login"] = (ui->autoLogin->isChecked() ? "yes" : "no");
+    GlobalOptions["default-user"] = libJackSMS::utilities::Base64Encode(current_user_username);
+
+    if (ui->ricordaPassword->isChecked())
+        Opzioni["password"] = ui->password->text();
+    else
+        Opzioni["password"] = "";
+
+    libJackSMS::localApi::optionManager opt(current_user_directory, Opzioni);
+    opt.save();
+    libJackSMS::localApi::optionManager opt2("", GlobalOptions);
+    opt2.save();
+
     pingator = new libJackSMS::serverApi::pingator(current_login_id, Opzioni);
     connect(pingator, SIGNAL(pinged()), this, SLOT(serverPinged()));
     pingator->launchPing();
@@ -2091,7 +2082,7 @@ void MainJackSMS::loginSuccess(QString sessionId){
 }
 
 void MainJackSMS::serverPinged(){
-    std::cout<<"[PING] pingato server"<<std::endl;
+    //std::cout<<"[PING] pingato server"<<std::endl;
 }
 
 void MainJackSMS::updatesAvailable(libJackSMS::dataTypes::servicesType serv, QString xml, QString msg) {
@@ -2175,7 +2166,9 @@ void MainJackSMS::recipientPopupSelected(QString selected) {
     elaboraRecipientLine();
 }
 
-void MainJackSMS::loginFailed(QString err){
+void MainJackSMS::loginFailed(QString err) {
+    ui->autoLogin->setChecked(false);
+    GlobalOptions["auto-login"] = "no";
     ui->widgetSchermate->setCurrentIndex(0);
     QMessageBox::critical(this, "JackSMS", err);
     countdownToGuiCount = COUNTDOWNTOGUICOUNTDEFINE;
@@ -2193,15 +2186,6 @@ void MainJackSMS::on_loginButton_clicked() {
         return;
     }
 
-    if (ui->autoLogin->isChecked()) {
-        GlobalOptions["auto-login"] = "yes";
-        Opzioni["auto-login"] = "yes";
-    } else {
-        GlobalOptions["auto-login"] = "no";
-        Opzioni["auto-login"] = "no";
-    }
-
-
     current_user_directory = finder->getDataDirectory(ui->username->currentText());
     current_user_username = ui->username->currentText();
 
@@ -2213,12 +2197,6 @@ void MainJackSMS::on_loginButton_clicked() {
     connect(loginClient,SIGNAL(loginFailed(QString)),this,SLOT(loginFailed(QString)));
     connect(loginClient,SIGNAL(loginStarted()),this,SLOT(loginStarted()));
     loginClient->doLogin();
-}
-
-void MainJackSMS::on_username_currentIndexChanged(int index)
-{
-    QString password=finder->getPassword(ui->username->currentText());
-    ui->password->setText(password);
 }
 
 void MainJackSMS::disableUibeforeLogin(){
@@ -2425,13 +2403,15 @@ void MainJackSMS::on_actionLogout_triggered()
 
     ElencoServizi.clear();
     ElencoServiziConfigurati.clear();
-    if (GlobalOptions["save-passwd"] != "yes") {
-        ui->password->clear();
-    }
 
-    GlobalOptions["auto-login"] = "no";
-    Opzioni["auto-login"] = "no";
+    ui->password->setText(Opzioni["password"]);
+    if (Opzioni["password"] == "")
+        ui->ricordaPassword->setChecked(false);
+    else
+        ui->ricordaPassword->setCheckable(true);
+
     ui->autoLogin->setChecked(false);
+    GlobalOptions["auto-login"] = "no";
 
     if (updateChecker->isRunning())
         updateChecker->abort();
@@ -3192,4 +3172,15 @@ void MainJackSMS::elaboraRecipientLine(bool StealFocus) {
             QTimer::singleShot(20, completer->popup(),SLOT(close()));
         }
     }
+}
+
+void MainJackSMS::on_username_currentIndexChanged(QString txt)
+{
+    QString password = finder->getPassword(txt);
+    ui->password->setText(password);
+
+    if (password.isEmpty())
+        ui->ricordaPassword->setChecked(false);
+    else
+        ui->ricordaPassword->setChecked(true);
 }

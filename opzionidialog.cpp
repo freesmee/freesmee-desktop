@@ -7,57 +7,56 @@
 #include "JackUtils.h"
 #include <QTimer>
 
-OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType & _opt,QTextEdit &_TextSms,QString _userDirectory,QWidget *parent,const bool _loggedIn) :
-
+OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType &_opt, libJackSMS::dataTypes::optionsType &_globopt, QString _userDirectory, QWidget *parent, const bool _loggedIn, QString _pass) :
     QDialog(parent),
     opt(_opt),
-    TextSms(_TextSms),
+    globopt(_globopt),
     userDirectory(_userDirectory),
     loggedIn(_loggedIn),
+    pass(_pass),
     m_ui(new Ui::OpzioniDialog)
 {
     m_ui->setupUi(this);
-
     libJackSMS::dataTypes::optionsType::const_iterator iter;
 
     // !!!!!!!!!!!!!!!!! disabilito momentaneamente la scheda "lingua"
     m_ui->listWidget->item(4)->~QListWidgetItem();
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    if (!loggedIn){
+    if (!loggedIn) {
         //m_ui->listWidget->item(4)->~QListWidgetItem();
         m_ui->listWidget->item(3)->~QListWidgetItem();
         m_ui->listWidget->item(2)->~QListWidgetItem();
         m_ui->listWidget->item(0)->~QListWidgetItem();
 
         m_ui->stackedWidget->setCurrentIndex(1);
-    }else{
+    } else {
         /*****ATTENZIONE: rimuovo momentaneamente il widget. in versioni superiori verrà reintrodotto*/
         m_ui->listWidget->item(3)->~QListWidgetItem();
         /******/
 
         iter = opt.find("set-account");
         if (iter != opt.end()) {
-            if ("yes" == iter.value()) {
-                m_ui->checkAccountDefault->setChecked(true);
-            } else {
+            if ("no" == iter.value()) {
                 m_ui->checkAccountDefault->setChecked(false);
+            } else {
+                m_ui->checkAccountDefault->setChecked(true);
             }
         } else {
             m_ui->checkAccountDefault->setChecked(true);
         }
 
-        iter=opt.find("auto-login");
-        if (iter!=opt.end())
-            if ("yes"==iter.value())
+        iter = globopt.find("auto-login");
+        if (iter != globopt.end())
+            if (iter.value() == "yes")
                 m_ui->opzAutoLogin->setChecked(true);
 
         iter = opt.find("save-local");
         if (iter != opt.end()) {
-            if ("yes" == iter.value()) {
-                m_ui->checkSalvalocale->setChecked(true);
-            } else {
+            if ("no" == iter.value()) {
                 m_ui->checkSalvalocale->setChecked(false);
+            } else {
+                m_ui->checkSalvalocale->setChecked(true);
             }
         } else {
             m_ui->checkSalvalocale->setChecked(true);
@@ -125,12 +124,12 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType & _opt,QTextEdit
         if (iter.value()=="yes")
             m_ui->captchaPopup->setChecked(true);
 
-    iter=opt.find("error-send-popup");
-    if (iter!=opt.end()) {
-        if (iter.value()=="yes") {
-            m_ui->errorSmsPopup->setChecked(true);
-        } else {
+    iter = opt.find("error-send-popup");
+    if (iter != opt.end()) {
+        if (iter.value() == "no") {
             m_ui->errorSmsPopup->setChecked(false);
+        } else {
+            m_ui->errorSmsPopup->setChecked(true);
         }
     } else {
         m_ui->errorSmsPopup->setChecked(true);
@@ -222,14 +221,15 @@ void OpzioniDialog::on_listWidget_currentItemChanged(QListWidgetItem* current, Q
 void OpzioniDialog::on_pushButton_2_clicked()
 {
     bool saveGlobal = false;
+
     if (("yes" == opt["use-proxy"]) != m_ui->CheckUsaProxy->isChecked()) {
-            opt["use-proxy"] = (m_ui->CheckUsaProxy->isChecked()) ? "yes" : "no";
-            saveGlobal = true;
+        opt["use-proxy"] = (m_ui->CheckUsaProxy->isChecked()) ? "yes" : "no";
+        saveGlobal = true;
     }
 
     if (("yes" == opt["use-proxy-auth"]) != m_ui->usaAutenticazione->isChecked()) {
-            opt["use-proxy-auth"] = (m_ui->usaAutenticazione->isChecked()) ? "yes" : "no";
-            saveGlobal = true;
+        opt["use-proxy-auth"] = (m_ui->usaAutenticazione->isChecked()) ? "yes" : "no";
+        saveGlobal = true;
     }
 
     if (opt["proxy-port"] != m_ui->TextPort->text()) {
@@ -258,15 +258,20 @@ void OpzioniDialog::on_pushButton_2_clicked()
             saveGlobal = true;
         }
     } else if (m_ui->RadioSocks5->isChecked()) {
-       if (opt["proxy-type"] != "socks5"){
+        if (opt["proxy-type"] != "socks5"){
             opt["proxy-type"] = "socks5";
             saveGlobal = true;
         }
     }
 
-    if (("yes" == opt["auto-login"]) != m_ui->opzAutoLogin->isChecked()) {
-        opt["auto-login"] = (m_ui->opzAutoLogin->isChecked()) ? "yes" : "no";
+    if (("yes" == globopt["auto-login"]) != m_ui->opzAutoLogin->isChecked()) {
+        globopt["auto-login"] = (m_ui->opzAutoLogin->isChecked()) ? "yes" : "no";
         saveGlobal = true;
+
+        // se è cambiato ed è stato messo su si allora dobbiamo anche salvare la password nelle opzioni e il default-user nelle opzioni globali
+        if (globopt["auto-login"] == "yes") {
+            opt["password"] = pass;
+        }
     }
 
     libJackSMS::dataTypes::optionsType::const_iterator iter=opt.find("language");
@@ -296,9 +301,7 @@ void OpzioniDialog::on_pushButton_2_clicked()
         opt2["proxy-type"] = opt["proxy-type"];
         opt2["use-proxy"] = opt["use-proxy"];
         opt2["use-proxy-auth"] = opt["use-proxy-auth"];
-        opt2["save-passwd"] = opt["save-passwd"];
-        opt2["auto-login"] = opt["auto-login"];
-        opt2["default-user"] = opt["default-user"];
+        opt2["auto-login"] = globopt["auto-login"];
 
         libJackSMS::localApi::optionManager op("", opt2);
 
@@ -318,10 +321,10 @@ void OpzioniDialog::on_pushButton_2_clicked()
         opt["save-local"] = (m_ui->checkSalvalocale->isChecked()) ? "yes" : "no";
 
         if (("yes"==opt["successfull-send-popup"])!=m_ui->successSmsPopup->isChecked())
-                opt["successfull-send-popup"]=(m_ui->successSmsPopup->isChecked())?"yes":"no";
+            opt["successfull-send-popup"]=(m_ui->successSmsPopup->isChecked())?"yes":"no";
 
         if (("yes"==opt["display-captcha-popup"])!=m_ui->captchaPopup->isChecked())
-                opt["display-captcha-popup"]=(m_ui->captchaPopup->isChecked())?"yes":"no";
+            opt["display-captcha-popup"]=(m_ui->captchaPopup->isChecked())?"yes":"no";
 
         opt["error-send-popup"] = (m_ui->errorSmsPopup->isChecked()) ? "yes" : "no";
 
@@ -346,7 +349,7 @@ void OpzioniDialog::on_pushButton_2_clicked()
             opt["captcha-zoom"]=m_ui->comboZoomCaptcha->currentText();
 
         if(("yes"==opt["use-captcha"]) != m_ui->checkUseCaptcha->isChecked())
-             opt["use-captcha"] = (m_ui->checkUseCaptcha->isChecked())?"yes":"no";
+            opt["use-captcha"] = (m_ui->checkUseCaptcha->isChecked())?"yes":"no";
 
         libJackSMS::localApi::optionManager op(userDirectory,opt);
 

@@ -215,17 +215,19 @@ namespace libJackSMS{
             return xmlDocument->deleteAccount(_id);
         }
 
-        userFinder::userFinder():xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp("")),indexUser(0){
+        userFinder::userFinder() :
+                xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp("")), indexUser(0)
+        {
         }
-        bool userFinder::findUsers(){
-            bool res=xmlDocument->loadUsers(utenti);
-            QList<dataTypes::stringTriplet>::iterator i=utenti.begin();
-            QList<dataTypes::stringTriplet>::iterator i_end=utenti.end();
-            for(;i!=i_end;++i){
+
+        bool userFinder::findUsers() {
+            bool res = xmlDocument->loadUsers(utenti);
+            for(QList<dataTypes::stringTriplet>::iterator i = utenti.begin(); i != utenti.end(); ++i) {
                 i->setSecond(Encrypter::Encrypter::decrypt(i->getSecond()));
             }
             return res;
         }
+
         bool userFinder::nextUser(){
             QList<dataTypes::stringTriplet>::const_iterator i_end=utenti.end();
             if (indexUser==0){
@@ -240,122 +242,126 @@ namespace libJackSMS{
             }else
                 return true;
         }
-        QString userFinder::currentUsername(){
+
+        QString userFinder::currentUsername() {
 
             return iterUser->getFirst();
 
         }
-        QString userFinder::getPassword(const QString &_username) const{
-            QList<dataTypes::stringTriplet>::const_iterator i=utenti.begin();
-            QList<dataTypes::stringTriplet>::const_iterator i_end=utenti.end();
-            for(;i!=i_end;++i){
-                    if (i->getFirst()==_username)
+
+        QString userFinder::getPassword(const QString &_username) const {
+            for (QList<dataTypes::stringTriplet>::const_iterator i = utenti.begin(); i != utenti.end(); ++i) {
+                if (i->getFirst() == _username)
                         return i->getSecond();
             }
             return "";
 
         }
-        QString userFinder::getDataDirectory(const QString &_username) const{
-            QList<dataTypes::stringTriplet>::const_iterator i=utenti.begin();
-            QList<dataTypes::stringTriplet>::const_iterator i_end=utenti.end();
-            for(;i!=i_end;++i){
-                    if (i->getFirst()==_username)
+
+        QString userFinder::getDataDirectory(const QString &_username) const {
+            for (QList<dataTypes::stringTriplet>::const_iterator i = utenti.begin(); i != utenti.end(); ++i) {
+                    if (i->getFirst() == _username)
                         return i->getThird();
             }
             return "";
         }
 
-        contactManager::contactManager(const QString & _currentUserDirectory)
-            :xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_currentUserDirectory)){
+
+        contactManager::contactManager(const QString & _currentUserDirectory) :
+                xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_currentUserDirectory)) {
         }
-        bool contactManager::addNewContact(libJackSMS::dataTypes::contact & _contatto){
+
+        bool contactManager::addNewContact(libJackSMS::dataTypes::contact &_contatto) {
             return xmlDocument->addNewContact(_contatto);
         }
-        bool contactManager::updateContact(libJackSMS::dataTypes::contact & _contatto){
+
+        bool contactManager::updateContact(libJackSMS::dataTypes::contact &_contatto){
             return xmlDocument->updateContact(_contatto);
         }
-        bool contactManager::deleteContact(const QString &_name){
+
+        bool contactManager::deleteContact(const QString &_name) {
             return xmlDocument->deleteContact(_name);
         }
 
-        optionManager::optionManager(const QString & _currentUserDirectory,dataTypes::optionsType &_opzioni)
-            :xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_currentUserDirectory)),
-            opzioni(_opzioni){
+        optionManager::optionManager(const QString & _currentUserDirectory,dataTypes::optionsType &_opzioni) :
+            xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_currentUserDirectory)),
+            opzioni(_opzioni) {
         }
 
-        bool optionManager::save(){
-            libJackSMS::dataTypes::optionsType::iterator i=opzioni.begin();
-            libJackSMS::dataTypes::optionsType::iterator i_end=opzioni.end();
-            for(;i!=i_end;++i){
-                if (i.key().indexOf("password")!=-1){
-                    i.value()=Encrypter::Encrypter::encrypt(i.value());
+        bool optionManager::save() {
+            for (libJackSMS::dataTypes::optionsType::iterator i = opzioni.begin(); i != opzioni.end(); ++i) {
+                if (i.key().indexOf("password") != -1) {
+                    i.value() = Encrypter::Encrypter::encrypt(i.value());
                 }
             }
-            bool r= xmlDocument->saveOptions(opzioni);
-            i=opzioni.begin();
-            i_end=opzioni.end();
-            for(;i!=i_end;++i){
-                if (i.key().indexOf("password")!=-1){
-                    i.value()=Encrypter::Encrypter::decrypt(i.value());
+
+            bool r = xmlDocument->saveOptions(opzioni);
+
+            for(libJackSMS::dataTypes::optionsType::iterator i = opzioni.begin(); i != opzioni.end(); ++i) {
+                if (i.key().indexOf("password") != -1) {
+                    i.value() = Encrypter::Encrypter::decrypt(i.value());
                 }
             }
+
             return r;
-
         }
-        bool optionManager::increaseTotalSent(){
-            dataTypes::optionsType::const_iterator i=opzioni.find("sent-count");
-            int n=1;
-            if (i!=opzioni.end()){
+
+        bool optionManager::increaseTotalSent() {
+            dataTypes::optionsType::const_iterator i = opzioni.find("sent-count");
+            int n = 1;
+
+            if (i != opzioni.end()) {
                 bool ok;
-                n=i.value().toInt(&ok,10)+1;
+                n = i.value().toInt(&ok, 10) + 1;
             }
 
-            opzioni["sent-count"]=QString::number(n);
+            opzioni["sent-count"] = QString::number(n);
             return save();
-
-        }
-        statsManager::statsManager(const QString & _currentUserDirectory)
-            :xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_currentUserDirectory))
-            {
         }
 
-       /* bool statsManager::updateStatsOfAccount(const dataTypes::configuredAccount & _account){
+        statsManager::statsManager(const QString &_currentUserDirectory) :
+            xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_currentUserDirectory)) {
+        }
+
+        /*bool statsManager::updateStatsOfAccount(const dataTypes::configuredAccount & _account){
             return xmlDocument->updateStat(_account);
 
         }*/
-        bool statsManager::updateStatsOfAccount(const QString &_accountId,const QString& _statName,const QString & _statVal){
-            return xmlDocument->updateStat(_accountId,_statName,_statVal);
+
+        bool statsManager::updateStatsOfAccount(const QString &_accountId, const QString &_statName, const QString &_statVal) {
+            return xmlDocument->updateStat(_accountId, _statName, _statVal);
         }
 
-        bool statsManager::increaseSentStat(const libJackSMS::dataTypes::configuredAccount & _servizio){
-
+        bool statsManager::increaseSentStat(const libJackSMS::dataTypes::configuredAccount &_servizio) {
             bool ok;
-            int n=_servizio.getStat("sent").toInt(&ok,10)+1;
-            return xmlDocument->updateStat(_servizio.getId(),"sent",QString::number(n));
+            int n = _servizio.getStat("sent").toInt(&ok, 10) + 1;
+            return xmlDocument->updateStat(_servizio.getId(), "sent", QString::number(n));
         }
-        bool statsManager::loadStats(libJackSMS::dataTypes::configuredServicesType & _servizi){
+
+        bool statsManager::loadStats(libJackSMS::dataTypes::configuredServicesType &_servizi) {
             return xmlDocument->loadStats(_servizi);
         }
 
-        userDirectoryManager::userDirectoryManager(const QString _user)
-            :xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp("")),user(_user){
+        userDirectoryManager::userDirectoryManager(const QString _user) :
+                xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp("")), user(_user) {
         }
-        bool userDirectoryManager::fileOrDirExists(const QString &_entry){
+
+        bool userDirectoryManager::fileOrDirExists(const QString &_entry) {
             QDir d(_entry);
-            if (d.exists()){
+            if (d.exists()) {
                 return true;
-            }else{
+            } else {
                 QFile f(_entry);
                 return f.exists();
-
             }
+
             /*if ( access( _entry.toStdString().c_str(), 0 ) == 0 )
                 return true;
             else
                 return false;*/
         }
 
-        bool userDirectoryManager::mymkdir(const QString &_dir){
+        bool userDirectoryManager::mymkdir(const QString &_dir) {
         QDir d;
         return d.mkpath(_dir);
         /*#ifdef WIN32

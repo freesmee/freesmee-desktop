@@ -13,8 +13,9 @@ namespace Ui {
 
 class OpzioniDialog : public QDialog {
     Q_OBJECT
+
 public:
-    OpzioniDialog(libJackSMS::dataTypes::optionsType & _opt,QTextEdit &_TextSms,QString _userDirectory,QWidget *parent,const bool _loggedIn);
+    OpzioniDialog(libJackSMS::dataTypes::optionsType &_opt, libJackSMS::dataTypes::optionsType &_globopt, QString _userDirectory, QWidget *parent, const bool _loggedIn, QString _pass);
     ~OpzioniDialog();
 
 protected:
@@ -23,21 +24,21 @@ protected:
 private:
     void translateGui();
     libJackSMS::dataTypes::optionsType &opt;
-
-    QTextEdit & TextSms;
+    libJackSMS::dataTypes::optionsType &globopt;
     QString userDirectory;
     const bool loggedIn;
+    QString pass;
     Ui::OpzioniDialog *m_ui;
+
 private slots:
     void on_pushButton_3_clicked();
     void on_pushButton_2_clicked();
     void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void on_pushButton_clicked();
+
 signals:
-    void activateImTimer();
-    void deactivateImTimer();
-    void reactivateImTimer();
     void translate();
+
 
 };
 

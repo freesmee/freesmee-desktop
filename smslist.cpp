@@ -8,6 +8,7 @@ SmsList::SmsList(QWidget *parent) :
     item->setSizeHint(QSize(80,50));
     QListWidget::addItem(item);
     setItemWidget(item, wid);
+    QListWidget::setItemHidden(item, true);
 }
 
 void SmsList::keyPressEvent(QKeyEvent* e){
@@ -69,4 +70,9 @@ void SmsList::changeNameForGivenContact(libJackSMS::dataTypes::contact c, QStrin
             smswid->setName(newname);
         }
     }
+}
+
+void SmsList::setItemHidden(const QListWidgetItem *item, bool hide) {
+    if (row(item) != (count()-1))
+        QListWidget::setItemHidden(item, hide);
 }

@@ -163,6 +163,7 @@ public slots:
     void ReWriteAddressBookToGui();
 
 private slots:
+    void on_username_currentIndexChanged(QString );
     void on_SalvaNumeroButton_clicked();
     void on_recipientListWidget_itemDoubleClicked(QListWidgetItem* item);
     void on_RicercaVeloceButton_clicked();
@@ -212,7 +213,6 @@ private slots:
     void on_actionLogout_triggered();
     void on_RubricaVeloce_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void on_smsListWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
-    void on_username_currentIndexChanged(int index);
     void on_loginButton_clicked();
     void gestiscimenuSingolo();
     void gestiscimenuMultiplo();

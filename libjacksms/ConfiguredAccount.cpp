@@ -5,7 +5,6 @@
 #include "Exceptions.h"
 #include "Utilities.h"
 #include <map>
-#include <QDebug>
 
 namespace libJackSMS{
 

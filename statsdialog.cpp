@@ -24,7 +24,7 @@ StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType & _opzioni,con
         if (i != opzioni.end())
             n = i.value();
 
-        m_ui->labelTotal->setText("Sms inviati con JackSMS Desktop: <b>" + n + "</b>");
+        m_ui->labelTotal->setText("Sms inviati da questa postazione: <b>" + n + "</b>");
     }
 
     QMap<QString, libJackSMS::dataTypes::configuredAccount> tempMap;
@@ -45,7 +45,7 @@ StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType & _opzioni,con
     {
         QTextEdit *l = new QTextEdit;
 
-        QString result="<b>"+i.value().getName()+"</b><br>Inviati oggi da tutti i client: "+i.value().getStat("sent-all")+"<br>Totale inviati da JackSMS Desktop: "+i.value().getStat("sent");
+        QString result="<b>"+i.value().getName()+"</b><br>Inviati oggi da tutti i client: "+i.value().getStat("sent-all")+"<br>Totale inviati da questa postazione: "+i.value().getStat("sent");
         l->setText(result);
         l->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::MinimumExpanding);
         l->setMaximumHeight(50);
@@ -66,7 +66,7 @@ StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType & _opzioni,con
         {
             QTextEdit *l = new QTextEdit;
 
-            QString result="<b>"+i.value().getName()+"</b><br>Inviati oggi da tutti i client: "+i.value().getStat("sent-all")+"<br>Totale inviati da JackSMS Desktop: "+i.value().getStat("sent");
+            QString result="<b>"+i.value().getName()+"</b><br>Inviati oggi da tutti i client: "+i.value().getStat("sent-all")+"<br>Totale inviati da questa postazione: "+i.value().getStat("sent");
             l->setText(result);
             l->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::MinimumExpanding);
             l->setMaximumHeight(50);

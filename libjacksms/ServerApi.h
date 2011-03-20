@@ -606,7 +606,7 @@ namespace libJackSMS{
         signals:
             void newJMS(libJackSMS::dataTypes::logImType);
             void serviceActive();
-            void serviceNotActive(bool err=false,QString errStr="");
+            void serviceNotActive(bool err = false, QString errStr = "");
             void serviceActiving();
         };
 

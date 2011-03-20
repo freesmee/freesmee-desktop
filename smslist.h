@@ -20,6 +20,7 @@ public:
     void clear();
     void changeNameForGivenNumber(libJackSMS::dataTypes::phoneNumber numero, QString newname);
     void changeNameForGivenContact(libJackSMS::dataTypes::contact c, QString newname);
+    void setItemHidden(const QListWidgetItem *item, bool hide);
 
 private:
     void keyPressEvent(QKeyEvent* e);

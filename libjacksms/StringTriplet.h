@@ -23,20 +23,28 @@
 
 
 
-namespace libJackSMS{
+namespace libJackSMS {
 
-    namespace dataTypes{
-        class stringTriplet{
+    namespace dataTypes {
+
+        class stringTriplet {
+
             private:
                 QString one;
                 QString two;
                 QString three;
+
             public:
-                stringTriplet(const QString &_first,const QString &_second,const QString &_third);
+                stringTriplet(const QString &_first, const QString &_second, const QString &_third);
+
                 QString getFirst() const;
+                void setFirst(const QString &_str);
+
                 QString getSecond() const;
                 void setSecond(const QString &_str);
+
                 QString getThird() const;
+                void setThird(const QString &_str);
 
         };
 
