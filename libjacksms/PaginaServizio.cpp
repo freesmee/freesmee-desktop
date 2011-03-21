@@ -26,8 +26,8 @@ namespace libJackSMS{
                 conter_iter_variables(0),
                 counter_iter_contents(0),
                 ha_condizione(false),
-                counter_iter_commands(0),
-                sleepbefore(0)
+                sleepbefore(0),
+                counter_iter_commands(0)
         {
         }
 

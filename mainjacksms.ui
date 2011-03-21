@@ -46,7 +46,7 @@
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="login">
        <layout class="QHBoxLayout" name="horizontalLayout_18">
@@ -759,6 +759,13 @@ QFrame#frame_3_old{
                    <number>0</number>
                   </property>
                   <item>
+                   <widget class="QLabel" name="progressBar">
+                    <property name="text">
+                     <string>TextLabel</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
                    <widget class="QLabel" name="LabelCountChars">
                     <property name="text">
                      <string/>
@@ -784,13 +791,6 @@ QFrame#frame_3_old{
                      </widget>
                     </item>
                    </layout>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="progressBar">
-                    <property name="text">
-                     <string>TextLabel</string>
-                    </property>
-                   </widget>
                   </item>
                   <item>
                    <spacer name="horizontalSpacer_2">
@@ -1873,10 +1873,19 @@ ListNames::item:selected:active {
       </property>
       <addaction name="actionGmail"/>
      </widget>
+     <widget class="QMenu" name="menuDati_Applicazione">
+      <property name="title">
+       <string>Dati Applicazione</string>
+      </property>
+      <addaction name="actionApri_cartella_utente"/>
+      <addaction name="actionApri_cartella_impostazioni"/>
+      <addaction name="actionApri_Log"/>
+     </widget>
      <addaction name="actionRicarica_servizi"/>
      <addaction name="actionElimina_cookies"/>
      <addaction name="menuImporta_rubrica"/>
      <addaction name="menuEsporta_rubrica"/>
+     <addaction name="menuDati_Applicazione"/>
     </widget>
     <addaction name="actionOpzioni"/>
     <addaction name="separator"/>
@@ -2004,6 +2013,33 @@ ListNames::item:selected:active {
    </property>
    <property name="text">
     <string>Gmail</string>
+   </property>
+  </action>
+  <action name="actionApri_cartella_utente">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/resource/ico_contact.png</normaloff>:/resource/ico_contact.png</iconset>
+   </property>
+   <property name="text">
+    <string>Apri cartella utente</string>
+   </property>
+  </action>
+  <action name="actionApri_cartella_impostazioni">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/resource/jacksms_icona_impostazioni_24x24-7.png</normaloff>:/resource/jacksms_icona_impostazioni_24x24-7.png</iconset>
+   </property>
+   <property name="text">
+    <string>Apri cartella JackSMS</string>
+   </property>
+  </action>
+  <action name="actionApri_Log">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/resource/1.png</normaloff>:/resource/1.png</iconset>
+   </property>
+   <property name="text">
+    <string>Apri log ultimo invio</string>
    </property>
   </action>
  </widget>

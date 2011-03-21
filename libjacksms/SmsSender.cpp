@@ -37,6 +37,8 @@
 
 namespace libJackSMS{
 
+    QWaitCondition waitOnSleepBefore;
+
     /********************smssender****************/
     smsSender::smsSender(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps) :
             servizi(_services),
@@ -84,6 +86,7 @@ namespace libJackSMS{
             connect(&sndr, SIGNAL(error(QString)), this, SLOT(slotError(QString)));
             connect(&sndr, SIGNAL(success(QString)), this, SLOT(slotSuccess(QString)));
             connect(&sndr, SIGNAL(captcha(QByteArray)), this, SLOT(slotCaptcha(QByteArray)));
+            connect(&sndr, SIGNAL(sleepBeforeFound(int)), this, SLOT(slotSleepBeforeFound(int)));
 
             if (!continueSendFlag) {
 
@@ -112,6 +115,7 @@ namespace libJackSMS{
     }
 
     void smsSender::abort() {
+        waitOnSleepBefore.wakeAll();
         emit abortSignal();
     }
 
@@ -137,6 +141,10 @@ namespace libJackSMS{
         emit captcha(a);
     }
 
+    void smsSender::slotSleepBeforeFound(int i) {
+        emit sleepBeforeFound(i);
+    }
+
     void smsSender::setSalvaCookies(bool value) {
         SalvaCookies = value;
     }
@@ -148,7 +156,9 @@ namespace libJackSMS{
             servizi(_services),
             ps(_ps),
             pageIndex(-1),
-            captchaInterrupt(false) {
+            captchaInterrupt(false),
+            hasAborted(false)
+    {
     }
 
     bool smsSenderBase::isInterruptedByCaptcha() const {
@@ -204,6 +214,7 @@ namespace libJackSMS{
     }
 
     void smsSenderBase::abort() {
+        hasAborted = true;
         webClient->interrupt();
         webClient->clearCookies();
     }
@@ -286,9 +297,9 @@ namespace libJackSMS{
                         mutex.lock();
 
                         // ricordando che lo sleepbefore è espresso in secondi si moltiplica per 1000 per ottenere i millisecondi
-                        QWaitCondition waitCondition;
-                        waitCondition.wait(&mutex, paginaCorrente.getSleepbefore()*1000);
-
+                        int secs = paginaCorrente.getSleepbefore();
+                        emit sleepBeforeFound(secs);
+                        waitOnSleepBefore.wait(&mutex, secs*1000);
                         mutex.unlock();
                     }
 
@@ -566,17 +577,19 @@ namespace libJackSMS{
                     }//end if dopage
 
                 }
-                if ((!resultSend) && (!resultError)){
+                if ((!resultSend) && (!resultError)) {
                     log.addNotice("Ho raggiunto la fine delle pagine da elaborare per il servizio ma non ho ricevuto alcun errore o alcuna stringa accettante: marco come fallito l'invio.");
                     webClient->clearCookies();
-                    emit error("Errore durante l'invio.");
+                    if (!hasAborted)
+                        emit error("Errore durante l'invio.");
                 }
                 webClient->~netClientGeneric();
             }
             //log.save();
 
         } catch(...) {
-            emit error("Errore Generico. Verificare la Connessione.");
+            if (!hasAborted)
+                emit error("Errore Generico. Verificare la Connessione.");
 
             //cancello il webclient se è già stato creato
             if(webClient != NULL)

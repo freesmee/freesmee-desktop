@@ -15,6 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
+
 /*!
   \file SmsSender.h
   \brief Contiene la definizione della classe da utilizzare per inviare un messaggio.
@@ -22,18 +23,20 @@
  */
 #include <QThread>
 #include <QString>
-#include "DataTypes.h"
 #include <QSemaphore>
+#include <QMutex>
+#include <QWaitCondition>
+#include "DataTypes.h"
 #include "ShortMessage.h"
 #include "ProxyConfig.h"
 #include "Encoding.h"
 #include "NetClient.h"
-#include <QMutex>
+
 
 #ifndef SMSSENDER_HH
 #define SMSSENDER_HH 1
 
-namespace libJackSMS{
+namespace libJackSMS {
 
     class smsSender:public QThread {
         Q_OBJECT
@@ -67,6 +70,7 @@ namespace libJackSMS{
             void slotError(QString);
             void slotSuccess(QString);
             void slotCaptcha(QByteArray);
+            void slotSleepBeforeFound(int);
 
         signals:
             void abortSignal();
@@ -75,6 +79,7 @@ namespace libJackSMS{
             void error(QString);
             void success(QString);
             void captcha(QByteArray);
+            void sleepBeforeFound(int);
     };
 
 
@@ -96,6 +101,7 @@ namespace libJackSMS{
             dataTypes::contentType elenco_contenuti;
             bool SalvaCookies;
             QMutex mutex;
+            bool hasAborted;
 
         public:
             smsSenderBase(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps=dataTypes::proxySettings());
@@ -120,11 +126,9 @@ namespace libJackSMS{
             void error(QString);
             void success(QString);
             void captcha(QByteArray);
-
-
-
+            void sleepBeforeFound(int);
     };
 
-
 }
+
 #endif //SMSSENDER_HH

@@ -40,7 +40,6 @@ class QMyMessage
         libJackSMS::dataTypes::phoneNumber getPhone()const;
         QString getServiceId() const;
 
-
 };
 
 #endif // QMYMESSAGE_H

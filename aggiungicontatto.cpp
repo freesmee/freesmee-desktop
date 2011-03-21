@@ -25,12 +25,12 @@ AggiungiContatto::AggiungiContatto(QWidget *parent, MainJackSMS *_padre, libJack
     m_ui->radioNuovo->hide();
     {
         for (libJackSMS::dataTypes::configuredServicesType::const_iterator i = ElencoServiziConfigurati.begin(); i != ElencoServiziConfigurati.end(); ++i) {
-            if (i.value().getId() != "0") {
+            if (i.value().getId() != "1") {
                 m_ui->comboaccount->addItem(ElencoServizi[i.value().getService()].getIcon(),i.value().getName());
             }
         }
         m_ui->comboaccount->model()->sort(0);
-        m_ui->comboaccount->insertItem(0, ElencoServizi[ElencoServiziConfigurati["0"].getService()].getIcon(), ElencoServiziConfigurati["0"].getName());
+        m_ui->comboaccount->insertItem(0, ElencoServizi[ElencoServiziConfigurati["1"].getService()].getIcon(), ElencoServiziConfigurati["1"].getName());
         m_ui->comboaccount->setCurrentIndex(0);
 
         spinner = new QMovie(":/resource/loading-spinner.gif", QByteArray("gif"), this);
@@ -59,20 +59,20 @@ AggiungiContatto::AggiungiContatto(QWidget *parent, MainJackSMS *_padre, libJack
     {
         if (numero.getVirtual()) {
 
-            m_ui->comboaccount->addItem(ElencoServizi[ElencoServiziConfigurati["0"].getService()].getIcon(), ElencoServiziConfigurati["0"].getName());
+            m_ui->comboaccount->addItem(ElencoServizi[ElencoServiziConfigurati["1"].getService()].getIcon(), ElencoServiziConfigurati["1"].getName());
             m_ui->comboaccount->setCurrentIndex(0);
             m_ui->comboaccount->setEnabled(false);
 
         } else {
 
             for (libJackSMS::dataTypes::configuredServicesType::const_iterator i = ElencoServiziConfigurati.begin(); i != ElencoServiziConfigurati.end(); ++i) {
-                if (i.value().getId() != "0") {
+                if (i.value().getId() != "1") {
                     m_ui->comboaccount->addItem(ElencoServizi[i.value().getService()].getIcon(),i.value().getName());
                 }
             }
 
             m_ui->comboaccount->model()->sort(0);
-            m_ui->comboaccount->insertItem(0, ElencoServizi[ElencoServiziConfigurati["0"].getService()].getIcon(), ElencoServiziConfigurati["0"].getName());
+            m_ui->comboaccount->insertItem(0, ElencoServizi[ElencoServiziConfigurati["1"].getService()].getIcon(), ElencoServiziConfigurati["1"].getName());
             m_ui->comboaccount->setCurrentIndex(0);
             m_ui->comboaccount->setEnabled(true);
 
@@ -113,7 +113,7 @@ void AggiungiContatto::changeEvent(QEvent *e)
 
 void AggiungiContatto::on_annulla_clicked()
 {
-    this->close();
+    close();
 }
 
 void AggiungiContatto::on_salva_clicked()
@@ -140,7 +140,7 @@ void AggiungiContatto::on_salva_clicked()
         } else {
             gruppo = m_ui->ComboGruppo->currentText();
         }
-        QString idAccount;
+        QString idAccount = "";
 
         {
             QString nomeAccount = m_ui->comboaccount->currentText();

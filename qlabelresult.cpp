@@ -2,7 +2,7 @@
 
 QLabelResult::QLabelResult(QWidget * parent)
     :QLabel(parent){
-    setText("adad");
+    setText("");
 
 }
 

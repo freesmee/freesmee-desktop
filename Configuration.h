@@ -8,6 +8,6 @@ QString getMacJackPath();
 QString getJackPluginsPath();
 #endif
 
-#define JACKSMS_VERSION "2.1-a7"
+#define JACKSMS_VERSION "2.1-a8"
 
 #endif // CONFIGURATION_H

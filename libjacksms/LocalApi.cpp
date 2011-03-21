@@ -117,35 +117,38 @@ namespace libJackSMS{
                 xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_userDir)){
             qRegisterMetaType<libJackSMS::dataTypes::optionsType>("libJackSMS::dataTypes::optionsType");
         }
-        void optionLoader::load(){
+        void optionLoader::load() {
             start();
         }
-        void optionLoader::run(){
-            try{
-                libJackSMS::dataTypes::optionsType s;
-                if (xmlDocument->loadOptions(s,true)){
-                    libJackSMS::dataTypes::optionsType::iterator i=s.begin();
-                    libJackSMS::dataTypes::optionsType::iterator i_end=s.end();
-                    for(;i!=i_end;++i){
 
-                        if (i.key().indexOf("password")!=-1){
-                            i.value()=Encrypter::Encrypter::decrypt(i.value());
+        void optionLoader::run() {
+
+            try {
+
+                libJackSMS::dataTypes::optionsType s;
+                if (xmlDocument->loadOptions(s, true)) {
+
+                    for (libJackSMS::dataTypes::optionsType::iterator i = s.begin(); i != s.end(); ++i) {
+
+                        if (i.key().indexOf("password") != -1) {
+                            i.value() = Encrypter::Encrypter::decrypt(i.value());
                         }
                     }
                     emit endLoad(s);
-
                 }
-            }catch (libJackSMS::exceptionXmlError e){
+
+            } catch (libJackSMS::exceptionXmlError e) {
                emit criticalError(e.what());
-            }catch (libJackSMS::exceptionXmlNotFound e){
+
+            } catch (libJackSMS::exceptionXmlNotFound e) {
                 //emit criticalError(e.what());
-            }catch (...){
-                emit criticalError("Error too critical: section 1");
+
+            } catch (...) {
+                emit criticalError("Errore nel thread optionLoader");
             }
 
-
-
         }
+
         /***************************************************************/
         /***************************************************************/
         serviceLoader::serviceLoader():

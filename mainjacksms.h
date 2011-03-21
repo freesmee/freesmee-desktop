@@ -127,6 +127,7 @@ private:
     void disableUibeforeLogin();
     void enableUiAfterLogin();
     bool loggedIn;
+    bool stopWriteMessagesToGui;
 
     QString esitoInvio;
 
@@ -163,6 +164,9 @@ public slots:
     void ReWriteAddressBookToGui();
 
 private slots:
+    void on_actionApri_Log_triggered();
+    void on_actionApri_cartella_impostazioni_triggered();
+    void on_actionApri_cartella_utente_triggered();
     void on_username_currentIndexChanged(QString );
     void on_SalvaNumeroButton_clicked();
     void on_recipientListWidget_itemDoubleClicked(QListWidgetItem* item);
@@ -248,6 +252,7 @@ private slots:
     void eseguiPassoInvio();
     void invioSuccesso(QString _text);
     void invioFallito(QString _text);
+    void sleepBeforeFound(int _seconds);
     void checkInstantMessengerReceived(libJackSMS::dataTypes::logImType);
     void deleteContactKo();
     void deleteContactOk(QString);

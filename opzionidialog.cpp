@@ -8,32 +8,32 @@
 #include <QTimer>
 
 OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType &_opt, libJackSMS::dataTypes::optionsType &_globopt, QString _userDirectory, QWidget *parent, const bool _loggedIn, QString _pass) :
-    QDialog(parent),
-    opt(_opt),
-    globopt(_globopt),
-    userDirectory(_userDirectory),
-    loggedIn(_loggedIn),
-    pass(_pass),
-    m_ui(new Ui::OpzioniDialog)
+        QDialog(parent),
+        opt(_opt),
+        globopt(_globopt),
+        userDirectory(_userDirectory),
+        loggedIn(_loggedIn),
+        pass(_pass),
+        m_ui(new Ui::OpzioniDialog)
 {
     m_ui->setupUi(this);
     libJackSMS::dataTypes::optionsType::const_iterator iter;
 
-    // !!!!!!!!!!!!!!!!! disabilito momentaneamente la scheda "lingua"
+    // disabilito momentaneamente la scheda "lingua"
     m_ui->listWidget->item(4)->~QListWidgetItem();
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     if (!loggedIn) {
+
         //m_ui->listWidget->item(4)->~QListWidgetItem();
         m_ui->listWidget->item(3)->~QListWidgetItem();
         m_ui->listWidget->item(2)->~QListWidgetItem();
         m_ui->listWidget->item(0)->~QListWidgetItem();
-
         m_ui->stackedWidget->setCurrentIndex(1);
+
     } else {
-        /*****ATTENZIONE: rimuovo momentaneamente il widget. in versioni superiori verrà reintrodotto*/
+
+        // rimuovo momentaneamente il widget. in versioni superiori verrà reintrodotto
         m_ui->listWidget->item(3)->~QListWidgetItem();
-        /******/
 
         iter = opt.find("set-account");
         if (iter != opt.end()) {
@@ -62,9 +62,9 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType &_opt, libJackSM
             m_ui->checkSalvalocale->setChecked(true);
         }
 
-        iter=opt.find("opz-svuota-invio-corretto");
-        if (iter!=opt.end())
-            if ("yes"==iter.value())
+        iter = opt.find("opz-svuota-invio-corretto");
+        if (iter != opt.end())
+            if ("yes" == iter.value())
                 m_ui->opzSvuotaInvioCorretto->setChecked(true);
 
         iter=opt.find("dont-cookies");
@@ -317,41 +317,19 @@ void OpzioniDialog::on_pushButton_2_clicked()
     if (loggedIn) {
 
         opt["set-account"] = (m_ui->checkAccountDefault->isChecked()) ? "yes" : "no";
-
         opt["save-local"] = (m_ui->checkSalvalocale->isChecked()) ? "yes" : "no";
-
-        if (("yes"==opt["successfull-send-popup"])!=m_ui->successSmsPopup->isChecked())
-            opt["successfull-send-popup"]=(m_ui->successSmsPopup->isChecked())?"yes":"no";
-
-        if (("yes"==opt["display-captcha-popup"])!=m_ui->captchaPopup->isChecked())
-            opt["display-captcha-popup"]=(m_ui->captchaPopup->isChecked())?"yes":"no";
-
+        opt["successfull-send-popup"] = (m_ui->successSmsPopup->isChecked()) ? "yes" : "no";
+        opt["display-captcha-popup"] = (m_ui->captchaPopup->isChecked()) ? "yes" : "no";
         opt["error-send-popup"] = (m_ui->errorSmsPopup->isChecked()) ? "yes" : "no";
+        opt["dont-cookies"] = (m_ui->nonSalvaCookies->isChecked()) ? "yes" : "no";
+        opt["hide-service-update"] = (m_ui->hideServiceUpdate->isChecked()) ? "yes" : "no";
+        opt["suono-jms"] = (m_ui->suonoJMS->isChecked()) ? "yes" : "no";
+        opt["opz-svuota-invio-corretto"] = (m_ui->opzSvuotaInvioCorretto->isChecked()) ? "yes" : "no";
+        opt["receive-im"] = (m_ui->CheckAbilitaIM->isChecked()) ? "yes" : "no";
+        opt["captcha-zoom"] = m_ui->comboZoomCaptcha->currentText();
+        opt["use-captcha"] = (m_ui->checkUseCaptcha->isChecked()) ? "yes" : "no";
 
-        if (("yes"==opt["dont-cookies"])!=m_ui->nonSalvaCookies->isChecked())
-            opt["dont-cookies"]=(m_ui->nonSalvaCookies->isChecked())?"yes":"no";
-
-        if (("yes"==opt["hide-service-update"])!=m_ui->hideServiceUpdate->isChecked())
-            opt["hide-service-update"]=(m_ui->hideServiceUpdate->isChecked())?"yes":"no";
-
-        if (("yes"==opt["suono-jms"])!=m_ui->suonoJMS->isChecked())
-            opt["suono-jms"]=(m_ui->suonoJMS->isChecked())?"yes":"no";
-
-        if (("yes"==opt["opz-svuota-invio-corretto"])!=m_ui->opzSvuotaInvioCorretto->isChecked())
-            opt["opz-svuota-invio-corretto"]=(m_ui->opzSvuotaInvioCorretto->isChecked())?"yes":"no";
-
-        if (("no"!=opt["receive-im"])&& (!m_ui->CheckAbilitaIM->isChecked()))
-            opt["receive-im"]="no";
-        else if (("no"==opt["receive-im"])&& (m_ui->CheckAbilitaIM->isChecked()))
-            opt["receive-im"]="yes";
-
-        if (opt["captcha-zoom"]!=m_ui->comboZoomCaptcha->currentText())
-            opt["captcha-zoom"]=m_ui->comboZoomCaptcha->currentText();
-
-        if(("yes"==opt["use-captcha"]) != m_ui->checkUseCaptcha->isChecked())
-            opt["use-captcha"] = (m_ui->checkUseCaptcha->isChecked())?"yes":"no";
-
-        libJackSMS::localApi::optionManager op(userDirectory,opt);
+        libJackSMS::localApi::optionManager op(userDirectory, opt);
 
         try {
             op.save();
@@ -360,7 +338,6 @@ void OpzioniDialog::on_pushButton_2_clicked()
         } catch(...) {
             QMessageBox::critical(this,"JackSMS","Errore sconosciuto");
         }
-
     }
 }
 
