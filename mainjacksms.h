@@ -159,6 +159,10 @@ private:
     void elaboraRecipientLine(bool StealFocus = true);
 
     QList<QString> JMSServicesDropped;
+    void caricaUtenti();
+    void ricaricaUtenti();
+    void manageUserPassAutoLogin();
+    void managePassword(QString _user);
 
 public slots:
     void ReWriteAddressBookToGui();

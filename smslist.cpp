@@ -45,6 +45,7 @@ void SmsList::clear() {
     item->setSizeHint(QSize(80,50));
     QListWidget::addItem(item);
     setItemWidget(item, wid);
+    QListWidget::setItemHidden(item, true);
 }
 
 void SmsList::hideCaricaAltri(bool hide) {

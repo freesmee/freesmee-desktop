@@ -8,7 +8,7 @@
 #include <QHBoxLayout>
 #include "libjacksms/ConfiguredAccount.h"
 
-StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType & _opzioni,const libJackSMS::dataTypes::configuredServicesType & _servizi,const libJackSMS::dataTypes::servicesType &_ElencoServizi,QWidget *parent) :
+StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType &_opzioni, const libJackSMS::dataTypes::configuredServicesType &_servizi, const libJackSMS::dataTypes::servicesType &_ElencoServizi, QWidget *parent) :
 
     QDialog(parent),
     m_ui(new Ui::StatsDialog),
@@ -29,12 +29,12 @@ StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType & _opzioni,con
 
     QMap<QString, libJackSMS::dataTypes::configuredAccount> tempMap;
     for(libJackSMS::dataTypes::configuredServicesType::const_iterator i = servizi.begin(); i != servizi.end(); ++i) {
-        if (i.value().getId() != "0")
+        if (i.value().getId() != "1")
             tempMap.insert(i.value().getName(), i.value());
     }
 
     // Aggiungo Jacksms Messenger separatamente in modo che sia in cima alla lista
-    libJackSMS::dataTypes::configuredServicesType::const_iterator i = servizi.find("0");
+    libJackSMS::dataTypes::configuredServicesType::const_iterator i = servizi.find("1");
     QHBoxLayout *hLayout = new QHBoxLayout;
     {
         QLabel *l = new QLabel;

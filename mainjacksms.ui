@@ -1839,7 +1839,7 @@ ListNames::item:selected:active {
      <x>0</x>
      <y>0</y>
      <width>815</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1865,17 +1865,29 @@ ListNames::item:selected:active {
       <property name="title">
        <string>Esporta rubrica</string>
       </property>
+      <property name="icon">
+       <iconset resource="resources.qrc">
+        <normaloff>:/resource/exportbackup.png</normaloff>:/resource/exportbackup.png</iconset>
+      </property>
       <addaction name="actionCsv"/>
      </widget>
      <widget class="QMenu" name="menuImporta_rubrica">
       <property name="title">
        <string>Importa rubrica</string>
       </property>
+      <property name="icon">
+       <iconset resource="resources.qrc">
+        <normaloff>:/resource/importbackup.png</normaloff>:/resource/importbackup.png</iconset>
+      </property>
       <addaction name="actionGmail"/>
      </widget>
      <widget class="QMenu" name="menuDati_Applicazione">
       <property name="title">
        <string>Dati Applicazione</string>
+      </property>
+      <property name="icon">
+       <iconset resource="resources.qrc">
+        <normaloff>:/resource/emblem-alert-medium.png</normaloff>:/resource/emblem-alert-medium.png</iconset>
       </property>
       <addaction name="actionApri_cartella_utente"/>
       <addaction name="actionApri_cartella_impostazioni"/>
@@ -1992,16 +2004,28 @@ ListNames::item:selected:active {
    </property>
   </action>
   <action name="actionRicarica_servizi">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/resource/reload.gif</normaloff>:/resource/reload.gif</iconset>
+   </property>
    <property name="text">
     <string>Ricarica servizi</string>
    </property>
   </action>
   <action name="actionElimina_cookies">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/resource/dele.gif</normaloff>:/resource/dele.gif</iconset>
+   </property>
    <property name="text">
     <string>Elimina cookies</string>
    </property>
   </action>
   <action name="actionCsv">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/resource/salva.png</normaloff>:/resource/salva.png</iconset>
+   </property>
    <property name="text">
     <string>csv</string>
    </property>
