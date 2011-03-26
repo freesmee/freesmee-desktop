@@ -235,26 +235,31 @@ namespace libJackSMS{
             }
             return true;
         }
-        bool xmlParserLocalApiTicpp::loadServices(libJackSMS::dataTypes::servicesType &_servizi) {
+        bool xmlParserLocalApiTicpp::loadServices(libJackSMS::dataTypes::servicesType & _servizi){
             try{
+
 
                 ticpp::Document services;
 
-                QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(), "services.xml");
-                services.LoadFile(path.toStdString(), TIXML_ENCODING_UTF8);
+                QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),"services.xml");
+                services.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
 
-                ticpp::Node *subRoot = services.FirstChild("services", false);
-                if (subRoot == NULL)
-                    subRoot = services.FirstChild("JackSMS");
+
+                ticpp::Node *subRoot=services.FirstChild("services",false);
+                if (subRoot==NULL)
+                    subRoot=services.FirstChild("JackSMS");
                 ticpp::Node *child=NULL;
-                while ((child = subRoot->IterateChildren(child))) {
-                        ticpp::Element *thisService = child->ToElement();
+                while( (child = subRoot->IterateChildren( child )) ){
+                        ticpp::Element * thisService=child->ToElement();
+                        QString serviceId=QString::fromStdString(thisService->GetAttribute("id"));
                         libJackSMS::dataTypes::service servizio;
                         servizio.setId(QString::fromStdString(thisService->GetAttribute("id")));
                         /************************/
+                        //std::cout <<std::endl<<thisService->GetAttribute("name")<<std::endl;
                         servizio.setName(QString::fromStdString(thisService->GetAttribute("name")));
                         servizio.setVersion(QString::fromStdString(thisService->GetAttribute("v")));
                         servizio.setEncoding(QString::fromStdString(thisService->GetAttributeOrDefault("output_encoding","auto")));
+
                         servizio.setMaxSms(QString::fromStdString(thisService->GetAttribute("maxsms")));
                         servizio.setReset(QString::fromStdString(thisService->GetAttribute("reset")));
                         servizio.setMaxLength(QString::fromStdString(thisService->GetAttribute("maxlen")));
@@ -475,24 +480,31 @@ namespace libJackSMS{
 
         }
         bool xmlParserLocalApiTicpp::loadOptions(libJackSMS::dataTypes::optionsType & _opzioni,bool overwriteExisting){
-            try{
+            try {
                 ticpp::Document config;
-                QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),userDirectory);
-                path=libJackSMS::directories::concatDirectoryAndFile(path,"config.xml");
-                if (!QFile::exists(path))
-                    throw libJackSMS::exceptionXmlNotFound();
-                config.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
+
+                QString path = libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(), userDirectory);
+                path = libJackSMS::directories::concatDirectoryAndFile(path, "config.xml");
+
+                if (!QFile::exists(path)) {
+                    //throw libJackSMS::exceptionXmlNotFound();
+                    ticpp::Document doc;
+                    ticpp::Element *newRoot = new ticpp::Element("config");
+                    doc.LinkEndChild(newRoot);
+                    doc.SaveFile(path.toStdString());
+                }
+
+                config.LoadFile(path.toStdString(), TIXML_ENCODING_UTF8);
                 
+                ticpp::Node *subRoot = config.FirstChild("config");
+                ticpp::Node *child = NULL;
 
-
-                ticpp::Node *subRoot=config.FirstChild("config");
-                ticpp::Node *child=NULL;
                 while( (child = subRoot->IterateChildren( child )) ){
-                    ticpp::Element * curElem= child->ToElement();
+                    ticpp::Element * curElem = child->ToElement();
 
                     if (overwriteExisting)
-                        _opzioni[QString::fromStdString(child->Value())]=QString::fromStdString(curElem->GetTextOrDefault(""));
-                    else if (_opzioni.find(QString::fromStdString(child->Value()))==_opzioni.end())
+                        _opzioni[QString::fromStdString(child->Value())] = QString::fromStdString(curElem->GetTextOrDefault(""));
+                    else if (_opzioni.find(QString::fromStdString(child->Value())) == _opzioni.end())
                         _opzioni.insert(QString::fromStdString(child->Value()),QString::fromStdString(curElem->GetTextOrDefault("")));
 
 
@@ -505,6 +517,7 @@ namespace libJackSMS{
 
             return true;
         }
+
         bool xmlParserLocalApiTicpp::deleteAccount(const QString &_id){
             try{
                 ticpp::Document acc;
@@ -762,124 +775,128 @@ namespace libJackSMS{
 
 
         }
-        bool xmlParserLocalApiTicpp::updateStat(const QString &_accountId,const QString & _statName,const QString & _statVal){
-            try{
-                ticpp::Document log;
-                QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),userDirectory);
-                path=libJackSMS::directories::concatDirectoryAndFile(path,"stats.xml");
+        bool xmlParserLocalApiTicpp::updateStat(const QString &_accountId, const QString &_statName, const QString &_statVal) {
+
+            try {
+
+                QString path = libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(), userDirectory);
+                path = libJackSMS::directories::concatDirectoryAndFile(path, "stats.xml");
+
                 if (!QFile::exists(path))
                     throw libJackSMS::exceptionXmlNotFound();
-                log.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
 
+                ticpp::Document log;
+                log.LoadFile(path.toStdString(), TIXML_ENCODING_UTF8);
 
-                bool nodeExist=false;
-                bool idExist=false;
-                ticpp::Node *subRoot=log.FirstChild("stats");
-                ticpp::Node *child=NULL;
-                while( (child = subRoot->IterateChildren( child )) ){
-                    ticpp::Element * childElem=child->ToElement();
-                    if (child->Value()=="account-stat"){
-                        QString id=QString::fromStdString(childElem->GetAttribute("account"));
-                        if (id==_accountId){
-                            idExist=true;
-                            ticpp::Node *childStat=NULL;
-                            while( (childStat = child->IterateChildren( childStat )) ){
-                                if (childStat->Value()==_statName.toStdString()){
+                bool nodeExist = false;
+                bool idExist = false;
+                ticpp::Node *subRoot = log.FirstChild("stats");
+                ticpp::Node *child = NULL;
+
+                while ((child = subRoot->IterateChildren(child))) {
+                    ticpp::Element *childElem = child->ToElement();
+                    if (child->Value() == "account-stat") {
+                        QString id = QString::fromStdString(childElem->GetAttribute("account"));
+                        if (id == _accountId) {
+                            idExist = true;
+                            ticpp::Node *childStat = NULL;
+                            while ((childStat = child->IterateChildren(childStat))) {
+                                if (childStat->Value() == _statName.toStdString()) {
                                     childStat->ToElement()->SetText(_statVal.toStdString());
+                                    nodeExist = true;
                                     log.SaveFile();
-                                    nodeExist=true;
                                 }
                             }
                             break;
-
                         }
                     }
                 }
-                if (!idExist){
-                    ticpp::Element *newNode=new ticpp::Element("account-stat");
-                    newNode->SetAttribute("account",_accountId.toStdString());
+
+                if (!idExist) {
+                    ticpp::Element *newNode = new ticpp::Element("account-stat");
+                    newNode->SetAttribute("account", _accountId.toStdString());
                     subRoot->LinkEndChild(newNode);
 
-                    ticpp::Element *newStat=new ticpp::Element(_statName.toStdString());
+                    ticpp::Element *newStat = new ticpp::Element(_statName.toStdString());
                     newStat->SetText(_statVal.toStdString());
                     newNode->LinkEndChild(newStat);
                     log.SaveFile();
 
-                }else if(!nodeExist){
-                    ticpp::Element *newStat=new ticpp::Element(_statName.toStdString());
+                } else if (!nodeExist) {
+                    ticpp::Element *newStat = new ticpp::Element(_statName.toStdString());
                     newStat->SetText(_statVal.toStdString());
                     child->LinkEndChild(newStat);
                     log.SaveFile();
                 }
+
             }catch(ticpp::Exception e){
                 throw libJackSMS::exceptionXmlError(e.what());
             }
-            return true;
 
+            return true;
         }
 
-        bool xmlParserLocalApiTicpp::loadStats(libJackSMS::dataTypes::configuredServicesType & _services){
+        bool xmlParserLocalApiTicpp::loadStats(libJackSMS::dataTypes::configuredServicesType &_services) {
             try{
                 ticpp::Document log;
-                QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),userDirectory);
-                path=libJackSMS::directories::concatDirectoryAndFile(path,"stats.xml");
-                try{
-                    log.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
-                }catch(ticpp::Exception e){
+                QString path = libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(), userDirectory);
+                path = libJackSMS::directories::concatDirectoryAndFile(path, "stats.xml");
+                try {
+                    log.LoadFile(path.toStdString(), TIXML_ENCODING_UTF8);
+                } catch(ticpp::Exception e) {
                     ticpp::Document doc;
-                    ticpp::Element *newRoot=new ticpp::Element("stats");
+                    ticpp::Element *newRoot = new ticpp::Element("stats");
                     doc.LinkEndChild(newRoot);
-                    QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),userDirectory);
-                    path=libJackSMS::directories::concatDirectoryAndFile(path,"stats.xml");
+                    QString path = libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(), userDirectory);
+                    path = libJackSMS::directories::concatDirectoryAndFile(path, "stats.xml");
                     doc.SaveFile(path.toStdString());
                     return true;
                 }
 
-
-                ticpp::Node *subRoot=log.FirstChild("stats");
-                ticpp::Node *child=NULL;
-                while( (child = subRoot->IterateChildren( child )) ){
-                    ticpp::Element * childElem=child->ToElement();
-                    if (child->Value()=="account-stat"){
-                        QString id=QString::fromStdString(childElem->GetAttribute("account"));
-                        dataTypes::configuredServicesType::iterator i=_services.find(id);
-                        if (i!=_services.end()){
-                            std::string r=childElem->GetText(false);
-                            if (!r.empty()){
+                ticpp::Node *subRoot = log.FirstChild("stats");
+                ticpp::Node *child = NULL;
+                while ((child = subRoot->IterateChildren(child))) {
+                    ticpp::Element *childElem = child->ToElement();
+                    if (child->Value() == "account-stat") {
+                        QString id = QString::fromStdString(childElem->GetAttribute("account"));
+                        dataTypes::configuredServicesType::iterator i = _services.find(id);
+                        if (i != _services.end()){
+                            std::string r = childElem->GetText(false);
+                            if (!r.empty()) {
                                 /*this statement is only for compatibility from old stat xml format to new stat xml format*/
-                                i.value().setStat("sent",QString::fromStdString(r));
-                                i.value().setStat("sent-partial","0");
-                                i.value().setStat("sent-all","0");
+                                i.value().setStat("sent", QString::fromStdString(r));
+                                i.value().setStat("sent-partial", "0");
+                                i.value().setStat("sent-all", "0");
                                 childElem->SetText("");
-                                ticpp::Element *newEl=new ticpp::Element("sent");
+                                ticpp::Element *newEl = new ticpp::Element("sent");
                                 newEl->SetText(r);
                                 child->LinkEndChild(newEl);
-                                newEl=new ticpp::Element("sent-partial");
+                                newEl = new ticpp::Element("sent-partial");
                                 child->LinkEndChild(newEl);
-                                newEl=new ticpp::Element("sent-all");
+                                newEl = new ticpp::Element("sent-all");
                                 child->LinkEndChild(newEl);
                                 log.SaveFile();
 
-                            }else{
-                                ticpp::Node *se=child->FirstChild("sent",false);
+                            } else {
+                                ticpp::Node *se = child->FirstChild("sent", false);
                                 QString r;
-                                if (se==NULL)
-                                    r="0";
+                                if (se == NULL)
+                                    r = "0";
                                 else
-                                    r=QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));
-                                i.value().setStat("sent",r);
-                                se=child->FirstChild("sent-partial",false);
-                                if (se!=NULL)
-                                    r=QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));
+                                    r = QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));
+                                i.value().setStat("sent", r);
+                                se = child->FirstChild("sent-partial", false);
+                                if (se != NULL)
+                                    r = QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));
                                 else
-                                    r="0";
-                                i.value().setStat("sent-partial",r);
-                                se=child->FirstChild("sent-all");
-                                if(se!=NULL)
-                                    r=QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));
+                                    r = "0";
+                                i.value().setStat("sent-partial", r);
+                                se = child->FirstChild("sent-all");
+                                if(se != NULL)
+                                    r = QString::fromStdString(se->ToElement()->GetTextOrDefault("0"));
                                 else
-                                    r="0";
-                                i.value().setStat("sent-all",r);
+                                    r = "0";
+                                i.value().setStat("sent-all", r);
                             }
 
                         }
@@ -1081,8 +1098,6 @@ namespace libJackSMS{
                     doc.LoadFile(path.toStdString(), TIXML_ENCODING_UTF8);
                     options = ticpp::Document(doc);
                 }
-
-                //options.LoadFile();
 
                 ticpp::Node *subRoot = options.FirstChild("config");
                 subRoot->Clear();

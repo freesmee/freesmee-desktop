@@ -8,9 +8,11 @@
 #include "qlabelresult.h"
 #include <QListWidgetItem>
 #include "libjacksms/libJackSMS.h"
+
 class QRecipientWidget : public QWidget
 {
-Q_OBJECT
+    Q_OBJECT
+
 private:
     QHBoxLayout *hLayout;
     QLabel *name;
@@ -25,6 +27,7 @@ private:
     QLabel *iconLabel;
     QPixmap original;
     QString nameStr;
+
 public:
     void setStatusFailed(QString message);
     void setStatusWorking();
@@ -37,8 +40,10 @@ public:
     void restoreOriginalIcon();
     QString getName() const;
     void clearStatus();
+
 signals:
     void removed(QListWidgetItem*);
+
 private slots:
     void remove();
 

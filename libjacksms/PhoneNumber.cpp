@@ -54,10 +54,10 @@ namespace libJackSMS {
                 return valid;
             }
 
-            regExp.setPattern(QString("^([0-9]{1,4})\\.([0-9]{1,4})\\.([0-9]{6,8})$"));
+            regExp.setPattern(QString("^([0-9]{4})\\.([0-9]{1,4})\\.([0-9]{6,8})$"));
             if (regExp.exactMatch(_phoneNum)) {
                 intcode = regExp.cap(1);
-                intpref = intcode;
+                intpref = "+" + intcode.right(2);
                 pref = regExp.cap(2);
                 num = regExp.cap(3);
                 valid = true;

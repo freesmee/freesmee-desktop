@@ -1,3 +1,5 @@
+#include "mainjacksms.h"
+
 #ifndef MULTIPLECHECKDIALOG_H
 #define MULTIPLECHECKDIALOG_H
 
@@ -11,13 +13,14 @@ namespace Ui {
 class multipleCheckDialog : public QDialog {
     Q_OBJECT
 public:
-    multipleCheckDialog(const libJackSMS::dataTypes::phoneBookType & _rubrica,const libJackSMS::dataTypes::configuredServicesType & _elencoServiziConfigurati,const libJackSMS::dataTypes::servicesType & _elencoServizi,QWidget *parent = 0);
+    multipleCheckDialog(const libJackSMS::dataTypes::phoneBookType & _rubrica,const libJackSMS::dataTypes::configuredServicesType & _elencoServiziConfigurati,const libJackSMS::dataTypes::servicesType & _elencoServizi, MainJackSMS *_padre, QWidget *parent = 0);
     ~multipleCheckDialog();
 
 protected:
     void changeEvent(QEvent *e);
 
 private:
+    MainJackSMS *padre;
     Ui::multipleCheckDialog *ui;
     const libJackSMS::dataTypes::phoneBookType & rubrica;
     const libJackSMS::dataTypes::configuredServicesType & elencoServiziConfigurati;

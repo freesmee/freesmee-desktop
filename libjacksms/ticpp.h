@@ -1283,13 +1283,13 @@ namespace ticpp
 		virtual void operator=( const NodeImp<T>& copy )
 		{
 			// Dropping the reference to the old object
-			this->m_impRC->DecRef();
+                        m_impRC->DecRef();
 
 			// Pointing to the new Object
 			SetTiXmlPointer( copy.m_tiXmlPointer );
 
 			// The internal tixml pointer changed in the above line
-			this->m_impRC->IncRef();
+                        m_impRC->IncRef();
 		}
 
 		/**
@@ -1303,7 +1303,7 @@ namespace ticpp
 			SetTiXmlPointer( copy.m_tiXmlPointer );
 
 			// The internal tixml pointer changed in the above line
-			this->m_impRC->IncRef();
+                        m_impRC->IncRef();
 		}
 
 	public:

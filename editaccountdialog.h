@@ -25,7 +25,6 @@ private:
     QString current_login_id;
     libJackSMS::dataTypes::optionsType &opzioni;
     libJackSMS::dataTypes::configuredAccount currentAccount;
-
     Ui::editAccountDialog *ui;
     libJackSMS::serverApi::accountManager *saver;
 
@@ -34,6 +33,7 @@ private slots:
     void on_buttonAnnulla_clicked();
     void updateOk(libJackSMS::dataTypes::configuredAccount);
     void accountNotUpdated();
+
 signals:
     void rewriteAccunts();
 };

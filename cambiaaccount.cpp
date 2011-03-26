@@ -22,18 +22,17 @@ cambiaaccount::cambiaaccount(QWidget *parent, MainJackSMS * _padre, const libJac
 
     changed = 0;
 
-    spinner=new QMovie(":/resource/loading-spinner.gif",QByteArray("gif"),this);
-    spinner->setScaledSize(QSize(16,16));
+    spinner = new QMovie(":/resource/loading-spinner.gif", QByteArray("gif"), this);
+    spinner->setScaledSize(QSize(16, 16));
     spinner->start();
     m_ui->labelSpin->setMovie(spinner);
     m_ui->labelSpin->hide();
 
     {
-        libJackSMS::dataTypes::configuredServicesType::const_iterator i=ElencoServiziConfigurati.begin();
-        libJackSMS::dataTypes::configuredServicesType::const_iterator i_end=ElencoServiziConfigurati.end();
-        for(;i!=i_end;++i){
+        for(libJackSMS::dataTypes::configuredServicesType::const_iterator i = ElencoServiziConfigurati.begin(); i != ElencoServiziConfigurati.end(); ++i) {
             m_ui->comboaccount->addItem(_ElencoServizi[i->getService()].getIcon(),i->getName());
         }
+
         m_ui->comboaccount->model()->sort(0);
     }
 
@@ -66,7 +65,7 @@ void cambiaaccount::on_buttonSalva_clicked()
             }
         }
 
-        saver=new libJackSMS::serverApi::contactManager(padre->current_login_id,Opzioni);
+        saver = new libJackSMS::serverApi::contactManager(padre->current_login_id, Opzioni);
         connect(saver,SIGNAL(contactUpdated(libJackSMS::dataTypes::contact)),this,SLOT(salvataggioOk(libJackSMS::dataTypes::contact)));
         connect(saver,SIGNAL(contactNotUpdated()),this,SLOT(salvataggioKo()));
 
@@ -93,12 +92,12 @@ void cambiaaccount::on_buttonSalva_clicked()
 
     //non dovrebbe mai arrivare qui ma per precauzione..
     if(!stopsearch)
-        this->close();
+        close();
 }
 
 void cambiaaccount::on_buttonAnnulla_clicked()
 {
-    this->close();
+    close();
 }
 
 
@@ -120,7 +119,7 @@ void cambiaaccount::salvataggioOk(libJackSMS::dataTypes::contact c){
 
     if(changed == found){
         QMessageBox::information(this,"JackSMS","Contatti modificati.");
-        this->close();
+        close();
     }
 }
 void cambiaaccount::salvataggioKo(){

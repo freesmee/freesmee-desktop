@@ -83,50 +83,50 @@ namespace libJackSMS {
     };
 
 
-    class smsSenderBase:public QObject {
+    class smsSenderBase : public QObject {
         Q_OBJECT
 
-        private:
-            dataTypes::phoneNumber destinatario;
-            dataTypes::shortMessage messaggio;
-            QString messagiofinale;
-            const dataTypes::servicesType & servizi;
-            dataTypes::configuredAccount account;
-            QString substitute(QString _input,const dataTypes::contentType &_cont);
-            QString substitute(QString _input,const dataTypes::creditsType &_cont);
-            const dataTypes::proxySettings &ps;
-            netClient::netClientGeneric *webClient;
-            int pageIndex;
-            bool captchaInterrupt;
-            dataTypes::contentType elenco_contenuti;
-            bool SalvaCookies;
-            QMutex mutex;
-            bool hasAborted;
+    private:
+        dataTypes::phoneNumber destinatario;
+        dataTypes::shortMessage messaggio;
+        QString messagiofinale;
+        const dataTypes::servicesType &servizi;
+        dataTypes::configuredAccount account;
+        QString substitute(QString _input, const dataTypes::contentType &_cont);
+        QString substitute(QString _input, const dataTypes::creditsType &_cont);
+        const dataTypes::proxySettings &ps;
+        netClient::netClientGeneric *webClient;
+        int pageIndex;
+        bool captchaInterrupt;
+        dataTypes::contentType elenco_contenuti;
+        bool SalvaCookies;
+        QMutex mutex;
+        bool hasAborted;
 
-        public:
-            smsSenderBase(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps=dataTypes::proxySettings());
-            void setNumberOfFirstPage(int _pn);
-            void setRecipient(const dataTypes::phoneNumber & _dest);
-            void setMessage(const dataTypes::shortMessage & _message);
-            void setAccount(dataTypes::configuredAccount _account);
-            void send(QString captcha_value="");
-            bool isInterruptedByCaptcha()const;
-            int getCaptchaPageIndex()const;
-            dataTypes::contentType getContents()const;
-            void setContents(dataTypes::contentType contents);
-            void setSalvaCookies(bool value);
-            void optionalDeleteCookies();
+    public:
+        smsSenderBase(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps=dataTypes::proxySettings());
+        void setNumberOfFirstPage(int _pn);
+        void setRecipient(const dataTypes::phoneNumber & _dest);
+        void setMessage(const dataTypes::shortMessage & _message);
+        void setAccount(dataTypes::configuredAccount _account);
+        void send(QString captcha_value="");
+        bool isInterruptedByCaptcha()const;
+        int getCaptchaPageIndex()const;
+        dataTypes::contentType getContents()const;
+        void setContents(dataTypes::contentType contents);
+        void setSalvaCookies(bool value);
+        void optionalDeleteCookies();
 
-        public slots:
-            void abort();
+    public slots:
+        void abort();
 
-        signals:
-            void operation();
-            void operation(QString);
-            void error(QString);
-            void success(QString);
-            void captcha(QByteArray);
-            void sleepBeforeFound(int);
+    signals:
+        void operation();
+        void operation(QString);
+        void error(QString);
+        void success(QString);
+        void captcha(QByteArray);
+        void sleepBeforeFound(int);
     };
 
 }

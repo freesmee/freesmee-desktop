@@ -30,9 +30,9 @@ QIcon accountWidget::getIcon()const{
     return QIcon(*icon->pixmap());
 }
 QString accountWidget::getName()const{
-    return this->nome->text();
+    return nome->text();
 }
 QString accountWidget::getAccountId()const{
 
-    return this->id;
+    return id;
 }

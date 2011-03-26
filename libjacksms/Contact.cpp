@@ -19,10 +19,14 @@
 
 #include "PhoneNumber.h"
 #include "Contact.h"
-namespace libJackSMS{
 
-    namespace dataTypes{
-            contact::contact(){}
+namespace libJackSMS {
+
+    namespace dataTypes {
+            contact::contact()
+            {
+            }
+
             contact::contact(const QString & _nome,const phoneNumber & _telefono,const QString & _gruppo, const QString & _account)
                 :nome(_nome),
                 telefono(_telefono),

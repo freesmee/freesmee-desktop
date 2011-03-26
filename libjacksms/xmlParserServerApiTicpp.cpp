@@ -273,35 +273,40 @@ namespace libJackSMS{
                 return true;
         }
 
-        bool xmlParserServerApiTicpp::extractImMessages(libJackSMS::dataTypes::logImType & _logIm){
-            ticpp::Node *root=xmlResponse.FirstChild("JackSMS");
-            ticpp::Node *child=NULL;
-            //std::cout <<"parsing";
-            int tmpId=0;
-            while( (child = root->IterateChildren(child)) ){
-                ticpp::Element *childElem=child->ToElement();
-                std::string tmp;
-                libJackSMS::dataTypes::phoneNumber nn;
-                try{
-                    nn.parse(QString::fromStdString(childElem->GetAttribute("number")));
-                    tmp=childElem->GetAttribute("sender");
-                    nn.setAltName(QString::fromUtf8(tmp.c_str(),tmp.length()));
-                    nn.setIsValid(true);
-                }catch(exceptionPhoneNumber e){
-                    nn.setIsValid(false);
-                    nn.setAltName(QString::fromStdString(childElem->GetAttribute("number")));
+        bool xmlParserServerApiTicpp::extractImMessages(libJackSMS::dataTypes::logImType &_logIm) {
+
+            try {
+                ticpp::Node *root = xmlResponse.FirstChild("JackSMS");
+                ticpp::Node *child = NULL;
+                int tmpId = 0;
+                while((child = root->IterateChildren(child))) {
+                    ticpp::Element *childElem = child->ToElement();
+                    std::string tmp;
+                    libJackSMS::dataTypes::phoneNumber nn;
+
+                    try {
+                        nn.parse(QString::fromStdString(childElem->GetAttribute("number")));
+                        tmp = childElem->GetAttribute("sender");
+                        nn.setAltName(QString::fromUtf8(tmp.c_str(),tmp.length()));
+                        nn.setIsValid(true);
+                    } catch(exceptionPhoneNumber e) {
+                        nn.setIsValid(false);
+                        nn.setAltName(QString::fromStdString(childElem->GetAttribute("number")));
+                    }
+
+                    QString data = QString::fromStdString(childElem->GetAttribute("time"));
+                    libJackSMS::dataTypes::dateTime date(data);
+                    tmp = childElem->GetAttribute("sms");
+                    libJackSMS::dataTypes::logImMessage imMsg(nn, date, QString::number(tmpId), QString::fromUtf8(tmp.c_str(), tmp.length()));
+                    _logIm.insert(QString::number(tmpId), imMsg);
+                    tmpId++;
                 }
 
+                return (tmpId == 0) ? false : true;
 
-                QString data=QString::fromStdString(childElem->GetAttribute("time"));
-                libJackSMS::dataTypes::dateTime date(data);
-                tmp=childElem->GetAttribute("sms");
-                libJackSMS::dataTypes::logImMessage imMsg(nn,date,QString::number(tmpId),QString::fromUtf8(tmp.c_str(),tmp.length()));
-                _logIm.insert(QString::number(tmpId),imMsg);
-                tmpId++;
-
+            } catch(...) {
+                return false;
             }
-            return (tmpId==0)?false:true;
 
         }
 
@@ -390,11 +395,12 @@ namespace libJackSMS{
         bool xmlParserServerApiTicpp::parseServices(libJackSMS::dataTypes::servicesType &_servizi){
             try{
 
-                ticpp::Node *subRoot = xmlResponse.FirstChild("JackSMS");
+                ticpp::Node *subRoot=xmlResponse.FirstChild("JackSMS");
 
                 ticpp::Node *child=NULL;
                 while( (child = subRoot->IterateChildren(child)) ){
                     ticpp::Element * thisService=child->ToElement();
+                    QString serviceId=QString::fromStdString(thisService->GetAttribute("id"));
                     libJackSMS::dataTypes::service servizio;
                     servizio.setId(QString::fromStdString(thisService->GetAttribute("id")));
                     /************************/

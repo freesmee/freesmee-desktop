@@ -208,8 +208,8 @@ namespace libJackSMS{
             return true;
         }
 
-        QString netClientQHttp::submitPost(const QString &_url,bool _ret){
-            url=QUrl(QString::fromUtf8(_url.toStdString().c_str(),_url.length()));
+        QString netClientQHttp::submitPost(const QString &_url, bool _ret){
+            url = QUrl(QString::fromUtf8(_url.toStdString().c_str(),_url.length()));
             QNetworkRequest r(url);
             QSslConfiguration config = r.sslConfiguration();
             config.setPeerVerifyMode(QSslSocket::VerifyNone);

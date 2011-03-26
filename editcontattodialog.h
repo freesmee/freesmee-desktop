@@ -14,7 +14,7 @@ namespace Ui {
 class editcontattodialog : public QDialog {
     Q_OBJECT
 public:
-    editcontattodialog(QWidget *parent , MainJackSMS * _padre,const libJackSMS::dataTypes::servicesType & _ElencoServizi,const libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati,libJackSMS::dataTypes::phoneBookType &_Rubrica,QString contactId,const libJackSMS::dataTypes::optionsType _Opzioni);
+    editcontattodialog(QWidget *parent, MainJackSMS *_padre, const libJackSMS::dataTypes::servicesType & _ElencoServizi,const libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati,libJackSMS::dataTypes::phoneBookType &_Rubrica,QString contactId,const libJackSMS::dataTypes::optionsType _Opzioni);
     ~editcontattodialog();
 
 protected:

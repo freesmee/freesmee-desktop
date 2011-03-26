@@ -72,13 +72,12 @@ void CaptchaDialog::on_pushButton_clicked()
    memcpy(memoriaCaptcha.data(),toWrite.toStdString().c_str(),toWrite.length());
    memoriaCaptcha.unlock();
 */
-   this->close();
-
+   close();
 }
 
 void CaptchaDialog::on_zoomIn_clicked()
 {
-    QImage im=original;
+    QImage im = original;
 
     dim.setHeight(dim.height()+15);
     dim.setWidth(dim.width()+15);

@@ -9,7 +9,6 @@
 #include "libjacksms/ConfiguredAccount.h"
 
 StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType &_opzioni, const libJackSMS::dataTypes::configuredServicesType &_servizi, const libJackSMS::dataTypes::servicesType &_ElencoServizi, QWidget *parent) :
-
     QDialog(parent),
     m_ui(new Ui::StatsDialog),
     opzioni(_opzioni),
@@ -17,15 +16,7 @@ StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType &_opzioni, con
     ElencoServizi(_ElencoServizi)
 {
     m_ui->setupUi(this);
-
-    {
-        libJackSMS::dataTypes::optionsType::const_iterator i = opzioni.find("sent-count");
-        QString n = "0";
-        if (i != opzioni.end())
-            n = i.value();
-
-        m_ui->labelTotal->setText("Sms inviati da questa postazione: <b>" + n + "</b>");
-    }
+    int tot= 0;
 
     QMap<QString, libJackSMS::dataTypes::configuredAccount> tempMap;
     for(libJackSMS::dataTypes::configuredServicesType::const_iterator i = servizi.begin(); i != servizi.end(); ++i) {
@@ -45,28 +36,31 @@ StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType &_opzioni, con
     {
         QTextEdit *l = new QTextEdit;
 
-        QString result="<b>"+i.value().getName()+"</b><br>Inviati oggi da tutti i client: "+i.value().getStat("sent-all")+"<br>Totale inviati da questa postazione: "+i.value().getStat("sent");
+        QString result = "<b>" + i.value().getName() + "</b><br>Inviati oggi da tutti i client: " + i.value().getStat("sent-all") + "<br>Totale inviati da questa postazione: " + i.value().getStat("sent");
+        tot += i.value().getStat("sent").toInt();
         l->setText(result);
         l->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::MinimumExpanding);
         l->setMaximumHeight(50);
         l->setReadOnly(true);
         hLayout->addWidget(l);
     }
+
+    hLayout->setSizeConstraint(QLayout::SetMinimumSize);
     m_ui->layoutStatistiche->addLayout(hLayout);
 
-
-    for(libJackSMS::dataTypes::configuredServicesType::const_iterator i = tempMap.begin(); i != tempMap.end(); ++i) {
+    for (libJackSMS::dataTypes::configuredServicesType::const_iterator i = tempMap.begin(); i != tempMap.end(); ++i) {
         QHBoxLayout *hLayout = new QHBoxLayout;
         {
             QLabel *l = new QLabel;
-            l->setPixmap(ElencoServizi[i.value().getService()].getIcon().pixmap(16,16));
-            l->setFixedSize(16,16);
+            l->setPixmap(ElencoServizi[i.value().getService()].getIcon().pixmap(16, 16));
+            l->setFixedSize(16, 16);
             hLayout->addWidget(l);
         }
         {
             QTextEdit *l = new QTextEdit;
 
-            QString result="<b>"+i.value().getName()+"</b><br>Inviati oggi da tutti i client: "+i.value().getStat("sent-all")+"<br>Totale inviati da questa postazione: "+i.value().getStat("sent");
+            QString result = "<b>" + i.value().getName() + "</b><br>Inviati oggi da tutti i client: " + i.value().getStat("sent-all") + "<br>Totale inviati da questa postazione: " + i.value().getStat("sent");
+            tot += i.value().getStat("sent").toInt();
             l->setText(result);
             l->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::MinimumExpanding);
             l->setMaximumHeight(50);
@@ -75,6 +69,8 @@ StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType &_opzioni, con
         }
         m_ui->layoutStatistiche->addLayout(hLayout);
     }
+
+    m_ui->labelTotal->setText("Sms inviati da questa postazione: <b>" + QString::number(tot) + "</b>");
 }
 
 StatsDialog::~StatsDialog()

@@ -2,8 +2,10 @@
 #include "ui_multiplecheckdialog.h"
 #include "contactwidgetfastbook.h"
 #include <QMultiMap>
-multipleCheckDialog::multipleCheckDialog(const libJackSMS::dataTypes::phoneBookType & _rubrica,const libJackSMS::dataTypes::configuredServicesType & _elencoServiziConfigurati,const libJackSMS::dataTypes::servicesType & _elencoServizi,QWidget *parent) :
+
+multipleCheckDialog::multipleCheckDialog(const libJackSMS::dataTypes::phoneBookType &_rubrica, const libJackSMS::dataTypes::configuredServicesType &_elencoServiziConfigurati, const libJackSMS::dataTypes::servicesType &_elencoServizi, MainJackSMS *_padre, QWidget *parent) :
     QDialog(parent),
+    padre(_padre),
     ui(new Ui::multipleCheckDialog),
     rubrica(_rubrica),
     elencoServiziConfigurati(_elencoServiziConfigurati),
@@ -19,25 +21,27 @@ multipleCheckDialog::~multipleCheckDialog()
 }
 
 void multipleCheckDialog::writeToGui(){
-    libJackSMS::dataTypes::phoneBookType::const_iterator i=rubrica.begin();
-    libJackSMS::dataTypes::phoneBookType::const_iterator i_end=rubrica.end();
 
     QMultiMap<QString,contactWidgetFastBook*> fastList;
-    QString filter=ui->lineEdit->text();
-    for(;i!=i_end;++i){
-        if (i->getName().contains(filter,Qt::CaseInsensitive)){
-            QIcon ico;
-            libJackSMS::dataTypes::configuredServicesType::const_iterator x=elencoServiziConfigurati.find(i->getAccount());
-            if (x==elencoServiziConfigurati.end()){
-                ico = QIcon(":/resource/ico_contact.png");
-            }else{
-                QString serv=x.value().getService();
-                libJackSMS::dataTypes::servicesType::const_iterator tmp=elencoServizi.find(serv);
-                ico=tmp->getIcon();
-            }
-            contactWidgetFastBook *ww=new contactWidgetFastBook(i.value(),ico.pixmap(16,16),true);
-            fastList.insert(i->getName().toUpper(),ww);
+    QString filter = ui->lineEdit->text();
 
+    for (libJackSMS::dataTypes::phoneBookType::const_iterator i = rubrica.begin(); i != rubrica.end(); ++i) {
+
+        //Controllo che non sia già presente nella lista destinatari
+        if (!padre->isInRecipients(i.value().getPhone())) {
+            if (i->getName().contains(filter, Qt::CaseInsensitive)) {
+                QIcon ico;
+                libJackSMS::dataTypes::configuredServicesType::const_iterator x = elencoServiziConfigurati.find(i->getAccount());
+                if (x == elencoServiziConfigurati.end()){
+                    ico = QIcon(":/resource/ico_contact.png");
+                }else{
+                    QString serv=x.value().getService();
+                    libJackSMS::dataTypes::servicesType::const_iterator tmp=elencoServizi.find(serv);
+                    ico=tmp->getIcon();
+                }
+                contactWidgetFastBook *ww=new contactWidgetFastBook(i.value(),ico.pixmap(16,16),true);
+                fastList.insert(i->getName().toUpper(),ww);
+            }
         }
     }
 
@@ -67,7 +71,7 @@ void multipleCheckDialog::changeEvent(QEvent *e)
 
 void multipleCheckDialog::on_pushButton_clicked()
 {
-    this->close();
+    close();
 }
 
 void multipleCheckDialog::on_lineEdit_textEdited(QString text)
@@ -95,7 +99,7 @@ void multipleCheckDialog::on_pushButton_2_clicked()
             l.push_back(wi);
         }
     }
-    emit this->addRecipients(l);
-    this->close();
+    emit addRecipients(l);
+    close();
 
 }

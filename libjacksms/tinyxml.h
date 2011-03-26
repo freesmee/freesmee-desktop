@@ -1716,10 +1716,18 @@ class TiXmlHandle
 {
 public:
 	/// Create a handle from any node (at any depth of the tree.) This can be a null pointer.
-	TiXmlHandle( TiXmlNode* _node )					{ this->node = _node; }
+        TiXmlHandle(TiXmlNode *_node)
+        {
+            node = _node;
+        }
+
 	/// Copy constructor
-	TiXmlHandle( const TiXmlHandle& ref )			{ this->node = ref.node; }
-	TiXmlHandle operator=( const TiXmlHandle& ref ) { this->node = ref.node; return *this; }
+        TiXmlHandle(const TiXmlHandle &ref)
+        {
+            node = ref.node;
+        }
+
+        TiXmlHandle operator=( const TiXmlHandle& ref ){ node = ref.node; return *this; }
 
 	/// Return a handle to the first child node.
 	TiXmlHandle FirstChild() const;

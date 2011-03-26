@@ -6,6 +6,8 @@
 #define OPZIONIDIALOG_H
 
 #include <QtGui/QDialog>
+#include <QCheckBox>
+#include <QLineEdit>
 
 namespace Ui {
     class OpzioniDialog;
@@ -29,12 +31,14 @@ private:
     const bool loggedIn;
     QString pass;
     Ui::OpzioniDialog *m_ui;
+    void setCheckboxStatusFromYesNoOption(libJackSMS::dataTypes::optionsType &currentWorkingOpt, QCheckBox* checkbox, QString optionName);
+    void setTextFromOption(libJackSMS::dataTypes::optionsType &currentWorkingOpt, QLineEdit* lineedit, QString optionName);
 
 private slots:
-    void on_pushButton_3_clicked();
-    void on_pushButton_2_clicked();
-    void on_listWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
-    void on_pushButton_clicked();
+    void on_okButton_clicked();
+    void on_applicaButton_clicked();
+    void on_listOpzioni_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
+    void on_annullaButton_clicked();
 
 signals:
     void translate();

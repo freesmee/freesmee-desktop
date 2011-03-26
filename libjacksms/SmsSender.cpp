@@ -35,23 +35,23 @@
 #include "Exceptions.h"
 #include <QWaitCondition>
 
-namespace libJackSMS{
+namespace libJackSMS {
 
     QWaitCondition waitOnSleepBefore;
 
     /********************smssender****************/
-    smsSender::smsSender(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps) :
+    smsSender::smsSender(const dataTypes::servicesType &_services, const dataTypes::proxySettings &_ps) :
             servizi(_services),
             ps(_ps),
             continueSendFlag(false),
             SalvaCookies(true) {
     }
 
-    void smsSender::setRecipient(const dataTypes::phoneNumber & _dest) {
+    void smsSender::setRecipient(const dataTypes::phoneNumber &_dest) {
         destinatario = _dest;
     }
 
-    void smsSender::setMessage(const dataTypes::shortMessage & _message) {
+    void smsSender::setMessage(const dataTypes::shortMessage &_message) {
         messaggio = _message;
     }
 
@@ -72,7 +72,8 @@ namespace libJackSMS{
     }
 
     void smsSender::run() {
-        try{
+
+        try {
             smsSenderBase sndr(servizi, ps);
             connect(this, SIGNAL(abortSignal()), &sndr, SLOT(abort()));
 

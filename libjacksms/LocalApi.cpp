@@ -141,7 +141,6 @@ namespace libJackSMS{
                emit criticalError(e.what());
 
             } catch (libJackSMS::exceptionXmlNotFound e) {
-                //emit criticalError(e.what());
 
             } catch (...) {
                 emit criticalError("Errore nel thread optionLoader");
@@ -309,27 +308,9 @@ namespace libJackSMS{
             return r;
         }
 
-        bool optionManager::increaseTotalSent() {
-            dataTypes::optionsType::const_iterator i = opzioni.find("sent-count");
-            int n = 1;
-
-            if (i != opzioni.end()) {
-                bool ok;
-                n = i.value().toInt(&ok, 10) + 1;
-            }
-
-            opzioni["sent-count"] = QString::number(n);
-            return save();
-        }
-
         statsManager::statsManager(const QString &_currentUserDirectory) :
             xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_currentUserDirectory)) {
         }
-
-        /*bool statsManager::updateStatsOfAccount(const dataTypes::configuredAccount & _account){
-            return xmlDocument->updateStat(_account);
-
-        }*/
 
         bool statsManager::updateStatsOfAccount(const QString &_accountId, const QString &_statName, const QString &_statVal) {
             return xmlDocument->updateStat(_accountId, _statName, _statVal);
@@ -403,7 +384,7 @@ namespace libJackSMS{
         bool userDirectoryManager::initializeDirectory(){
 
             QString path=directories::concatDirectoryAndFile(directories::XmlDirectory(),"users.xml");
-            
+
             if (fileOrDirExists(path)){
                 path=directories::DumpDirectory();
                 if (!fileOrDirExists(path))
@@ -495,8 +476,8 @@ namespace libJackSMS{
                     file.close();
 
                 }
-                
-                
+
+
                 return true;
 
             }

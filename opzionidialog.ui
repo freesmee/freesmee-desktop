@@ -19,7 +19,7 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QListWidget" name="listWidget">
+        <widget class="QListWidget" name="listOpzioni">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -97,7 +97,7 @@
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="generali">
           <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -318,9 +318,16 @@
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_6">
              <item>
-              <widget class="QCheckBox" name="CheckAbilitaIM">
+              <widget class="QCheckBox" name="suonoJMS">
                <property name="text">
-                <string>Attiva ricezione messaggi JMS all'avvio di JackSMS</string>
+                <string>Emetti un suono alla ricezione di un nuovo JMS</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="showPopupNewJms">
+               <property name="text">
+                <string>Mostra un popup alla ricezione di un JMS</string>
                </property>
                <property name="checked">
                 <bool>true</bool>
@@ -328,9 +335,12 @@
               </widget>
              </item>
              <item>
-              <widget class="QCheckBox" name="suonoJMS">
+              <widget class="QCheckBox" name="showPopupJmsStatus">
                <property name="text">
-                <string>Emetti un suono alla ricezione di un nuovo JMS</string>
+                <string>Mostra i popup di stato del servizio JMS</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -530,7 +540,7 @@ appropriato</string>
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_3">
+        <widget class="QPushButton" name="okButton">
          <property name="text">
           <string>Ok</string>
          </property>
@@ -547,7 +557,7 @@ appropriato</string>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="applicaButton">
          <property name="text">
           <string>Applica</string>
          </property>
@@ -564,7 +574,7 @@ appropriato</string>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="annullaButton">
          <property name="text">
           <string>Annulla</string>
          </property>

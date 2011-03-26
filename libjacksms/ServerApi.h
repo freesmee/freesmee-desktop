@@ -389,34 +389,36 @@ namespace libJackSMS{
                 void accountNotUpdated();
                 void accountSaved(QString);
                 void accountNotSaved();
-        };
+            };
 
 
-        class conversationManager {
-
-            private:
-                xmlParserApi::xmlParserServerApiGeneric *xmlDocument;
-                QString loginId;
-                netClient::netClientGeneric *webClient;
-                dataTypes::proxySettings ps;
-
-            public:
-                /*!
-                   \param _loginId id della sessione corrente
-                   \param _ps oggetto di tipo dataTypes::proxySettings che mantiene le impostazioni del proxy
-
-                  */
-                conversationManager(const QString & _loginId,dataTypes::proxySettings _ps );
-                /*!
-                   \param _logSms Struttura dati dove verranno salvati gli sms inviati( JMS compresi)
-                   \param _logIm Struttura dati dove verranno salvati i JMS ricevuti
-                   \return true se il parsing ha avuto successo, false altrimenti
-
-                   Riceve dal server gli ultimi 100 messaggi inviati e ricevuti
-
-                  */
-                bool downloadLastMessages(libJackSMS::dataTypes::logSmsType & _logSms,libJackSMS::dataTypes::logImType & _logIm);
-        };
+        //class conversationManager {
+        //
+        //   private:
+        //       xmlParserApi::xmlParserServerApiGeneric *xmlDocument;
+        //       QString loginId;
+        //       netClient::netClientGeneric *webClient;
+        //       dataTypes::proxySettings ps;
+        //
+        //
+        //
+        //   public:
+        //       /*!
+        //          \param _loginId id della sessione corrente
+        //          \param _ps oggetto di tipo dataTypes::proxySettings che mantiene le impostazioni del proxy
+        //
+        //         */
+        //       conversationManager(const QString & _loginId,dataTypes::proxySettings _ps );
+        //       /*!
+        //          \param _logSms Struttura dati dove verranno salvati gli sms inviati( JMS compresi)
+        //          \param _logIm Struttura dati dove verranno salvati i JMS ricevuti
+        //          \return true se il parsing ha avuto successo, false altrimenti
+        //
+        //          Riceve dal server gli ultimi 100 messaggi inviati e ricevuti
+        //
+        //         */
+        //       bool downloadLastMessages(libJackSMS::dataTypes::logSmsType & _logSms,libJackSMS::dataTypes::logImType & _logIm);
+        //};
 
         class updateServicesManager : public QThread
         {
@@ -430,7 +432,7 @@ namespace libJackSMS{
                 bool aborted;
 
             public:
-                updateServicesManager(const QString & _loginId,dataTypes::proxySettings _ps,libJackSMS::dataTypes::servicesType _servizi);
+                updateServicesManager(const QString &_loginId, dataTypes::proxySettings _ps, libJackSMS::dataTypes::servicesType _servizi);
                 void checkUpdates();
                 void abort();
 
@@ -458,12 +460,10 @@ namespace libJackSMS{
                 void abort();
 
             public:
-                updateServicesManagerBase(const QString & _loginId,dataTypes::proxySettings _ps );
+                updateServicesManagerBase(const QString &_loginId, dataTypes::proxySettings _ps);
                 bool downloadUpdates(libJackSMS::dataTypes::servicesType _servizi);
                 QString getMessage() const;
                 QString getXml() const;
-
-
         };
 
 
@@ -489,7 +489,7 @@ namespace libJackSMS{
 
         };
 
-        class permanentInstantMessenger : public QObject
+        /*class permanentInstantMessenger : public QObject
         {
             Q_OBJECT
 
@@ -497,7 +497,7 @@ namespace libJackSMS{
             QString username;
             QString password;
             QString error;
-            QString  userDir;
+            QString userDir;
             QTimer pingTimer;
             QTimer signalCountdown;
             QTimer pingTimeout;
@@ -511,7 +511,7 @@ namespace libJackSMS{
             QByteArray buffer;
 
         public:
-            permanentInstantMessenger(QString _username,QString _password,dataTypes::proxySettings _ps );
+            permanentInstantMessenger(QString _username, QString _password, dataTypes::proxySettings _ps);
             ~permanentInstantMessenger();
             void activateServ();
             void stop();
@@ -531,11 +531,12 @@ namespace libJackSMS{
         signals:
             void newJMS(libJackSMS::dataTypes::logImType);
             void serviceActive();
-            void serviceNotActive(bool err=false,QString errStr="");
+            void serviceNotActive(bool err = false, QString errStr = "");
             void serviceActiving();
-    };
+        };*/
 
-        class cyclicMessengerChecker:public QThread
+        class cyclicMessengerChecker :
+                public QThread
         {
             Q_OBJECT
 
@@ -543,22 +544,24 @@ namespace libJackSMS{
             QString loginString;
             dataTypes::proxySettings ps;
             QTimer timeout;
+
         public:
-            cyclicMessengerChecker(QString _loginString,dataTypes::proxySettings _ps );
+            cyclicMessengerChecker(QString _loginString, dataTypes::proxySettings _ps);
             ~cyclicMessengerChecker();
             void activateServ();
             void stop();
+
         private slots:
              void run();
+
         signals:
             void newJMS(libJackSMS::dataTypes::logImType);
             void serviceActive();
-            void serviceNotActive(bool err=false,QString errStr="");
-            void serviceActiving();
+            void serviceNotActive();
         };
 
-
-        class Streamer:public QObject
+        class Streamer :
+                public QObject
         {
             Q_OBJECT
 
@@ -591,7 +594,7 @@ namespace libJackSMS{
             void activateServ();
             void stop();
 
-        private slots:            
+        private slots:
             void launchSignal();
             void connectDone();
             void parseLine();
@@ -606,7 +609,7 @@ namespace libJackSMS{
         signals:
             void newJMS(libJackSMS::dataTypes::logImType);
             void serviceActive();
-            void serviceNotActive(bool err = false, QString errStr = "");
+            void serviceNotActive(bool err=false,QString errStr="");
             void serviceActiving();
         };
 

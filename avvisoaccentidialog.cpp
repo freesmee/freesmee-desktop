@@ -31,7 +31,7 @@ void avvisoaccentidialog::changeEvent(QEvent *e)
 void avvisoaccentidialog::on_pushButton_2_clicked()
 {
     sc="-1";
-    this->close();
+    close();
 }
 
 void avvisoaccentidialog::on_radioButton_clicked()
@@ -46,5 +46,5 @@ void avvisoaccentidialog::on_radioButton_2_clicked()
 
 void avvisoaccentidialog::on_saveButton_clicked()
 {
-    this->close();
+    close();
 }

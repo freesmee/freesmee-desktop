@@ -30,9 +30,9 @@ namespace libJackSMS{
 
         //typedef QString sessionId;
         typedef QMap<QString,QString> errorsType;
-        class clientVersion{
+        class clientVersion {
             protected:
-                int mayor;
+                int major;
                 int minor;
                 char release;
                 int build;

@@ -17,7 +17,6 @@
 #include "accountwidget.h"
 #include "contactwidgetfastbook.h"
 #include "qrecipientwidget.h"
-#include "multiplecheckdialog.h"
 #include "recipientcompleter.h"
 
 #define TYPE_SMS 1
@@ -27,7 +26,6 @@ namespace Ui
 {
     class MainJackSMS;
 }
-
 
 class MainJackSMS : public QMainWindow
 {
@@ -56,10 +54,11 @@ public:
     libJackSMS::serverApi::login *signin;
 
     QSize windowSize;
-    QTimer resizeTimer;
+    //QTimer resizeTimer;
     QString result;
     QString phone2name(const libJackSMS::dataTypes::phoneNumber &_number);
     bool isInRubrica(const libJackSMS::dataTypes::phoneNumber &_number);
+    bool isInRecipients(const libJackSMS::dataTypes::phoneNumber &_number);
 
     void updateSmsListAfterContactEdited(libJackSMS::dataTypes::contact c);
     void updateSmsListAfterContactAdded(libJackSMS::dataTypes::contact c);
@@ -69,7 +68,6 @@ public slots:
     void anotherInstanceOpened(const QString &str);
 
 private:
-    multipleCheckDialog *mcDialog;
     int iterateSendSms(bool first,bool result=false,QString _text="");
     int smsCount;
     RecipientCompleter *completer;
@@ -84,8 +82,9 @@ private:
     QList<QListWidgetItem*> multipleSendRecipients;
     bool invioMultiplo;
     QPixmap icon_jack;
+    QString lastJmsError;
     int errorSentCounter;
-    void resizeEvent ( QResizeEvent * );
+    //void resizeEvent ( QResizeEvent * );
     int messageType;
     void countdownToGui();
     int countdownToGuiCount;
@@ -113,7 +112,6 @@ private:
     libJackSMS::serverApi::smsLogFailed *onlineSmsSaverFailCase;
     libJackSMS::dataTypes::logImType messaggiRicevuti;
     libJackSMS::dataTypes::logImType nuoviMessaggiRicevuti;
-    //libJackSMS::serverApi::permanentInstantMessenger *imChecker;
     libJackSMS::serverApi::Streamer *imChecker;
     libJackSMS::serverApi::cyclicMessengerChecker *backupImChecker;
     QMyMessage ultimoSms;
@@ -137,7 +135,7 @@ private:
 
     JackPluginHostInterface* jphi;
     void showContactByTypeInFastAbook();
-    bool firstResize;
+    //bool firstResize;
     void clickText(QString text,QString defaultStr);
 
     void updateAccountCountComboBox(QString id);
@@ -186,7 +184,7 @@ private slots:
     void on_listSmsNames_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void addRecipients(QList<QRecipientWidget*> l);
     void on_buttonAddContacts_clicked();
-    void recipientRemove(QListWidgetItem* );
+    void recipientRemove(QListWidgetItem*);
     void on_recipientLine_returnPressed();
     void resetCounters();
     void svuotaTabSms();
@@ -200,7 +198,7 @@ private slots:
     void on_rubricaListWidget_itemDoubleClicked(QListWidgetItem* item);
     void on_TextRapidServizi_textChanged(QString text);
     void on_ModificaServizioButton_clicked();
-    void resized();
+    //void resized();
     void on_buttonNoAccount_clicked();
     void on_buttonLostPassword_clicked();
 
@@ -209,7 +207,9 @@ private slots:
     void on_actionRicarica_servizi_triggered();
     void on_buttonStatusJms_clicked();
     void jmsActive();
-    void jmsNotActive(bool,QString);
+    void jmsNotActive(bool, QString);
+    void jmsBackupNotActive();
+    void jmsBackupActive();
     void jmsActiving();
     void on_actionPlugins_triggered();
     void on_actionStatistiche_triggered();
@@ -285,7 +285,6 @@ private slots:
     void RecipientTabPressed();
     void stepWriteMessageToGui();
     void rubricaBarCurrentChanged(int index);
-
 };
 
 #endif // MAINJACKSMS_H

@@ -500,7 +500,7 @@ QFrame#frame_3_old{
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>2</number>
           </property>
           <property name="iconSize">
            <size>
@@ -538,10 +538,16 @@ QFrame#frame_3_old{
                 </property>
                 <item row="0" column="1">
                  <layout class="QVBoxLayout" name="verticalLayout">
+                  <property name="spacing">
+                   <number>5</number>
+                  </property>
                   <item>
                    <layout class="QGridLayout" name="gridLayout">
                     <property name="horizontalSpacing">
                      <number>4</number>
+                    </property>
+                    <property name="verticalSpacing">
+                     <number>6</number>
                     </property>
                     <item row="0" column="3">
                      <widget class="QLabel" name="label_2">
@@ -700,40 +706,49 @@ QFrame#frame_3_old{
                       </item>
                      </layout>
                     </item>
-                    <item row="1" column="4">
-                     <layout class="QVBoxLayout" name="verticalLayout_14">
-                      <property name="spacing">
-                       <number>0</number>
-                      </property>
-                      <item>
-                       <widget class="QPushButton" name="menuInstruments">
-                        <property name="minimumSize">
-                         <size>
-                          <width>24</width>
-                          <height>24</height>
-                         </size>
-                        </property>
-                        <property name="maximumSize">
-                         <size>
-                          <width>22</width>
-                          <height>22</height>
-                         </size>
-                        </property>
-                        <property name="text">
-                         <string/>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
-                    </item>
                    </layout>
                   </item>
                   <item>
-                   <widget class="QLabel" name="label_4">
-                    <property name="text">
-                     <string>Testo SMS</string>
+                   <layout class="QHBoxLayout" name="horizontalLayout_3">
+                    <property name="spacing">
+                     <number>0</number>
                     </property>
-                   </widget>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_4">
+                      <property name="text">
+                       <string>Testo SMS</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="menuInstruments">
+                      <property name="minimumSize">
+                       <size>
+                        <width>16</width>
+                        <height>13</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>16</width>
+                        <height>13</height>
+                       </size>
+                      </property>
+                      <property name="cursor">
+                       <cursorShape>PointingHandCursor</cursorShape>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="flat">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                   <item>
                    <widget class="SmsTextEdit" name="TestoSMS">
@@ -1002,6 +1017,9 @@ QFrame#frame_3_old{
                     <height>16</height>
                    </size>
                   </property>
+                  <property name="verticalScrollMode">
+                   <enum>QAbstractItemView::ScrollPerPixel</enum>
+                  </property>
                   <property name="sortingEnabled">
                    <bool>true</bool>
                   </property>
@@ -1187,6 +1205,9 @@ ListNames::item:selected:active {
      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                  stop: 0 #6a6ea9, stop: 1 #888dd9);
 }</string>
+                  </property>
+                  <property name="verticalScrollMode">
+                   <enum>QAbstractItemView::ScrollPerPixel</enum>
                   </property>
                  </widget>
                 </item>
@@ -1458,6 +1479,12 @@ ListNames::item:selected:active {
               </item>
               <item>
                <widget class="QListWidget" name="rubricaListWidget">
+                <property name="autoScroll">
+                 <bool>true</bool>
+                </property>
+                <property name="verticalScrollMode">
+                 <enum>QAbstractItemView::ScrollPerPixel</enum>
+                </property>
                 <property name="viewMode">
                  <enum>QListView::ListMode</enum>
                 </property>
@@ -1689,6 +1716,9 @@ ListNames::item:selected:active {
                   <width>16</width>
                   <height>16</height>
                  </size>
+                </property>
+                <property name="verticalScrollMode">
+                 <enum>QAbstractItemView::ScrollPerPixel</enum>
                 </property>
                 <property name="flow">
                  <enum>QListView::TopToBottom</enum>
@@ -2110,7 +2140,6 @@ ListNames::item:selected:active {
   <tabstop>InviaSMS</tabstop>
   <tabstop>AnnullaSMS</tabstop>
   <tabstop>comboServizio</tabstop>
-  <tabstop>menuInstruments</tabstop>
   <tabstop>buttonAddContacts</tabstop>
   <tabstop>buttonStatusJms</tabstop>
   <tabstop>listSmsNames</tabstop>

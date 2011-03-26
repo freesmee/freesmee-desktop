@@ -6,9 +6,9 @@
 #include "Utilities.h"
 #include <map>
 
-namespace libJackSMS{
+namespace libJackSMS {
 
-    namespace dataTypes{
+    namespace dataTypes {
 
         /*********definitions for configuredAccount****************/
         configuredAccount::configuredAccount() :
@@ -17,57 +17,69 @@ namespace libJackSMS{
                 indiceOpzione(0){
         }
 
-        void configuredAccount::setName(const QString &_value){
-            nome=_value;
+        void configuredAccount::setName(const QString &_value) {
+            nome = _value;
         }
-        void configuredAccount::setId(const QString &_value){
-            id=_value;
+
+        void configuredAccount::setId(const QString &_value) {
+            id = _value;
         }
-        void configuredAccount::setService(const QString &_value){
-            servizio=_value;
+
+        void configuredAccount::setService(const QString &_value) {
+            servizio = _value;
         }
-        void configuredAccount::setStat(const QString &_statName,const QString &_statValue){
-            statistiche.insert(_statName,_statValue);
+
+        void configuredAccount::setStat(const QString &_statName, const QString &_statValue) {
+            statistiche.insert(_statName, _statValue);
         }
-        void configuredAccount::setData(const QString &_dataName,const QString &_dataValue) {
+
+        void configuredAccount::setData(const QString &_dataName, const QString &_dataValue) {
             dati.insert(_dataName, _dataValue);
         }
-        bool configuredAccount::updateData(const QString &_dataName,const QString &_dataValue){
-            QMap<QString,QString>::const_iterator i=dati.find(_dataName);
-            if (i==dati.end()){
+
+        bool configuredAccount::updateData(const QString &_dataName, const QString &_dataValue) {
+            QMap<QString,QString>::const_iterator i = dati.find(_dataName);
+            if (i == dati.end()) {
                 throw exceptionFieldNotFound(_dataName);
                 return false;
-            }else{
-                dati[_dataName]=_dataValue;
+            } else {
+                dati[_dataName] = _dataValue;
             }
             return true;
         }
-        void configuredAccount::setOption(const QString &_optName,const QString &_optValue){
-            opzioni.insert(_optName,_optValue);
+
+        void configuredAccount::setOption(const QString &_optName, const QString &_optValue) {
+            opzioni.insert(_optName, _optValue);
         }
-        QString configuredAccount::getName() const{
+
+        QString configuredAccount::getName() const {
             return nome;
         }
-        QString configuredAccount::getId() const{
+
+        QString configuredAccount::getId() const {
             return id;
         }
+
         QString configuredAccount::getService() const{
             return servizio;
         }
-        QString configuredAccount::getStat(const QString &_statName) const{
-            QMap<QString,QString>::const_iterator i=statistiche.find(_statName);
-            if (i==statistiche.end())
+
+        QString configuredAccount::getStat(const QString &_statName) const {
+            QMap<QString,QString>::const_iterator i = statistiche.find(_statName);
+            if (i == statistiche.end())
                 return "0";
             else
                 return i.value();
         }
-        bool configuredAccount::increaseStatValue(QString _varname){
-            QString st=getStat(_varname);
+
+        bool configuredAccount::increaseStatValue(QString _varname) {
+            QString st = getStat(_varname);
             bool ok;
-            int n=st.toInt(&ok,10)+1;
-            statistiche[ _varname]=QString::number(n);
+            int n = st.toInt(&ok, 10) + 1;
+            statistiche[_varname] = QString::number(n);
             return true;
         }
+
         QString configuredAccount::getData(const QString &_dataName) const{
             QMap<QString, QString>::const_iterator i = dati.find(_dataName);
             if (i == dati.end())
@@ -75,6 +87,7 @@ namespace libJackSMS{
             else
                 return i.value();
         }
+
         QString configuredAccount::getOption(const QString &_optName) const{
             QMap<QString,QString>::const_iterator i = opzioni.find(_optName);
             if (i==opzioni.end())
@@ -98,11 +111,12 @@ namespace libJackSMS{
                 return true;
 
         }
+
         /*ritorna il nome del dato corrente sotto all'iteratore*/
         QString configuredAccount::currentData() const{
             return iterDati.key();
-
         }
+
         bool configuredAccount::nextOption(){
             QMap<QString,QString>::const_iterator i_end=opzioni.end();
             if (indiceOpzione==0){
@@ -116,11 +130,10 @@ namespace libJackSMS{
                 indiceOpzione=0;
             }else
                 return true;
-
         }
+
         QString configuredAccount::currentOption() const{
             return iterOpzioni.key();
-
         }
 
         bool configuredAccount::nextStat(){
@@ -136,7 +149,6 @@ namespace libJackSMS{
                 indiceStatistica=0;
             }else
                 return true;
-
         }
 
         QString configuredAccount::currentStat() const{
