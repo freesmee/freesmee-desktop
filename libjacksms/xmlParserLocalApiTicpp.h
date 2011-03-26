@@ -40,19 +40,12 @@ namespace libJackSMS{
                 bool appendImToLogfile(dataTypes::logImMessage &_msg );
                 bool saveAllSmsToLogFile(const dataTypes::logSmsType &_smsContainer);
                 bool saveAllImToLogFile(const dataTypes::logImType &_smsContainer);
-                bool loadPhoneBook(libJackSMS::dataTypes::phoneBookType & _rubrica);
                 bool loadServices(libJackSMS::dataTypes::servicesType & _servizi);
                 bool loadAccounts(libJackSMS::dataTypes::configuredServicesType & _serviziConfigurati);
                 bool loadOptions(libJackSMS::dataTypes::optionsType & _opzioni,bool overwriteExisting=true);
                 bool loadSmsLog(libJackSMS::dataTypes::logSmsType & _logSms);
                 bool loadImLog(libJackSMS::dataTypes::logImType & _logIm);
-                bool addNewAccount(libJackSMS::dataTypes::configuredAccount & _account);
-                bool updateAccount(libJackSMS::dataTypes::configuredAccount & _account);
                 bool loadUsers(QList<dataTypes::stringTriplet> &_utenti);
-                bool deleteAccount(const QString &_id);
-                bool addNewContact(libJackSMS::dataTypes::contact & _contatto);
-                bool updateContact(libJackSMS::dataTypes::contact & _contatto);
-                bool deleteContact(const QString &_name);
                 bool saveOptions(const dataTypes::optionsType &_opzioni);
                 bool userDirectoryExists(const QString &_user);
                 bool createUser(const QString &_user,const QString &_directory);
@@ -64,6 +57,15 @@ namespace libJackSMS{
                 bool mergeServices(QString _xml);
                 bool deleteSmsMessage(const QList<QString> & idList);
                 bool deleteImMessage(const QList<QString> & idList);
+
+                // funzioni commentate dato che ora sono state spostate sul server
+                /*bool loadPhoneBook(libJackSMS::dataTypes::phoneBookType & _rubrica);
+                bool addNewAccount(libJackSMS::dataTypes::configuredAccount & _account);
+                bool updateAccount(libJackSMS::dataTypes::configuredAccount & _account);
+                bool deleteAccount(const QString &_id);
+                bool addNewContact(libJackSMS::dataTypes::contact & _contatto);
+                bool updateContact(libJackSMS::dataTypes::contact & _contatto);
+                bool deleteContact(const QString &_name);*/
         };
     }
 }

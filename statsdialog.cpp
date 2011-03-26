@@ -36,7 +36,7 @@ StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType &_opzioni, con
     {
         QTextEdit *l = new QTextEdit;
 
-        QString result = "<b>" + i.value().getName() + "</b><br>Inviati oggi da tutti i client: " + i.value().getStat("sent-all") + "<br>Totale inviati da questa postazione: " + i.value().getStat("sent");
+        QString result = "<b>" + i.value().getName() + "</b><br>Inviati oggi da tutti i client: " + QString::number(i.value().getSentAll()) + "<br>Totale inviati da questa postazione: " + i.value().getStat("sent");
         tot += i.value().getStat("sent").toInt();
         l->setText(result);
         l->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::MinimumExpanding);
@@ -59,7 +59,7 @@ StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType &_opzioni, con
         {
             QTextEdit *l = new QTextEdit;
 
-            QString result = "<b>" + i.value().getName() + "</b><br>Inviati oggi da tutti i client: " + i.value().getStat("sent-all") + "<br>Totale inviati da questa postazione: " + i.value().getStat("sent");
+            QString result = "<b>" + i.value().getName() + "</b><br>Inviati oggi da tutti i client: " + QString::number(i.value().getSentAll()) + "<br>Totale inviati da questa postazione: " + i.value().getStat("sent");
             tot += i.value().getStat("sent").toInt();
             l->setText(result);
             l->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::MinimumExpanding);

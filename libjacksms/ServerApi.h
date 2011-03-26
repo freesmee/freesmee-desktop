@@ -69,7 +69,7 @@ namespace libJackSMS{
             Q_OBJECT
 
             public:
-                login(const QString &_username,const QString &_password,dataTypes::proxySettings _ps );
+                login(const QString &_username, const QString &_password, dataTypes::proxySettings _ps);
                 ~login();
                 void doLogin();
                 void abort();
@@ -80,13 +80,6 @@ namespace libJackSMS{
                 QString password;
                 dataTypes::proxySettings ps;
                 loginBase *l;
-
-            private slots:
-                void slotLoginSuccess(QString loginId);
-                void slotLoginFailed(QString error);
-                void slotPhoneBookReceived(libJackSMS::dataTypes::phoneBookType rubrica);
-                void slotAccountsReceived(libJackSMS::dataTypes::configuredServicesType serviziConfigurati);
-                void slotNewVersionAvailable();
 
             signals:
                 void loginStarted();

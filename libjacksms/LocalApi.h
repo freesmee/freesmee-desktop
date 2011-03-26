@@ -137,8 +137,8 @@ namespace libJackSMS {
                 QString currentUserDirectory;
 
             public:
-                xmlLoader(const QString & _currentUserDirectory);
-                bool loadPhoneBook(libJackSMS::dataTypes::phoneBookType &_rubrica);
+                xmlLoader(const QString &_currentUserDirectory);
+                //bool loadPhoneBook(libJackSMS::dataTypes::phoneBookType &_rubrica);
                 void loadServices();
                 bool loadAccounts(libJackSMS::dataTypes::configuredServicesType &_serviziConfigurati);
                 void loadOptions();
@@ -182,7 +182,7 @@ namespace libJackSMS {
                 void merged();
         };
 
-        class accountManager {
+        /*class accountManager {
 
             private:
                 xmlParserApi::xmlParserLocalApiGeneric *xmlDocument;
@@ -204,7 +204,7 @@ namespace libJackSMS {
                 bool addNewContact(libJackSMS::dataTypes::contact &_contatto);
                 bool updateContact(libJackSMS::dataTypes::contact &_contatto);
                 bool deleteContact(const QString &_id);
-        };
+        };*/
 
         class optionManager {
 

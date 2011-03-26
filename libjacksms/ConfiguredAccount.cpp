@@ -12,6 +12,7 @@ namespace libJackSMS {
 
         /*********definitions for configuredAccount****************/
         configuredAccount::configuredAccount() :
+                sentAll(0),
                 indiceStatistica(0),
                 indiceDato(0),
                 indiceOpzione(0){
@@ -31,6 +32,14 @@ namespace libJackSMS {
 
         void configuredAccount::setStat(const QString &_statName, const QString &_statValue) {
             statistiche.insert(_statName, _statValue);
+        }
+
+        void configuredAccount::setSentAll(int _sentAll) {
+            sentAll = _sentAll;
+        }
+
+        void configuredAccount::increaseSentAll() {
+            sentAll++;
         }
 
         void configuredAccount::setData(const QString &_dataName, const QString &_dataValue) {
@@ -70,6 +79,10 @@ namespace libJackSMS {
                 return "0";
             else
                 return i.value();
+        }
+
+        int configuredAccount::getSentAll() const {
+            return sentAll;
         }
 
         bool configuredAccount::increaseStatValue(QString _varname) {

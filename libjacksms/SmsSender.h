@@ -31,7 +31,8 @@
 #include "ProxyConfig.h"
 #include "Encoding.h"
 #include "NetClient.h"
-
+#include "Logger.h"
+#include <QTimer>
 
 #ifndef SMSSENDER_HH
 #define SMSSENDER_HH 1
@@ -53,6 +54,8 @@ namespace libJackSMS {
             QString captchaValue;
             dataTypes::contentType contenuti;
             bool SalvaCookies;
+            QTimer sleepClockTimer;
+            int secondsToGo;
 
         public:
             smsSender(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps=dataTypes::proxySettings());
@@ -71,6 +74,7 @@ namespace libJackSMS {
             void slotSuccess(QString);
             void slotCaptcha(QByteArray);
             void slotSleepBeforeFound(int);
+            void slotTimerClocked();
 
         signals:
             void abortSignal();
@@ -102,6 +106,8 @@ namespace libJackSMS {
         bool SalvaCookies;
         QMutex mutex;
         bool hasAborted;
+        void managePostProcedureSignals(QString resultString, bool resultError, bool resultSend, bool forceDeleteCookies, bool &isPostprocedurePage);
+        bool manageErrorBreak(QString resultString, bool resultError, bool resultSend, bool forceDeleteCookies, bool &isPostprocedurePage, bool hasPostprocedurePage, logger &log);
 
     public:
         smsSenderBase(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps=dataTypes::proxySettings());

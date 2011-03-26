@@ -59,32 +59,12 @@ namespace libJackSMS {
             emit loginStarted();
             l = new loginBase(username, password, ps);
             //connect(this,SIGNAL(abortSignal()),&man,SLOT(abort()));
-            connect(l, SIGNAL(accountsReceived(libJackSMS::dataTypes::configuredServicesType)), this, SLOT(slotAccountsReceived(libJackSMS::dataTypes::configuredServicesType)));
-            connect(l, SIGNAL(loginFailed(QString)), this, SLOT(slotLoginFailed(QString)));
-            connect(l, SIGNAL(loginSuccess(QString)), this, SLOT(slotLoginSuccess(QString)));
-            connect(l, SIGNAL(newVersionAvailable()), this, SLOT(slotNewVersionAvailable()));
-            connect(l, SIGNAL(phoneBookReceived(libJackSMS::dataTypes::phoneBookType)), this, SLOT(slotPhoneBookReceived(libJackSMS::dataTypes::phoneBookType)));
+            connect(l, SIGNAL(accountsReceived(libJackSMS::dataTypes::configuredServicesType)), this, SIGNAL(accountsReceived(libJackSMS::dataTypes::configuredServicesType)));
+            connect(l, SIGNAL(loginFailed(QString)), this, SIGNAL(loginFailed(QString)));
+            connect(l, SIGNAL(loginSuccess(QString)), this, SIGNAL(loginSuccess(QString)));
+            connect(l, SIGNAL(newVersionAvailable()), this, SIGNAL(newVersionAvailable()));
+            connect(l, SIGNAL(phoneBookReceived(libJackSMS::dataTypes::phoneBookType)), this, SIGNAL(phoneBookReceived(libJackSMS::dataTypes::phoneBookType)));
             l->doLogin();
-        }
-
-        void login::slotLoginSuccess(QString loginId) {
-            emit loginSuccess(loginId);
-        }
-
-        void login::slotLoginFailed(QString error) {
-            emit loginFailed(error);
-        }
-
-        void login::slotPhoneBookReceived(libJackSMS::dataTypes::phoneBookType rubrica) {
-            emit phoneBookReceived(rubrica);
-        }
-
-        void login::slotAccountsReceived(libJackSMS::dataTypes::configuredServicesType serviziConfigurati) {
-            emit accountsReceived(serviziConfigurati);
-        }
-
-        void login::slotNewVersionAvailable() {
-            emit newVersionAvailable();
         }
 
         loginBase::loginBase(const QString &_username, const QString &_password, dataTypes::proxySettings _ps) :

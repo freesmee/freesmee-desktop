@@ -26,17 +26,19 @@
 #include "Utilities.h"
 #include "EncodingIso88591.h"
 #include <QIcon>
-namespace libJackSMS{
 
-    namespace dataTypes{
+namespace libJackSMS {
 
-        service::service(){
-            mantieniSessione=false;
-            codifica="URL";
-            pageCounter=0;
-            varCounter=0;
-            textEncoder=new libJackSMS::encodingUrl();
-            numberOfPages=0;
+    namespace dataTypes {
+
+        service::service() {
+            mantieniSessione = false;
+            codifica = "URL";
+            pageCounter = 0;
+            varCounter = 0;
+            textEncoder = new libJackSMS::encodingUrl();
+            numberOfPages = 0;
+            hasPostprocedurePage = false;
         }
 
         void service::setName(QString _name){
@@ -237,43 +239,61 @@ namespace libJackSMS{
 
 
         }
-        paginaServizio & service::currentPage(){
+
+        paginaServizio &service::currentPage() {
             return *indexPage;
         }
 
-        bool service::nextVar(){
-            QList<variabileServizio>::const_iterator i_end=variabili.end();
-            if (varCounter==0){
-                indexVar=variabili.begin();
-            }else{
-                ++indexVar;
-            }
-            ++varCounter;
-            if (indexVar==i_end){
-                varCounter=0;
-                return false;
+        paginaServizio &service::getPostprocedurePage() {
+            return postprocedurePage;
+        }
 
+        bool service::nextVar()
+        {
+            QList<variabileServizio>::const_iterator i_end = variabili.end();
+            if (varCounter == 0)
+                indexVar=variabili.begin();
+            else
+                ++indexVar;
+
+            ++varCounter;
+            if (indexVar == i_end) {
+                varCounter = 0;
+                return false;
             }
             else
                 return true;
         }
-        variabileServizio & service::currentVar(){
+
+        variabileServizio & service::currentVar() {
             return *indexVar;
         }
+
         libJackSMS::encodingGeneric * service::getTextEncoder() const{
             return textEncoder;
         }
-        QString service::getEncodedText(const QString & _text){
-            return textEncoder->getEncodedString(_text);
 
+        QString service::getEncodedText(const QString &_text) {
+            return textEncoder->getEncodedString(_text);
         }
-        QString service::getEncodedTextUrlEncoded(const QString & _text){
+
+        QString service::getEncodedTextUrlEncoded(const QString & _text) {
             return textEncoder->getEncodedAndUrlString(_text);
         }
-        void service::setPage(const dataTypes::paginaServizio & _pag){
+
+        void service::setPage(const dataTypes::paginaServizio &_pag) {
             pagine.push_back(_pag);
             numberOfPages++;
         }
+
+        void service::setPostprocedurePage(const dataTypes::paginaServizio &_pag) {
+            postprocedurePage = _pag;
+        }
+
+        bool service::getHasPostprocedurePage() const {
+            return hasPostprocedurePage;
+        }
+
         int service::getNumberOfPages() const{
             return numberOfPages;
         }

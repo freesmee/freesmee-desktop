@@ -21,15 +21,17 @@
 #ifndef CONFIGUREDACCOUNT_HH
 #define CONFIGUREDACCOUNT_HH 1
 
-namespace libJackSMS{
+namespace libJackSMS {
 
-    namespace dataTypes{
+    namespace dataTypes {
 
-        class configuredAccount{
+        class configuredAccount {
+
             private:
                 QString nome;
                 QString id;
                 QString servizio;
+                int sentAll;
 
                 QMap<QString,QString> statistiche;
                 int indiceStatistica;
@@ -48,17 +50,20 @@ namespace libJackSMS{
                 void setName(const QString &_value);
                 void setId(const QString &_value);
                 void setService(const QString &_value);
-                void setStat(const QString &_statName,const QString &_statValue);
-                void setData(const QString &_dataName,const QString &_dataValue);
-                bool updateData(const QString &_dataName,const QString &_dataValue);
-                void setOption(const QString &_optName,const QString &_optValue);
-                QString getName()const;
-                QString getId()const;
-                QString getService()const;
-                QString getStat(const QString &_statName)const;
-                QString getData(const QString &_dataName)const;
-                QString getOption(const QString &_optName)const;
-                //void updateata(const QString &_dataName,const QString &_dataValue);
+                void setStat(const QString &_statName, const QString &_statValue);
+                void setSentAll(int _sentAll);
+                void increaseSentAll();
+                void setData(const QString &_dataName, const QString &_dataValue);
+                bool updateData(const QString &_dataName, const QString &_dataValue);
+                void setOption(const QString &_optName, const QString &_optValue);
+                QString getName() const;
+                QString getId() const;
+                QString getService() const;
+                QString getStat(const QString &_statName) const;
+                int getSentAll() const;
+                QString getData(const QString &_dataName) const;
+                QString getOption(const QString &_optName) const;
+                //void updateata(const QString &_dataName, const QString &_dataValue);
 
                 bool increaseStatValue(QString _varname);
                 bool nextData();

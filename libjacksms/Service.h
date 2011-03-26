@@ -31,94 +31,103 @@
 
 
 
-namespace libJackSMS{
+namespace libJackSMS {
 
-    namespace dataTypes{
+    namespace dataTypes {
 
-        class service{
-            private:
-                QString nome;
-                QString id;
-                QString versione;
-                QString smsMassimi;
-                QString codifica;
-                QString lunghezzaMassima;
-                QString lunghezzaSingola;
-                QString periodoReset;
-                QString lingua;
-                bool mantieniSessione;
-                QString urlSessione;
-                QString descrizione;
-                QImage icona;
-                QList<variabileServizio> variabili;
-                int varCounter;
-                QList<variabileServizio>::iterator indexVar;
-                //QMap<QString,QString> statistiche;
-                QMap<QString,QString> dati;
-                QMap<QString,QString> opzioni;
-                QList<paginaServizio> pagine;
-                int numberOfPages;
-                int pageCounter;
-                QList<paginaServizio>::iterator indexPage;
-                libJackSMS::encodingGeneric *textEncoder;
-                QString smsDivisor;
-            public:
-                service();
-                //void init(const dataTypes::configuredAccount & _account);
-                void setName(QString _name);
-                QString getName() const;
-                void setId(QString _id);
-                QString getId() const;
-                void setVersion(QString _version);
-                QString getVersion() const;
-                void setMaxSms(QString _maxSms);
-                QString getMaxSms() const;
-                void setEncoding(QString _encoding);
-                QString getEncoding() const;
-                void setMaxLength(QString _maxLen);
-                QString getMaxLength() const;
-                int getIntMaxLength() const;
-                void setSingleLength(QString _singleLen);
-                QString getSingleLength() const;
-                int getIntSingleLength() const;
-                void setReset(QString _reset);
-                QString getReset() const;
-                void setIcon(const QImage &_icon);
-                QIcon getIcon() const;
-                void setLanguage(QString _lan);
-                QString getLanguage() const;
-                void setMantainSession(bool _mantain);
-                bool getMantainSession() const;
-                void setSessionUrl(QString _sessionUrl);
-                QString getSessionUrl() const;
-                void setDescription(QString _description);
-                QString getDescription() const;
-                void setPage(const dataTypes::paginaServizio & _pag);
-                /*variabili richieste dal servizio, username ecc..*/
-                void setVariable(const variabileServizio & _var);
-                dataTypes::variabileServizio getVariable(const QString & _varName) const ;
-                bool nextVar();
-                dataTypes::variabileServizio & currentVar();
-                //void setStat(const QString & _statName,const QString & _statValue);
-                //QString getStat(const QString & _varName) const;
-                /*dati del servizio riferiti all'account corrente*/
-                void setData(const QString & _dataName,const QString & _dataValue);
-                QString getData(const QString & _dataName) const ;
-                /*opzioni del servizio riferite all'account corrente*/
-                void setOption(const QString & _optionName,const QString & _optionValue);
-                QString getOption(const QString & _optionName) const;
-                bool nextPage();
-                dataTypes::paginaServizio & currentPage();
-                QString getEncodedText(const QString & _text);
-                QString getEncodedTextUrlEncoded(const QString & _text);
-                int getNumberOfPages() const;
-                void setSmsDivisor(QString _div);
-                QString getSmsDivisor() const;
-                int getIntSmsDivisor() const;
-                encodingGeneric * getTextEncoder() const;
+        class service {
+
+        private:
+            QString nome;
+            QString id;
+            QString versione;
+            QString smsMassimi;
+            QString codifica;
+            QString lunghezzaMassima;
+            QString lunghezzaSingola;
+            QString periodoReset;
+            QString lingua;
+            bool mantieniSessione;
+            QString urlSessione;
+            QString descrizione;
+            QImage icona;
+            QList<variabileServizio> variabili;
+            int varCounter;
+            QList<variabileServizio>::iterator indexVar;
+            //QMap<QString,QString> statistiche;
+            QMap<QString,QString> dati;
+            QMap<QString,QString> opzioni;
+            QList<paginaServizio> pagine;
+            paginaServizio postprocedurePage;
+            int numberOfPages;
+            int pageCounter;
+            QList<paginaServizio>::iterator indexPage;
+            libJackSMS::encodingGeneric *textEncoder;
+            QString smsDivisor;
+
+        public:
+            service();
+            //void init(const dataTypes::configuredAccount & _account);
+            void setName(QString _name);
+            QString getName() const;
+            void setId(QString _id);
+            QString getId() const;
+            void setVersion(QString _version);
+            QString getVersion() const;
+            void setMaxSms(QString _maxSms);
+            QString getMaxSms() const;
+            void setEncoding(QString _encoding);
+            QString getEncoding() const;
+            void setMaxLength(QString _maxLen);
+            QString getMaxLength() const;
+            int getIntMaxLength() const;
+            void setSingleLength(QString _singleLen);
+            QString getSingleLength() const;
+            int getIntSingleLength() const;
+            void setReset(QString _reset);
+            QString getReset() const;
+            void setIcon(const QImage &_icon);
+            QIcon getIcon() const;
+            void setLanguage(QString _lan);
+            QString getLanguage() const;
+            void setMantainSession(bool _mantain);
+            bool getMantainSession() const;
+            void setSessionUrl(QString _sessionUrl);
+            QString getSessionUrl() const;
+            void setDescription(QString _description);
+            QString getDescription() const;
+            void setPage(const dataTypes::paginaServizio &_pag);
+            void setPostprocedurePage(const dataTypes::paginaServizio &_pag);
+            bool getHasPostprocedurePage() const;
+
+            /*variabili richieste dal servizio, username ecc..*/
+            void setVariable(const variabileServizio & _var);
+            dataTypes::variabileServizio getVariable(const QString & _varName) const ;
+            bool nextVar();
+            dataTypes::variabileServizio & currentVar();
+            //void setStat(const QString & _statName,const QString & _statValue);
+            //QString getStat(const QString & _varName) const;
+            /*dati del servizio riferiti all'account corrente*/
+            void setData(const QString & _dataName,const QString & _dataValue);
+            QString getData(const QString & _dataName) const ;
+            /*opzioni del servizio riferite all'account corrente*/
+            void setOption(const QString & _optionName,const QString & _optionValue);
+            QString getOption(const QString & _optionName) const;
+            bool nextPage();
+            dataTypes::paginaServizio &currentPage();
+            dataTypes::paginaServizio &getPostprocedurePage();
+            bool hasPostprocedurePage;
+            QString getEncodedText(const QString & _text);
+            QString getEncodedTextUrlEncoded(const QString & _text);
+            int getNumberOfPages() const;
+            void setSmsDivisor(QString _div);
+            QString getSmsDivisor() const;
+            int getIntSmsDivisor() const;
+            encodingGeneric * getTextEncoder() const;
 
         };
 
     }
 }
+
 #endif //SERVICE_HH

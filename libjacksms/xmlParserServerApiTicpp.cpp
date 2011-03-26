@@ -236,7 +236,7 @@ namespace libJackSMS{
                             }
                         }
                     }
-                    account.setStat("sent-all",QString::fromStdString(curElem->GetAttributeOrDefault("n","0")));
+                    account.setSentAll(QString::fromStdString(curElem->GetAttributeOrDefault("n", "0")).toInt());
 
                     _serviziConfigurati.insert(account.getId(), account);
                 }
@@ -400,7 +400,6 @@ namespace libJackSMS{
                 ticpp::Node *child=NULL;
                 while( (child = subRoot->IterateChildren(child)) ){
                     ticpp::Element * thisService=child->ToElement();
-                    QString serviceId=QString::fromStdString(thisService->GetAttribute("id"));
                     libJackSMS::dataTypes::service servizio;
                     servizio.setId(QString::fromStdString(thisService->GetAttribute("id")));
                     /************************/
@@ -559,6 +558,114 @@ namespace libJackSMS{
                             servizio.setPage(page);
                         }
 
+                    }
+
+                    {
+                        ticpp::Node *thisPage = child->FirstChild("postprocedure", false);
+                        if (thisPage != NULL) {
+
+                            libJackSMS::dataTypes::paginaServizio page;
+                            ticpp::Element *thisPageElem = thisPage->ToElement();
+
+                            page.setUrl(QString::fromStdString(thisPageElem->GetAttribute("uri")));
+                            page.setMethod(QString::fromStdString(thisPageElem->GetAttributeOrDefault("method", "")));
+                            if (thisPageElem->HasAttribute("condition"))
+                                page.setCondition(QString::fromStdString(thisPageElem->GetAttribute("condition")));
+                            if (thisPageElem->HasAttribute("sleepbefore")) {
+                                bool intConversionCheck = false;
+                                int intConversion = QString::fromStdString(thisPageElem->GetAttribute("sleepbefore")).toInt(&intConversionCheck);
+                                if (intConversionCheck)
+                                    page.setSleepbefore(intConversion);
+                            }
+
+                            /*************************/
+                            {
+                                ticpp::Node *varNode=thisPage->FirstChild("vars",false);
+                                if (varNode!=NULL){
+                                    ticpp::Node *currentVar=NULL;
+                                    while( (currentVar = varNode->IterateChildren( currentVar )) ){
+                                        ticpp::Element * thisVar= currentVar->ToElement();
+                                        std::string tmp = thisVar->GetAttributeOrDefault("desktop_encode","0");
+                                        bool condition=false;
+                                        if (thisVar->HasAttribute("condition"))
+                                            condition=true;
+                                        dataTypes::pageVariable var(QString::fromStdString(thisVar->GetAttribute("name")),QString::fromStdString(thisVar->GetAttribute("value")),QString::fromStdString(thisVar->GetAttributeOrDefault("condition","")),condition);
+                                        var.setToEncode((tmp=="1")?true:false);
+                                        page.setVariable(var);
+                                    }
+                                }
+                            }
+                            /**************************/
+                            /*************************/
+                            {
+                                ticpp::Node *contentNode=thisPage->FirstChild("contents",false);
+                                if (contentNode!=NULL){
+                                    ticpp::Node *currentContent=NULL;
+                                    while( (currentContent = contentNode->IterateChildren( currentContent )) ){
+                                        ticpp::Element * thisContent= currentContent->ToElement();
+                                        /********************/
+
+                                        dataTypes::pageContent con(QString::fromStdString(thisContent->GetAttribute("name")),QString::fromStdString(thisContent->GetAttribute("left")),QString::fromStdString(thisContent->GetAttribute("right")));
+
+                                        page.setContent(con);
+                                    }
+                                }
+                            }
+                            /**************************/
+                            /*************************/
+                            {
+                                ticpp::Node *errNode=thisPage->FirstChild("errors",false);
+                                if (errNode!=NULL){
+                                    ticpp::Node *currentErr=NULL;
+                                    while( (currentErr = errNode->IterateChildren( currentErr )) ){
+                                        ticpp::Element * thisErr= currentErr->ToElement();
+                                        dataTypes::pageError err(QString::fromStdString(thisErr->GetAttributeOrDefault("errcode","0")),QString::fromStdString(thisErr->GetAttribute("errstr")),QString::fromStdString(thisErr->GetAttribute("errmsg")));
+                                        page.setError(err);
+                                    }
+                                }
+                            }
+                            /**************************/
+                            /*************************/
+                            {
+                                ticpp::Node *accNode=thisPage->FirstChild("accept",false);
+                                if (accNode!=NULL){
+                                    ticpp::Node *currentAcc=NULL;
+                                    while( (currentAcc = accNode->IterateChildren( currentAcc )) ){
+                                        ticpp::Element * thisAcc= currentAcc->ToElement();
+                                        dataTypes::pageAccept acc(QString::fromStdString(thisAcc->GetAttribute("acceptstr")),QString::fromStdString(thisAcc->GetAttributeOrDefault("acceptmsg","")));
+                                        page.setAccept(acc);
+                                    }
+                                }
+                            }
+                            /**************************/
+                            /*************************/
+                            {
+                                ticpp::Node *headerNode=thisPage->FirstChild("headers",false);
+                                if (headerNode!=NULL){
+                                    ticpp::Node *currentHeader=NULL;
+                                    while( (currentHeader = headerNode->IterateChildren( currentHeader )) ){
+                                        ticpp::Element * thisHeader= currentHeader->ToElement();
+                                        dataTypes::pageHeader head(QString::fromStdString(thisHeader->GetAttribute("name")),QString::fromStdString(thisHeader->GetAttribute("value")));
+                                        page.setHeader(head);
+                                    }
+                                }
+                            }
+                            /**************************/
+                            /*************************/
+                            {
+                                ticpp::Node *commandsNode=thisPage->FirstChild("commands",false);
+                                if (commandsNode!=NULL){
+                                    ticpp::Node *currentCommand=NULL;
+                                    while( (currentCommand = commandsNode->IterateChildren( currentCommand )) ){
+                                        ticpp::Element * thisCommand= currentCommand->ToElement();
+                                        dataTypes::pageCommand cmd(QString::fromStdString(thisCommand->GetAttribute("cmd")));
+                                        page.setCommand(cmd);
+                                    }
+                                }
+                            }
+                            /**************************/
+                            servizio.setPostprocedurePage(page);
+                        }
                     }
 
                 _servizi.insert(servizio.getId(),servizio);

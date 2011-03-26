@@ -315,7 +315,7 @@ MainJackSMS::~MainJackSMS()
 void MainJackSMS::resetCounters() {
 
     for (libJackSMS::dataTypes::configuredServicesType::iterator i = ElencoServiziConfigurati.begin(); i != ElencoServiziConfigurati.end(); ++i) {
-        i->setStat("sent-all", "0");
+        i->setSentAll(0);
     }
 
     for(libJackSMS::dataTypes::configuredServicesType::iterator i = ElencoServiziConfigurati.begin(); i != ElencoServiziConfigurati.end(); ++i) {
@@ -544,17 +544,14 @@ void MainJackSMS::WriteConfiguredServicesToGui() {
 
 }
 
-void MainJackSMS::updateAccountCountComboBox(QString id){
-
-    libJackSMS::dataTypes::configuredServicesType::const_iterator i=ElencoServiziConfigurati.begin();
-    libJackSMS::dataTypes::configuredServicesType::const_iterator i_end=ElencoServiziConfigurati.end();
-    for(;i!=i_end;++i){
-        if (i.value().getId()==id){
-            QString name=i.value().getName();
-            int index=ui->comboServizio->findData(name,Qt::UserRole);
-            ui->comboServizio->setItemText(index,name+" ["+ElencoServiziConfigurati[id].getStat("sent-all")+"]");
+void MainJackSMS::updateAccountCountComboBox(QString id)
+{
+    for (libJackSMS::dataTypes::configuredServicesType::const_iterator i = ElencoServiziConfigurati.begin(); i != ElencoServiziConfigurati.end(); ++i) {
+        if (i.value().getId() == id) {
+            QString name = i.value().getName();
+            int index = ui->comboServizio->findData(name, Qt::UserRole);
+            ui->comboServizio->setItemText(index, name + " [" + QString::number(ElencoServiziConfigurati[id].getSentAll()) + "]");
             break;
-
         }
     }
 }
@@ -563,7 +560,7 @@ QString MainJackSMS::phone2name(const libJackSMS::dataTypes::phoneNumber &_numbe
     QString user_num_name = _number.getAltName();
     static QMap<QString, QString> buf;
 
-    try{
+    try {
         if (_number.getIsValid()) {
             QMap<QString, QString>::iterator i = buf.find(_number.toString());
             if (i != buf.end()) {
@@ -823,11 +820,9 @@ void MainJackSMS::clickText(QString _text, QString defaultStr) {
     }
 }
 
-void MainJackSMS::smsSaved(libJackSMS::dataTypes::logSmsMessage sms, QString t) {
-    ElencoServiziConfigurati[sms.getAccountId()].setStat("sent-all", t);
-
-    libJackSMS::localApi::statsManager man(current_user_directory);
-    man.updateStatsOfAccount(ultimoSms.getAccountId(), "sent-all", t);
+void MainJackSMS::smsSaved(libJackSMS::dataTypes::logSmsMessage sms, QString t)
+{
+    ElencoServiziConfigurati[sms.getAccountId()].setSentAll(t.toInt());
     updateAccountCountComboBox(sms.getAccountId());
 }
 
@@ -946,7 +941,6 @@ int MainJackSMS::iterateSendSms(bool first, bool result, QString _text) {
         if (result) {
             widget->setStatusSuccess(_text);
             if (Opzioni["svuota-invio-corretto"] == "yes") {
-                qDebug() << "Preso!";
                 ui->recipientListWidget->takeItem(ui->recipientListWidget->row(current));
                 resizeRecipientBox();
             }
@@ -2350,19 +2344,6 @@ void MainJackSMS::deleteAccountOk(QString id){
 
 void MainJackSMS::closeEvent(QCloseEvent *event)
 {
-    if (isMaximized()) {
-        GlobalOptions["window-maximized"] = "yes";
-    } else {
-        GlobalOptions["window-maximized"] = "no";
-        GlobalOptions["window-height"] = QString::number(size().height());
-        GlobalOptions["window-width"] = QString::number(size().width());
-        GlobalOptions["window-xpos"] = QString::number(pos().x());
-        GlobalOptions["window-ypos"] = QString::number(pos().y());
-    }
-
-    libJackSMS::localApi::optionManager man("",GlobalOptions);
-    man.save();
-
     if (loggedIn) {
         loginClient->deleteLater();
         pingator->deleteLater();
@@ -2375,11 +2356,32 @@ void MainJackSMS::closeEvent(QCloseEvent *event)
         if (updateChecker != NULL)
             if (updateChecker->isRunning())
                 updateChecker->abort();
+
+        if (invioInCorso) {
+            smsSender->abort();
+        }
     }
+
+    if (isMaximized()) {
+        GlobalOptions["window-maximized"] = "yes";
+    } else {
+        GlobalOptions["window-maximized"] = "no";
+        GlobalOptions["window-height"] = QString::number(size().height());
+        GlobalOptions["window-width"] = QString::number(size().width());
+        GlobalOptions["window-xpos"] = QString::number(pos().x());
+        GlobalOptions["window-ypos"] = QString::number(pos().y());
+    }
+
+    libJackSMS::localApi::optionManager man("",GlobalOptions);
+    man.save();
  }
 
 void MainJackSMS::on_actionLogout_triggered()
 {
+    if (invioInCorso) {
+        smsSender->abort();
+    }
+
     loggedIn = false;
     altriMessaggi = true;
     stopWriteMessagesToGui = true;
@@ -2990,7 +2992,7 @@ void MainJackSMS::addServiceToServiceComboBox(accountWidget *acc, bool isJacksms
         ui->listServiziConfigurati->setItemWidget(item, acc);
     }
 
-    QString sa = ElencoServiziConfigurati[acc->getAccountId()].getStat("sent-all");
+    QString sa = QString::number(ElencoServiziConfigurati[acc->getAccountId()].getSentAll());
     if (sa == "0")
         sa = acc->getName();
     else
@@ -3218,7 +3220,10 @@ void MainJackSMS::on_actionApri_Log_triggered()
 }
 
 void MainJackSMS::sleepBeforeFound(int _seconds) {
-    clickText("Trovata attesa di " + QString::number(_seconds) + " secondi", "Invio in corso");
+    if (_seconds > 0)
+        clickText("Trovata attesa di <b>" + QString::number(_seconds) + "</b> secondi", "Invio in corso");
+    else
+        clickText("Attesa terminata", "Invio in corso");
 }
 
 void MainJackSMS::caricaUtenti() {

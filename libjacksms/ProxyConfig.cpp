@@ -1,6 +1,5 @@
 #include "ProxyConfig.h"
 #include <QString>
-#include <QDebug>
 
 namespace libJackSMS {
 
