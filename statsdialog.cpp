@@ -70,7 +70,7 @@ StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType &_opzioni, con
         m_ui->layoutStatistiche->addLayout(hLayout);
     }
 
-    m_ui->labelTotal->setText("Sms inviati da questa postazione: <b>" + QString::number(tot) + "</b>");
+    m_ui->labelTotal->setText("Messaggi inviati da questa postazione: <b>" + QString::number(tot) + "</b>");
 }
 
 StatsDialog::~StatsDialog()

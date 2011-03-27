@@ -302,19 +302,20 @@ namespace libJackSMS {
             webClient.insertFormData("recipient",msg.getPhoneNumber().toString());
             webClient.insertFormData("service_id",msg.getServiceId());
             webClient.insertFormData("account_id",msg.getAccountId());
-            QString xml=webClient.submitPost("http://q.jacksms.it/"+loginId+"/desktopSync?xml&desktop="+QString(JACKSMS_VERSION),true);
+            QString xml = webClient.submitPost("http://q.jacksms.it/" + loginId + "/desktopSync?xml&desktop=" + QString(JACKSMS_VERSION), true);
+
             if (xml.isEmpty())
                 emit smsNotSaved();
             else if (webClient.hasError())
                 emit smsNotSaved();
-            else{
+            else {
                 xmlResponse.setXml(xml);
                 QString id;
-                QString total="0";
-                if(xmlResponse.checkSaved(id,total)){
+                QString total = "0";
+                if (xmlResponse.checkSaved(id, total)) {
                     msg.setId(id);
                     emit smsSaved(msg,total);
-                }else
+                } else
                     emit smsNotSaved();
             }
         }
@@ -426,37 +427,39 @@ namespace libJackSMS {
         void accountManagerAdd::run(){
             netClient::netClientQHttp webClient;
             libJackSMS::xmlParserApi::xmlParserServerApiTicpp xmlDocument;
-            //libJackSMS::encodingPercent encoder;
-            if (ps.useProxy()){
+
+            if (ps.useProxy()) {
                 webClient.setProxyServer(ps.getServer(),ps.getPort(),ps.getType());
                 if (ps.useAuth())
                     webClient.setProxyAuthentication(ps.getUsername(),ps.getPassword());
             }
+
             libJackSMS::encodingPercent pEncoder;
-            webClient.insertFormData("service_id",pEncoder.getEncodedString(account.getService()));
-            webClient.insertFormData("account_name",pEncoder.getEncodedString(account.getName()));
-            int c=0;
-            while(service.nextVar()){
+            webClient.insertFormData("service_id", pEncoder.getEncodedString(account.getService()));
+            webClient.insertFormData("account_name", pEncoder.getEncodedString(account.getName()));
+            int c = 0;
+
+            while(service.nextVar()) {
                    c++;
-                   webClient.insertFormData("data_"+service.currentVar().getProgressive(),pEncoder.getEncodedString(account.getData(service.currentVar().getName())));
-            }
-            for(int x=c+1;x<5;++x){
-                webClient.insertFormData("data_"+QString::number(x),"");
+                   webClient.insertFormData("data_" + service.currentVar().getProgressive(), pEncoder.getEncodedString(account.getData(service.currentVar().getName())));
             }
 
-            QString xml=webClient.submitPost("http://q.jacksms.it/"+loginId+"/addService?xml,desktop",true);
-            if (xml.isEmpty())
+            for (int x = c + 1; x < 5; ++x) {
+                webClient.insertFormData("data_" + QString::number(x), "");
+            }
+
+            QString xml = webClient.submitPost("http://q.jacksms.it/" + loginId + "/addService?xml,desktop", true);
+            if (xml.isEmpty()) {
                 emit errorAdd();
-            else if (webClient.hasError())
+            } else if (webClient.hasError()) {
                 emit errorAdd();
-            else{
+            } else {
                 xmlDocument.setXml(xml);
                 QString resultId;
-                if (xmlDocument.checkAddNewAccount(resultId)){
+                if (xmlDocument.checkAddNewAccount(resultId))
                     emit accountAdded(resultId);
-                }else{
+                else
                     emit errorAdd();
-                }
             }
         }
 
@@ -582,33 +585,39 @@ namespace libJackSMS {
                 QString name=var.getName();
                 webClient.insertFormData("data_"+prog,pEncoder.getEncodedString(account.getData(name)));
             }
-            if (i<4)
-                for(int x=i+1;x<=4;++x)
-                    webClient.insertFormData("data_"+QString::number(x),"");
-            QString xml=webClient.submitPost("http://q.jacksms.it/"+loginId+"/editService?xml,desktop",true);
-            if (xml.isEmpty())
-                emit errorUpdate();
-            else if (webClient.hasError())
-                emit errorUpdate();
-            else{
-                xmlDocument.setXml(xml);
 
-                if(xmlDocument.checkUpdateAccount()){
-                    emit accountUpdated(account);
-                } else {
-                    emit errorUpdate();
-                }
+            if (i < 4) {
+                for (int x = i + 1; x <= 4; ++x)
+                    webClient.insertFormData("data_" + QString::number(x), "");
             }
 
+            QString xml = webClient.submitPost("http://q.jacksms.it/" + loginId + "/editService?xml,desktop", true);
+
+            if (xml.isEmpty()) {
+                emit errorUpdate();
+            } else if (webClient.hasError()) {
+                emit errorUpdate();
+            } else {
+                xmlDocument.setXml(xml);
+
+                if(xmlDocument.checkUpdateAccount())
+                    emit accountUpdated(account);
+                else
+                    emit errorUpdate();
+            }
         }
-        accountManagerUpdate::accountManagerUpdate(const QString & _loginId,libJackSMS::dataTypes::service _s,dataTypes::proxySettings _ps )
-            :loginId(_loginId),
-            s(_s),
-            ps(_ps){
+
+        accountManagerUpdate::accountManagerUpdate(const QString &_loginId, libJackSMS::dataTypes::service _s, dataTypes::proxySettings _ps) :
+                loginId(_loginId),
+                s(_s),
+                ps(_ps)
+        {
             qRegisterMetaType<libJackSMS::dataTypes::configuredAccount>("libJackSMS::dataTypes::configuredAccount");
         }
-        void accountManagerUpdate::updateAccount(libJackSMS::dataTypes::configuredAccount _account){
-            account=_account;
+
+        void accountManagerUpdate::updateAccount(libJackSMS::dataTypes::configuredAccount _account)
+        {
+            account = _account;
             start();
         }
 
@@ -626,12 +635,14 @@ namespace libJackSMS {
             connect(manAdd,SIGNAL(errorAdd()),this,SIGNAL(accountNotSaved()));
             manAdd->addNewAccount(_service,_account);
         }
+
         void accountManager::updateAccount(libJackSMS::dataTypes::configuredAccount & _account,libJackSMS::dataTypes::service s){
             manUp=new accountManagerUpdate(loginId,s,ps);
             connect(manUp,SIGNAL(accountUpdated(libJackSMS::dataTypes::configuredAccount)),this,SIGNAL(accountUpdated(libJackSMS::dataTypes::configuredAccount)));
             connect(manUp,SIGNAL(errorUpdate()),this,SIGNAL(accountNotUpdated()));
             manUp->updateAccount(_account);
         }
+
         void accountManager::deleteAccount(QString _id){
             manDel = new accountManagerDelete(loginId, ps);
             connect(manDel,SIGNAL(accountDeleted(QString)),this,SIGNAL(accountDeleted(QString)));

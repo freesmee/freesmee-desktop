@@ -880,7 +880,7 @@ void MainJackSMS::invioSuccesso(QString _text) {
     connect(onlineSmsSaver, SIGNAL(smsSaved(libJackSMS::dataTypes::logSmsMessage, QString)), this, SLOT(smsSaved(libJackSMS::dataTypes::logSmsMessage, QString)));
     onlineSmsSaver->save(us);
 
-    if (iterateSendSms(false, true, "Messaggio inviato" + (_text.isEmpty() ? "" : ": " + _text)) == 0){
+    if (iterateSendSms(false, true, "Messaggio inviato" + (_text.isEmpty() ? "" : ": " + _text)) == 0) {
         if (Opzioni["successfull-send-popup"] == "yes") {
             popupJms = false;
             trayIco->showMessage("JackSMS","Messaggio inviato!" + (_text.isEmpty() ? "" : "\n" + _text), QSystemTrayIcon::Information);
@@ -2090,14 +2090,13 @@ void MainJackSMS::newVersionAvailable() {
 void MainJackSMS::accountsReceived(libJackSMS::dataTypes::configuredServicesType accounts) {
     ElencoServiziConfigurati = accounts;
 
-    // Aggiungo il servizio unico onnipresente "JackSMS Messenger"
-    libJackSMS::dataTypes::configuredAccount *acc = new libJackSMS::dataTypes::configuredAccount();
-    acc->setId("1");
-    acc->setName("JackSMS Messenger");
-    acc->setService("40");
-    acc->setData("data1", current_user_username);
-    acc->setData("data2", ui->password->text());
-    ElencoServiziConfigurati.insert("1", *acc);
+    // Creo il servizio unico onnipresente "JackSMS Messenger"
+    libJackSMS::dataTypes::configuredAccount *accountJMS = new libJackSMS::dataTypes::configuredAccount();
+    accountJMS->setId("1");
+    accountJMS->setName("JackSMS Messenger");
+    accountJMS->setService("40");
+    accountJMS->setData("data1", current_user_username);
+    accountJMS->setData("data2", ui->password->text());
 
     // Carico le statistiche
     libJackSMS::localApi::statsManager l(current_user_directory);
@@ -2105,14 +2104,18 @@ void MainJackSMS::accountsReceived(libJackSMS::dataTypes::configuredServicesType
 
     // Droppo i servizi di JMS che hanno come utente lo stesso dell'account che si sta usando
     for(libJackSMS::dataTypes::configuredServicesType::iterator i = ElencoServiziConfigurati.begin(); i != ElencoServiziConfigurati.end(); ++i) {
-        if ((i.key() != "1") && (i.value().getService() == "40") && (i.value().getData("data1") == current_user_username)) {
+        if ((i.value().getService() == "40") && (i.value().getData("data1") == current_user_username)) {
             JMSServicesDropped.append(i.key());
-            ElencoServiziConfigurati["1"].sumStats(i.value());
+            accountJMS->sumStats(i.value());
         }
     }
+
     for (int i = 0; i < JMSServicesDropped.size(); ++i) {
         ElencoServiziConfigurati.remove(JMSServicesDropped.at(i));
     }
+
+    // Aggiungo il servizio unico onnipresente "JackSMS Messenger"
+    ElencoServiziConfigurati.insert("1", *accountJMS);
 
     countdownToGui();
 }
@@ -2124,10 +2127,10 @@ void MainJackSMS::phoneBookReceived(libJackSMS::dataTypes::phoneBookType r) {
     for (libJackSMS::dataTypes::phoneBookType::iterator i = Rubrica.begin(); i != Rubrica.end(); ++i) {
         l << i->getName();
 
-        // cambio al volo senza modificare sul server e metto account associato = "JackSMS Messenger" ai contatti
-        // il cui id è stato droppato
-        if (JMSServicesDropped.contains(i->getAccount()))
+        // metto account associato = "JackSMS Messenger" ai contatti il cui id è stato droppato (associazione al volo, non va sul server)
+        if (JMSServicesDropped.contains(i->getAccount())) {
             i->setAccount("1");
+        }
     }
 
     completer = new RecipientCompleter(l);

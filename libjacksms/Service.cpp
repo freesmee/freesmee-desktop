@@ -41,203 +41,218 @@ namespace libJackSMS {
             hasPostprocedurePage = false;
         }
 
-        void service::setName(QString _name){
-            nome=_name;
+        void service::setName(QString _name) {
+            nome = _name;
         }
-        QString service::getName() const{
+
+        QString service::getName() const {
             return nome;
         }
-        void service::setId(QString _id){
-            id=_id;
+
+        void service::setId(QString _id) {
+            id = _id;
         }
-        QString service::getId() const{
+
+        QString service::getId() const {
             return id;
         }
-        void service::setVersion(QString _version){
-            versione=_version;
+
+        void service::setVersion(QString _version) {
+            versione = _version;
         }
-        QString service::getVersion() const{
+
+        QString service::getVersion() const {
             return versione;
         }
-        void service::setMaxSms(QString _maxSms){
-            smsMassimi=_maxSms;
+
+        void service::setMaxSms(QString _maxSms) {
+            smsMassimi = _maxSms;
         }
-        QString service::getMaxSms() const{
+
+        QString service::getMaxSms() const {
             return smsMassimi;
         }
-        void service::setEncoding(QString _encoding){
-            _encoding=_encoding.toUpper();
 
-            if (_encoding=="UTF-8"){
-                textEncoder->~encodingGeneric();
-                textEncoder=new libJackSMS::encodingUtf8();
-                codifica=_encoding;
-            }else if (_encoding=="ACCENT"){
-                textEncoder->~encodingGeneric();
-                textEncoder=new libJackSMS::encodingRemoveAccents();
-                codifica=_encoding;
-            }else if (_encoding=="URL"){
-                textEncoder->~encodingGeneric();
-                textEncoder=new libJackSMS::encodingUrl();
-                codifica=_encoding;
-            }else if (_encoding=="ISO-8859-1"){
-                textEncoder->~encodingGeneric();
-                textEncoder=new libJackSMS::encodingISO88591();
-                codifica=_encoding;
+        void service::setEncoding(QString _encoding) {
+            _encoding = _encoding.toUpper();
 
+            if (_encoding == "UTF-8") {
+                textEncoder->~encodingGeneric();
+                textEncoder = new libJackSMS::encodingUtf8();
+                codifica = _encoding;
+            } else if (_encoding == "ACCENT") {
+                textEncoder->~encodingGeneric();
+                textEncoder = new libJackSMS::encodingRemoveAccents();
+                codifica = _encoding;
+            } else if (_encoding == "URL") {
+                textEncoder->~encodingGeneric();
+                textEncoder = new libJackSMS::encodingUrl();
+                codifica = _encoding;
+            } else if (_encoding == "ISO-8859-1") {
+                textEncoder->~encodingGeneric();
+                textEncoder = new libJackSMS::encodingISO88591();
+                codifica = _encoding;
             }
         }
-        QString service::getEncoding() const{
+
+        QString service::getEncoding() const {
             return codifica;
         }
-        void service::setSingleLength(QString _singleLen){
-            lunghezzaSingola=_singleLen;
+
+        void service::setSingleLength(QString _singleLen) {
+            lunghezzaSingola = _singleLen;
         }
-        QString service::getSingleLength() const{
+
+        QString service::getSingleLength() const {
             return lunghezzaSingola;
         }
 
-
-;
-
-        void service::setIcon(const QImage &_icon){
-            icona=_icon;
+        void service::setIcon(const QImage &_icon) {
+            icona = _icon;
         }
 
-
-        QIcon service::getIcon() const{
+        QIcon service::getIcon() const {
             return QIcon(QPixmap::fromImage(icona));
         }
 
-
         /***/
-        void service::setSmsDivisor(QString _div){
-            smsDivisor=_div;
+        void service::setSmsDivisor(QString _div) {
+            smsDivisor = _div;
         }
 
-
-        QString service::getSmsDivisor() const{
+        QString service::getSmsDivisor() const {
             return smsDivisor;
         }
-        int service::getIntSmsDivisor() const{
-            bool ok;
-            return smsDivisor.toInt(&ok,10);
 
+        int service::getIntSmsDivisor() const {
+            return smsDivisor.toInt();
         }
         /***/
 
-        void service::setMaxLength(QString _maxLen){
-            lunghezzaMassima=_maxLen;
+        void service::setMaxLength(QString _maxLen) {
+            lunghezzaMassima = _maxLen;
         }
 
-
-        QString service::getMaxLength() const{
+        QString service::getMaxLength() const {
             return lunghezzaMassima;
         }
-        int service::getIntMaxLength() const{
-            bool ok;
-            return lunghezzaMassima.toInt(&ok,10);
 
+        int service::getIntMaxLength() const {
+            return lunghezzaMassima.toInt();
         }
-        int service::getIntSingleLength() const{
-            bool ok;
-            return lunghezzaSingola.toInt(&ok,10);
 
+        int service::getIntSingleLength() const {
+            return lunghezzaSingola.toInt();
         }
-        void service::setReset(QString _reset){
-            periodoReset=_reset;
+
+        void service::setReset(QString _reset) {
+            periodoReset = _reset;
         }
-        QString service::getReset() const{
+
+        QString service::getReset() const {
             return periodoReset;
         }
-        void service::setLanguage(QString _lan){
-            lingua=_lan;
+
+        void service::setLanguage(QString _lan) {
+            lingua = _lan;
         }
-        QString service::getLanguage() const{
+
+        QString service::getLanguage() const {
             return lingua;
         }
-        void service::setMantainSession(bool _mantain){
-            mantieniSessione=_mantain;
+
+        void service::setMantainSession(bool _mantain) {
+            mantieniSessione = _mantain;
         }
-        bool service::getMantainSession() const{
+
+        bool service::getMantainSession() const {
             return mantieniSessione;
         }
-        void service::setSessionUrl(QString _sessionUrl){
-            urlSessione=_sessionUrl;
+
+        void service::setSessionUrl(QString _sessionUrl) {
+            urlSessione = _sessionUrl;
         }
-        QString service::getSessionUrl() const{
+
+        QString service::getSessionUrl() const {
             return urlSessione;
         }
-        void service::setDescription(QString _description){
-            descrizione=_description;
+
+        void service::setDescription(QString _description) {
+            descrizione = _description;
         }
-        QString service::getDescription() const{
+
+        QString service::getDescription() const {
             return descrizione;
         }
-        void service::setVariable(const variabileServizio & _var){
+
+        void service::setVariable(const variabileServizio &_var) {
             variabili.push_back(_var);
         }
-        variabileServizio service::getVariable(const QString & _varName) const {
-            QList<variabileServizio>::const_iterator i=variabili.begin();
-            QList<variabileServizio>::const_iterator i_end=variabili.end();
-            for(;i!=i_end;++i){
-                if (i->getName()==_varName)
+
+        variabileServizio service::getVariable(const QString &_varName) const {
+            for (QList<variabileServizio>::const_iterator i = variabili.begin(); i != variabili.end(); ++i) {
+                if (i->getName() == _varName) {
                     return *i;
                     break;
+                }
             }
             return variabileServizio();
+        }
 
+        /*
+        void service::setStat(const QString &_statName, const QString &_statValue) {
+            statistiche.insert(std::make_pair(_statName, _statValue));
         }
-        /*void service::setStat(const QString & _statName,const QString & _statValue){
-            statistiche.insert(std::make_pair(_statName,_statValue));
-        }
-        QString service::getStat(const QString & _varName) const{
-            QMap<QString,QString>::const_iterator i=statistiche.find(_varName);
-            if (i==statistiche.end())
-                return QString();
+
+        QString service::getStat(const QString &_varName) const {
+            QMap<QString, QString>::const_iterator i = statistiche.find(_varName);
+            if (i == statistiche.end())
+                return "";
             else
                 return i->second;
         }
         */
-        void service::setData(const QString & _dataName,const QString & _dataValue){
-            dati.insert(_dataName,_dataValue);
+
+        void service::setData(const QString &_dataName, const QString &_dataValue) {
+            dati.insert(_dataName, _dataValue);
         }
-        QString service::getData(const QString & _dataName) const{
-            QMap<QString,QString>::const_iterator i=dati.find(_dataName);
-            if (i==dati.end())
-                return QString();
+
+        QString service::getData(const QString &_dataName) const {
+            QMap<QString, QString>::const_iterator i = dati.find(_dataName);
+            if (i == dati.end())
+                return "";
             else
                 return i.value();
         }
 
-        void service::setOption(const QString & _optionName,const QString & _optionValue){
-            opzioni.insert(_optionName,_optionValue);
+        void service::setOption(const QString &_optionName, const QString &_optionValue) {
+            opzioni.insert(_optionName, _optionValue);
         }
-        QString service::getOption(const QString & _optionName) const{
-            QMap<QString,QString>::const_iterator i=opzioni.find(_optionName);
-            if (i==opzioni.end())
-                return QString();
+
+        QString service::getOption(const QString &_optionName) const {
+            QMap<QString, QString>::const_iterator i = opzioni.find(_optionName);
+            if (i == opzioni.end())
+                return "";
             else
                 return i.value();
         }
 
-        bool service::nextPage(){
+        bool service::nextPage() {
             //std::cout<<pagine.size();
-            QList<paginaServizio>::const_iterator i_end=pagine.end();
-            if (pageCounter==0){
-                indexPage=pagine.begin();
-            }else{
+            QList<paginaServizio>::const_iterator i_end = pagine.end();
+            if (pageCounter == 0) {
+                indexPage = pagine.begin();
+            } else {
                 ++indexPage;
             }
+
             ++pageCounter;
-            if (indexPage==i_end){
-                pageCounter=0;
+
+            if (indexPage == i_end) {
+                pageCounter = 0;
                 return false;
-            }
-            else
+            } else
                 return true;
-
-
         }
 
         paginaServizio &service::currentPage() {
@@ -252,7 +267,7 @@ namespace libJackSMS {
         {
             QList<variabileServizio>::const_iterator i_end = variabili.end();
             if (varCounter == 0)
-                indexVar=variabili.begin();
+                indexVar = variabili.begin();
             else
                 ++indexVar;
 
@@ -260,16 +275,16 @@ namespace libJackSMS {
             if (indexVar == i_end) {
                 varCounter = 0;
                 return false;
-            }
-            else
+            } else {
                 return true;
+            }
         }
 
         variabileServizio & service::currentVar() {
             return *indexVar;
         }
 
-        libJackSMS::encodingGeneric * service::getTextEncoder() const{
+        libJackSMS::encodingGeneric * service::getTextEncoder() const {
             return textEncoder;
         }
 
@@ -277,7 +292,7 @@ namespace libJackSMS {
             return textEncoder->getEncodedString(_text);
         }
 
-        QString service::getEncodedTextUrlEncoded(const QString & _text) {
+        QString service::getEncodedTextUrlEncoded(const QString &_text) {
             return textEncoder->getEncodedAndUrlString(_text);
         }
 
@@ -288,6 +303,7 @@ namespace libJackSMS {
 
         void service::setPostprocedurePage(const dataTypes::paginaServizio &_pag) {
             postprocedurePage = _pag;
+            hasPostprocedurePage = true;
         }
 
         bool service::getHasPostprocedurePage() const {
@@ -297,7 +313,5 @@ namespace libJackSMS {
         int service::getNumberOfPages() const{
             return numberOfPages;
         }
-
     }
 }
-
