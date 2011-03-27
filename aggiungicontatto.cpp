@@ -1,6 +1,5 @@
 #include "aggiungicontatto.h"
 #include "ui_aggiungicontatto.h"
-#include "mainjacksms.h"
 #include "Types.h"
 #include <QThread>
 #include <QMessageBox>
@@ -9,14 +8,14 @@
 #include "mainjacksms.h"
 #include <QTextCursor>
 
-AggiungiContatto::AggiungiContatto(QWidget *parent, MainJackSMS *_padre, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::optionsType &_opzioni) :
+AggiungiContatto::AggiungiContatto(QWidget *parent, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::optionsType &_opzioni, QString _current_login_id) :
     QDialog(parent),
     m_ui(new Ui::AggiungiContatto),
-    padre(_padre),
     ElencoServiziConfigurati(_ElencoServiziConfigurati),
     Rubrica(_Rubrica),
     ElencoServizi(_ElencoServizi),
-    opzioni(_opzioni)
+    opzioni(_opzioni),
+    current_login_id(_current_login_id)
 {
     m_ui->setupUi(this);
     m_ui->ComboGruppo->hide();
@@ -42,14 +41,14 @@ AggiungiContatto::AggiungiContatto(QWidget *parent, MainJackSMS *_padre, libJack
 }
 
 //questo è il costruttore per quando si usa il "Salva contatto"
-AggiungiContatto::AggiungiContatto(QWidget *parent, MainJackSMS *_padre, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::optionsType &_opzioni, libJackSMS::dataTypes::phoneNumber numero) :
+AggiungiContatto::AggiungiContatto(QWidget *parent, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::optionsType &_opzioni, QString _current_login_id, libJackSMS::dataTypes::phoneNumber numero) :
         QDialog(parent),
         m_ui(new Ui::AggiungiContatto),
-        padre(_padre),
         ElencoServiziConfigurati(_ElencoServiziConfigurati),
         Rubrica(_Rubrica),
         ElencoServizi(_ElencoServizi),
-        opzioni(_opzioni)
+        opzioni(_opzioni),
+        current_login_id(_current_login_id)
 {
     m_ui->setupUi(this);
     m_ui->ComboGruppo->hide();
@@ -158,8 +157,8 @@ void AggiungiContatto::on_salva_clicked()
         m_ui->annulla->setEnabled(false);
         m_ui->labelSpin->show();
 
-        saver = new libJackSMS::serverApi::contactManager(padre->current_login_id, opzioni);
-        connect(saver, SIGNAL(contactSaved(QString,bool)), this, SLOT(salvataggioOk(QString, bool)));
+        saver = new libJackSMS::serverApi::contactManager(current_login_id, opzioni);
+        connect(saver, SIGNAL(contactSaved(QString, bool)), this, SLOT(salvataggioOk(QString, bool)));
         connect(saver, SIGNAL(contactNotSaved()), this, SLOT(salvataggioKo()));
         saver->addNewContact(contatto);
 }
@@ -168,10 +167,10 @@ void AggiungiContatto::salvataggioOk(QString id, bool jms) {
     contatto.setId(id);
     contatto.setCanReceiveJms(jms);
     Rubrica.insert(id, contatto);
-    padre->ReWriteAddressBookToGui();
-    padre->updateSmsListAfterContactAdded(contatto);
+    emit contactAdded(id);
     close();
 }
+
 void AggiungiContatto::salvataggioKo() {
     m_ui->salva->setEnabled(true);
     m_ui->annulla->setEnabled(true);

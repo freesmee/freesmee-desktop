@@ -721,41 +721,35 @@ void MainJackSMS::stepWriteMessageToGui() {
 
 void MainJackSMS::on_RubricaAggiungi_clicked()
 {
-    AggiungiContatto *diag = new AggiungiContatto(this, this, ElencoServiziConfigurati, Rubrica, ElencoServizi, GlobalOptions);
+    AggiungiContatto *diag = new AggiungiContatto(this, ElencoServiziConfigurati, Rubrica, ElencoServizi, GlobalOptions, current_login_id);
+    connect(diag, SIGNAL(contactAdded(QString)), this, SLOT(contactAdded(QString)));
     diag->exec();
     diag->deleteLater();
+}
 
-    //ricostruisco la lista per il completer
-    QStringList l;
-    for (libJackSMS::dataTypes::phoneBookType::const_iterator i = Rubrica.begin(); i != Rubrica.end(); ++i) {
-        l<<i->getName();
-    }
-    completer->deleteLater();
-    completer = new RecipientCompleter(l);
-    connect(completer, SIGNAL(activated(QString)), this, SLOT(recipientPopupSelected(QString)));
-    completer->setCaseSensitivity(Qt::CaseInsensitive);
-    completer->setCompletionMode(QCompleter::PopupCompletion);
-    ui->recipientLine->setCompleter(completer);
+void MainJackSMS::contactAdded(QString id) {
+    ReWriteAddressBookToGui();
+    updateSmsListAfterContactAdded(Rubrica[id]);
+    ui->RicercaVeloce->setText("");
+    ui->TextRapidRubrica->setText("");
+    refreshCompleter();
 }
 
 void MainJackSMS::displayCaptcha(QByteArray data) {
     /*
             //cerca se c'è un plugin captcha per questo servizio
             JackCaptchaPluginInterface* availablePlugin = 0;
-            if(Opzioni["use-captcha"]=="yes"){
-                jackTypes::ConfiguredServicesMap::const_iterator i=ElencoServiziConfigurati.begin();
-                jackTypes::ConfiguredServicesMap::const_iterator i_end=ElencoServiziConfigurati.end();
+            if(Opzioni["use-captcha"] == "yes"){
                 QString serviceName;
-                for(;i!=i_end;++i){
-                    if (ui->comboServizio->currentText()==i->nome){
-                        serviceName=ElencoServizi[i->idServizio].nome;
+                for (jackTypes::ConfiguredServicesMap::const_iterator i = ElencoServiziConfigurati.begin(); i != ElencoServiziConfigurati.end(); ++i) {
+                    if (ui->comboServizio->currentText() == i->nome) {
+                        serviceName = ElencoServizi[i->idServizio].nome;
                         break;
                     }
-
                 }
 
-                foreach(JackPluginInterface* iPlugin, pluginsList){
-                    if(iPlugin->getPluginInfo().pluginType == CaptchaDecoder){
+                foreach(JackPluginInterface* iPlugin, pluginsList) {
+                    if(iPlugin->getPluginInfo().pluginType == CaptchaDecoder) {
                         JackCaptchaPluginInterface* plugin = dynamic_cast<JackCaptchaPluginInterface*>(iPlugin);
                         if(plugin->getPluginStatus() == Ready && plugin->getServiceName() == serviceName){
                             availablePlugin = plugin;
@@ -1124,16 +1118,9 @@ void MainJackSMS::on_InviaSMS_clicked()
 void MainJackSMS::on_RubricaModifica_clicked()
 {
     QListWidgetItem *wid = ui->rubricaListWidget->currentItem();
-    if (wid != NULL) {
-        QWidget *wi = ui->rubricaListWidget->itemWidget(wid);
-        ContactWidget *cw = static_cast<ContactWidget*>(wi);
-        QString id = cw->getContactId();
-        editcontattodialog *dial = new editcontattodialog(this, this, ElencoServizi, ElencoServiziConfigurati, Rubrica, id, GlobalOptions);
-        dial->exec();
-        dial->deleteLater();
-    }
+    if (wid != NULL)
+        on_rubricaListWidget_itemDoubleClicked(wid);
 }
-
 
 void MainJackSMS::on_actionEsci_triggered()
 {
@@ -1433,6 +1420,9 @@ void MainJackSMS::deleteContactOk(QString id)
     updateSmsListAfterContactRemoved(c);
     ui->labelSpinDelContact->hide();
     ui->RubricaElimina->setEnabled(true);
+    ui->RicercaVeloce->setText("");
+    ui->TextRapidRubrica->setText("");
+    refreshCompleter();
 }
 
 void MainJackSMS::on_RicercaVeloceIM_textChanged(QString text)
@@ -1595,18 +1585,10 @@ void MainJackSMS::on_actionImporta_Backup_triggered()
      }*/
 }
 
-
-
-
-
-
- bool MainJackSMS::eventFilter( QObject *obj, QEvent *ev )
-  {
-
+bool MainJackSMS::eventFilter(QObject *obj, QEvent *ev)
+{
     return false;
-  }
-
-
+}
 
 void MainJackSMS::on_TestoSMS_textChanged()
 {
@@ -1615,16 +1597,23 @@ void MainJackSMS::on_TestoSMS_textChanged()
     ui->LabelEsito->setText("");
 
     if(invioMultiplo && (ui->comboServizio->currentIndex() == 0)) {
+
         ui->LabelCountChars->setText("Testo: " + QString::number(txt.length()) + " caratteri");
+
     } else {
-        QString cSms = QString::number(ceil((float)txt.length()/currentSingleLength));
+        QString cSms = "";
+        if (txt.length() > currentSingleLength)
+            cSms = QString::number(ceil((float)txt.length()/currentSmsDivisor));
+        else
+            cSms = QString::number(ceil((float)txt.length()/currentSingleLength));
+
         QString nSms = QString::number(ceil((float)currentMaxLength/currentSingleLength));
         ui->LabelCountChars->setText("Testo: " + QString::number(txt.length()) + "/" + QString::number(currentMaxLength) + ", SMS: " + cSms + "/" + nSms);
     }
 }
 
-void MainJackSMS::on_comboServizio_currentIndexChanged(int index) {
-
+void MainJackSMS::on_comboServizio_currentIndexChanged(int index)
+{
     if (invioMultiplo && (index == 0)) {
 
         for(int i = 0; i < ui->recipientListWidget->count(); ++i) {
@@ -1643,7 +1632,8 @@ void MainJackSMS::on_comboServizio_currentIndexChanged(int index) {
                 QString serviceId = x.value().getService();
                 libJackSMS::dataTypes::servicesType::const_iterator i = ElencoServizi.find(serviceId);
                 currentMaxLength = i.value().getIntMaxLength();
-                currentSingleLength = i.value().getIntSmsDivisor();
+                currentSingleLength = i.value().getIntSingleLength();
+                currentSmsDivisor = i.value().getIntSmsDivisor();
                 break;
             }
         }
@@ -2571,12 +2561,20 @@ void MainJackSMS::on_ModificaServizioButton_clicked()
 
 void MainJackSMS::on_rubricaListWidget_itemDoubleClicked(QListWidgetItem* item)
 {
-    QWidget* wi = ui->rubricaListWidget->itemWidget(item);
-    ContactWidget* cw = static_cast<ContactWidget*>(wi);
-    QString id = cw->getContactId();
-    editcontattodialog* dial = new editcontattodialog(this, this, ElencoServizi, ElencoServiziConfigurati, Rubrica, id, GlobalOptions);
+    QString id = static_cast<ContactWidget*>(ui->rubricaListWidget->itemWidget(item))->getContactId();
+    editcontattodialog *dial = new editcontattodialog(this, ElencoServizi, ElencoServiziConfigurati, Rubrica, id, GlobalOptions, current_login_id);
+    connect(dial, SIGNAL(contactEdited(QString)), this, SLOT(contactEdited(QString)));
     dial->exec();
     dial->deleteLater();
+}
+
+void MainJackSMS::contactEdited(QString id)
+{
+    ReWriteAddressBookToGui();
+    updateSmsListAfterContactEdited(Rubrica[id]);
+    ui->RicercaVeloce->setText("");
+    ui->TextRapidRubrica->setText("");
+    refreshCompleter();
 }
 
 void MainJackSMS::on_listServiziConfigurati_itemDoubleClicked(QListWidgetItem* item)
@@ -2775,7 +2773,8 @@ void MainJackSMS::rubricaBarJMS()
         QString serviceId = x.value().getService();
         libJackSMS::dataTypes::servicesType::const_iterator i = ElencoServizi.find(serviceId);
         currentMaxLength = i.value().getIntMaxLength();
-        currentSingleLength = i.value().getIntSmsDivisor();
+        currentSingleLength = i.value().getIntSingleLength();
+        currentSmsDivisor = i.value().getIntSmsDivisor();
     }
     on_TestoSMS_textChanged();
 }
@@ -2984,6 +2983,9 @@ void MainJackSMS::rubricaBarCurrentChanged(int index)
     else if (index == 1)
         // JMS
         rubricaBarJMS();
+
+    // richiedo un nuovo filtraggio
+    on_RicercaVeloce_textChanged(ui->RicercaVeloce->text());
 }
 
 void MainJackSMS::addServiceToServiceComboBox(accountWidget *acc, bool isJacksmsMessenger)
@@ -3010,12 +3012,15 @@ void MainJackSMS::addServiceToServiceComboBox(accountWidget *acc, bool isJacksms
 void MainJackSMS::on_SalvaNumeroButton_clicked()
 {
     SmsWidget* smswid = static_cast<SmsWidget*>(ui->smsListWidget->itemWidget(ui->smsListWidget->item(ui->smsListWidget->currentRow())));
-    AggiungiContatto *diag = new AggiungiContatto(this, this, ElencoServiziConfigurati, Rubrica, ElencoServizi, GlobalOptions, smswid->getPhoneNum());
+
+    AggiungiContatto *diag = new AggiungiContatto(this, ElencoServiziConfigurati, Rubrica, ElencoServizi, GlobalOptions, current_login_id, smswid->getPhoneNum());
+    connect(diag, SIGNAL(contactAdded(QString)), this, SLOT(contactAdded(QString)));
     diag->exec();
     diag->deleteLater();
 }
 
-void MainJackSMS::updateSmsListAfterContactAdded(libJackSMS::dataTypes::contact c) {
+void MainJackSMS::updateSmsListAfterContactAdded(libJackSMS::dataTypes::contact c)
+{
     NameWidget* namewid = ui->listSmsNames->findNameWidget(c);
 
     if (namewid != NULL) {
@@ -3028,12 +3033,13 @@ void MainJackSMS::updateSmsListAfterContactAdded(libJackSMS::dataTypes::contact 
     checkSalvaButtonStatusToSet();
 }
 
-void MainJackSMS::updateSmsListAfterContactEdited(libJackSMS::dataTypes::contact c) {
+void MainJackSMS::updateSmsListAfterContactEdited(libJackSMS::dataTypes::contact c)
+{
     updateSmsListAfterContactAdded(c);
 }
 
-void MainJackSMS::updateSmsListAfterContactRemoved(libJackSMS::dataTypes::contact c) {
-
+void MainJackSMS::updateSmsListAfterContactRemoved(libJackSMS::dataTypes::contact c)
+{
     try {
         NameWidget* namewid = ui->listSmsNames->findNameWidget(c);
 
@@ -3050,10 +3056,11 @@ void MainJackSMS::updateSmsListAfterContactRemoved(libJackSMS::dataTypes::contac
 
         checkSalvaButtonStatusToSet();
     } catch (...) {/*non beccherà mai niente ma sempre meglio non rischiare*/}
+
 }
 
-void MainJackSMS::checkSalvaButtonStatusToSet() {
-
+void MainJackSMS::checkSalvaButtonStatusToSet()
+{
     if (ui->smsListWidget->currentRow() != -1) {
         SmsWidget* smswid = static_cast<SmsWidget*>(ui->smsListWidget->itemWidget(ui->smsListWidget->item(ui->smsListWidget->currentRow())));
         if (smswid->isCaricaAltri()) {
@@ -3071,7 +3078,8 @@ void MainJackSMS::checkSalvaButtonStatusToSet() {
     }
 }
 
-void MainJackSMS::elaboraRecipientLine(bool StealFocus) {
+void MainJackSMS::elaboraRecipientLine(bool StealFocus)
+{
     QListWidgetItem* item = new QListWidgetItem;
     QString originalStr = ui->recipientLine->text();
     QString name = originalStr;
@@ -3081,10 +3089,10 @@ void MainJackSMS::elaboraRecipientLine(bool StealFocus) {
     QRegExp r;
     r.setPattern("^([^<]+) <([\\+\\.0-9]+)>$");
 
-    if (r.exactMatch(originalStr)){
+    if (r.exactMatch(originalStr)) {
         name = r.cap(1);
         n.parse(r.cap(2));
-    }else{
+    } else {
         n.parse(originalStr);
     }
 
@@ -3304,4 +3312,18 @@ void MainJackSMS::managePassword(QString _user) {
         ui->ricordaPassword->setChecked(false);
         ui->password->setFocus();
     }
+}
+
+void MainJackSMS::refreshCompleter()
+{
+    QStringList l;
+    for (libJackSMS::dataTypes::phoneBookType::const_iterator i = Rubrica.begin(); i != Rubrica.end(); ++i)
+        l << i->getName();
+
+    completer->deleteLater();
+    completer = new RecipientCompleter(l);
+    connect(completer, SIGNAL(activated(QString)), this, SLOT(recipientPopupSelected(QString)));
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
+    completer->setCompletionMode(QCompleter::PopupCompletion);
+    ui->recipientLine->setCompleter(completer);
 }

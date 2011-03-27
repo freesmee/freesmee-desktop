@@ -95,6 +95,7 @@ private:
 
     int currentMaxLength;
     int currentSingleLength;
+    int currentSmsDivisor;
     libJackSMS::serverApi::updateServicesManager *updateChecker;
     QMap<QString,accountWidget*> mapWidgetsAccount;
     libJackSMS::serverApi::contactManager *deleteContect;
@@ -161,6 +162,8 @@ private:
     void ricaricaUtenti();
     void manageUserPassAutoLogin();
     void managePassword(QString _user);
+
+    void refreshCompleter();
 
 public slots:
     void ReWriteAddressBookToGui();
@@ -262,6 +265,9 @@ private slots:
     void deleteContactOk(QString);
     void deleteAccountKo();
     void deleteAccountOk(QString);
+
+    void contactAdded(QString);
+    void contactEdited(QString);
 
     void translateGui();
     void popupInvio();

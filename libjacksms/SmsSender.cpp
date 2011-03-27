@@ -315,6 +315,7 @@ namespace libJackSMS {
                     dataTypes::paginaServizio paginaCorrente;
 
                     if (isPostprocedurePage) {
+                        log.addNotice("Fine Procedure - Inizio Postprocedure");
                         paginaCorrente = servizioDaUsare.getPostprocedurePage();
                     } else {
                         pageCounter++;
@@ -593,9 +594,9 @@ namespace libJackSMS {
                                 }
 
                                 if (isPostprocedurePage) {
-
                                     managePostProcedureSignals(resultString, resultError, resultSend, forceDeleteCookies, isPostprocedurePage);
-
+                                    log.addNotice("Fine Postprocedure");
+                                    break;
                                 } else {
 
                                     if (paginaCorrente.checkErrors()) {
@@ -691,7 +692,7 @@ namespace libJackSMS {
             } else {
                 emit error(resultString);
                 optionalDeleteCookies();
-                return false;
+                return true;
             }
         }
     }

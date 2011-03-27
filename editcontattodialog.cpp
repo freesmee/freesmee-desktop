@@ -4,19 +4,17 @@
 #include <Configuration.h>
 #include <QMessageBox>
 
-editcontattodialog::editcontattodialog(QWidget *parent , MainJackSMS *_padre, const libJackSMS::dataTypes::servicesType &_ElencoServizi, const libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, QString contactId, const libJackSMS::dataTypes::optionsType _Opzioni) :
+editcontattodialog::editcontattodialog(QWidget *parent, const libJackSMS::dataTypes::servicesType &_ElencoServizi, const libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, QString contactId, const libJackSMS::dataTypes::optionsType _Opzioni, QString _current_login_id) :
         QDialog(parent),
         m_ui(new Ui::editcontattodialog),
-        padre(_padre),
         ElencoServizi(_ElencoServizi),
         ElencoServiziConfigurati(_ElencoServiziConfigurati),
         Rubrica(_Rubrica),
         Opzioni(_Opzioni),
-        id(contactId)
+        id(contactId),
+        current_login_id(_current_login_id)
 {
-
     m_ui->setupUi(this);
-
     spinner = new QMovie(":/resource/loading-spinner.gif", QByteArray("gif"), this);
     spinner->setScaledSize(QSize(16, 16));
     spinner->start();
@@ -48,6 +46,7 @@ editcontattodialog::editcontattodialog(QWidget *parent , MainJackSMS *_padre, co
     m_ui->comboaccount->setCurrentIndex(m_ui->comboaccount->findText(ElencoServiziConfigurati[contatto.getAccount()].getName()));
 
 }
+
 editcontattodialog::~editcontattodialog()
 {
     delete m_ui;
@@ -56,6 +55,7 @@ editcontattodialog::~editcontattodialog()
 void editcontattodialog::changeEvent(QEvent *e)
 {
     QDialog::changeEvent(e);
+
     switch (e->type()) {
     case QEvent::LanguageChange:
         m_ui->retranslateUi(this);
@@ -101,7 +101,7 @@ void editcontattodialog::on_salva_clicked()
     m_ui->annulla->setEnabled(false);
     m_ui->labelSpin->show();
 
-    saver = new libJackSMS::serverApi::contactManager(padre->current_login_id, Opzioni);
+    saver = new libJackSMS::serverApi::contactManager(current_login_id, Opzioni);
     connect(saver, SIGNAL(contactUpdated(libJackSMS::dataTypes::contact)), this, SLOT(salvataggioOk(libJackSMS::dataTypes::contact)));
     connect(saver, SIGNAL(contactNotUpdated()), this, SLOT(salvataggioKo()));
     saver->updateContact(contatto);
@@ -109,8 +109,7 @@ void editcontattodialog::on_salva_clicked()
 
 void editcontattodialog::salvataggioOk(libJackSMS::dataTypes::contact c) {
     Rubrica[c.getId()] = c;
-    padre->ReWriteAddressBookToGui();
-    padre->updateSmsListAfterContactEdited(c);
+    emit contactEdited(c.getId());
     close();
 }
 

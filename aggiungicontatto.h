@@ -1,12 +1,10 @@
-#include "mainjacksms.h"
+#include "libjacksms/libJackSMS.h"
 #include "Types.h"
 #include <QMovie>
-#include "libjacksms/libJackSMS.h"
+#include <QtGui/QDialog>
 
 #ifndef AGGIUNGICONTATTO_H
 #define AGGIUNGICONTATTO_H
-
-#include <QtGui/QDialog>
 
 namespace Ui {
     class AggiungiContatto;
@@ -15,8 +13,8 @@ namespace Ui {
 class AggiungiContatto : public QDialog {
     Q_OBJECT
 public:
-    AggiungiContatto(QWidget *parent , MainJackSMS *_padre, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati,libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::optionsType & _opzioni);
-    AggiungiContatto(QWidget *parent , MainJackSMS *_padre, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati,libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::optionsType & _opzioni, libJackSMS::dataTypes::phoneNumber numero);
+    AggiungiContatto(QWidget *parent, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati,libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::optionsType &_opzioni, QString _current_login_id);
+    AggiungiContatto(QWidget *parent, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati,libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::optionsType &_opzioni, QString _current_login_id, libJackSMS::dataTypes::phoneNumber numero);
     ~AggiungiContatto();
 
 protected:
@@ -24,21 +22,23 @@ protected:
 
 private:
     libJackSMS::serverApi::contactManager *saver;
-
     Ui::AggiungiContatto *m_ui;
-    MainJackSMS * padre;
     libJackSMS::dataTypes::configuredServicesType &ElencoServiziConfigurati;
-
     libJackSMS::dataTypes::phoneBookType &Rubrica;
     libJackSMS::dataTypes::servicesType &ElencoServizi;
     QMovie *spinner;
-    libJackSMS::dataTypes::optionsType & opzioni;
+    libJackSMS::dataTypes::optionsType &opzioni;
+    QString current_login_id;
     libJackSMS::dataTypes::contact contatto;
+
 private slots:
     void on_salva_clicked();
     void on_annulla_clicked();
-    void salvataggioOk(QString,bool);
+    void salvataggioOk(QString, bool);
     void salvataggioKo();
+
+signals:
+    void contactAdded(QString);
 };
 
 #endif // AGGIUNGICONTATTO_H
