@@ -1,3 +1,26 @@
+/*
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
 #ifndef MAINJACKSMS_H
 #define MAINJACKSMS_H
 
@@ -18,6 +41,7 @@
 #include "contactwidgetfastbook.h"
 #include "qrecipientwidget.h"
 #include "recipientcompleter.h"
+#include "libjacksms/streamer.h"
 
 #define TYPE_SMS 1
 #define TYPE_JMS 2
@@ -50,6 +74,7 @@ public:
     QList<JackPluginInterface*> pluginsList;
     QString current_user_directory;
     QString current_user_username;
+    QString current_user_password;
     QString current_login_id;
     libJackSMS::serverApi::login *signin;
 
@@ -68,6 +93,7 @@ public slots:
     void anotherInstanceOpened(const QString &str);
 
 private:
+    bool useSSLtoServer;
     int iterateSendSms(bool first,bool result=false,QString _text="");
     int smsCount;
     RecipientCompleter *completer;
@@ -165,10 +191,15 @@ private:
 
     void refreshCompleter();
 
+    // Funzioni per la pubblicità
+    void showAdvPanel(QString url);
+    void showTestoSmsPanel();
+
 public slots:
     void ReWriteAddressBookToGui();
 
 private slots:
+    void on_closeADVButton_clicked();
     void on_actionApri_Log_triggered();
     void on_actionApri_cartella_impostazioni_triggered();
     void on_actionApri_cartella_utente_triggered();
@@ -213,7 +244,7 @@ private slots:
     void jmsNotActive(bool, QString);
     void jmsBackupNotActive();
     void jmsBackupActive();
-    void jmsActiving();
+    void jmsActivating();
     void on_actionPlugins_triggered();
     void on_actionStatistiche_triggered();
     void on_actionTutti_i_messaggi_triggered();
@@ -229,8 +260,8 @@ private slots:
     void gestiscimenuMultiplo();
     void on_comboServizio_currentIndexChanged(int index);
     void on_TestoSMS_textChanged();
-    void on_actionImporta_Backup_triggered();
-    void on_actionCrea_backup_configurazione_triggered();
+//    void on_actionImporta_Backup_triggered();
+//    void on_actionCrea_backup_configurazione_triggered();
     void on_EliminaButton_clicked();
     void on_RicercaVeloceIM_textChanged(QString );
     void on_RubricaElimina_clicked();
@@ -291,6 +322,10 @@ private slots:
     void RecipientTabPressed();
     void stepWriteMessageToGui();
     void rubricaBarCurrentChanged(int index);
+
+    void advLoaded(bool);
+    void slotAdv(QString);
+    void on_actionVai_al_Sito_triggered();
 };
 
 #endif // MAINJACKSMS_H

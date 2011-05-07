@@ -67,7 +67,7 @@
          </item>
          <item>
           <property name="text">
-           <string>JackSMS Messenger</string>
+           <string>Free+</string>
           </property>
           <property name="icon">
            <iconset resource="resources.qrc">
@@ -124,9 +124,19 @@
               </widget>
              </item>
              <item>
+              <widget class="QCheckBox" name="checkShowAdv">
+               <property name="text">
+                <string>Visualizza Pubblicità e ottieni tanti sms gratis!</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QCheckBox" name="errorSmsPopup">
                <property name="text">
-                <string>Segnala con un popup l'errore sull'invio di un SMS o JMS</string>
+                <string>Segnala con un popup l'errore sull'invio di un SMS o di un Free+</string>
                </property>
                <property name="checked">
                 <bool>true</bool>
@@ -136,7 +146,7 @@
              <item>
               <widget class="QCheckBox" name="successSmsPopup">
                <property name="text">
-                <string>Segnala con un popup il corretto invio di un SMS o JMS</string>
+                <string>Segnala con un popup il corretto invio di un SMS o di un Free+</string>
                </property>
               </widget>
              </item>
@@ -320,14 +330,14 @@
              <item>
               <widget class="QCheckBox" name="suonoJMS">
                <property name="text">
-                <string>Emetti un suono alla ricezione di un nuovo JMS</string>
+                <string>Emetti un suono alla ricezione di un nuovo Free+</string>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QCheckBox" name="showPopupNewJms">
                <property name="text">
-                <string>Mostra un popup alla ricezione di un JMS</string>
+                <string>Mostra un popup alla ricezione di un Free+</string>
                </property>
                <property name="checked">
                 <bool>true</bool>
@@ -337,7 +347,7 @@
              <item>
               <widget class="QCheckBox" name="showPopupJmsStatus">
                <property name="text">
-                <string>Mostra i popup di stato del servizio JMS</string>
+                <string>Mostra i popup di stato del servizio Free+</string>
                </property>
                <property name="checked">
                 <bool>true</bool>

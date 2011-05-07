@@ -1,10 +1,15 @@
 /*
-    Copyright (C) <2009>  <ivan vaccari> <grisson@jacksms.it>
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,19 +26,25 @@
 #include <QString>
 #include <QPair>
 
-namespace libJackSMS{
+namespace libJackSMS
+{
+    encodingRemoveAccents::encodingRemoveAccents()
+    {
+    }
 
-    encodingRemoveAccents::encodingRemoveAccents(){
+    encodingRemoveAccents::~encodingRemoveAccents()
+    {
     }
-    encodingRemoveAccents::~encodingRemoveAccents(){
-    }
-    QString encodingRemoveAccents::getEncodedAndUrlString(QString _text){
+
+    QString encodingRemoveAccents::getEncodedAndUrlString(QString _text)
+    {
         QByteArray _t=getEncodedString(_text).toLocal8Bit().toPercentEncoding();
         return QString(_t);
     }
-    /*the input string _text is supposed to be in utf*/
-    QString encodingRemoveAccents::getEncodedString(QString _text){
 
+    /*the input string _text is supposed to be in utf*/
+    QString encodingRemoveAccents::getEncodedString(QString _text)
+    {
         QList<QPair<QString,QString> > symbols;
         symbols.push_back(qMakePair(QString("è"),QString("e")));
         symbols.push_back(qMakePair(QString("é"),QString("e")));
@@ -66,13 +77,11 @@ namespace libJackSMS{
         symbols.push_back(qMakePair(QString(QChar(242)),QString("o")));
         symbols.push_back(qMakePair(QString(QChar(243)),QString("o")));
 
-
-        QList<QPair<QString,QString> >::const_iterator i=symbols.begin();
-        QList<QPair<QString,QString> >::const_iterator i_end=symbols.end();
-
-        for(;i!=i_end;++i){
-            _text.replace(i->first,i->second);
+        for(QList< QPair<QString,QString> >::const_iterator i = symbols.begin(); i != symbols.end(); ++i)
+        {
+            _text.replace(i->first, i->second);
         }
+
         return _text;
     }
 }

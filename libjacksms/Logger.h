@@ -1,10 +1,15 @@
 /*
-    Copyright (C) <2009>  <ivan vaccari> <grisson@jacksms.it>
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,26 +20,26 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
-#include <QList>
-#include <QString>
+
 #ifndef LOGGER_HH
 #define LOGGER_HH 1
 
+#include <QList>
+#include <QString>
 
+namespace libJackSMS
+{
+    class logger
+    {
+    private:
+        QString filename;
 
-namespace libJackSMS{
-
-        class logger{
-            private:
-                QList<QString> noticeList;
-                QString filename;
-            public:
-                logger(QString _filename);
-                void addNotice(const QString &_notice);
-                bool save();
-
-                void cancelLog();
-       };
+    public:
+        logger(QString _filename);
+        void addNotice(const QString &_notice);
+        void cancelLog();
+    };
 
 }
+
 #endif //LOGGER_HH

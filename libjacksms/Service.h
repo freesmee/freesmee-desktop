@@ -1,10 +1,15 @@
 /*
-    Copyright (C) <2009>  <ivan vaccari> <grisson@jacksms.it>
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,6 +21,9 @@
 
 */
 
+#ifndef SERVICE_HH
+#define SERVICE_HH 1
+
 #include "PaginaServizio.h"
 #include "VariabileServizio.h"
 #include "ConfiguredAccount.h"
@@ -24,19 +32,13 @@
 #include <QMap>
 #include <QIcon>
 #include "Encoding.h"
-#ifndef SERVICE_HH
-#define SERVICE_HH 1
 
-
-
-
-
-namespace libJackSMS {
-
-    namespace dataTypes {
-
-        class service {
-
+namespace libJackSMS
+{
+    namespace dataTypes
+    {
+        class service
+        {
         private:
             QString nome;
             QString id;

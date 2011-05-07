@@ -1,11 +1,15 @@
-
 /*
-    Copyright (C) <2009>  <ivan vaccari> <grisson@jacksms.it>
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -220,8 +224,10 @@ namespace libJackSMS {
             return true;
         }*/
 
-        bool xmlParserLocalApiTicpp::loadServices(libJackSMS::dataTypes::servicesType & _servizi){
-            try{
+        bool xmlParserLocalApiTicpp::loadServices(libJackSMS::dataTypes::servicesType & _servizi)
+        {
+            try
+            {
                 ticpp::Document services;
 
                 QString path=libJackSMS::directories::concatDirectoryAndFile(libJackSMS::directories::XmlDirectory(),"services.xml");
@@ -230,7 +236,7 @@ namespace libJackSMS {
 
                 ticpp::Node *subRoot = services.FirstChild("services",false);
                 if (subRoot == NULL)
-                    subRoot = services.FirstChild("JackSMS");
+                    subRoot = services.FirstChild("Freesmee");
                 ticpp::Node *child = NULL;
                 while ((child = subRoot->IterateChildren(child))) {
                     ticpp::Element *thisService = child->ToElement();
@@ -1278,13 +1284,13 @@ namespace libJackSMS {
                 localServices.LoadFile(path.toStdString(),TIXML_ENCODING_UTF8);
 
 
-                ticpp::Node *subRootNew=newServices.FirstChild("JackSMS");
+                ticpp::Node *subRootNew=newServices.FirstChild("Freesmee");
                 ticpp::Node *childNew=NULL;
                 while( (childNew = subRootNew->IterateChildren( childNew )) ){
                     ticpp::Element * thisServiceNew=childNew->ToElement();
                     std::string serviceIdNew=thisServiceNew->GetAttribute("id");
                     std::string serviceVersionNew=thisServiceNew->GetAttribute("v");
-                    ticpp::Node *subRootLocal=localServices.FirstChild("JackSMS");
+                    ticpp::Node *subRootLocal=localServices.FirstChild("Freesmee");
                     ticpp::Node *childLocal=NULL;
                     bool found=false;
                     while( (childLocal = subRootLocal->IterateChildren( childLocal )) ){

@@ -1,10 +1,15 @@
 /*
-    Copyright (C) <2009>  <ivan vaccari> <grisson@jacksms.it>
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,19 +24,25 @@
 #include "EncodingPercent.h"
 #include <QString>
 #include <QUrl>
-namespace libJackSMS{
 
-    encodingPercent::encodingPercent(){
+namespace libJackSMS
+{
+    encodingPercent::encodingPercent()
+    {
     }
-    encodingPercent::~encodingPercent(){
+
+    encodingPercent::~encodingPercent()
+    {
     }
 
     /*the input string _text is supposed to be in utf*/
-    QString encodingPercent::getEncodedString(QString _text){
+    QString encodingPercent::getEncodedString(QString _text)
+    {
          return QString(QUrl::toPercentEncoding(_text));
     }
 
-    QString encodingPercent::getEncodedAndUrlString(QString _text){
+    QString encodingPercent::getEncodedAndUrlString(QString _text)
+    {
          return QString(QUrl::toPercentEncoding(_text));
     }
 }

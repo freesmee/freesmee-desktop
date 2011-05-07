@@ -1,38 +1,40 @@
-#include <QString>
-#include <QByteArray>
+/*
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
 
 #ifndef UTILITIES_HH_GUARD
 #define UTILITIES_HH_GUARD 1
 
-namespace libJackSMS {
+#include <QString>
+#include <QByteArray>
 
-    namespace utilities {
-
-        /******************dichiarazioni************************/
-        //void explode(std::string stringToExplode,std::list<std::string>& lista,char _separatore=',');
-
-        //template <typename SRCTYPE>
-        //std::string toString(SRCTYPE src);
-
-        //int toInt(std::string src);
-
+namespace libJackSMS
+{
+    namespace utilities
+    {
         QString Base64Encode(const QString &toEncode);
         QString Base64Decode(const QString &toDecode);
         QByteArray Base64DecodeByte(const QString &toDecode);
-        bool deleteFile(const QString fileName);
-        bool deleteNotEmptyDir(const QString _dirName, bool removeDirectory = true);
-        bool deleteFilesInDirectory(const QString _dirName);
-
-        /******************definizioni************************/
-        /*template <typename SRCTYPE>
-        std::string toString(SRCTYPE src){
-            std::stringstream ss(std::stringstream::in | std::stringstream::out);
-            ss<< src;
-            std::string tmp;
-            ss>>tmp;
-            return tmp;
-        }*/
-
+        void deleteDirectory(QString dirPath, bool deleteParent);
     }
 }
 

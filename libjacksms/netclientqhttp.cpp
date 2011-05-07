@@ -1,3 +1,26 @@
+/*
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
 #include "netclientqhttp.h"
 #include <QEventLoop>
 #include <QNetworkProxy>
@@ -10,107 +33,121 @@
 #include <QNetworkCookie>
 #include <QSslSocket>
 #include <QSslConfiguration>
+
 namespace libJackSMS{
 
-    namespace netClient{
+    namespace netClient
+    {
 
-        void QMyNetworkCookieJar::saveToDisk(QString filename){
-
-                QList<QNetworkCookie> myCookieList=allCookies();
-                QFile file(filename);
-                if (file.open(QIODevice::ReadWrite | QIODevice::Text)){
-
-                    for(QList<QNetworkCookie>::const_iterator i=myCookieList.begin();i!=myCookieList.end();++i){
-                        file.write(i->toRawForm()+"\n");
-                    }
-                    file.close();
+        void QMyNetworkCookieJar::saveToDisk(QString filename)
+        {
+            QList<QNetworkCookie> myCookieList = allCookies();
+            QFile file(filename);
+            if (file.open(QIODevice::ReadWrite | QIODevice::Text))
+            {
+                for(QList<QNetworkCookie>::const_iterator i = myCookieList.begin(); i != myCookieList.end(); ++i)
+                {
+                    file.write(i->toRawForm()+"\n");
                 }
 
-
+                file.close();
+            }
         }
 
-        void QMyNetworkCookieJar::loadFromDisk(QString filename){
+        void QMyNetworkCookieJar::loadFromDisk(QString filename)
+        {
             QList<QNetworkCookie> myCookieList;
             QFile file(filename);
-            if (file.open(QIODevice::ReadOnly | QIODevice::Text)){
-                while (!file.atEnd()) {
+            if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+            {
+                while (!file.atEnd())
+                {
                     QByteArray line = file.readLine();
-                    line.resize(line.length()-1);
-                    QList<QNetworkCookie> c=QNetworkCookie::parseCookies(line);
-                    for(QList<QNetworkCookie>::iterator i=c.begin();i!=c.end();++i){
-                        QDateTime dd=i->expirationDate();
-                        QDateTime ct=QDateTime::currentDateTime();
+                    line.resize(line.length() - 1);
+                    QList<QNetworkCookie> c = QNetworkCookie::parseCookies(line);
+
+                    for (QList<QNetworkCookie>::iterator i = c.begin(); i != c.end(); ++i)
+                    {
+                        //QDateTime dd = i->expirationDate();
+                        //QDateTime ct = QDateTime::currentDateTime();
                         //QDateTime say: if the cookie is a session cookie , epirationDate()
                         //will return an invalid date.. but i want the session cookie!
                         //if (!dd.isValid())
-                            myCookieList.push_back(*i);
+                        myCookieList.push_back(*i);
                         //else if (dd>ct)
                         //    myCookieList.push_back(*i);
                     }
-
                 }
 
                 setAllCookies(myCookieList);
                 file.close();
             }
         }
-        QByteArray QMyNetworkCookieJar::getRawData(){
+
+        QByteArray QMyNetworkCookieJar::getRawData()
+        {
             QByteArray raw;
-            QList<QNetworkCookie> myCookieList=allCookies();
-            for(QList<QNetworkCookie>::const_iterator i=myCookieList.begin();i!=myCookieList.end();++i){
+            QList<QNetworkCookie> myCookieList = allCookies();
+            for (QList<QNetworkCookie>::const_iterator i = myCookieList.begin(); i != myCookieList.end(); ++i)
+            {
                 raw.append(i->toRawForm()+"\n");
             }
+
             return raw;
         }
 
-        void QMyNetworkCookieJar::clear(){
+        void QMyNetworkCookieJar::clear()
+        {
             setAllCookies(QList<QNetworkCookie>());
         }
 
-
-
         netClientQHttp::netClientQHttp(QObject *parent):
-            QObject(parent),
-            reply(NULL),
-            outputHeaders(false),
-            cookies(NULL),
-            userAgentSetted(false),
-            useCookies(false),
-            //lastSocketIsSsl(false),
-            proxyConfigured(false),
-            aborted(false),
-            error(false),
-            errorPage(false)
+                QObject(parent),
+                reply(NULL),
+                outputHeaders(false),
+                cookies(NULL),
+                userAgentSetted(false),
+                useCookies(false),
+                //lastSocketIsSsl(false),
+                proxyConfigured(false),
+                aborted(false),
+                error(false),
+                errorPage(false)
         {
-           // client=new QHttp;
-            connect(&request,SIGNAL(finished(QNetworkReply*)),this,SLOT(endRequest(QNetworkReply*)));
-            loop=new QEventLoop(this);
+            // client=new QHttp;
+            connect(&request, SIGNAL(finished(QNetworkReply*)), this, SLOT(endRequest(QNetworkReply*)));
+            loop = new QEventLoop(this);
             connect(this, SIGNAL(pageDownloaded()), loop, SLOT(quit()));
-
-
         }
-        netClientQHttp::~netClientQHttp(){
-            if(reply!=NULL)reply->deleteLater();
-            if(cookies!=NULL)cookies->deleteLater();
+
+        netClientQHttp::~netClientQHttp()
+        {
+            if (reply != NULL)reply->deleteLater();
+            if (cookies != NULL)
+                cookies->deleteLater();
+
             loop->deleteLater();
-
-
         }
-        void netClientQHttp::clearCookies(){
+
+        void netClientQHttp::clearCookies()
+        {
             QFile::remove(cookieFilename);
-            if (cookies!=NULL)
+            if (cookies != NULL)
                 cookies->clear();
         }
-        void netClientQHttp::endRequest(QNetworkReply* reply){
-            if (reply->error()==QNetworkReply::NoError){
-                _lastReadedUrlCode=reply->readAll();
-                error=false;
+
+        void netClientQHttp::endRequest(QNetworkReply* reply)
+        {
+            if (reply->error() == QNetworkReply::NoError)
+            {
+                _lastReadedUrlCode = reply->readAll();
+                error = false;
             }else{
                 _lastReadedUrlCode=reply->errorString().toAscii();
 
                 error=true;
             }
-             emit pageDownloaded();
+            emit pageDownloaded();
 
         }
         bool netClientQHttp::setTimeout(int timeout){
@@ -261,7 +298,9 @@ namespace libJackSMS{
             }
             return "";
         }
-        void netClientQHttp::makeQueryString(bool urlenc){
+
+        void netClientQHttp::makeQueryString(bool urlenc)
+        {
             QList<QPair<QString, QString> >::const_iterator i=queryStringFields.begin();
             lastQueryString.clear();
             for (;i!=queryStringFields.end();++i){
@@ -280,11 +319,10 @@ namespace libJackSMS{
 
             }
             queryStringFields.clear();
-
         }
-        QString netClientQHttp::submitGet(const QString &_url,bool _ret){
 
-
+        QString netClientQHttp::submitGet(const QString &_url,bool _ret)
+        {
             QUrl _url2=QUrl(QString::fromUtf8(_url.toStdString().c_str(),_url.length()));
             QList<QPair <QString,QString> > fields=_url2.queryItems();
             fields.append(queryStringFields);
@@ -344,66 +382,82 @@ namespace libJackSMS{
             }
             return "";
         }
-        QString netClientQHttp::currentUrl(){
+
+        QString netClientQHttp::currentUrl()
+        {
             return url.toString();
         }
-        bool netClientQHttp::findCaptcha(const QString &_left,const QString &_right){
+
+        bool netClientQHttp::findCaptcha(const QString &_left,const QString &_right)
+        {
             int _pleft=_lastReadedUrlCode.indexOf(_left);
             if (_pleft!= -1){
                 int _pright=_lastReadedUrlCode.indexOf(_right,_pleft);
                 if (_pright!=-1){
-                        if (_pleft <_pright)
-                            return true;
-                        else
-                            return false;
+                    if (_pleft <_pright)
+                        return true;
+                    else
+                        return false;
                 }else{
                     return false;
                 }
             }else
                 return false;
-
         }
-        bool netClientQHttp::getFile(const QString &_url,QByteArray &_fileBytes){
+
+        bool netClientQHttp::getFile(const QString &_url, QByteArray &_fileBytes)
+        {
             url=_url;
             readPage(false);
             _fileBytes=_lastReadedUrlCode;
             return true;
         }
 
-        bool netClientQHttp::addHeader(const QString &_name,const QString &_value){
-            headers.push_back(qMakePair(_name.toAscii(),_value.toAscii()));
-
+        bool netClientQHttp::addHeader(const QString &_name, const QString &_value)
+        {
+            headers.push_back(qMakePair(_name.toAscii(), _value.toAscii()));
             return true;
         }
-        bool netClientQHttp::setProxyServer(const QString & _proxyServer,const QString &_port,const QString &_proxyType){
-            proxyConfigured=true;
+
+        bool netClientQHttp::setProxyServer(const QString & _proxyServer, const QString &_port, const QString &_proxyType)
+        {
+            proxyConfigured = true;
             proxy.setHostName(_proxyServer);
             bool ok;
-            proxy.setPort(_port.toInt(&ok,10));
-            if (_proxyType.toUpper()=="HTTP")
+            proxy.setPort(_port.toInt(&ok, 10));
+            if (_proxyType.toUpper() == "HTTP")
                 proxy.setType(QNetworkProxy::HttpProxy);
-            else if (_proxyType.toUpper()=="SOCKS5")
+            else if (_proxyType.toUpper() == "SOCKS5")
                 proxy.setType(QNetworkProxy::Socks5Proxy);
 
             return true;
         }
-        bool netClientQHttp::setProxyAuthentication(const QString &_proxyUsername, const QString &_proxyPassword){
+
+        bool netClientQHttp::setProxyAuthentication(const QString &_proxyUsername, const QString &_proxyPassword)
+        {
             proxy.setUser(_proxyUsername);
             proxy.setPassword(_proxyPassword);
             return true;
         }
-        bool netClientQHttp::interrupt(){
 
-            aborted=true;
+        bool netClientQHttp::interrupt()
+        {
+            aborted = true;
             emit pageDownloaded();
             reply->abort();
             return true;
         }
-        bool netClientQHttp::getAborted(){
+
+        bool netClientQHttp::getAborted()
+        {
             return aborted;
         }
-        bool netClientQHttp::hasError(){
+
+        bool netClientQHttp::hasError()
+        {
             return errorPage;
         }
+
     }
+
 }

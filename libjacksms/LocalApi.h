@@ -1,10 +1,15 @@
 /*
-    Copyright (C) <2009>  <ivan vaccari> <grisson@jacksms.it>
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,23 +21,21 @@
 
 */
 
+#ifndef LOCALAPI_H
+#define LOCALAPI_H 1
+
 #include <QString>
 #include <QList>
 #include "xmlParserLocalApi.h"
 #include "DataTypes.h"
 #include <QThread>
-#ifndef LOCALAPI_H
-#define LOCALAPI_H 1
 
-
-
-
-namespace libJackSMS {
-
-    namespace localApi {
-
-        class userFinder {
-
+namespace libJackSMS
+{
+    namespace localApi
+    {
+        class userFinder
+        {
                 private:
                     xmlParserApi::xmlParserLocalApiGeneric *xmlDocument;
                     QList<dataTypes::stringTriplet> utenti;
@@ -48,8 +51,8 @@ namespace libJackSMS {
                     QString getDataDirectory(const QString &_username) const;
         };
 
-        class smsLogSaver {
-
+        class smsLogSaver
+        {
             private:
                 xmlParserApi::xmlParserLocalApiGeneric *xmlDocument;
                 dataTypes::logSmsMessage msg;
@@ -64,8 +67,8 @@ namespace libJackSMS {
                 bool deleteSms(const QList<QString>  &_idList);
         };
 
-        class imLogSaver {
-
+        class imLogSaver
+        {
             private:
                 xmlParserApi::xmlParserLocalApiGeneric *xmlDocument;
                 dataTypes::logImMessage msg;
@@ -80,7 +83,8 @@ namespace libJackSMS {
                 bool deleteIm(const QList<QString>  &_idList);
         };
 
-        class optionLoader : public QThread {
+        class optionLoader : public QThread
+        {
             Q_OBJECT
 
             private:
@@ -98,7 +102,8 @@ namespace libJackSMS {
                 void criticalError(QString);
         };
 
-        class synchronousOptionLoader : public QObject {
+        class synchronousOptionLoader : public QObject
+        {
             Q_OBJECT
 
             private:
@@ -109,7 +114,8 @@ namespace libJackSMS {
                 synchronousOptionLoader(QString _userDir = "");
         };
 
-        class serviceLoader : public QThread {
+        class serviceLoader : public QThread
+        {
             Q_OBJECT
 
             private:
@@ -127,7 +133,8 @@ namespace libJackSMS {
                 void criticalError(QString);
         };
 
-        class xmlLoader : public QObject {
+        class xmlLoader : public QObject
+        {
             Q_OBJECT
 
             private:
@@ -151,7 +158,8 @@ namespace libJackSMS {
                 void criticalError(QString);
         };
 
-        class serviceManagerBase : public QThread {
+        class serviceManagerBase : public QThread
+        {
             Q_OBJECT
 
             private:
@@ -167,7 +175,8 @@ namespace libJackSMS {
                 void merged();
         };
 
-        class serviceManager : public QObject {
+        class serviceManager : public QObject
+        {
             Q_OBJECT
 
             private:
@@ -206,8 +215,8 @@ namespace libJackSMS {
                 bool deleteContact(const QString &_id);
         };*/
 
-        class optionManager {
-
+        class optionManager
+        {
             private:
                 xmlParserApi::xmlParserLocalApiGeneric *xmlDocument;
                 dataTypes::optionsType &opzioni;
@@ -228,8 +237,8 @@ namespace libJackSMS {
                 bool deleteCookies();
         };
 
-        class userDirectoryManager {
-
+        class userDirectoryManager
+        {
             private:
                 xmlParserApi::xmlParserLocalApiGeneric *xmlDocument;
                 QString user;
@@ -248,8 +257,8 @@ namespace libJackSMS {
                 bool initializeDirectory();
         };
 
-        class statsManager {
-
+        class statsManager
+        {
             private:
                 xmlParserApi::xmlParserLocalApiGeneric *xmlDocument;
                 QString userDir;

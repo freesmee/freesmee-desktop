@@ -32,6 +32,7 @@
         <file>resource/9.png</file>
         <file>resource/10.png</file>
         <file>resource/findd.png</file>
+        <file>resource/finde.png</file>
         <file>resource/imnew.png</file>
         <file>resource/imold.gif</file>
         <file>resource/agave-icon.png</file>
@@ -55,6 +56,7 @@
         <file>resource/go-down.png</file>
         <file>resource/go-up.png</file>
         <file>resource/ico_contact.png</file>
+        <file>resource/ico_contact2.png</file>
         <file>resource/jacksms_icona_im_24x24-3.png</file>
         <file>resource/jacksms_icona_rubrica_24x24-1.png</file>
         <file>resource/jacksms_icona_servizi_24x24-1.png</file>
@@ -66,20 +68,22 @@
         <file>resource/go-down-notify.png</file>
         <file>resource/tray_icon.png</file>
         <file>resource/tray_icon_notify.png</file>
+        <file>resource/ball-grey.png</file>
         <file>resource/jms-active.png</file>
+        <file>resource/jms-activating.png</file>
         <file>resource/jms-not-active.png</file>
-        <file>resource/jms-activing.png</file>
         <file>resource/external-link-ltr-icon.png</file>
         <file>resource/freccia.png</file>
         <file>resource/background_new.png</file>
         <file>resource/jacksms_logo_medium_light.png</file>
-        <file>resource/ico_contact2.png</file>
         <file>resource/arrow.png</file>
         <file>resource/arrow-unread.png</file>
-        <file>resource/60_5.png</file>
-        <file>resource/finde.png</file>
         <file>resource/gmail_ico.png</file>
         <file>resource/gmail_logo.gif</file>
-        <file>resource/ball-grey.png</file>
+        <file>resource/60_5.png</file>
+        <file>resource/Lock.png</file>
+        <file>resource/Lock-Open.png</file>
+        <file>resource/Lock-Grey.png</file>
+        <file>resource/Freesmee48x48.png</file>
     </qresource>
 </RCC>

@@ -1,3 +1,26 @@
+/*
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
 #include "namewidget.h"
 
 NameWidget::NameWidget(QString _name, libJackSMS::dataTypes::phoneNumber _numero, QString _lastMessage, QDateTime _lastTime, QString _lastId, int _unreadCount)
@@ -11,8 +34,8 @@ NameWidget::NameWidget(QString _name, libJackSMS::dataTypes::phoneNumber _numero
     name = _name;
     numero = _numero;
 
-    if(_name.length() > 16)
-        _name = _name.left(13) + "...";
+    if(_name.length() > 20)
+        _name = _name.left(17) + "...";
 
     labelName = new QLabel(_name);
     labelName->setFont(QFont(labelName->font().family(), -1, QFont::Bold, false));
@@ -20,8 +43,8 @@ NameWidget::NameWidget(QString _name, libJackSMS::dataTypes::phoneNumber _numero
     labelName->setMaximumSize(150, 15);
 
     lastMessage = _lastMessage;
-    if(_lastMessage.length() > 20)
-        _lastMessage = _lastMessage.left(17) + "...";
+    if(_lastMessage.length() > 28)
+        _lastMessage = _lastMessage.left(25) + "...";
 
     labelLastMessage = new QLabel(_lastMessage);
     labelLastMessage->setFont(QFont(labelLastMessage->font().family(),-1,QFont::Normal,false));

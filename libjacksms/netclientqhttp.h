@@ -1,3 +1,26 @@
+/*
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
 #ifndef NETCLIENTQHTTP_H
 #define NETCLIENTQHTTP_H
 
@@ -11,12 +34,14 @@
 #include <QNetworkReply>
 #include <QNetworkCookieJar>
 #include <QNetworkCookie>
-namespace libJackSMS{
 
-    namespace netClient{
-        class QMyNetworkCookieJar:public QNetworkCookieJar{
+namespace libJackSMS
+{
+    namespace netClient
+    {
+        class QMyNetworkCookieJar:public QNetworkCookieJar
+        {
             Q_OBJECT
-
 
             public:
                 void clear();
@@ -25,9 +50,11 @@ namespace libJackSMS{
                 QByteArray getRawData();
 
         };
+
         class netClientQHttp : public QObject,public netClientGeneric
         {
-        Q_OBJECT
+            Q_OBJECT
+
         private:
             
             QNetworkAccessManager request;
@@ -52,6 +79,7 @@ namespace libJackSMS{
 
             QString ua;
             bool errorPage;
+
         public:
             netClientQHttp(QObject *parent = 0);
             ~netClientQHttp();
@@ -75,17 +103,17 @@ namespace libJackSMS{
             bool getAborted();
             void clearCookies();
             bool hasError();
+
         signals:
             void pageDownloaded();
 
         private slots:
             void endRequest(QNetworkReply*);
-            /*void MainWindow::action(int id);
-            void MainWindow::action2(int id,bool a);
-*/
-
+            //void MainWindow::action(int id);
+            //void MainWindow::action2(int id,bool a);
 
         };
     }
 }
+
 #endif // NETCLIENTQHTTP_H

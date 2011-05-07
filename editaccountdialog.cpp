@@ -1,3 +1,26 @@
+/*
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
 #include "editaccountdialog.h"
 #include "ui_editaccountdialog.h"
 #include <QLineEdit>
@@ -88,7 +111,7 @@ void editAccountDialog::accountNotUpdated(){
     ui->buttonAnnulla->setEnabled(false);
     ui->pushButton->setEnabled(false);
     ui->labelSpin->hide();
-    QMessageBox::critical(this,"JackSMS","Si e' verificato un errore durante l'aggiornamento dell'account.");
+    QMessageBox::critical(this, "Freesmee", "Si e' verificato un errore durante l'aggiornamento dell'account.");
 }
 
 void editAccountDialog::on_pushButton_clicked()
@@ -112,7 +135,7 @@ void editAccountDialog::on_pushButton_clicked()
         ++i;
     }
     if (!save){
-        QMessageBox::information(this,"JackSMS","Esiste un'altro servizio con questo nome.\nModificalo e risalva il servizio.");
+        QMessageBox::information(this, "Freesmee", "Esiste un'altro servizio con questo nome.\nModificalo e risalva il servizio.");
     }else{
 
         currentAccount.setName(accountName);
@@ -121,7 +144,7 @@ void editAccountDialog::on_pushButton_clicked()
             QString key =dynamic_cast<QLabel*>(ui->serviceDataForms->itemAt(i, QFormLayout::LabelRole)->widget())->text();
             QString value =dynamic_cast<QLineEdit*>(ui->serviceDataForms->itemAt(i, QFormLayout::FieldRole)->widget())->text();
             if (value.toStdString().empty()){
-                QMessageBox::information(this,"JackSMS","Il campo "+key+" e' vuoto");
+                QMessageBox::information(this, "Freesmee", "Il campo "+key+" e' vuoto");
                 return;
             }
             currentAccount.setData(key,value);

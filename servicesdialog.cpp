@@ -1,3 +1,26 @@
+/*
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
 #include "Configuration.h"
 #include "servicesdialog.h"
 #include "ui_servicesdialog.h"
@@ -22,8 +45,12 @@ ServicesDialog::ServicesDialog(QWidget *parent,MainJackSMS * _padre,libJackSMS::
 {
     m_ui->setupUi(this);
 
-    for(libJackSMS::dataTypes::servicesType::const_iterator i = ElencoServizi.begin(); i != ElencoServizi.end(); ++i) {
-        QListWidgetItem *it=new QListWidgetItem();
+    for (libJackSMS::dataTypes::servicesType::const_iterator i = ElencoServizi.begin(); i != ElencoServizi.end(); ++i) {
+
+        if (i.value().getId() == "1")
+            continue;
+
+        QListWidgetItem *it = new QListWidgetItem();
         it->setText(i.value().getName());
         it->setIcon(i.value().getIcon());
         it->setWhatsThis(i.key());
@@ -42,7 +69,7 @@ ServicesDialog::ServicesDialog(QWidget *parent,MainJackSMS * _padre,libJackSMS::
 void ServicesDialog::addAccountKo() {
     m_ui->Salva->show();
     m_ui->labelSpinAddAccount->hide();
-    QMessageBox::critical(this, "JackSMS", "Si è verificato un errore durante il salvataggio dell'account.");
+    QMessageBox::critical(this, "Freesmee", "Si è verificato un errore durante il salvataggio dell'account.");
 }
 
 void ServicesDialog::addAccountOk(QString id) {
@@ -81,7 +108,7 @@ void ServicesDialog::on_ListServizi_currentItemChanged(QListWidgetItem* current,
         //QString info = QString::fromUtf8(iterator_serv->second.getDescription().c_str(),iterator_serv->second.getDescription().length());
         QString info = iterator_serv.value().getDescription();
 
-        QString link("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\"><html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">p, li { white-space: pre-wrap; }</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\"> <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"http://www.jacksms.it/servizio-sms/" + nomeServizio + ".html\"><img src=\":/resource/external-link-ltr-icon.png\" /><span style=\" font-size:14pt; text-decoration: none; color:#000000;\">" + nomeServizio + "</span></a></p></body></html>");
+        QString link("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\"><html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">p, li { white-space: pre-wrap; }</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\"> <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"http://www.freesmee.com/servizio-sms/" + nomeServizio + ".html\"><img src=\":/resource/external-link-ltr-icon.png\" /><span style=\" font-size:14pt; text-decoration: none; color:#000000;\">" + nomeServizio + "</span></a></p></body></html>");
         info = info.replace("\\n", "\n");
         m_ui->DescrizioneServizio->setText(info);
         m_ui->labelNomeServizio->setText(link);
@@ -140,7 +167,7 @@ void ServicesDialog::on_Salva_clicked()
     }
 
     if (!save) {
-        QMessageBox::information(this,"JackSMS","Esiste un'altro servizio con questo nome.\nModificalo e risalva il servizio.");
+        QMessageBox::information(this, "Freesmee", "Esiste un'altro servizio con questo nome.\nModificalo e risalva il servizio.");
     } else {
 
         newAcc.setName(accountName);
@@ -149,7 +176,7 @@ void ServicesDialog::on_Salva_clicked()
             QString key =dynamic_cast<QLabel*>(m_ui->serviceDataForms->itemAt(i, QFormLayout::LabelRole)->widget())->text();
             QString value =dynamic_cast<QLineEdit*>(m_ui->serviceDataForms->itemAt(i, QFormLayout::FieldRole)->widget())->text();
             if (value.toStdString().empty()){
-                QMessageBox::information(this,"JackSMS","Il campo "+key+" e' vuoto");
+                QMessageBox::information(this, "Freesmee", "Il campo "+key+" e' vuoto");
                 return;
             }
             newAcc.setData(key,value);

@@ -1,26 +1,56 @@
-# -------------------------------------------------
-# Project created by QtCreator 2009-08-29T15:12:48
-# -------------------------------------------------
-TARGET = QtJackSMS
+# -------------------
+# Freesmee Project QT
+# -------------------
+
+#    Copyright (C) <2011>
+#
+#    <enrico bacis> <enrico.bacis@gmail.com>
+#    <ivan vaccari> <grisson@jacksms.it>
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    You can't modify the adv system, to cheat it.
+#    This License extends all the files in the project (exclude the ones
+#    with theri own license), even to the .ui form files.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+QT += network
+QT += webkit
+
+TARGET = Freesmee
 TEMPLATE = app
 INCLUDEPATH += "./include"
+
 macx { 
     SOURCES += MacOSspecific.cpp
     LIBS += /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation
-    LIBS += -L"./lib/osx"
+    LIBS += -L$$PWD/lib/osx
     ICON = JackIcon.icns
-    TARGET = JackSMS
 }
+
 win32 { 
     LIBS += -L$$PWD/lib/win32
     RC_FILE = icon.rc
 }
+
 CONFIG(debug, debug|release):LIBS += -lticppd
 CONFIG(release, debug|release):LIBS += -lticpp
-QT += network
+
 DEFINES += TIXML_USE_TICPP
 
 # DEFINES += PORTABLE
+
 SOURCES += main.cpp \
     mainjacksms.cpp \
     captchadialog.cpp \
@@ -95,7 +125,11 @@ SOURCES += main.cpp \
     smslist.cpp \
     destinatariline.cpp \
     importgmaildialog.cpp \
-    recipientcompleter.cpp
+    recipientcompleter.cpp \
+    aboutdialog.cpp \
+    libjacksms/streamer.cpp \
+    libjacksms/json/json.cpp
+
 HEADERS += mainjacksms.h \
     Types.h \
     captchadialog.h \
@@ -186,7 +220,11 @@ HEADERS += mainjacksms.h \
     smslist.h \
     destinatariline.h \
     importgmaildialog.h \
-    recipientcompleter.h
+    recipientcompleter.h \
+    aboutdialog.h \
+    libjacksms/streamer.h \
+    libjacksms/json/json.h
+
 FORMS += mainjacksms.ui \
     captchadialog.ui \
     servicesdialog.ui \
@@ -199,5 +237,7 @@ FORMS += mainjacksms.ui \
     editaccountdialog.ui \
     cambiaaccount.ui \
     multiplecheckdialog.ui \
-    importgmaildialog.ui
+    importgmaildialog.ui \
+    aboutdialog.ui
+
 RESOURCES += resources.qrc

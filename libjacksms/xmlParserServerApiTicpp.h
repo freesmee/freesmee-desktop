@@ -1,12 +1,15 @@
-
-
 /*
-    Copyright (C) <2009>  <ivan vaccari> <grisson@jacksms.it>
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,21 +21,20 @@
 
 */
 
+#ifndef XMLPARSERSERVERAPITICPP_HH_GUARD
+#define XMLPARSERSERVERAPITICPP_HH_GUARD 1
+
 #include "DataTypes.h"
 #include "xmlParserServerApi.h"
 #include "ticpp.h"
 #include "ticpprc.h"
 
-#ifndef XMLPARSERSERVERAPITICPP_HH_GUARD
-#define XMLPARSERSERVERAPITICPP_HH_GUARD 1
-
-
-
-
-namespace libJackSMS{
-
-    namespace xmlParserApi{
-        class xmlParserServerApiTicpp: public xmlParserServerApiGeneric{
+namespace libJackSMS
+{
+    namespace xmlParserApi
+    {
+        class xmlParserServerApiTicpp : public xmlParserServerApiGeneric
+        {
             private:
                 ticpp::Document xmlResponse;
                 bool alreadyUsed;
@@ -62,9 +64,11 @@ namespace libJackSMS{
                 bool checkDeleteAccount();
                 bool parseConversation(libJackSMS::dataTypes::logSmsType & _logSms,libJackSMS::dataTypes::logImType & _logIm);
                 bool parseServices(libJackSMS::dataTypes::servicesType &_servizi);
+                QString getAdvUrl();
                 QString getVersion();
         };
 
     }
 }
+
 #endif //XMLPARSERSERVERAPITICPP_HH_GUARD

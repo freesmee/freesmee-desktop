@@ -1,10 +1,15 @@
 /*
-    Copyright (C) <2009>  <ivan vaccari> <grisson@jacksms.it>
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -28,10 +33,6 @@
 #include <QDir>
 #include <QMetaType>
 #include "libraryconfig.h"
-
-
-
-
 
 namespace libJackSMS{
 
@@ -113,21 +114,25 @@ namespace libJackSMS{
         }
 
         /***************************************************************/
-        optionLoader::optionLoader(QString _userDir):
-                xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_userDir)){
+
+        optionLoader::optionLoader(QString _userDir) :
+                xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_userDir))
+        {
             qRegisterMetaType<libJackSMS::dataTypes::optionsType>("libJackSMS::dataTypes::optionsType");
         }
-        void optionLoader::load() {
+
+        void optionLoader::load()
+        {
             start();
         }
 
-        void optionLoader::run() {
-
-            try {
-
+        void optionLoader::run()
+        {
+            try
+            {
                 libJackSMS::dataTypes::optionsType s;
-                if (xmlDocument->loadOptions(s, true)) {
-
+                if (xmlDocument->loadOptions(s, true))
+                {
                     for (libJackSMS::dataTypes::optionsType::iterator i = s.begin(); i != s.end(); ++i) {
 
                         if (i.key().indexOf("password") != -1) {
@@ -139,26 +144,30 @@ namespace libJackSMS{
 
             } catch (libJackSMS::exceptionXmlError e) {
                emit criticalError(e.what());
-
             } catch (libJackSMS::exceptionXmlNotFound e) {
-
             } catch (...) {
                 emit criticalError("Errore nel thread optionLoader");
             }
-
         }
 
         /***************************************************************/
         /***************************************************************/
+
         serviceLoader::serviceLoader():
-                xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp("")){
+                xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(""))
+        {
             qRegisterMetaType<libJackSMS::dataTypes::servicesType>("libJackSMS::dataTypes::servicesType");
         }
-        void serviceLoader::load(){
+
+        void serviceLoader::load()
+        {
             start();
         }
-        void serviceLoader::run(){
-            try{
+
+        void serviceLoader::run()
+        {
+            try
+            {
                libJackSMS::dataTypes::servicesType s;
                if (xmlDocument->loadServices(s))
                        emit endLoad(s);
@@ -167,31 +176,35 @@ namespace libJackSMS{
             }catch (...){
                 emit criticalError("Error too critical: section 1");
             }
-
         }
+
         /***************************************************************/
+
         xmlLoader::xmlLoader(const QString & _currentUserDirectory):
             xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_currentUserDirectory)),
-            currentUserDirectory(_currentUserDirectory){
-
+            currentUserDirectory(_currentUserDirectory)
+        {
         }
 
         /*bool xmlLoader::loadPhoneBook(libJackSMS::dataTypes::phoneBookType & _rubrica){
             return xmlDocument->loadPhoneBook(_rubrica);
         }*/
 
-        void xmlLoader::loadServices(){
+        void xmlLoader::loadServices()
+        {
             lo = new serviceLoader;
             connect(lo,SIGNAL(endLoad(libJackSMS::dataTypes::servicesType)),this,SIGNAL(servicesLoaded(libJackSMS::dataTypes::servicesType)));
             connect(lo,SIGNAL(criticalError(QString)),this,SIGNAL(criticalError(QString)));
             lo->load();
         }
 
-        bool xmlLoader::loadAccounts(libJackSMS::dataTypes::configuredServicesType & _serviziConfigurati){
+        bool xmlLoader::loadAccounts(libJackSMS::dataTypes::configuredServicesType & _serviziConfigurati)
+        {
             return xmlDocument->loadAccounts(_serviziConfigurati);
         }
 
-        void xmlLoader::loadOptions(){
+        void xmlLoader::loadOptions()
+        {
             l=new optionLoader(currentUserDirectory);
             connect(l,SIGNAL(endLoad(libJackSMS::dataTypes::optionsType)),this,SIGNAL(optionsLoaded(libJackSMS::dataTypes::optionsType)));
             connect(l,SIGNAL(criticalError(QString)),this,SIGNAL(criticalError(QString)));
@@ -413,7 +426,7 @@ namespace libJackSMS{
                             error="cannot create "+path+" file";
                             return false;
                         }else{
-                            file.write(hardcodedServicesFile());
+                            file.write(emptyServicesFile());
                         }
                         file.close();
 
@@ -429,7 +442,7 @@ namespace libJackSMS{
                         error="cannot create "+path+" file";
                         return false;
                     }else{
-                        file.write(hardcodedServicesFile());
+                        file.write(emptyServicesFile());
                     }
                     file.close();
                     return true;
@@ -474,7 +487,7 @@ namespace libJackSMS{
                         error="cannot create "+path+" file";
                         return false;
                     }else{
-                        file.write(hardcodedServicesFile());
+                        file.write(emptyServicesFile());
                     }
                     file.close();
 

@@ -1,10 +1,15 @@
 /*
-    Copyright (C) <2009>  <ivan vaccari> <grisson@jacksms.it>
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,21 +21,22 @@
 
 */
 
+#ifndef NETCLIENT_HH_GUARD
+#define NETCLIENT_HH_GUARD 1
 
 #include <QString>
 #include <QUrl>
 
-#ifndef NETCLIENT_HH_GUARD
-#define NETCLIENT_HH_GUARD 1
-
-
-namespace libJackSMS{
-
-    namespace netClient{
-        class abortedException : public std::exception{
+namespace libJackSMS
+{
+    namespace netClient
+    {
+        class abortedException : public std::exception
+        {
         };
-        class netClientGeneric{
 
+        class netClientGeneric
+        {
             public:
                 // Costruttore default. Insizializza il wrapper come un client socket se il parametro e' false
                 netClientGeneric(){}
@@ -55,8 +61,8 @@ namespace libJackSMS{
                 virtual bool getAborted()=0;
                 virtual void clearCookies()=0;
                 virtual bool hasError()=0;
-
         };
     }
 }
+
 #endif //NETCLIENT_HH_GUARD

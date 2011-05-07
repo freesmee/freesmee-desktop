@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>815</width>
+    <width>1046</width>
     <height>477</height>
    </rect>
   </property>
@@ -236,7 +236,7 @@ QFrame#frame_old{
                   </item>
                  </layout>
                 </item>
-                <item row="12" column="1">
+                <item row="13" column="1">
                  <spacer name="verticalSpacer">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
@@ -265,34 +265,6 @@ QFrame#frame_old{
                   </property>
                  </spacer>
                 </item>
-                <item row="10" column="1">
-                 <widget class="QPushButton" name="buttonNoAccount">
-                  <property name="text">
-                   <string>Non ho un account JackSMS</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="resources.qrc">
-                    <normaloff>:/resource/freccia.png</normaloff>:/resource/freccia.png</iconset>
-                  </property>
-                  <property name="flat">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="11" column="1">
-                 <widget class="QPushButton" name="buttonLostPassword">
-                  <property name="text">
-                   <string>Dimenticato la password?</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="resources.qrc">
-                    <normaloff>:/resource/freccia.png</normaloff>:/resource/freccia.png</iconset>
-                  </property>
-                  <property name="flat">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
                 <item row="1" column="1">
                  <widget class="QLabel" name="label_10">
                   <property name="text">
@@ -319,6 +291,173 @@ QFrame#frame_old{
                    <bool>true</bool>
                   </property>
                  </widget>
+                </item>
+                <item row="13" column="2">
+                 <layout class="QHBoxLayout" name="horizontalLayout_26">
+                  <item>
+                   <spacer name="horizontalSpacer_16">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>5</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="loginSSLIcon">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>16</horstretch>
+                      <verstretch>16</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>16</width>
+                      <height>16</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16</width>
+                      <height>16</height>
+                     </size>
+                    </property>
+                    <property name="toolTip">
+                     <string>SSL in attivazione</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="pixmap">
+                     <pixmap resource="resources.qrc">:/resource/Lock-Grey.png</pixmap>
+                    </property>
+                    <property name="scaledContents">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_17">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>5</width>
+                      <height>5</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item row="10" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_30">
+                  <item>
+                   <spacer name="horizontalSpacer_18">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="buttonNoAccount">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Non ho un account Freesmee</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="resources.qrc">
+                      <normaloff>:/resource/freccia.png</normaloff>:/resource/freccia.png</iconset>
+                    </property>
+                    <property name="flat">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_19">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item row="11" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_31">
+                  <item>
+                   <spacer name="horizontalSpacer_20">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="buttonLostPassword">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Dimenticato la password?</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="resources.qrc">
+                      <normaloff>:/resource/freccia.png</normaloff>:/resource/freccia.png</iconset>
+                    </property>
+                    <property name="flat">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_21">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </item>
@@ -500,7 +639,7 @@ QFrame#frame_3_old{
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>0</number>
           </property>
           <property name="iconSize">
            <size>
@@ -568,7 +707,7 @@ QFrame#frame_3_old{
                        <widget class="QComboBox" name="comboServizio">
                         <property name="minimumSize">
                          <size>
-                          <width>170</width>
+                          <width>180</width>
                           <height>24</height>
                          </size>
                         </property>
@@ -626,6 +765,12 @@ QFrame#frame_3_old{
                           <height>1</height>
                          </size>
                         </property>
+                        <property name="autoFillBackground">
+                         <bool>false</bool>
+                        </property>
+                        <property name="styleSheet">
+                         <string notr="true">background: transparent;</string>
+                        </property>
                         <property name="frameShape">
                          <enum>QFrame::NoFrame</enum>
                         </property>
@@ -677,7 +822,35 @@ QFrame#frame_3_old{
                          </widget>
                         </item>
                         <item>
+                         <spacer name="horizontalSpacer_15">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeType">
+                           <enum>QSizePolicy::Fixed</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>2</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                        <item>
                          <widget class="QPushButton" name="buttonAddContacts">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                            <horstretch>24</horstretch>
+                            <verstretch>24</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="minimumSize">
+                           <size>
+                            <width>24</width>
+                            <height>24</height>
+                           </size>
+                          </property>
                           <property name="maximumSize">
                            <size>
                             <width>24</width>
@@ -749,6 +922,87 @@ QFrame#frame_3_old{
                      </widget>
                     </item>
                    </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_10">
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <spacer name="spacerAdvButton">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>10</width>
+                        <height>0</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="closeADVButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>8</pointsize>
+                       </font>
+                      </property>
+                      <property name="cursor">
+                       <cursorShape>PointingHandCursor</cursorShape>
+                      </property>
+                      <property name="focusPolicy">
+                       <enum>Qt::NoFocus</enum>
+                      </property>
+                      <property name="text">
+                       <string>Chiudi Pubblicità</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="resources.qrc">
+                        <normaloff>:/resource/dele.gif</normaloff>:/resource/dele.gif</iconset>
+                      </property>
+                      <property name="iconSize">
+                       <size>
+                        <width>10</width>
+                        <height>10</height>
+                       </size>
+                      </property>
+                      <property name="flat">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <widget class="QWebView" name="webADV">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="acceptDrops">
+                     <bool>false</bool>
+                    </property>
+                    <property name="url">
+                     <url>
+                      <string>about:blank</string>
+                     </url>
+                    </property>
+                   </widget>
                   </item>
                   <item>
                    <widget class="SmsTextEdit" name="TestoSMS">
@@ -955,6 +1209,22 @@ QFrame#frame_3_old{
                    </widget>
                   </item>
                   <item>
+                   <spacer name="horizontalSpacer_7">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>10</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
                    <widget class="QPushButton" name="RicercaVeloceButton">
                     <property name="enabled">
                      <bool>false</bool>
@@ -1000,16 +1270,25 @@ QFrame#frame_3_old{
                 <item>
                  <widget class="QListWidget" name="RubricaVeloce">
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
                     <horstretch>5</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
-                  <property name="maximumSize">
+                  <property name="minimumSize">
                    <size>
                     <width>200</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>260</width>
                     <height>16777215</height>
                    </size>
+                  </property>
+                  <property name="focusPolicy">
+                   <enum>Qt::ClickFocus</enum>
                   </property>
                   <property name="iconSize">
                    <size>
@@ -1180,15 +1459,33 @@ QFrame#frame_3_old{
                 <item>
                  <widget class="ListNames" name="listSmsNames">
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>200</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
-                    <width>170</width>
+                    <width>220</width>
                     <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="sizeIncrement">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="baseSize">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
                    </size>
                   </property>
                   <property name="styleSheet">
@@ -1611,7 +1908,7 @@ ListNames::item:selected:active {
              <normaloff>:/resource/jacksms_icona_servizi_24x24-1.png</normaloff>:/resource/jacksms_icona_servizi_24x24-1.png</iconset>
            </attribute>
            <attribute name="title">
-            <string>Servizi</string>
+            <string>Servizi SMS</string>
            </attribute>
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <item>
@@ -1868,7 +2165,7 @@ ListNames::item:selected:active {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>815</width>
+     <width>1046</width>
      <height>21</height>
     </rect>
    </property>
@@ -1942,6 +2239,7 @@ ListNames::item:selected:active {
      <string>Info</string>
     </property>
     <addaction name="actionInfo_su_JackSMS"/>
+    <addaction name="actionVai_al_Sito"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuStrumenti"/>
@@ -1971,25 +2269,7 @@ ListNames::item:selected:active {
      <normaloff>:/resource/jacksms_logo_normal.png</normaloff>:/resource/jacksms_logo_normal.png</iconset>
    </property>
    <property name="text">
-    <string>Info su JackSMS</string>
-   </property>
-  </action>
-  <action name="actionCrea_backup_configurazione">
-   <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/resource/exportbackup.png</normaloff>:/resource/exportbackup.png</iconset>
-   </property>
-   <property name="text">
-    <string>Crea backup configurazione</string>
-   </property>
-  </action>
-  <action name="actionImporta_Backup">
-   <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/resource/importbackup.png</normaloff>:/resource/importbackup.png</iconset>
-   </property>
-   <property name="text">
-    <string>Importa Backup</string>
+    <string>Informazioni</string>
    </property>
   </action>
   <action name="actionLogout">
@@ -1999,11 +2279,6 @@ ListNames::item:selected:active {
    </property>
    <property name="text">
     <string>Logout</string>
-   </property>
-  </action>
-  <action name="actionCronologia_conversazioni_su_MyJackSMS">
-   <property name="text">
-    <string>Cronologia conversazioni su MyJackSMS</string>
    </property>
   </action>
   <action name="actionTutti_i_messaggi">
@@ -2084,7 +2359,7 @@ ListNames::item:selected:active {
      <normaloff>:/resource/jacksms_icona_impostazioni_24x24-7.png</normaloff>:/resource/jacksms_icona_impostazioni_24x24-7.png</iconset>
    </property>
    <property name="text">
-    <string>Apri cartella JackSMS</string>
+    <string>Apri cartella Freesmee</string>
    </property>
   </action>
   <action name="actionApri_Log">
@@ -2096,9 +2371,23 @@ ListNames::item:selected:active {
     <string>Apri log ultimo invio</string>
    </property>
   </action>
+  <action name="actionVai_al_Sito">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/resource/6.png</normaloff>:/resource/6.png</iconset>
+   </property>
+   <property name="text">
+    <string>Vai al Sito</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
+  <customwidget>
+   <class>QWebView</class>
+   <extends>QWidget</extends>
+   <header>QtWebKit/QWebView</header>
+  </customwidget>
   <customwidget>
    <class>ListNames</class>
    <extends>QListWidget</extends>
@@ -2132,15 +2421,14 @@ ListNames::item:selected:active {
   <tabstop>ricordaPassword</tabstop>
   <tabstop>autoLogin</tabstop>
   <tabstop>loginButton</tabstop>
-  <tabstop>buttonNoAccount</tabstop>
-  <tabstop>buttonLostPassword</tabstop>
   <tabstop>recipientListWidget</tabstop>
   <tabstop>recipientLine</tabstop>
   <tabstop>TestoSMS</tabstop>
+  <tabstop>comboServizio</tabstop>
   <tabstop>InviaSMS</tabstop>
   <tabstop>AnnullaSMS</tabstop>
-  <tabstop>comboServizio</tabstop>
   <tabstop>buttonAddContacts</tabstop>
+  <tabstop>RicercaVeloce</tabstop>
   <tabstop>buttonStatusJms</tabstop>
   <tabstop>listSmsNames</tabstop>
   <tabstop>smsListWidget</tabstop>
@@ -2154,6 +2442,7 @@ ListNames::item:selected:active {
   <tabstop>RubricaAggiungi</tabstop>
   <tabstop>RubricaModifica</tabstop>
   <tabstop>RubricaElimina</tabstop>
+  <tabstop>SalvaNumeroButton</tabstop>
   <tabstop>TextRapidRubrica</tabstop>
   <tabstop>RicercaButton</tabstop>
   <tabstop>listServiziConfigurati</tabstop>
@@ -2162,9 +2451,10 @@ ListNames::item:selected:active {
   <tabstop>EliminaServizioButton</tabstop>
   <tabstop>TextRapidServizi</tabstop>
   <tabstop>ServiziCercaButton</tabstop>
-  <tabstop>RubricaVeloce</tabstop>
-  <tabstop>RicercaVeloce</tabstop>
   <tabstop>RicercaVeloceButton</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>menuInstruments</tabstop>
+  <tabstop>RubricaVeloce</tabstop>
  </tabstops>
  <resources>
   <include location="resources.qrc"/>

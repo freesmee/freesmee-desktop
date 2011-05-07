@@ -1,10 +1,15 @@
 /*
-    Copyright (C) <2009>  <ivan vaccari> <grisson@jacksms.it>
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,102 +21,93 @@
 
 */
 
-
-
 #ifndef CONTACT_HH
 #define CONTACT_HH 1
+
 #include "PhoneNumber.h"
 #include <QString>
 
-
-namespace libJackSMS{
-
-    namespace dataTypes{
-
+namespace libJackSMS
+{
+    namespace dataTypes
+    {
         /**
          * Definisce un contatto
          */
+        class contact
+        {
+        private:
+            QString nome;
+            phoneNumber telefono;
+            QString gruppo;
+            QString account;
+            QString id;
+            bool canReceiveJms;
 
-        class contact{
-            private:
-                QString nome;
-                phoneNumber telefono;
-                QString gruppo;
-                QString account;
-                QString id;
-                bool canReceiveJms;
-                phoneNumber virtuale;
+        public:
+            contact();
+            contact(const QString &_nome, const phoneNumber &_telefono, const QString &_gruppo, const QString &_account);
 
-            public:
-                contact();
-                contact(const QString & _nome,const phoneNumber & _telefono,const QString & _gruppo, const QString & _account);
-
-                /**
+            /**
                  * Preleva il nome corrente del contatto
                  * \return Il nome del contatto
                  */
-                QString getName()const;
+            QString getName() const;
 
-                /**
+            /**
                  * Preleva il gruppo del contatto
                  * \return Il gruppo del contatto
                  */
-                QString getGroup()const;
+            QString getGroup() const;
 
-                /**
+            /**
                  * Preleva l'account di default associato al contatto
                  * \return l'id dell'account
                  */
-                QString getAccount()const;
+            QString getAccount() const;
 
-                /**
+            /**
                  * Preleva il numero telefonico del contatto
                  * \return il numero telefonico
                  */
-                phoneNumber getPhone()const;
+            phoneNumber getPhone() const;
 
-                /**
+            /**
                  * Imposta l'id per il contatto
                  * \param _id l'id del contatto
                  */
+            void setId(const QString &_id);
 
-                void setId(const QString & _id);
-
-                /**
+            /**
                  * Imposta l'id per il contatto
                  * \param _id l'id del contatto
                  */
-                void setName(const QString & _name);
-                /**
+            void setName(const QString &_name);
+
+            /**
                  * Preleva l'id del contatto
                  * \return l'id del contatto
                  */
-                QString getId()const;
+            QString getId() const;
 
-                void setCanReceiveJms(bool can);
-                /**
+            void setCanReceiveJms(bool can);
+
+            /**
                  * Preleva l'id del contatto
                  * \return l'id del contatto
                  */
-                bool getCanReceiveJms()const;
+            bool getCanReceiveJms() const;
 
-                void setVirtualNumber(QString strVirtual);
-                /**
-                  * Preleva il numumero virtuale del contatto
-                  * \return il numero virtuale del contatto
-                  */
-                phoneNumber getVirtualNumber()const;
-
-
-                /**
+            /**
                  * Imposta l'account per il contatto
                  * \param _account l'account del contatto
                  */
-                void setAccount(QString _account);
+            void setAccount(QString _account);
 
         };
 
     }
 
 }
+
 #endif //CONTACT_HH

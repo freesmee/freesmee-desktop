@@ -1,11 +1,15 @@
 /*
+    Copyright (C) <2011>
 
-    Copyright (C) <2009>  <ivan vaccari> <grisson@jacksms.it>
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,13 +18,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-
-
-
-
-
 
 */
 
@@ -39,7 +36,8 @@ namespace libJackSMS {
         {
         }
 
-        bool phoneNumber::parse(QString _phoneNum) {
+        bool phoneNumber::parse(QString _phoneNum)
+        {
             QRegExp regExp;
 
             regExp.setPattern(QString("^\\+([0-9]{1,4})\\.([0-9]{1,4})\\.([0-9]{6,8})$"));
@@ -127,57 +125,71 @@ namespace libJackSMS {
             return valid;
         }
 
-        QString phoneNumber::getIntCode() const {
+        QString phoneNumber::getIntCode() const
+        {
             return intcode;
         }
 
-        QString phoneNumber::getIntNum() const {
+        QString phoneNumber::getIntNum() const
+        {
             return pref+num;
         }
 
-        QString phoneNumber::getNum() const {
+        QString phoneNumber::getNum() const
+        {
             return num;
         }
 
-        QString phoneNumber::getIntPref()const {
+        QString phoneNumber::getIntPref() const
+        {
             return intpref;
         }
 
-        QString phoneNumber::getPref() const {
+        QString phoneNumber::getPref() const
+        {
             return pref;
         }
 
-        QString phoneNumber::toString() const {
+        QString phoneNumber::toString() const
+        {
             if (specialNumber)
                 return (valid) ? num : QString("");
             else
                 return (valid) ? intpref + QString(".") + pref + QString(".") + num:QString("");
         }
 
-        void phoneNumber::setAltName(const QString &_name) {
+        void phoneNumber::setAltName(const QString &_name)
+        {
             alternativeName = _name;
         }
 
-        QString phoneNumber::getAltName() const {
+        QString phoneNumber::getAltName() const
+        {
             return alternativeName;
         }
 
-        void phoneNumber::setIsValid(bool v) {
+        void phoneNumber::setIsValid(bool v)
+        {
             valid = v;
         }
 
-        bool phoneNumber::getIsValid() const {
+        bool phoneNumber::getIsValid() const
+        {
             return valid;
         }
 
-        void phoneNumber::setVirtual(bool v) {
+        void phoneNumber::setVirtual(bool v)
+        {
             virtualNumber = v;
         }
-        bool phoneNumber::getVirtual() const {
+
+        bool phoneNumber::getVirtual() const
+        {
             return virtualNumber;
         }
 
-        bool phoneNumber::operator==(const phoneNumber &_other) {
+        bool phoneNumber::operator==(const phoneNumber &_other)
+        {
             if (intcode != _other.intcode) return false;
             if ( intpref != _other.intpref) return false;
             if ( num != _other.num) return false;
@@ -187,6 +199,7 @@ namespace libJackSMS {
             if ( valid != _other.valid) return false;
             if ( specialNumber != _other.specialNumber) return false;
             if ( virtualNumber != _other.virtualNumber) return false;
+
             return true;
         }
     }

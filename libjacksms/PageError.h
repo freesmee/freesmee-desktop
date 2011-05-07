@@ -1,10 +1,15 @@
 /*
-    Copyright (C) <2009>  <ivan vaccari> <grisson@jacksms.it>
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,21 +21,22 @@
 
 */
 
-
 #ifndef PAGEERROR_HH
 #define PAGEERROR_HH 1
+
 #include <QString>
 
-namespace libJackSMS{
-
-    namespace dataTypes{
-
-
-        class pageError{
+namespace libJackSMS
+{
+    namespace dataTypes
+    {
+        class pageError
+        {
             private:
                 QString ec;
                 QString es;
                 QString em;
+
             public:
                 pageError();
                 pageError(const QString &_code,const QString &_string,const QString &_message);
@@ -42,4 +48,5 @@ namespace libJackSMS{
     }
 
 }
+
 #endif //PAGEERROR_HH

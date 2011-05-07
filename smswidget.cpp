@@ -1,3 +1,26 @@
+/*
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
 #include "smswidget.h"
 #include <QPalette>
 #include <QLabel>
@@ -20,21 +43,19 @@ SmsWidget::SmsWidget(QString _txt, QPixmap _ico, bool received, QDateTime time ,
     labelGroup->setMaximumSize(10000,18);
 
     labelIco = new QLabel();
-    if (!service.isEmpty())
-        service = service + " - ";
-    labelService = new QLabel(service);
-    labelService->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    labelService->setMaximumSize(10000, 18);
-
-    labelIcoReceived = new QLabel();
-    labelIcoReceived->setMaximumSize(16, 16);
-    labelIcoReceived->setMinimumSize(16, 16);
-    createBubble(_letto, received);
-
     labelIco->setPixmap(_ico);
     labelIco->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     labelIco->setMaximumSize(16, 16);
     labelIco->setMinimumSize(16, 16);
+    labelIco->setScaledContents(true);
+    if (!service.isEmpty())
+        labelIco->setToolTip(service);
+
+    labelIcoReceived = new QLabel();
+    labelIcoReceived->setMaximumSize(16, 16);
+    labelIcoReceived->setMinimumSize(16, 16);
+    labelIcoReceived->setScaledContents(true);
+    createBubble(_letto, received);
 
     labelTime = new QLabel(time.toString("dd/MM/yyyy hh:mm:ss"));
 
@@ -65,9 +86,8 @@ SmsWidget::SmsWidget(QString _txt, QPixmap _ico, bool received, QDateTime time ,
 
     hLayout->addWidget(labelIcoReceived);
     hLayout->addWidget(labelGroup);
-    hLayout->addWidget(labelIco);
-    hLayout->addWidget(labelService);
     hLayout->addWidget(labelTime);
+    hLayout->addWidget(labelIco);
     vLayout->addLayout(hLayout);
     vLayout->addWidget(labelTxt);
 
@@ -94,23 +114,20 @@ SmsWidget::SmsWidget(QMyMessage _sms, QPixmap _ico, bool received) :
     labelGroup->setMaximumSize(10000, 18);
 
     labelIco = new QLabel();
-    QString service = _sms.getAccountName();
-    if (!service.isEmpty())
-        service = service + " - ";
-
-    labelService = new QLabel(service);
-    labelService->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    labelService->setMaximumSize(10000, 18);
-
-    labelIcoReceived = new QLabel();
-    labelIcoReceived->setMaximumSize(16, 16);
-    labelIcoReceived->setMinimumSize(16, 16);
-    createBubble(_sms.getReaded(), received);
-
     labelIco->setPixmap(_ico);
     labelIco->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     labelIco->setMaximumSize(16, 16);
     labelIco->setMinimumSize(16, 16);
+    labelIco->setScaledContents(true);
+    QString service = _sms.getAccountName();
+    if(!service.isEmpty())
+        labelIco->setToolTip(service);
+
+    labelIcoReceived = new QLabel();
+    labelIcoReceived->setMaximumSize(16, 16);
+    labelIcoReceived->setMinimumSize(16, 16);
+    labelIcoReceived->setScaledContents(true);
+    createBubble(_sms.getReaded(), received);
 
     labelTime = new QLabel(msg.getData().toString("dd/MM/yyyy hh:mm:ss"));
     labelTime->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
@@ -142,9 +159,8 @@ SmsWidget::SmsWidget(QMyMessage _sms, QPixmap _ico, bool received) :
 
     hLayout->addWidget(labelIcoReceived);
     hLayout->addWidget(labelGroup);
-    hLayout->addWidget(labelIco);
-    hLayout->addWidget(labelService);
     hLayout->addWidget(labelTime);
+    hLayout->addWidget(labelIco);
     vLayout->addLayout(hLayout);
     vLayout->addWidget(labelTxt);
 
@@ -174,12 +190,12 @@ SmsWidget::SmsWidget(QString _txt) :
                   "font: bold 14px;"
                   "min-width: 10em;"
                   "padding: 6px;"
-                  "margin-left: 0px;"
+                  "margin-left: 5px;"
                   "margin-top: 10px;"
-                  "margin-right: 0px;"
-                  "margin-bottom: 0px;"
+                  "margin-right: 5px;"
+                  "margin-bottom: 5px;"
                   "}");
-    setContentsMargins(0, 10, 0, 0);
+    setContentsMargins(5, 10, 5, 5);
     setCursor(Qt::PointingHandCursor);
     vLayout = new QVBoxLayout;
     vLayout->addWidget(labelTxt);
@@ -188,8 +204,8 @@ SmsWidget::SmsWidget(QString _txt) :
     adjustSize();
 }
 
-QSize SmsWidget::getSize(){
-
+QSize SmsWidget::getSize()
+{
     //TODO: sistemare!
     /*
     //size-by size a tentativi
@@ -209,7 +225,8 @@ QSize SmsWidget::getSize(){
     return size();
 }
 
-QString SmsWidget::parseLinks(QString _s) {
+QString SmsWidget::parseLinks(QString _s)
+{
     QRegExp r;
     r.setPattern("^(.*)(http|https|ftp|ftps)\\:\\/\\/([^ ]+)(.*)$");
     if (r.exactMatch(_s))
@@ -218,7 +235,8 @@ QString SmsWidget::parseLinks(QString _s) {
         return _s;
 }
 
-QString SmsWidget::parseAts(QString _s) {
+QString SmsWidget::parseAts(QString _s)
+{
     QRegExp r;
     r.setPattern("^(.*)@([^ .:]+)([: ])(.*)$");
     if (r.exactMatch(_s))
@@ -227,7 +245,8 @@ QString SmsWidget::parseAts(QString _s) {
         return _s;
 }
 
-QString SmsWidget::parseQuotes(QString _s) {
+QString SmsWidget::parseQuotes(QString _s)
+{
     QRegExp r;
     r.setPattern("^(.*)&lt;&lt;(.*)&gt;&gt;(.*)$");
     if (r.exactMatch(_s))
@@ -236,24 +255,33 @@ QString SmsWidget::parseQuotes(QString _s) {
         return _s;
 }
 
-QString SmsWidget::getId() const{
+QString SmsWidget::getId() const
+{
     return id;
 }
-bool SmsWidget::isReceived() const{
+
+bool SmsWidget::isReceived() const
+{
     return type;
 }
-bool SmsWidget::isReaded()const{
+
+bool SmsWidget::isReaded()const
+{
     return readed;
 }
-void SmsWidget::openUrl(QString _url){
+
+void SmsWidget::openUrl(QString _url)
+{
     QDesktopServices::openUrl(QUrl(_url, QUrl::TolerantMode));
 }
 
-libJackSMS::dataTypes::phoneNumber SmsWidget::getPhoneNum() const{
+libJackSMS::dataTypes::phoneNumber SmsWidget::getPhoneNum() const
+{
     return number;
 }
 
-void SmsWidget::setReaded(bool _r){
+void SmsWidget::setReaded(bool _r)
+{
     readed = _r;
     createBubble(_r, type);
 }
@@ -272,16 +300,19 @@ bool SmsWidget::searchMatch(QString _txt)
 
 }
 
-QString SmsWidget::getText()const{
+QString SmsWidget::getText() const
+{
     return originalText;
 }
 
-void SmsWidget::resizeEvent ( QResizeEvent * s ){
+void SmsWidget::resizeEvent(QResizeEvent * s)
+{
 }
 
-void::SmsWidget::createBubble(bool isread, bool isreceived){
-
-    if (!isread){
+void::SmsWidget::createBubble(bool isread, bool isreceived)
+{
+    if (!isread)
+    {
         setStyleSheet("SmsWidget{"
                       "background-color: #FFCC00;"
                       "border-style: outset;"
@@ -291,19 +322,20 @@ void::SmsWidget::createBubble(bool isread, bool isreceived){
                       "font: bold 14px;"
                       "min-width: 10em;"
                       "padding: 6px;"
-                      "margin-left: 0px;"
-                      "margin-top: 1px;"
-                      "margin-right: 60px;"
-                      "margin-bottom: 1px;"
+                      "margin-left: 7px;"
+                      "margin-top: 7px;"
+                      "margin-right: 100px;"
+                      "margin-bottom: 7px;"
                       "}");
-        setContentsMargins(0, 1, 60, 1);
+        setContentsMargins(7, 7, 100, 7);
         labelIcoReceived->setPixmap(QPixmap(":/resource/go-down-notify.png"));
         setCursor(Qt::PointingHandCursor);
 
     } else {
 
         setCursor(Qt::ArrowCursor);
-        if (isreceived){
+        if (isreceived)
+        {
             setStyleSheet("SmsWidget{"
                           "background-color: #FEF2BF;"
                           "border-style: outset;"
@@ -313,12 +345,12 @@ void::SmsWidget::createBubble(bool isread, bool isreceived){
                           "font: bold 14px;"
                           "min-width: 10em;"
                           "padding: 6px;"
-                          "margin-left: 0px;"
-                          "margin-top: 1px;"
-                          "margin-right: 60px;"
-                          "margin-bottom: 1px;"
+                          "margin-left: 7px;"
+                          "margin-top: 7px;"
+                          "margin-right: 100px;"
+                          "margin-bottom: 7px;"
                           "}");
-            setContentsMargins(0, 1, 60, 1);
+            setContentsMargins(7, 7, 100, 7);
             labelIcoReceived->setPixmap(QPixmap(":/resource/go-down.png"));
 
         } else {
@@ -332,40 +364,48 @@ void::SmsWidget::createBubble(bool isread, bool isreceived){
                           "font: bold 14px;"
                           "min-width: 10em;"
                           "padding: 6px;"
-                          "margin-left: 60px;"
-                          "margin-top: 1px;"
-                          "margin-right: 0px;"
-                          "margin-bottom: 1px;"
+                          "margin-left: 100px;"
+                          "margin-top: 7px;"
+                          "margin-right: 7px;"
+                          "margin-bottom: 7px;"
                           "}");
-            setContentsMargins(60, 1, 0, 1);
+            setContentsMargins(100, 7, 7, 7);
             labelIcoReceived->setPixmap(QPixmap(":/resource/go-up.png"));
         }
     }
+
+    repaint();
 }
 
-void SmsWidget::setNameFilteredHidden(bool _nf){
+void SmsWidget::setNameFilteredHidden(bool _nf)
+{
     nameFiltered = _nf;
 }
 
-bool SmsWidget::isNameFilteredHidden(){
+bool SmsWidget::isNameFilteredHidden()
+{
     return nameFiltered;
 }
 
-QDateTime SmsWidget::getDateTime() const{
+QDateTime SmsWidget::getDateTime() const
+{
     return dateTim;
 }
 
-QString SmsWidget::getName() const{
+QString SmsWidget::getName() const
+{
     return name;
 }
 
-void SmsWidget::setName(QString newname) {
+void SmsWidget::setName(QString newname)
+{
     if (!caricaAltri) {
         name = newname;
         labelGroup->setText(name);
     }
 }
 
-bool SmsWidget::isCaricaAltri() const{
+bool SmsWidget::isCaricaAltri() const
+{
     return caricaAltri;
 }

@@ -1,10 +1,15 @@
 /*
-    Copyright (C) <2009>  <ivan vaccari> <grisson@jacksms.it>
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,18 +21,18 @@
 
 */
 
-
-#include "PhoneNumber.h"
-#include "DateTime.h"
 #ifndef LOGSMSMESSAGE_HH
 #define LOGSMSMESSAGE_HH 1
 
+#include "PhoneNumber.h"
+#include "DateTime.h"
 
-
-namespace libJackSMS{
-
-    namespace dataTypes{
-        class logSmsMessage{
+namespace libJackSMS
+{
+    namespace dataTypes
+    {
+        class logSmsMessage
+        {
             private:
                 phoneNumber destinatario;
                 QString account;
@@ -51,6 +56,6 @@ namespace libJackSMS{
 
         };
     }
-
 }
+
 #endif //LOGSMSMESSAGE_HH

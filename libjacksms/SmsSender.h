@@ -1,10 +1,15 @@
 /*
-    Copyright (C) <2009>  <ivan vaccari> <grisson@jacksms.it>
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,6 +26,10 @@
   \brief Contiene la definizione della classe da utilizzare per inviare un messaggio.
   \ingroup smsSender
  */
+
+#ifndef SMSSENDER_HH
+#define SMSSENDER_HH 1
+
 #include <QThread>
 #include <QString>
 #include <QSemaphore>
@@ -33,19 +42,21 @@
 #include "NetClient.h"
 #include "Logger.h"
 #include <QTimer>
+#include "libjacksms/json/json.h"
+#include "Configuration.h"
 
-#ifndef SMSSENDER_HH
-#define SMSSENDER_HH 1
 
-namespace libJackSMS {
-
-    class smsSender:public QThread {
+namespace libJackSMS
+{
+    class smsSender : public QThread
+    {
         Q_OBJECT
 
         private:
             dataTypes::phoneNumber destinatario;
             dataTypes::shortMessage messaggio;
-            const dataTypes::servicesType & servizi;
+            const QString loginId;
+            const dataTypes::servicesType &servizi;
             dataTypes::configuredAccount account;
             dataTypes::proxySettings ps;
             void run();
@@ -56,16 +67,18 @@ namespace libJackSMS {
             bool SalvaCookies;
             QTimer sleepClockTimer;
             int secondsToGo;
+            bool getAdv;
 
         public:
-            smsSender(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps=dataTypes::proxySettings());
-            void setRecipient(const dataTypes::phoneNumber & _dest);
-            void setMessage(const dataTypes::shortMessage & _message);
+            smsSender(const QString &_loginId, const dataTypes::servicesType &_services, const dataTypes::proxySettings &_ps = dataTypes::proxySettings());
+            void setRecipient(const dataTypes::phoneNumber &_dest);
+            void setMessage(const dataTypes::shortMessage &_message);
             void setAccount(const dataTypes::configuredAccount &_account);
             void send();
             void continueSend(QString captcha_value);
             void abort();
             void setSalvaCookies(bool value);
+            void setGetAdv(bool value);
 
         private slots:
             void slotOperation();
@@ -84,16 +97,19 @@ namespace libJackSMS {
             void success(QString);
             void captcha(QByteArray);
             void sleepBeforeFound(int);
+            void adv(QString);
     };
 
 
-    class smsSenderBase : public QObject {
+    class smsSenderBase : public QObject
+    {
         Q_OBJECT
 
     private:
         dataTypes::phoneNumber destinatario;
         dataTypes::shortMessage messaggio;
         QString messagiofinale;
+        const QString loginId;
         const dataTypes::servicesType &servizi;
         dataTypes::configuredAccount account;
         QString substitute(QString _input, const dataTypes::contentType &_cont);
@@ -108,20 +124,22 @@ namespace libJackSMS {
         bool hasAborted;
         void managePostProcedureSignals(QString resultString, bool resultError, bool resultSend, bool forceDeleteCookies, bool &isPostprocedurePage);
         bool manageErrorBreak(QString resultString, bool resultError, bool resultSend, bool forceDeleteCookies, bool &isPostprocedurePage, bool hasPostprocedurePage, logger &log);
+        bool getAdv;
 
     public:
-        smsSenderBase(const dataTypes::servicesType & _services, const dataTypes::proxySettings &_ps=dataTypes::proxySettings());
+        smsSenderBase(const QString &_loginId, const dataTypes::servicesType &_services, const dataTypes::proxySettings &_ps = dataTypes::proxySettings());
         void setNumberOfFirstPage(int _pn);
-        void setRecipient(const dataTypes::phoneNumber & _dest);
-        void setMessage(const dataTypes::shortMessage & _message);
+        void setRecipient(const dataTypes::phoneNumber &_dest);
+        void setMessage(const dataTypes::shortMessage &_message);
         void setAccount(dataTypes::configuredAccount _account);
-        void send(QString captcha_value="");
+        void send(QString captcha_value = "");
         bool isInterruptedByCaptcha()const;
         int getCaptchaPageIndex()const;
         dataTypes::contentType getContents()const;
         void setContents(dataTypes::contentType contents);
         void setSalvaCookies(bool value);
         void optionalDeleteCookies();
+        void setGetAdv(bool value);
 
     public slots:
         void abort();
@@ -133,6 +151,7 @@ namespace libJackSMS {
         void success(QString);
         void captcha(QByteArray);
         void sleepBeforeFound(int);
+        void adv(QString);
     };
 
 }

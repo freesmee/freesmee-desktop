@@ -1,10 +1,15 @@
 /*
-    Copyright (C) <2011>  <ivan vaccari> <grisson@jacksms.it>
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,11 +20,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
+
 /*!
   \file ServerApi.h
   \brief Contiene le definizioni delle classi che implementano le api lato client per l'interfacciamento al server di jacksms.it
   \ingroup apiInterface
  */
+
+#ifndef SERVERAPI_H
+#define SERVERAPI_H 1
 
 #include <QString>
 #include "xmlParserServerApi.h"
@@ -30,15 +39,12 @@
 #include <QObject>
 #include <QTimer>
 #include <QTcpSocket>
-
 #include <QThread>
-#ifndef SERVERAPI_H
-#define SERVERAPI_H 1
 
-namespace libJackSMS{
-
-    namespace serverApi{
-
+namespace libJackSMS
+{
+    namespace serverApi
+    {
         class loginBase : public QObject
         {
             Q_OBJECT
@@ -525,7 +531,7 @@ namespace libJackSMS{
             void newJMS(libJackSMS::dataTypes::logImType);
             void serviceActive();
             void serviceNotActive(bool err = false, QString errStr = "");
-            void serviceActiving();
+            void serviceActivating();
         };*/
 
         class cyclicMessengerChecker :
@@ -553,58 +559,58 @@ namespace libJackSMS{
             void serviceNotActive();
         };
 
-        class Streamer :
-                public QObject
-        {
-            Q_OBJECT
+//        class Streamer :
+//                public QObject
+//        {
+//            Q_OBJECT
 
-        private:
-            QString username;
-            QString password;
-            QString error;
-            QString  userDir;
-            QTimer pingTimer;
-            QTimer signalCountdown;
-            QTimer pingTimeout;
-            QTimer reconnectTimer;
-            QTimer dataTimeout;
-            QTcpSocket sock;
-            QNetworkProxy proxy;
-            dataTypes::proxySettings ps;
-            libJackSMS::dataTypes::logImType imLog;
-            int id;
-            QByteArray buffer;
-            QString loginString;
-            QStringList idList;
-            enum streamerState{waitConnResponse=1,receivingQueue=2,queueProcessed=3,waitForMessages=4};
-            //waitformessages e' solo un nome mnemonico.. 3 e 4 indicano la stessa cosa.
-            streamerState status;
-            int queueCount;
+//        private:
+//            QString username;
+//            QString password;
+//            QString error;
+//            QString  userDir;
+//            QTimer pingTimer;
+//            QTimer signalCountdown;
+//            QTimer pingTimeout;
+//            QTimer reconnectTimer;
+//            QTimer dataTimeout;
+//            QTcpSocket sock;
+//            QNetworkProxy proxy;
+//            dataTypes::proxySettings ps;
+//            libJackSMS::dataTypes::logImType imLog;
+//            int id;
+//            QByteArray buffer;
+//            QString loginString;
+//            QStringList idList;
+//            enum streamerState{waitConnResponse=1,receivingQueue=2,queueProcessed=3,waitForMessages=4};
+//            //waitformessages e' solo un nome mnemonico.. 3 e 4 indicano la stessa cosa.
+//            streamerState status;
+//            int queueCount;
 
-        public:
-            Streamer(QString _username,QString _password,QString _loginString,dataTypes::proxySettings _ps );
-            ~Streamer();
-            void activateServ();
-            void stop();
+//        public:
+//            Streamer(QString _username,QString _password,QString _loginString,dataTypes::proxySettings _ps );
+//            ~Streamer();
+//            void activateServ();
+//            void stop();
 
-        private slots:
-            void launchSignal();
-            void connectDone();
-            void parseLine();
-            void relaunchDisconnected();
-            void errorDisconnected(QAbstractSocket::SocketError);
-            void state(QAbstractSocket::SocketState e);
-            void ping();
-            void pingTimeoutError();
-            void tryReconnect();
-            void dataReceived();
+//        private slots:
+//            void launchSignal();
+//            void connectDone();
+//            void parseLine();
+//            void relaunchDisconnected();
+//            void errorDisconnected(QAbstractSocket::SocketError);
+//            void state(QAbstractSocket::SocketState e);
+//            void ping();
+//            void pingTimeoutError();
+//            void tryReconnect();
+//            void dataReceived();
 
-        signals:
-            void newJMS(libJackSMS::dataTypes::logImType);
-            void serviceActive();
-            void serviceNotActive(bool err=false,QString errStr="");
-            void serviceActiving();
-        };
+//        signals:
+//            void newJMS(libJackSMS::dataTypes::logImType);
+//            void serviceActive();
+//            void serviceNotActive(bool err = false, QString errStr = "");
+//            void serviceActivating();
+//        };
 
 
         class gmailAddressBookImporter : public QThread
@@ -628,6 +634,25 @@ namespace libJackSMS{
                 void importDone(int numberOfimports);
                 void importError(QString error);
                 void wrongCredentials();
+        };
+
+        class advChecker : public QThread
+        {
+            Q_OBJECT
+
+            private:
+                xmlParserApi::xmlParserServerApiGeneric *xmlDocument;
+                QString loginId;
+                QString messaggio;
+                netClient::netClientGeneric *webClient;
+                dataTypes::proxySettings ps;
+                void run();
+
+            public:
+                advChecker(QString _loginId, QString _messaggio, dataTypes::proxySettings _ps=dataTypes::proxySettings() );
+
+            signals:
+                void adv(QString url);
         };
     }
 }

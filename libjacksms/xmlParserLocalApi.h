@@ -1,11 +1,15 @@
-
 /*
-    Copyright (C) <2009>  <ivan vaccari> <grisson@jacksms.it>
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -17,19 +21,20 @@
 
 */
 
+#ifndef XMLPARSERLOCALAPI_HH_GUARD
+#define XMLPARSERLOCALAPI_HH_GUARD 1
+
 #include "DataTypes.h"
 #include "DataTypesApi.h"
 #include "StringTriplet.h"
 #include <QList>
-#ifndef XMLPARSERLOCALAPI_HH_GUARD
-#define XMLPARSERLOCALAPI_HH_GUARD 1
 
-namespace libJackSMS {
-
-    namespace xmlParserApi {
-
-        class xmlParserLocalApiGeneric {
-
+namespace libJackSMS
+{
+    namespace xmlParserApi
+    {
+        class xmlParserLocalApiGeneric
+        {
             public:
                 xmlParserLocalApiGeneric(const QString&)
                 {
@@ -73,4 +78,5 @@ namespace libJackSMS {
         };
     }
 }
+
 #endif //XMLPARSERLOCALAPI_HH_GUARD
