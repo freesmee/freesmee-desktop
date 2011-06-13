@@ -47,7 +47,7 @@ ServicesDialog::ServicesDialog(QWidget *parent,MainJackSMS * _padre,libJackSMS::
 
     for (libJackSMS::dataTypes::servicesType::const_iterator i = ElencoServizi.begin(); i != ElencoServizi.end(); ++i) {
 
-        if (i.value().getId() == "1")
+        if (i.value().getName() == "Free+" || i.value().getName() == "Freesmee")
             continue;
 
         QListWidgetItem *it = new QListWidgetItem();
