@@ -47,7 +47,7 @@ StatsDialog::StatsDialog(const libJackSMS::dataTypes::optionsType &_opzioni, con
             tempMap.insert(i.value().getName(), i.value());
     }
 
-    // Aggiungo Jacksms Messenger separatamente in modo che sia in cima alla lista
+    // Aggiungo Free+ separatamente in modo che sia in cima alla lista
     libJackSMS::dataTypes::configuredServicesType::const_iterator i = servizi.find("1");
     QHBoxLayout *hLayout = new QHBoxLayout;
     {

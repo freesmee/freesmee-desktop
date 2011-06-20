@@ -127,34 +127,17 @@ void ListNames::refreshOneBottom(MainJackSMS* main, SmsWidget *sms)
         addName(nameToInsert, sms->getPhoneNum(), sms->getText(), sms->getDateTime(), sms->getId(), (sms->isReaded() ? 0 : 1));
 }
 
-bool ListNames::checkNeedRefresh(QString _id, QListWidget* smslist)
+bool ListNames::checkNeedRefresh(QString _id)
 {
-
-    // scorro la listanomi (il primo no perchè è "Tutti i contatti")
-    for(int i = 1; i < count(); i++){
+    // scorro la listanomi (il primo no perchÃ¨ Ã¨ "Tutti i contatti")
+    for (int i = 1; i < count(); i++)
+    {
         NameWidget* namewid = static_cast<NameWidget*>(itemWidget(item(i)));
 
-        // vedo se c'è un namewidget che usa il messaggio eliminato
-        if(namewid->getId() == _id){
-
-            /*
-            // se trovo un namewidget che usava il messaggio cancellato cerco un sostituto per la lista nomi
-            // scorro la lista sms
-            for(int j = 0; j < smslist->count(); j++){
-                SmsWidget* smswid = static_cast<SmsWidget*>(smslist->itemWidget(smslist->item(j)));
-
-                // se il nome legato all'sms è uguale a quello del namewidget cancellato potrei aver trovato un sostituto
-                if(namewid->getName() == smswid->getName()){
-
-                    // controllo che non sia il messaggio che devo cancellare
-                    if(namewid->getId() != smswid->getId()){
-                        return true;
-                    }
-                }
-            }*/
-
+        // vedo se c'Ã¨ un namewidget che usa il messaggio eliminato
+        if(namewid->getId() == _id)
             return true;
-        }
+
     }
     return false;
 }
@@ -201,7 +184,7 @@ void ListNames::itemAdded(SmsWidget* sms, bool unread){
 NameWidget* ListNames::findNameWidget(libJackSMS::dataTypes::phoneNumber numero) {
     NameWidget* result = NULL;
 
-    //parto dal primo perchè lo zeresimo è Tutti i Contatti
+    //parto dal primo perchÃ¨ lo zeresimo Ã¨ Tutti i Contatti
     for (int i = 1; i < count(); ++i) {
         NameWidget* namewid = static_cast<NameWidget*>(itemWidget(item(i)));
         if (namewid->getPhoneNum() == numero) {
@@ -216,7 +199,7 @@ NameWidget* ListNames::findNameWidget(libJackSMS::dataTypes::phoneNumber numero)
 NameWidget* ListNames::findNameWidget(libJackSMS::dataTypes::contact c) {
     NameWidget* result = NULL;
 
-    //parto dal primo perchè lo zeresimo è Tutti i Contatti
+    //parto dal primo perchÃ¨ lo zeresimo Ã¨ Tutti i Contatti
     for (int i = 1; i < count(); ++i) {
         NameWidget* namewid = static_cast<NameWidget*>(itemWidget(item(i)));
         if (namewid->getPhoneNum() == c.getPhone())

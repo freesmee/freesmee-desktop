@@ -1,8 +1,31 @@
+/*
+    Copyright (C) <2011>
+
+    <enrico bacis> <enrico.bacis@gmail.com>
+    <ivan vaccari> <grisson@jacksms.it>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    You can't modify the adv system, to cheat it.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+
 #include "streamer.h"
 #include "Configuration.h"
 #include "json/json.h"
 #include <QSslConfiguration>
-#include "EncodingPercent.h"
 
 namespace libJackSMS
 {
@@ -11,9 +34,9 @@ namespace libJackSMS
         Streamer::Streamer(QString _loginId, dataTypes::proxySettings _ps):
                 loginString(_loginId),
                 ps(_ps),
+                id(0),
                 status(waitConnResponse),
                 queueCount(0),
-                id(0),
                 waitResponseOfSend(false),
                 stopped(false)
         {
@@ -107,7 +130,7 @@ namespace libJackSMS
 
         void Streamer::ping()
         {
-            if (sock.write((QString("GET /ping HTTP/1.1\n\n")).toAscii()) != -1)
+            if (sock.write((QString("GET /ping HTTP/1.1\n\n")).toUtf8()) != -1)
                 pingTimeout.start(100 * 1000);
             else {
                 pingTimer.stop();
@@ -245,7 +268,7 @@ namespace libJackSMS
 
                                 QString idl = idList.join(",");
                                 QString sn = QString("GET /queueAck?id=") + idl + QString(" HTTP/1.1\n\n");
-                                sock.write(sn.toAscii());
+                                sock.write(sn.toUtf8());
 
                             } else if (result["status"].toString() == "1" && result["type"].toString() == "R") {
                                 signalCountdown.stop();
@@ -260,7 +283,7 @@ namespace libJackSMS
                                 QDateTime dt = QDateTime::currentDateTime();
 
                                 QString sn = QString("GET /ack?id=") + ackid + QString(" HTTP/1.1\n\n");
-                                sock.write(sn.toAscii());
+                                sock.write(sn.toUtf8());
 
                                 libJackSMS::dataTypes::phoneNumber num;
                                 num.parse(recipNumber);
@@ -305,7 +328,7 @@ namespace libJackSMS
             try
             {
                 QString sn = QString("GET /stream?token=" + loginString + "&desktop=") + QString(FREESMEE_VERSION) + QString(" HTTP/1.1\n\n");
-                sock.write(sn.toAscii());
+                sock.write(sn.toUtf8());
 
                 pingTimer.start(1000 * 60);
                 //reconnectTimer.stop();

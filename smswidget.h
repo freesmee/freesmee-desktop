@@ -75,7 +75,7 @@ public:
     QString getName()const;
     void setName(QString newname);
     libJackSMS::dataTypes::phoneNumber getPhoneNum()const;
-    void resizeEvent ( QResizeEvent *  );
+    //void resizeEvent (QResizeEvent*);
     QSize getSize();
     void setNameFilteredHidden(bool _nf);
     bool isNameFilteredHidden();

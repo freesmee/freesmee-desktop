@@ -23,13 +23,15 @@
 
 #include "qlabelresult.h"
 
-QLabelResult::QLabelResult(QWidget * parent)
-    :QLabel(parent){
+QLabelResult::QLabelResult(QWidget *parent)
+    :QLabel(parent)
+{
     setText("");
-
 }
 
-void QLabelResult::mousePressEvent ( QMouseEvent * event ){
+void QLabelResult::mousePressEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event);
     emit clicked();
 }
 

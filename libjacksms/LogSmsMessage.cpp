@@ -23,42 +23,69 @@
 
 #include "LogSmsMessage.h"
 
-namespace libJackSMS{
-
-    namespace dataTypes{
-
-
+namespace libJackSMS
+{
+    namespace dataTypes
+    {
             /*********definitions for logSmsMessage****************/
-            logSmsMessage::logSmsMessage(){
+
+            logSmsMessage::logSmsMessage()
+            {
             }
-            logSmsMessage::logSmsMessage(const phoneNumber &_destinatario,const QString &_account,const QString &_idservizio,const dateTime &_data,const QString &_id,const QString &_testo):destinatario(_destinatario),account(_account),idservizio(_idservizio),data(_data),id(_id),testo(_testo){
+
+            logSmsMessage::logSmsMessage(const phoneNumber &_destinatario, const QString &_account, const QString &_idservizio, const dateTime &_data, const QString &_id, const QString &_testo)
+                :destinatario(_destinatario),
+                  account(_account),
+                  idservizio(_idservizio),
+                  data(_data),
+                  id(_id),
+                  testo(_testo)
+            {
             }
-            QString logSmsMessage::getId() const {
+
+            QString logSmsMessage::getId() const
+            {
                 return id;
             }
-            void logSmsMessage::setId(const QString & _id) {
-                id=_id;
+
+            void logSmsMessage::setId(const QString &_id)
+            {
+                id = _id;
             }
-            const phoneNumber & logSmsMessage::getPhoneNumber() const{
+
+            const phoneNumber &logSmsMessage::getPhoneNumber() const
+            {
                 return destinatario;
             }
-            QString logSmsMessage::getAccount() const{
+
+            QString logSmsMessage::getAccount() const
+            {
                 return account;
             }
-            QString logSmsMessage::getServiceId() const{
+
+            QString logSmsMessage::getServiceId() const
+            {
                 return idservizio;
             }
-            QString logSmsMessage::getText() const{
+
+            QString logSmsMessage::getText() const
+            {
                 return testo;
             }
-            dateTime logSmsMessage::getDate() const{
+
+            dateTime logSmsMessage::getDate() const
+            {
                 return data;
             }
-            QString logSmsMessage::getAccountId() const{
+
+            QString logSmsMessage::getAccountId() const
+            {
                 return accountId;
             }
-            void logSmsMessage::setAccountId(QString _id){
-                accountId=_id;
+
+            void logSmsMessage::setAccountId(QString _id)
+            {
+                accountId = _id;
             }
     }
 

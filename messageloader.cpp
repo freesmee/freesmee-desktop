@@ -51,7 +51,7 @@ void messageLoader::run()
         msg.setId(i.value().getId());
         msg.setIsReceived(true);
         msg.setPhone(i.value().getPhoneNumber());
-        msg.setAccountName("JackSMS Messenger");
+        msg.setAccountName("Free+");
         msg.setParsedName(mainjack->phone2name(msg.getPhone()));
 
         messaggi.push_back(msg);

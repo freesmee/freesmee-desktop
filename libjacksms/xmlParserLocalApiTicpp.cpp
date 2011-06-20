@@ -247,15 +247,16 @@ namespace libJackSMS {
 
                     servizio.setName(QString::fromStdString(thisService->GetAttribute("name")));
                     servizio.setVersion(QString::fromStdString(thisService->GetAttribute("v")));
-                    servizio.setEncoding(QString::fromStdString(thisService->GetAttributeOrDefault("output_encoding","auto")));
+                    servizio.setEncoding(QString::fromStdString(thisService->GetAttributeOrDefault("output_encoding", "auto")));
 
                     servizio.setMaxSms(QString::fromStdString(thisService->GetAttribute("maxsms")));
                     servizio.setReset(QString::fromStdString(thisService->GetAttribute("reset")));
                     servizio.setMaxLength(QString::fromStdString(thisService->GetAttribute("maxlen")));
                     servizio.setSingleLength(QString::fromStdString(thisService->GetAttribute("singlelen")));
                     servizio.setSmsDivisor(QString::fromStdString(thisService->GetAttribute("sms_divisor")));
-
+                    servizio.setServiceType(QString::fromStdString(thisService->GetAttributeOrDefault("service_type", "other")));
                     servizio.setIcon(QImage::fromData(utilities::Base64DecodeByte(QString::fromStdString(thisService->GetAttribute("icon")))));
+
                     {
                         ticpp::Node *descriptionNode = child->FirstChild("description");
                         ticpp::Node *infoNode = descriptionNode->FirstChild("info");

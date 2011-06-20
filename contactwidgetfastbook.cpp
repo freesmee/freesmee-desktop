@@ -59,7 +59,14 @@ contactWidgetFastBook::contactWidgetFastBook(const libJackSMS::dataTypes::contac
        labelIconInfo = new QLabel;
 
        nome = new QLabel(_c.getName());
-       nome->setToolTip(numero);
+
+       QString tooltip = QString(numero);
+       QString carrier = _c.getCarrierString();
+
+       if (!carrier.isEmpty())
+           tooltip = tooltip + "  (" + carrier + ")";
+
+       nome->setToolTip(tooltip);
 
        icon = new QLabel;
        icon->setMaximumSize(16, 16);

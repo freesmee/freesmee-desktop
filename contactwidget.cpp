@@ -24,15 +24,18 @@
 #include "contactwidget.h"
 #include <QLabel>
 
-ContactWidget::ContactWidget(QString _id, QString _nome, QString _numero, QPixmap _icoServ, QString _gruppo, QString _accountName) :
+ContactWidget::ContactWidget(QString _id, QString _nome, QString _numero, QString _carrier, QPixmap _icoServ, QString _gruppo, QString _accountName) :
         id(_id),
         nomeContatto(_nome)
 {
+    Q_UNUSED(_gruppo);
+
        hLayout = new QHBoxLayout;
        //vLayout = new QVBoxLayout;
        nome = new QLabel(_nome);
        //nome->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
        numero = new QLabel(_numero);
+       carrier = new QLabel(_carrier.isEmpty() ? "" : "  (" + _carrier + ")");
        icon = new QLabel;
        icon->setMaximumSize(16, 200);
        icon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
@@ -51,6 +54,7 @@ ContactWidget::ContactWidget(QString _id, QString _nome, QString _numero, QPixma
        hLayout->addWidget(icon);
        hLayout->addWidget(nome);
        hLayout->addWidget(numero);
+       hLayout->addWidget(carrier);
        hLayout->addWidget(iconServizio);
        hLayout->addWidget(nomeAccount);
 
@@ -63,14 +67,17 @@ ContactWidget::ContactWidget(QString _id, QString _nome, QString _numero, QPixma
        adjustSize();
 }
 
-QString ContactWidget:: getName() const {
+QString ContactWidget:: getName() const
+{
     return nomeContatto;
 }
 
-QString ContactWidget:: getContactId() const {
+QString ContactWidget:: getContactId() const
+{
     return id;
 }
 
-bool ContactWidget::searchMatch(QString _txt) const {
+bool ContactWidget::searchMatch(QString _txt) const
+{
     return (!(-1 == nome->text().indexOf(_txt, 0, Qt::CaseInsensitive))) || (!(-1 == numero->text().indexOf(_txt, 0, Qt::CaseInsensitive))) || (!(-1 == nomeAccount->text().indexOf(_txt, 0, Qt::CaseInsensitive)));
 }

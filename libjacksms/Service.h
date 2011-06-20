@@ -43,6 +43,7 @@ namespace libJackSMS
             QString nome;
             QString id;
             QString versione;
+            QString service_type;
             QString smsMassimi;
             QString codifica;
             QString lunghezzaMassima;
@@ -76,6 +77,8 @@ namespace libJackSMS
             QString getId() const;
             void setVersion(QString _version);
             QString getVersion() const;
+            void setServiceType(QString _service_type);
+            QString getServiceType() const;
             void setMaxSms(QString _maxSms);
             QString getMaxSms() const;
             void setEncoding(QString _encoding);

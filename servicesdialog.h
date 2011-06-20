@@ -32,12 +32,15 @@
 #include "libjacksms/libJackSMS.h"
 #include <QMovie>
 
-namespace Ui {
+namespace Ui
+{
     class ServicesDialog;
 }
 
-class ServicesDialog : public QDialog {
+class ServicesDialog : public QDialog
+{
     Q_OBJECT
+
 public:
     ServicesDialog(QWidget *parent,MainJackSMS * _padre,libJackSMS::dataTypes::servicesType &_ElencoServizi,libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati,const libJackSMS::dataTypes::optionsType &_opzioni);
     ~ServicesDialog();
@@ -56,12 +59,22 @@ private:
     libJackSMS::serverApi::accountManager *saver;
     libJackSMS::dataTypes::configuredAccount newAcc;
     const libJackSMS::dataTypes::optionsType &opzioni;
-private slots:
 
+private slots:
     void on_Salva_clicked();
-    void on_ListServizi_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void addAccountKo();
     void addAccountOk(QString);
+
+    void on_listServiziFree_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+    void on_listServiziLowCost_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+    void on_listServiziAltri_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+
+    void serviceChanged(QListWidgetItem *item);
+
+    void on_linkButton_clicked();
+
+    void on_tabServiceType_currentChanged(int index);
+
 signals:
     void rewriteAccounts();
 };

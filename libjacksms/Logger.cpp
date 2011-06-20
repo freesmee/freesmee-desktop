@@ -37,7 +37,7 @@ namespace libJackSMS
         QFile fi(filename);
         if (fi.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text))
         {
-            fi.write(_notice.toAscii());
+            fi.write(_notice.toUtf8());
             fi.write("\n");
             fi.close();
         }

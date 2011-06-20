@@ -227,8 +227,8 @@ namespace libJackSMS
                 bool increaseTotalSent();
         };
 
-        class cookieManager {
-
+        class cookieManager
+        {
             private:
                 QString userDir;
 
@@ -237,8 +237,10 @@ namespace libJackSMS
                 bool deleteCookies();
         };
 
-        class userDirectoryManager
+        class userDirectoryManager : public QObject
         {
+            Q_OBJECT
+
             private:
                 xmlParserApi::xmlParserLocalApiGeneric *xmlDocument;
                 QString user;
@@ -255,6 +257,9 @@ namespace libJackSMS
                 QString getUserDir() const;
                 QString getError() const;
                 bool initializeDirectory();
+
+        signals:
+                void firstStart();
         };
 
         class statsManager

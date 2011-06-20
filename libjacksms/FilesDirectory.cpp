@@ -66,7 +66,14 @@ namespace libJackSMS
             #endif
 
             #else
-            return concatDirectoryAndFile(QDir::currentPath(), "configuration/");
+
+            #ifdef WIN32
+            return concatDirectoryAndFile(QDir::currentPath(), "data\\");
+
+            #else
+            return concatDirectoryAndFile(QDir::currentPath(), "data/");
+            #endif
+
             #endif
         }
 

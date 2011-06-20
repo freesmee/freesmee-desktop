@@ -29,7 +29,7 @@
 
 #include "../JackPluginInterfacer.h"
 
-//questa è un'interfaccia da cui ereditare per implementare un plugin captcha
+//questa Ã¨ un'interfaccia da cui ereditare per implementare un plugin captcha
 //e da includere per caricare un plugin di tipo JackCaptchaPluginInterface
 class JackCaptchaPluginInterface : public JackPluginInterface
  {
@@ -42,7 +42,7 @@ class JackCaptchaPluginInterface : public JackPluginInterface
  };
 
 
-//dichiara che questa è un'interfaccia QT
+//dichiara che questa Ã¨ un'interfaccia QT
 Q_DECLARE_INTERFACE(JackCaptchaPluginInterface, "jackSMS.CaptchaPlugins.VodafoneSMS/1.0")
 
 #endif // JACKCAPTCHAPLUGININTERFACER_H

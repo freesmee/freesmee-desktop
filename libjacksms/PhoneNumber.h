@@ -58,11 +58,11 @@ namespace libJackSMS
                  *\b aabb dove
                  *                     \li \c aa indica il prefisso operatore di 3 cifre (es 339)
                  *                     \li \c bb indica il numero telefonico di 7 cifre (es 1234567)
-                 *                     \li In questo caso, al numero sar√  applicato il prefisso internazionale \b +39\n
+                 *                     \li In questo caso, al numero sar√† applicato il prefisso internazionale \b +39\n
                  *
                  * \param _phoneNum la stringa contenente il numero telefonico
                  * \return true = il numero e' valido
-                 * \return false = il numero non Ë valido
+                 * \return false = il numero non √® valido
                  */
 
                 bool parse(QString _phoneNum);

@@ -38,33 +38,33 @@ namespace libJackSMS
 
     QString encodingRemoveAccents::getEncodedAndUrlString(QString _text)
     {
-        QByteArray _t=getEncodedString(_text).toLocal8Bit().toPercentEncoding();
+        QByteArray _t = getEncodedString(_text).toUtf8().toPercentEncoding();
         return QString(_t);
     }
 
     /*the input string _text is supposed to be in utf*/
     QString encodingRemoveAccents::getEncodedString(QString _text)
     {
-        QList<QPair<QString,QString> > symbols;
-        symbols.push_back(qMakePair(QString("Ë"),QString("e")));
-        symbols.push_back(qMakePair(QString("È"),QString("e")));
-        symbols.push_back(qMakePair(QString("‡"),QString("a")));
-        symbols.push_back(qMakePair(QString("˘"),QString("u")));
-        symbols.push_back(qMakePair(QString("Ï"),QString("i")));
-        symbols.push_back(qMakePair(QString("Ú"),QString("o")));
-        symbols.push_back(qMakePair(QString("·"),QString("a")));
-        symbols.push_back(qMakePair(QString("Ì"),QString("i")));
-        symbols.push_back(qMakePair(QString("Û"),QString("o")));
-        symbols.push_back(qMakePair(QString("˙"),QString("u")));
-        symbols.push_back(qMakePair(QString("…"),QString("E")));
-        symbols.push_back(qMakePair(QString("Õ"),QString("I")));
-        symbols.push_back(qMakePair(QString("Œ"),QString("I")));
-        symbols.push_back(qMakePair(QString("Ã"),QString("I")));
-        symbols.push_back(qMakePair(QString("”"),QString("O")));
-        symbols.push_back(qMakePair(QString("⁄"),QString("U")));
-        symbols.push_back(qMakePair(QString("Ÿ"),QString("U")));
-        symbols.push_back(qMakePair(QString("˝"),QString("y")));
-        symbols.push_back(qMakePair(QString("›"),QString("Y")));
+        QList< QPair<QString,QString> > symbols;
+        symbols.push_back(qMakePair(QString("√®"),QString("e")));
+        symbols.push_back(qMakePair(QString("√©"),QString("e")));
+        symbols.push_back(qMakePair(QString("√†"),QString("a")));
+        symbols.push_back(qMakePair(QString("√π"),QString("u")));
+        symbols.push_back(qMakePair(QString("√¨"),QString("i")));
+        symbols.push_back(qMakePair(QString("√≤"),QString("o")));
+        symbols.push_back(qMakePair(QString("√°"),QString("a")));
+        symbols.push_back(qMakePair(QString("√≠"),QString("i")));
+        symbols.push_back(qMakePair(QString("√≥"),QString("o")));
+        symbols.push_back(qMakePair(QString("√∫"),QString("u")));
+        symbols.push_back(qMakePair(QString("√â"),QString("E")));
+        symbols.push_back(qMakePair(QString("√ç"),QString("I")));
+        symbols.push_back(qMakePair(QString("√é"),QString("I")));
+        symbols.push_back(qMakePair(QString("√å"),QString("I")));
+        symbols.push_back(qMakePair(QString("√ì"),QString("O")));
+        symbols.push_back(qMakePair(QString("√ö"),QString("U")));
+        symbols.push_back(qMakePair(QString("√ô"),QString("U")));
+        symbols.push_back(qMakePair(QString("√Ω"),QString("y")));
+        symbols.push_back(qMakePair(QString("√ù"),QString("Y")));
 
         symbols.push_back(qMakePair(QString(QChar(232)),QString("e")));
         symbols.push_back(qMakePair(QString(QChar(233)),QString("e")));

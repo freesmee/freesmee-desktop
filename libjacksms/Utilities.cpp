@@ -31,18 +31,18 @@ namespace libJackSMS {
 
         QString Base64Encode(const QString &toEncode)
         {
-            QByteArray data = toEncode.toAscii();
+            QByteArray data = toEncode.toUtf8();
             return QString(data.toBase64());
         }
 
         QString Base64Decode(const QString &toDecode)
         {
-            return QString(QByteArray::fromBase64(toDecode.toAscii()));
+            return QString(QByteArray::fromBase64(toDecode.toUtf8()));
         }
 
         QByteArray Base64DecodeByte(const QString &toDecode)
         {
-            return QByteArray::fromBase64(toDecode.toAscii());
+            return QByteArray::fromBase64(toDecode.toUtf8());
         }
 
         void deleteDirectory(QString dirPath, bool deleteParent)

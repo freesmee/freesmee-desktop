@@ -29,7 +29,7 @@
 
 #include "../JackPluginInterfacer.h"
 
-//questa è un'interfaccia da cui ereditare per implementare un plugin scriba
+//questa Ã¨ un'interfaccia da cui ereditare per implementare un plugin scriba
 //questo tipo di plugins applica modifiche al testo dell'sms prima dell'invio
 class JackScribaPluginInterface : public JackPluginInterface
  {
@@ -41,7 +41,7 @@ class JackScribaPluginInterface : public JackPluginInterface
  };
 
 
-//dichiara che questa è un'interfaccia QT
+//dichiara che questa Ã¨ un'interfaccia QT
 Q_DECLARE_INTERFACE(JackScribaPluginInterface, "jackSMS.CaptchaPlugins.VodafoneSMS/1.0")
 
 #endif // JACKSCRIBAPLUGININTERFACER_H

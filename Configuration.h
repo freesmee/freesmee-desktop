@@ -33,6 +33,6 @@ QString getMacJackPath();
 QString getJackPluginsPath();
 #endif
 
-#define FREESMEE_VERSION "0.5-b1"
+#define FREESMEE_VERSION "0.6-b1"
 
 #endif // CONFIGURATION_H

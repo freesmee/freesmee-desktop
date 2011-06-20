@@ -49,7 +49,7 @@ struct PluginInfo{
 
 
 
-//questa è un'interfaccia da cui ereditare per implementare un plugin
+//questa Ã¨ un'interfaccia da cui ereditare per implementare un plugin
 //e da includere per caricare un plugin di JackSMS
 class JackPluginInterface : public QObject
 
@@ -65,7 +65,7 @@ class JackPluginInterface : public QObject
  };
 
 
-//dichiara che questa è un'interfaccia QT
+//dichiara che questa Ã¨ un'interfaccia QT
 Q_DECLARE_INTERFACE(JackPluginInterface, "jackSMS.Plugins/1.0")
 
 #endif // JACKPLUGININTERFACER_H

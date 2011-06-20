@@ -128,7 +128,7 @@ namespace libJackSMS
                 QTimer timer;
 
             public:
-                pingator(const QString &_idsessione,dataTypes::proxySettings _ps );
+                pingator(const QString &_idsessione,dataTypes::proxySettings _ps);
                 ~pingator();
                 void setPingInterval(int minutes);
 
@@ -139,7 +139,7 @@ namespace libJackSMS
                 void pinged();
         };
 
-        void synchronizeVariables(dataTypes::configuredServicesType & _serviziConfigurati,const dataTypes::servicesType & _servizi);
+        void synchronizeVariables(dataTypes::configuredServicesType &_serviziConfigurati, const dataTypes::servicesType &_servizi);
 
         /*! \brief riceve i messaggi JMS in coda
           \ingroup serverApi
@@ -233,11 +233,11 @@ namespace libJackSMS
                 libJackSMS::dataTypes::contact contatto;
 
             public:
-                contactManagerAdd(const QString & _loginId,dataTypes::proxySettings _ps );
+                contactManagerAdd(const QString &_loginId,dataTypes::proxySettings _ps );
                 void addNewContact(libJackSMS::dataTypes::contact _contatto);
 
             signals:
-                void contactAdded(QString,bool);
+                void contactAdded(QString, bool, int);
                 void errorAdd();
         };
 
@@ -301,7 +301,7 @@ namespace libJackSMS
                 void contactNotDeleted();
                 void contactUpdated(libJackSMS::dataTypes::contact);
                 void contactNotUpdated();
-                void contactSaved(QString,bool);
+                void contactSaved(QString, bool, int);
                 void contactNotSaved();
         };
 
@@ -460,14 +460,16 @@ namespace libJackSMS
 
             public:
                 updateServicesManagerBase(const QString &_loginId, dataTypes::proxySettings _ps);
-                bool downloadUpdates(libJackSMS::dataTypes::servicesType _servizi);
+                bool downloadUpdates(libJackSMS::dataTypes::servicesType &_servizi);
                 QString getMessage() const;
                 QString getXml() const;
         };
 
 
-        class reloader :public QObject{
+        class reloader :public QObject
+        {
             Q_OBJECT
+
             private:
                 xmlParserApi::xmlParserServerApiGeneric *xmlDocument;
                 QString loginId;
@@ -618,17 +620,15 @@ namespace libJackSMS
             Q_OBJECT
 
             private:
-                xmlParserApi::xmlParserServerApiGeneric *xmlDocument;
                 QString loginId;
-                netClient::netClientGeneric *webClient;
                 dataTypes::proxySettings ps;
-                void run();
                 QString gmailuser;
                 QString gmailpsw;
+                void run();
 
             public:
-                gmailAddressBookImporter(QString _loginId,dataTypes::proxySettings _ps=dataTypes::proxySettings() );
-                void import(QString _user,QString _psw);
+                gmailAddressBookImporter(QString _loginId, dataTypes::proxySettings _ps = dataTypes::proxySettings());
+                void import(QString _user, QString _psw);
 
             signals:
                 void importDone(int numberOfimports);
@@ -641,10 +641,8 @@ namespace libJackSMS
             Q_OBJECT
 
             private:
-                xmlParserApi::xmlParserServerApiGeneric *xmlDocument;
                 QString loginId;
                 QString messaggio;
-                netClient::netClientGeneric *webClient;
                 dataTypes::proxySettings ps;
                 void run();
 

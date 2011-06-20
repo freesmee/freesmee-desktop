@@ -32,17 +32,16 @@
 class ContactWidget : public QWidget
 {
 private:
-
-    QLabel *nome,*numero,*iconServizio,*icon,*gruppo,*nomeAccount;
+    QLabel *nome, *numero, *carrier, *iconServizio, *icon, *gruppo, *nomeAccount;
     QHBoxLayout *hLayout;
     QString id;
     QString nomeContatto;
 
 public:
-    ContactWidget(QString _id,QString _nome,QString _numero,QPixmap _icoServ,QString _gruppo,QString _accountName);
-    QString getName()const;
-    QString getContactId()const;
-    bool searchMatch(QString _txt)const;
+    ContactWidget(QString _id, QString _nome, QString _numero, QString _carrier, QPixmap _icoServ, QString _gruppo, QString _accountName);
+    QString getName() const;
+    QString getContactId() const;
+    bool searchMatch(QString _txt) const;
 };
 
 #endif // CONTACTWIDGET_H

@@ -31,13 +31,13 @@ namespace libJackSMS
 
     QString encodingISO88591::getEncodedString(QString _text)
     {
-        QByteArray _t=_text.toLatin1();
+        QByteArray _t = _text.toLatin1();
         return QString(_t);
     }
 
     QString encodingISO88591::getEncodedAndUrlString(QString _text)
     {
-        QByteArray _t=_text.toLatin1().toPercentEncoding();
+        QByteArray _t = _text.toLatin1().toPercentEncoding();
         return QString(_t);
 
     }

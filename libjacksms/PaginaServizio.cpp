@@ -49,15 +49,18 @@ namespace libJackSMS{
             metodo = _method.toUpper();
         }
 
-        QString paginaServizio::getMethod() const {
+        QString paginaServizio::getMethod() const
+        {
             return metodo;
         }
 
-        void paginaServizio::setIsCaptcha(bool _iscaptcha) {
-            captcha = true;
+        void paginaServizio::setIsCaptcha(bool _iscaptcha)
+        {
+            captcha = _iscaptcha;
         }
 
-        bool paginaServizio::getIsCaptcha() const {
+        bool paginaServizio::getIsCaptcha() const
+        {
             return captcha;
         }
 
@@ -186,7 +189,7 @@ namespace libJackSMS{
             //if (!iter_contents->getToEncode())
             return pageHtml.mid(currentContentPosition.first, currentContentPosition.second - currentContentPosition.first);
             //else
-            //    return QString(pageHtml.mid(currentContentPosition.first,currentContentPosition.second-currentContentPosition.first).toAscii().toPercentEncoding());
+            //    return QString(pageHtml.mid(currentContentPosition.first,currentContentPosition.second-currentContentPosition.first).toUtf8().toPercentEncoding());
         }
 
         /*bool paginaServizio::currentContentToEncode() const {

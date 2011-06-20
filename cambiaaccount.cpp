@@ -39,7 +39,7 @@ cambiaaccount::cambiaaccount(QWidget *parent, MainJackSMS * _padre, const libJac
     m_ui->setupUi(this);
 
     if(found==1)
-        m_ui->label->setText("E' stato trovato un contatto avente il servizio cancellato come account associato. Si può associare automaticamente questo contatto a un altro servizio.");
+        m_ui->label->setText("E' stato trovato un contatto avente il servizio cancellato come account associato. Si puÃ² associare automaticamente questo contatto a un altro servizio.");
     else
         m_ui->label->setText("Sono stati trovati " + QString::number(found) + " contatti aventi il servizio cancellato come account associato. Si possono associare automaticamente questi contatti a un altro servizio.");
 

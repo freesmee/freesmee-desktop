@@ -106,7 +106,7 @@ namespace libJackSMS{
             return true;
         }
         bool SocketClient::writeLine(const QString &_data){
-            if (_data.length()+2==socket->write((_data+QString("\r\n")).toAscii()))
+            if (_data.length()+2==socket->write((_data+QString("\r\n")).toUtf8()))
                 return true;
             else
                 return false;

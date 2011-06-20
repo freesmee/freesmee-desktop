@@ -52,7 +52,7 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType &_opt, libJackSM
     } else {
         m_ui->stackedWidget->setCurrentIndex(0);
 
-        // rimuovo momentaneamente il widget. in versioni superiori verrà reintrodotto
+        // rimuovo momentaneamente il widget. in versioni superiori verrÃ  reintrodotto
         m_ui->listOpzioni->item(3)->~QListWidgetItem();
 
         setCheckboxStatusFromYesNoOption(globopt, m_ui->opzAutoLogin, "auto-login");
@@ -145,7 +145,7 @@ void OpzioniDialog::on_listOpzioni_currentItemChanged(QListWidgetItem* current, 
         m_ui->stackedWidget->setCurrentIndex(0);
     else if (ss.contains("Rete"))
         m_ui->stackedWidget->setCurrentIndex(1);
-    else if (ss.contains("JackSMS Messenger"))
+    else if (ss.contains("Free+"))
         m_ui->stackedWidget->setCurrentIndex(2);
     else if (ss.contains("Aspetto"))
         m_ui->stackedWidget->setCurrentIndex(3);
@@ -199,7 +199,7 @@ void OpzioniDialog::on_applicaButton_clicked() {
 
     if (loggedIn) {
 
-        // se autologin è su si allora dobbiamo anche salvare la password nelle opzioni
+        // se autologin Ã¨ su si allora dobbiamo anche salvare la password nelle opzioni
         if (globopt["auto-login"] == "yes")
             opt["password"] = pass;
 

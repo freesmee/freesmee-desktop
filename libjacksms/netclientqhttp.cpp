@@ -122,7 +122,9 @@ namespace libJackSMS{
 
         netClientQHttp::~netClientQHttp()
         {
-            if (reply != NULL)reply->deleteLater();
+            if (reply != NULL)
+                reply->deleteLater();
+
             if (cookies != NULL)
                 cookies->deleteLater();
 
@@ -143,23 +145,29 @@ namespace libJackSMS{
                 _lastReadedUrlCode = reply->readAll();
                 error = false;
             }else{
-                _lastReadedUrlCode=reply->errorString().toAscii();
+                _lastReadedUrlCode=reply->errorString().toUtf8();
 
                 error=true;
             }
             emit pageDownloaded();
 
         }
-        bool netClientQHttp::setTimeout(int timeout){
+
+        bool netClientQHttp::setTimeout(int timeout)
+        {
             //todo
             return false;
         }
-        void netClientQHttp::IncludeHeaders(){
+
+        void netClientQHttp::IncludeHeaders()
+        {
             //todo
             outputHeaders=true;
 
         }
-        bool netClientQHttp::setCookieFile(const QString &_filename){
+
+        bool netClientQHttp::setCookieFile(const QString &_filename)
+        {
             cookieFilename=_filename;
             if (QFile::exists(_filename)){
                 cookies=new QMyNetworkCookieJar;
@@ -200,7 +208,7 @@ namespace libJackSMS{
 
             }
             if (userAgentSetted && !overwrite)
-                r.setRawHeader("User-Agent",ua.toAscii());
+                r.setRawHeader("User-Agent",ua.toUtf8());
             reply=request.get(r);
 
             loop->exec(QEventLoop::ExcludeUserInputEvents);
@@ -237,7 +245,7 @@ namespace libJackSMS{
 
         }
         bool netClientQHttp::insertFormData(const QString &_field,const QString &_value){
-            //QByteArray v=QByteArray::fromPercentEncoding(_value.toAscii());
+            //QByteArray v=QByteArray::fromPercentEncoding(_value.toUtf8());
             //v=v.toPercentEncoding();
 
             queryStringFields.push_back(QPair<QString,QString>(_field,_value));
@@ -245,7 +253,8 @@ namespace libJackSMS{
             return true;
         }
 
-        QString netClientQHttp::submitPost(const QString &_url, bool _ret){
+        QString netClientQHttp::submitPost(const QString &_url, bool _ret)
+        {
             url = QUrl(QString::fromUtf8(_url.toStdString().c_str(),_url.length()));
             QNetworkRequest r(url);
             QSslConfiguration config = r.sslConfiguration();
@@ -265,9 +274,9 @@ namespace libJackSMS{
 
             }
             if (userAgentSetted && !overwrite)
-                r.setRawHeader("User-Agent",ua.toAscii());
+                r.setRawHeader("User-Agent",ua.toUtf8());
             makeQueryString(false);
-            reply=request.post(r,lastQueryString.toAscii());
+            reply=request.post(r, lastQueryString.toUtf8());
             loop->exec(QEventLoop::ExcludeUserInputEvents);
             errorPage=error;
             if (error){
@@ -294,34 +303,34 @@ namespace libJackSMS{
                 }
 
                 headers.clear();
-                return (!_ret)?"":QString(_lastReadedUrlCode);
+                return (!_ret) ? "" : QString(_lastReadedUrlCode);
             }
             return "";
         }
 
         void netClientQHttp::makeQueryString(bool urlenc)
         {
-            QList<QPair<QString, QString> >::const_iterator i=queryStringFields.begin();
             lastQueryString.clear();
-            for (;i!=queryStringFields.end();++i){
-                if (!lastQueryString.isEmpty()){
+            for (QList< QPair<QString, QString> >::const_iterator i = queryStringFields.begin(); i != queryStringFields.end(); ++i)
+            {
+                if (!lastQueryString.isEmpty())
                     lastQueryString.append("&");
-                }
-                lastQueryString.append(i->first+"=");
-                if (!i->second.isEmpty()){
-                    if (urlenc){
-                        lastQueryString.append(QByteArray::fromPercentEncoding(i->second.toAscii()).toPercentEncoding());
-                    }else{
-                        lastQueryString.append(i->second.toAscii().constData());
-                    }
+
+                lastQueryString.append(i->first + "=");
+                if (!i->second.isEmpty())
+                {
+                    if (urlenc)
+                        lastQueryString.append(QByteArray::fromPercentEncoding(i->second.toUtf8()).toPercentEncoding());
+                    else
+                        lastQueryString.append(i->second.toUtf8().constData());
 
                 }
-
             }
+
             queryStringFields.clear();
         }
 
-        QString netClientQHttp::submitGet(const QString &_url,bool _ret)
+        QString netClientQHttp::submitGet(const QString &_url, bool _ret)
         {
             QUrl _url2=QUrl(QString::fromUtf8(_url.toStdString().c_str(),_url.length()));
             QList<QPair <QString,QString> > fields=_url2.queryItems();
@@ -349,7 +358,7 @@ namespace libJackSMS{
 
             }
             if (userAgentSetted && !overwrite)
-                r.setRawHeader("User-Agent",ua.toAscii());
+                r.setRawHeader("User-Agent",ua.toUtf8());
 
             reply=request.get(r);
             loop->exec(QEventLoop::ExcludeUserInputEvents);
@@ -415,7 +424,7 @@ namespace libJackSMS{
 
         bool netClientQHttp::addHeader(const QString &_name, const QString &_value)
         {
-            headers.push_back(qMakePair(_name.toAscii(), _value.toAscii()));
+            headers.push_back(qMakePair(_name.toUtf8(), _value.toUtf8()));
             return true;
         }
 

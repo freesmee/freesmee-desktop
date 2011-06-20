@@ -305,9 +305,9 @@ QString SmsWidget::getText() const
     return originalText;
 }
 
-void SmsWidget::resizeEvent(QResizeEvent * s)
-{
-}
+//void SmsWidget::resizeEvent(QResizeEvent * s)
+//{
+//}
 
 void::SmsWidget::createBubble(bool isread, bool isreceived)
 {

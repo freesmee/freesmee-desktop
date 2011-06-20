@@ -48,7 +48,7 @@ namespace libJackSMS
             virtual QString getError() = 0;
             virtual bool checkGmailImport(int &) = 0;
             virtual QString gmailError() = 0;
-            virtual bool loadErrors(dataTypesApi::errorsType &_errors) = 0;
+            //virtual bool loadErrors(dataTypesApi::errorsType &_errors) = 0;
             virtual bool loadPhoneBook(libJackSMS::dataTypes::phoneBookType &_rubrica) = 0;
             virtual bool loadPhoneBook2(libJackSMS::dataTypes::phoneBookType &_rubrica) = 0;
             virtual bool loadAccounts(libJackSMS::dataTypes::configuredServicesType &_serviziConfigurati) = 0;
@@ -67,16 +67,16 @@ namespace libJackSMS
 
             /**
                  * Controlla se l'xml di risposta dell'api di aggiunta nuovo contatto online contiene il valore di successo o meno
-                 * \param \b _resId  la variabile dove verr‡ messo l'id del nuovo contatto
+                 * \param \b _resId  la variabile dove verr√† messo l'id del nuovo contatto
                  * \return \b true se il contatto e' stato salvato, false altrimenti
                  */
-            virtual bool checkAddNewContact(QString &_resId, bool &canReceiveJms) = 0;
+            virtual bool checkAddNewContact(QString &_resId, bool &_canReceiveJms, int &_crr) = 0;
 
             /**
                  * Controlla se l'xml di risposta dell'api di aggiornamento contatto online contiene il valore di successo o meno
                  * \return \b true se il contatto e' stato aggiornato, false altrimenti
                  */
-            virtual bool checkUpdateContact() = 0;
+            virtual bool checkUpdateContact(int &_crr) = 0;
 
             /**
                  * Controlla se l'xml di risposta dell'api di eliminazione di un contatto online contiene il valore di successo o meno
@@ -104,11 +104,11 @@ namespace libJackSMS
                  */
             virtual bool checkDeleteAccount() = 0;
 
-            /**
-                 * Parsa l'xml delle api della conversazione e ne estrae i messaggi
-                 * \return true se almeno un messaggio e' presente, false altrimenti
-                 */
-            virtual bool parseConversation(libJackSMS::dataTypes::logSmsType &_logSms, libJackSMS::dataTypes::logImType &_logIm) = 0;
+//            /**
+//                 * Parsa l'xml delle api della conversazione e ne estrae i messaggi
+//                 * \return true se almeno un messaggio e' presente, false altrimenti
+//                 */
+//            virtual bool parseConversation(libJackSMS::dataTypes::logSmsType &_logSms, libJackSMS::dataTypes::logImType &_logIm) = 0;
 
             /**
                  * Parsa l'xml delle api durante l'aggiornamento dei servizi e costruisce un elenco di servizi nuovo.

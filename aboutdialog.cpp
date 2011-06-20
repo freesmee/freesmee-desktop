@@ -29,7 +29,8 @@ AboutDialog::AboutDialog(QWidget *parent) :
     ui(new Ui::AboutDialog)
 {
     ui->setupUi(this);
-    ui->upperText->setText("Freesmee Desktop "+ QString(FREESMEE_VERSION));
+    ui->upperText->setText("Freesmee Desktop " + QString(FREESMEE_VERSION));
+    //connect(ui->testoInfo, SIGNAL(anchorClicked(QUrl)), this, SLOT(openUrl(QUrl)));
 }
 
 AboutDialog::~AboutDialog()
@@ -41,3 +42,8 @@ void AboutDialog::on_closeButton_clicked()
 {
     close();
 }
+
+//void AboutDialog::openUrl(QUrl _url)
+//{
+//    QDesktopServices::openUrl(_url);
+//}

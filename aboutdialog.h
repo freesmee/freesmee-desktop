@@ -26,8 +26,10 @@
 
 #include "Configuration.h"
 #include <QDialog>
+#include <QDesktopServices>
 
-namespace Ui {
+namespace Ui
+{
     class AboutDialog;
 }
 
@@ -41,9 +43,11 @@ public:
 
 private slots:
     void on_closeButton_clicked();
+    //void openUrl(QUrl _url);
 
 private:
     Ui::AboutDialog *ui;
+
 };
 
 #endif // ABOUTDIALOG_H

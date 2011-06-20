@@ -43,35 +43,43 @@ multipleCheckDialog::~multipleCheckDialog()
     delete ui;
 }
 
-void multipleCheckDialog::writeToGui(){
+void multipleCheckDialog::writeToGui()
+{
 
     QMultiMap<QString,contactWidgetFastBook*> fastList;
     QString filter = ui->lineEdit->text();
 
     for (libJackSMS::dataTypes::phoneBookType::const_iterator i = rubrica.begin(); i != rubrica.end(); ++i) {
 
-        //Controllo che non sia già presente nella lista destinatari
-        if (!padre->isInRecipients(i.value().getPhone())) {
-            if (i->getName().contains(filter, Qt::CaseInsensitive)) {
+        //Controllo che non sia giÃ  presente nella lista destinatari
+        if (!padre->isInRecipients(i.value().getPhone()))
+        {
+            if (i->getName().contains(filter, Qt::CaseInsensitive))
+            {
                 QIcon ico;
                 libJackSMS::dataTypes::configuredServicesType::const_iterator x = elencoServiziConfigurati.find(i->getAccount());
-                if (x == elencoServiziConfigurati.end()){
+
+                if (x == elencoServiziConfigurati.end())
+                {
                     ico = QIcon(":/resource/ico_contact.png");
-                }else{
-                    QString serv=x.value().getService();
-                    libJackSMS::dataTypes::servicesType::const_iterator tmp=elencoServizi.find(serv);
-                    ico=tmp->getIcon();
                 }
-                contactWidgetFastBook *ww=new contactWidgetFastBook(i.value(),ico.pixmap(16,16),true);
-                fastList.insert(i->getName().toUpper(),ww);
+                else
+                {
+                    QString serv = x.value().getService();
+                    libJackSMS::dataTypes::servicesType::const_iterator tmp = elencoServizi.find(serv);
+                    ico = tmp->getIcon();
+                }
+
+                contactWidgetFastBook *ww = new contactWidgetFastBook(i.value(), ico.pixmap(16,16), true);
+                fastList.insert(i->getName().toUpper(), ww);
             }
         }
     }
 
-    if (fastList.size()>0){
-        QMultiMap<QString,contactWidgetFastBook*>::ConstIterator xx=fastList.begin();
-        QMultiMap<QString,contactWidgetFastBook*>::ConstIterator xx_end=fastList.end();
-        for(;xx!=xx_end;++xx){
+    if (fastList.size() > 0)
+    {
+        for (QMultiMap<QString,contactWidgetFastBook*>::ConstIterator xx = fastList.begin(); xx != fastList.end(); ++xx)
+        {
            QListWidgetItem *item = new QListWidgetItem;
            item->setSizeHint(xx.value()->size());
            ui->listWidget->addItem(item);

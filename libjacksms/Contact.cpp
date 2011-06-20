@@ -37,7 +37,8 @@ namespace libJackSMS
             telefono(_telefono),
             gruppo(_gruppo),
             account(_account),
-            canReceiveJms(false)
+            canReceiveJms(false),
+            carrier(0)
         {
         }
 
@@ -89,6 +90,34 @@ namespace libJackSMS
         void contact::setAccount(QString _account)
         {
             account = _account;
+        }
+
+        void contact::setCarrier(int _carrier)
+        {
+            carrier = _carrier;
+        }
+
+        int contact::getCarrier() const
+        {
+            return carrier;
+        }
+
+        QString contact::getCarrierString() const
+        {
+            switch (carrier)
+            {
+            case 1:
+                return "Vodafone";
+            case 2:
+                return "Tim";
+            case 3:
+                return "Tre";
+            case 4:
+                return "Wind";
+
+            default:
+                return "";
+            }
         }
 
     }

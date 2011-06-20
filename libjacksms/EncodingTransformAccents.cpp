@@ -39,31 +39,33 @@ namespace libJackSMS
 
     QString encodingTransformAccents::getEncodedAndUrlString(QString _text)
     {
-        QByteArray _t=getEncodedString(_text).toLocal8Bit().toPercentEncoding();
+        QByteArray _t = getEncodedString(_text).toUtf8().toPercentEncoding();
         return QString(_t);
     }
 
-    QString encodingTransformAccents::getEncodedString(QString _text){
-        QList<QPair<QString,QString> > symbols;
-        symbols.push_back(qMakePair(QString("è"),QString("e'")));
-        symbols.push_back(qMakePair(QString("é"),QString("e'")));
-        symbols.push_back(qMakePair(QString("à"),QString("a'")));
-        symbols.push_back(qMakePair(QString("ù"),QString("u'")));
-        symbols.push_back(qMakePair(QString("ì"),QString("i'")));
-        symbols.push_back(qMakePair(QString("ò"),QString("o'")));
-        symbols.push_back(qMakePair(QString("á"),QString("a'")));
-        symbols.push_back(qMakePair(QString("í"),QString("i'")));
-        symbols.push_back(qMakePair(QString("ó"),QString("o'")));
-        symbols.push_back(qMakePair(QString("ú"),QString("u'")));
-        symbols.push_back(qMakePair(QString("É"),QString("E'")));
-        symbols.push_back(qMakePair(QString("Í"),QString("I'")));
-        symbols.push_back(qMakePair(QString("Î"),QString("I'")));
-        symbols.push_back(qMakePair(QString("Ì"),QString("I'")));
-        symbols.push_back(qMakePair(QString("Ó"),QString("O'")));
-        symbols.push_back(qMakePair(QString("Ú"),QString("U'")));
-        symbols.push_back(qMakePair(QString("Ù"),QString("U'")));
-        symbols.push_back(qMakePair(QString("ý"),QString("y'")));
-        symbols.push_back(qMakePair(QString("Ý"),QString("Y'")));
+    QString encodingTransformAccents::getEncodedString(QString _text)
+    {
+        QList< QPair<QString,QString> > symbols;
+
+        symbols.push_back(qMakePair(QString("Ã¨"),QString("e'")));
+        symbols.push_back(qMakePair(QString("Ã©"),QString("e'")));
+        symbols.push_back(qMakePair(QString("Ã "),QString("a'")));
+        symbols.push_back(qMakePair(QString("Ã¹"),QString("u'")));
+        symbols.push_back(qMakePair(QString("Ã¬"),QString("i'")));
+        symbols.push_back(qMakePair(QString("Ã²"),QString("o'")));
+        symbols.push_back(qMakePair(QString("Ã¡"),QString("a'")));
+        symbols.push_back(qMakePair(QString("Ã­"),QString("i'")));
+        symbols.push_back(qMakePair(QString("Ã³"),QString("o'")));
+        symbols.push_back(qMakePair(QString("Ãº"),QString("u'")));
+        symbols.push_back(qMakePair(QString("Ã‰"),QString("E'")));
+        symbols.push_back(qMakePair(QString("Ã"),QString("I'")));
+        symbols.push_back(qMakePair(QString("ÃŽ"),QString("I'")));
+        symbols.push_back(qMakePair(QString("ÃŒ"),QString("I'")));
+        symbols.push_back(qMakePair(QString("Ã“"),QString("O'")));
+        symbols.push_back(qMakePair(QString("Ãš"),QString("U'")));
+        symbols.push_back(qMakePair(QString("Ã™"),QString("U'")));
+        symbols.push_back(qMakePair(QString("Ã½"),QString("y'")));
+        symbols.push_back(qMakePair(QString("Ã"),QString("Y'")));
 
         symbols.push_back(qMakePair(QString(QChar(232)),QString("e'")));
         symbols.push_back(qMakePair(QString(QChar(233)),QString("e'")));
@@ -80,6 +82,7 @@ namespace libJackSMS
         {
             _text.replace(i->first, i->second);
         }
+
         return _text;
     }
 }

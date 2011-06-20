@@ -36,19 +36,21 @@ macx {
     SOURCES += MacOSspecific.cpp
     LIBS += /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation
     LIBS += -L$$PWD/lib/osx
-    ICON = JackIcon.icns
+    ICON = Freesmee.icns
 }
 
 win32 { 
     LIBS += -L$$PWD/lib/win32
-    RC_FILE = icon.rc
+    RC_FILE = Freesmee.rc
 }
 
-CONFIG(debug, debug|release):LIBS += -lticppd
-CONFIG(release, debug|release):LIBS += -lticpp
+#CONFIG(debug, debug|release):LIBS += -lticppd
+#CONFIG(release, debug|release):LIBS += -lticpp
+LIBS += -lticpp
 
 DEFINES += TIXML_USE_TICPP
 
+# Togliere il commento per creare una versione Portable
 # DEFINES += PORTABLE
 
 SOURCES += main.cpp \
@@ -105,7 +107,6 @@ SOURCES += main.cpp \
     libjacksms/LanguageManager.cpp \
     qlabelresult.cpp \
     libjacksms/netclientqhttp.cpp \
-    libjacksms/EncodingPercent.cpp \
     libjacksms/SocketClient.cpp \
     messageloader.cpp \
     plugins/JackPluginHostInterfacer.cpp \
@@ -200,7 +201,6 @@ HEADERS += mainjacksms.h \
     plugins/scriba/JackScribaPluginInterfacer.h \
     qlabelresult.h \
     libjacksms/netclientqhttp.h \
-    libjacksms/EncodingPercent.h \
     libjacksms/SocketClient.h \
     messageloader.h \
     plugins/JackPluginHostInterfacer.h \
@@ -241,3 +241,7 @@ FORMS += mainjacksms.ui \
     aboutdialog.ui
 
 RESOURCES += resources.qrc
+
+OTHER_FILES += \
+    Freesmee.icns \
+    Freesmee.rc

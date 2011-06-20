@@ -34,83 +34,115 @@
 #include <QMetaType>
 #include "libraryconfig.h"
 
-namespace libJackSMS{
-
-    namespace localApi{
-
-        smsLogSaver::smsLogSaver(const QString & _currentUserDirectory):
-            xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_currentUserDirectory)){
-
+namespace libJackSMS
+{
+    namespace localApi
+    {
+        smsLogSaver::smsLogSaver(const QString &_currentUserDirectory):
+            xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_currentUserDirectory))
+        {
         }
-        void smsLogSaver::setMessage(const dataTypes::logSmsMessage &_msg){
-            msg=_msg;
+
+        void smsLogSaver::setMessage(const dataTypes::logSmsMessage &_msg)
+        {
+            msg = _msg;
         }
-        bool smsLogSaver::appendToLogFile(){
+
+        bool smsLogSaver::appendToLogFile()
+        {
             return xmlDocument->appendSmsToLogfile(msg);
         }
-        QString smsLogSaver::getSavedId() const{
+
+        QString smsLogSaver::getSavedId() const
+        {
             return msg.getId();
         }
-        bool smsLogSaver::saveAllToFile(const dataTypes::logSmsType &_smsContainer){
+
+        bool smsLogSaver::saveAllToFile(const dataTypes::logSmsType &_smsContainer)
+        {
             return xmlDocument->saveAllSmsToLogFile(_smsContainer);
-
         }
 
-        imLogSaver::imLogSaver(const QString & _currentUserDirectory):
-            xmlDocument(new xmlParserApi::xmlParserLocalApiTicpp(_currentUserDirectory)){
+        imLogSaver::imLogSaver(const QString &_currentUserDirectory):
+            xmlDocument(new xmlParserApi::xmlParserLocalApiTicpp(_currentUserDirectory))
+        {
         }
-        void imLogSaver::setMessage(const dataTypes::logImMessage &_msg){
-            msg=_msg;
+
+        void imLogSaver::setMessage(const dataTypes::logImMessage &_msg)
+        {
+            msg = _msg;
         }
-        bool imLogSaver::appendToLogFile(){
+
+        bool imLogSaver::appendToLogFile()
+        {
             return xmlDocument->appendImToLogfile(msg);
         }
-        QString imLogSaver::getSavedId() const{
+
+        QString imLogSaver::getSavedId() const
+        {
             return msg.getId();
         }
-        bool imLogSaver::saveAllToFile(const dataTypes::logImType &_smsContainer){
+
+        bool imLogSaver::saveAllToFile(const dataTypes::logImType &_smsContainer)
+        {
             return xmlDocument->saveAllImToLogFile(_smsContainer);
         }
-        bool smsLogSaver::deleteSms(const QString  &_id){
+
+        bool smsLogSaver::deleteSms(const QString &_id)
+        {
             QList<QString> _idList;
             _idList.push_back(_id);
             return xmlDocument->deleteSmsMessage(_idList);
         }
-        bool smsLogSaver::deleteSms(const  QList<QString>  &_idList){
+
+        bool smsLogSaver::deleteSms(const  QList<QString> &_idList)
+        {
             return xmlDocument->deleteSmsMessage(_idList);
         }
-        bool imLogSaver::deleteIm(const QString  &_id){
+
+        bool imLogSaver::deleteIm(const QString &_id)
+        {
             QList<QString> _idList;
             _idList.push_back(_id);
             return xmlDocument->deleteImMessage(_idList);
         }
-        bool imLogSaver::deleteIm(const  QList<QString>  &_idList){
+
+        bool imLogSaver::deleteIm(const QList<QString> &_idList)
+        {
             return xmlDocument->deleteImMessage(_idList);
         }
 
         /****************************************************************/
-        bool synchronousOptionLoader::load(libJackSMS::dataTypes::optionsType & dest){
 
-            try{
+        bool synchronousOptionLoader::load(libJackSMS::dataTypes::optionsType &dest)
+        {
+            try
+            {
                 libJackSMS::dataTypes::optionsType s;
-                if (xmlDocument->loadOptions(s,true)){
-                    libJackSMS::dataTypes::optionsType::iterator i=s.begin();
-                    libJackSMS::dataTypes::optionsType::iterator i_end=s.end();
-                    for(;i!=i_end;++i){
 
-                        if (i.key().indexOf("password")!=-1){
+                if (xmlDocument->loadOptions(s,true))
+                {
+                    for (libJackSMS::dataTypes::optionsType::iterator i = s.begin(); i != s.end(); ++i)
+                    {
+                        if (i.key().indexOf("password") != -1)
+                        {
                             i.value()=Encrypter::Encrypter::decrypt(i.value());
                         }
                     }
                 }
-                dest=s;
-            }catch (...){
+
+                dest = s;
+
+            } catch (...) {
                 return false;
             }
+
             return true;
         }
+
         synchronousOptionLoader::synchronousOptionLoader(QString _userDir):
-                xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_userDir)){
+                xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_userDir))
+        {
         }
 
         /***************************************************************/
@@ -154,7 +186,7 @@ namespace libJackSMS{
         /***************************************************************/
 
         serviceLoader::serviceLoader():
-                xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(""))
+            xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(""))
         {
             qRegisterMetaType<libJackSMS::dataTypes::servicesType>("libJackSMS::dataTypes::servicesType");
         }
@@ -168,12 +200,12 @@ namespace libJackSMS{
         {
             try
             {
-               libJackSMS::dataTypes::servicesType s;
-               if (xmlDocument->loadServices(s))
-                       emit endLoad(s);
-            }catch (libJackSMS::exceptionXmlError e){
-               emit criticalError(e.what());
-            }catch (...){
+                libJackSMS::dataTypes::servicesType s;
+                if (xmlDocument->loadServices(s))
+                    emit endLoad(s);
+            } catch (libJackSMS::exceptionXmlError e) {
+                emit criticalError(e.what());
+            } catch (...) {
                 emit criticalError("Error too critical: section 1");
             }
         }
@@ -186,36 +218,39 @@ namespace libJackSMS{
         {
         }
 
-        /*bool xmlLoader::loadPhoneBook(libJackSMS::dataTypes::phoneBookType & _rubrica){
-            return xmlDocument->loadPhoneBook(_rubrica);
-        }*/
+        //        bool xmlLoader::loadPhoneBook(libJackSMS::dataTypes::phoneBookType & _rubrica)
+        //        {
+        //            return xmlDocument->loadPhoneBook(_rubrica);
+        //        }
 
         void xmlLoader::loadServices()
         {
             lo = new serviceLoader;
-            connect(lo,SIGNAL(endLoad(libJackSMS::dataTypes::servicesType)),this,SIGNAL(servicesLoaded(libJackSMS::dataTypes::servicesType)));
-            connect(lo,SIGNAL(criticalError(QString)),this,SIGNAL(criticalError(QString)));
+            connect(lo, SIGNAL(endLoad(libJackSMS::dataTypes::servicesType)), this, SIGNAL(servicesLoaded(libJackSMS::dataTypes::servicesType)));
+            connect(lo, SIGNAL(criticalError(QString)), this, SIGNAL(criticalError(QString)));
             lo->load();
         }
 
-        bool xmlLoader::loadAccounts(libJackSMS::dataTypes::configuredServicesType & _serviziConfigurati)
+        bool xmlLoader::loadAccounts(libJackSMS::dataTypes::configuredServicesType &_serviziConfigurati)
         {
             return xmlDocument->loadAccounts(_serviziConfigurati);
         }
 
         void xmlLoader::loadOptions()
         {
-            l=new optionLoader(currentUserDirectory);
-            connect(l,SIGNAL(endLoad(libJackSMS::dataTypes::optionsType)),this,SIGNAL(optionsLoaded(libJackSMS::dataTypes::optionsType)));
-            connect(l,SIGNAL(criticalError(QString)),this,SIGNAL(criticalError(QString)));
+            l = new optionLoader(currentUserDirectory);
+            connect(l, SIGNAL(endLoad(libJackSMS::dataTypes::optionsType)), this, SIGNAL(optionsLoaded(libJackSMS::dataTypes::optionsType)));
+            connect(l, SIGNAL(criticalError(QString)), this, SIGNAL(criticalError(QString)));
             l->load();
         }
 
-        bool xmlLoader::loadSmsLog(libJackSMS::dataTypes::logSmsType & _logSms){
+        bool xmlLoader::loadSmsLog(libJackSMS::dataTypes::logSmsType &_logSms)
+        {
             return xmlDocument->loadSmsLog(_logSms);
         }
 
-        bool xmlLoader::loadImLog(libJackSMS::dataTypes::logImType & _logIm){
+        bool xmlLoader::loadImLog(libJackSMS::dataTypes::logImType &_logIm)
+        {
             return xmlDocument->loadImLog(_logIm);
         }
 
@@ -236,53 +271,65 @@ namespace libJackSMS{
         }*/
 
         userFinder::userFinder() :
-                xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp("")), indexUser(0)
+            xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp("")), indexUser(0)
         {
         }
 
-        bool userFinder::findUsers() {
+        bool userFinder::findUsers()
+        {
             bool res = xmlDocument->loadUsers(utenti);
-            for(QList<dataTypes::stringTriplet>::iterator i = utenti.begin(); i != utenti.end(); ++i) {
+            for(QList<dataTypes::stringTriplet>::iterator i = utenti.begin(); i != utenti.end(); ++i)
+            {
                 i->setSecond(Encrypter::Encrypter::decrypt(i->getSecond()));
             }
+
             return res;
         }
 
-        bool userFinder::nextUser(){
-            QList<dataTypes::stringTriplet>::const_iterator i_end=utenti.end();
-            if (indexUser==0){
-                iterUser=utenti.begin();
-            }else{
+        bool userFinder::nextUser()
+        {
+            QList<dataTypes::stringTriplet>::const_iterator i_end = utenti.end();
+
+            if (indexUser == 0)
+                iterUser = utenti.begin();
+            else
                 ++iterUser;
-            }
+
             ++indexUser;
-            if (iterUser==i_end){
+
+            if (iterUser == i_end)
+            {
                 return false;
-                indexUser=0;
-            }else
+                indexUser = 0;
+            } else {
                 return true;
+            }
         }
 
-        QString userFinder::currentUsername() {
-
+        QString userFinder::currentUsername()
+        {
             return iterUser->getFirst();
-
         }
 
-        QString userFinder::getPassword(const QString &_username) const {
-            for (QList<dataTypes::stringTriplet>::const_iterator i = utenti.begin(); i != utenti.end(); ++i) {
+        QString userFinder::getPassword(const QString &_username) const
+        {
+            for (QList<dataTypes::stringTriplet>::const_iterator i = utenti.begin(); i != utenti.end(); ++i)
+            {
                 if (i->getFirst() == _username)
-                        return i->getSecond();
+                    return i->getSecond();
             }
-            return "";
 
+            return "";
         }
 
-        QString userFinder::getDataDirectory(const QString &_username) const {
-            for (QList<dataTypes::stringTriplet>::const_iterator i = utenti.begin(); i != utenti.end(); ++i) {
-                    if (i->getFirst() == _username)
-                        return i->getThird();
+        QString userFinder::getDataDirectory(const QString &_username) const
+        {
+            for (QList<dataTypes::stringTriplet>::const_iterator i = utenti.begin(); i != utenti.end(); ++i)
+            {
+                if (i->getFirst() == _username)
+                    return i->getThird();
             }
+
             return "";
         }
 
@@ -304,50 +351,58 @@ namespace libJackSMS{
 
         optionManager::optionManager(const QString & _currentUserDirectory,dataTypes::optionsType &_opzioni) :
             xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_currentUserDirectory)),
-            opzioni(_opzioni) {
+            opzioni(_opzioni)
+        {
         }
 
-        bool optionManager::save() {
-            for (libJackSMS::dataTypes::optionsType::iterator i = opzioni.begin(); i != opzioni.end(); ++i) {
-                if (i.key().indexOf("password") != -1) {
+        bool optionManager::save()
+        {
+            for (libJackSMS::dataTypes::optionsType::iterator i = opzioni.begin(); i != opzioni.end(); ++i)
+            {
+                if (i.key().indexOf("password") != -1)
                     i.value() = Encrypter::Encrypter::encrypt(i.value());
-                }
             }
 
             bool r = xmlDocument->saveOptions(opzioni);
 
-            for(libJackSMS::dataTypes::optionsType::iterator i = opzioni.begin(); i != opzioni.end(); ++i) {
-                if (i.key().indexOf("password") != -1) {
+            for(libJackSMS::dataTypes::optionsType::iterator i = opzioni.begin(); i != opzioni.end(); ++i)
+            {
+                if (i.key().indexOf("password") != -1)
                     i.value() = Encrypter::Encrypter::decrypt(i.value());
-                }
             }
 
             return r;
         }
 
         statsManager::statsManager(const QString &_currentUserDirectory) :
-            xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_currentUserDirectory)) {
+            xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(_currentUserDirectory))
+        {
         }
 
-        bool statsManager::updateStatsOfAccount(const QString &_accountId, const QString &_statName, const QString &_statVal) {
+        bool statsManager::updateStatsOfAccount(const QString &_accountId, const QString &_statName, const QString &_statVal)
+        {
             return xmlDocument->updateStat(_accountId, _statName, _statVal);
         }
 
-        bool statsManager::increaseSentStat(const libJackSMS::dataTypes::configuredAccount &_servizio) {
+        bool statsManager::increaseSentStat(const libJackSMS::dataTypes::configuredAccount &_servizio)
+        {
             bool ok;
             int n = _servizio.getStat("sent").toInt(&ok, 10) + 1;
             return xmlDocument->updateStat(_servizio.getId(), "sent", QString::number(n));
         }
 
-        bool statsManager::loadStats(libJackSMS::dataTypes::configuredServicesType &_servizi) {
+        bool statsManager::loadStats(libJackSMS::dataTypes::configuredServicesType &_servizi)
+        {
             return xmlDocument->loadStats(_servizi);
         }
 
         userDirectoryManager::userDirectoryManager(const QString _user) :
-                xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp("")), user(_user) {
+            xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp("")), user(_user)
+        {
         }
 
-        bool userDirectoryManager::fileOrDirExists(const QString &_entry) {
+        bool userDirectoryManager::fileOrDirExists(const QString &_entry)
+        {
             QDir d(_entry);
             if (d.exists()) {
                 return true;
@@ -362,209 +417,219 @@ namespace libJackSMS{
                 return false;*/
         }
 
-        bool userDirectoryManager::mymkdir(const QString &_dir) {
-        QDir d;
-        return d.mkpath(_dir);
-        /*#ifdef WIN32
-            return 0==mkdir(_dir.c_str());
-        #else
-            #ifdef WIN64
-                return 0==mkdir(_dir.c_str());
-            #else
-                return 0==mkdir(_dir.c_str(),S_IRWXU | S_IRWXG | S_IROTH); //775
-            #endif
-        #endif*/
+        bool userDirectoryManager::mymkdir(const QString &_dir)
+        {
+            QDir d;
+            return d.mkpath(_dir);
         }
 
-        bool userDirectoryManager::copyFile(const QString &_in,const QString &_out){
-            /*std::ifstream ifs(_in.c_str(), std::ios::binary);
-            if (ifs.is_open()){
-                std::ofstream ofs(_out.c_str(), std::ios::binary);
-                if (ofs.is_open()){
-                    ofs << ifs.rdbuf();
-                    return true;
-                }
-            }
-            return false;*/
-            return QFile::copy(_in,_out);
+        bool userDirectoryManager::copyFile(const QString &_in, const QString &_out)
+        {
+            return QFile::copy(_in, _out);
         }
 
-        bool userDirectoryManager::userDirectoryExists(){
+        bool userDirectoryManager::userDirectoryExists()
+        {
             return xmlDocument->userDirectoryExists(user);
         }
 
-        QString userDirectoryManager::getUserDir() const{
+        QString userDirectoryManager::getUserDir() const
+        {
             return userDir;
         }
 
-        bool userDirectoryManager::initializeDirectory(){
-
+        bool userDirectoryManager::initializeDirectory()
+        {
             QString path = directories::concatDirectoryAndFile(directories::XmlDirectory(), "users.xml");
 
-            if (fileOrDirExists(path)){
-                path=directories::DumpDirectory();
+            if (fileOrDirExists(path))
+            {
+                path = directories::DumpDirectory();
                 if (!fileOrDirExists(path))
-                    if(!mymkdir(path)){
-                        error="cannot create "+path;
+                {
+                    if (!mymkdir(path))
+                    {
+                        error = "cannot create " + path;
                         return false;
                     }
-                path=directories::CookiesDirectory();
-                if (!fileOrDirExists(path))
-                    if(!mymkdir(path)){
-                        error="cannot create "+path;
-                        return false;
-                    }
-
-                path=directories::concatDirectoryAndFile(directories::XmlDirectory(),"services.xml");
-                if (fileOrDirExists(path)){
-                    path=directories::concatDirectoryAndFile(directories::XmlDirectory(),"services.forcecopy3");
-                    if(!fileOrDirExists(path)){
-                        mymkdir(path);
-                        path=directories::concatDirectoryAndFile(directories::XmlDirectory(),"services.xml");
-                        QFile file(path);
-                        if (!file.open(QIODevice::ReadWrite | QIODevice::Text)){
-                            error="cannot create "+path+" file";
-                            return false;
-                        }else{
-                            file.write(emptyServicesFile());
-                        }
-                        file.close();
-
-
-                        return true;
-                    }else{
-                        return true;
-                    }
-
-                }else{
-                    QFile file(path);
-                    if (!file.open(QIODevice::ReadWrite | QIODevice::Text)){
-                        error="cannot create "+path+" file";
-                        return false;
-                    }else{
-                        file.write(emptyServicesFile());
-                    }
-                    file.close();
-                    return true;
-
-                }
-            }else{
-                QString dir=directories::DataDirectory();
-                if (!fileOrDirExists(dir))
-                    if(!mymkdir(dir)){
-                        error="cannot create "+dir;
-                        return false;
-                    }
-
-                path=directories::DumpDirectory();
-                if (!fileOrDirExists(path))
-                    if(!mymkdir(path)){
-                        error="cannot create "+path;
-                        return false;
-                    }
-                dir=directories::XmlDirectory();
-                if (!fileOrDirExists(dir))
-                    if(!mymkdir(dir)){
-                        error="cannot create "+dir;
-                        return false;
-                    }
-                path=directories::CookiesDirectory();
-                if (!fileOrDirExists(path))
-                    if(!mymkdir(path)){
-                        error="cannot create "+path;
-                        return false;
-                    }
-                if (!fileOrDirExists(directories::concatDirectoryAndFile(dir,"users.xml")))
-                    if(!xmlDocument->createUsersFile()){
-                        error="cannot create users.xml file";
-                        return false;
-                    }
-
-                path=directories::concatDirectoryAndFile(directories::XmlDirectory(),"services.xml");
-                if (!fileOrDirExists(path)){
-                    QFile file(path);
-                    if (!file.open(QIODevice::ReadWrite | QIODevice::Text)){
-                        error="cannot create "+path+" file";
-                        return false;
-                    }else{
-                        file.write(emptyServicesFile());
-                    }
-                    file.close();
-
                 }
 
+                path = directories::CookiesDirectory();
+                if (!fileOrDirExists(path))
+                {
+                    if(!mymkdir(path))
+                    {
+                        error = "cannot create " + path;
+                        return false;
+                    }
+                }
 
+                path = directories::concatDirectoryAndFile(directories::XmlDirectory(), "services.xml");
+                if (!fileOrDirExists(path))
+                {
+                    QFile file(path);
+                    if (!file.open(QIODevice::ReadWrite | QIODevice::Text))
+                    {
+                        error = "cannot create " + path + " file";
+                        return false;
+                    } else {
+                        file.write(emptyServicesFile());
+                    }
+
+                    file.close();
+                }
+
+            } else {
+                QString dir = directories::DataDirectory();
+                if (!fileOrDirExists(dir))
+                {
+                    if (!mymkdir(dir))
+                    {
+                        error = "cannot create " + dir;
+                        return false;
+                    }
+                }
+
+                path = directories::DumpDirectory();
+                if (!fileOrDirExists(path))
+                {
+                    if (!mymkdir(path))
+                    {
+                        error = "cannot create " + path;
+                        return false;
+                    }
+                }
+
+                dir = directories::XmlDirectory();
+                if (!fileOrDirExists(dir))
+                {
+                    if (!mymkdir(dir)) {
+                        error = "cannot create " + dir;
+                        return false;
+                    }
+                }
+
+                path = directories::CookiesDirectory();
+                if (!fileOrDirExists(path))
+                {
+                    if (!mymkdir(path))
+                    {
+                        error = "cannot create " + path;
+                        return false;
+                    }
+                }
+
+                if (!fileOrDirExists(directories::concatDirectoryAndFile(dir, "users.xml")))
+                {
+                    if (!xmlDocument->createUsersFile())
+                    {
+                        error = "cannot create users.xml file";
+                        return false;
+                    }
+                }
+
+                path = directories::concatDirectoryAndFile(directories::XmlDirectory(), "services.xml");
+                if (!fileOrDirExists(path))
+                {
+                    QFile file(path);
+
+                    if (!file.open(QIODevice::ReadWrite | QIODevice::Text))
+                    {
+                        error = "cannot create " + path + " file";
+                        return false;
+                    } else {
+                        file.write(emptyServicesFile());
+                    }
+
+                    file.close();
+                }
+
+                emit firstStart();
+            }
+
+            return true;
+        }
+
+        bool userDirectoryManager::createUser()
+        {
+            QString path = directories::concatDirectoryAndFile(directories::XmlDirectory(), utilities::Base64Encode(user));
+            if (!fileOrDirExists(path))
+            {
+                if (!mymkdir(path))
+                {
+                    error = "cannot create " + path;
+                    return false;
+                }
+            }
+
+            userDir = utilities::Base64Encode(user);
+
+            if(xmlDocument->createUser(user,utilities::Base64Encode(user)))
+            {
                 return true;
-
+            } else {
+                error = "cannot create user files";
+                return false;
             }
         }
 
-        bool userDirectoryManager::createUser(){
-            QString path=directories::concatDirectoryAndFile(directories::XmlDirectory(),utilities::Base64Encode(user));
-            if (!fileOrDirExists(path))
-                if (!mymkdir(path)){
-                        error="cannot create "+path;
-                        return false;
-                }
-            userDir=utilities::Base64Encode(user);
-
-            if(xmlDocument->createUser(user,utilities::Base64Encode(user))){
-               return true;
-           }else{
-               error="cannot create user files";
-               return false;
-           }
-        }
-
-        QString userDirectoryManager::getError() const{
+        QString userDirectoryManager::getError() const
+        {
             return error;
         }
 
         serviceManager::serviceManager()
-            :xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp("")){
+            :xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(""))
+        {
         }
 
-        bool serviceManager::saveServices(QString _xml){
+        bool serviceManager::saveServices(QString _xml)
+        {
             return xmlDocument->saveServices(_xml);
         }
 
-        void serviceManager::mergeServices(const QString &_xml){
-            serviceManagerBase*smb=new serviceManagerBase(_xml);
-            connect(smb,SIGNAL(merged()),this,SIGNAL(merged()));
+        void serviceManager::mergeServices(const QString &_xml)
+        {
+            serviceManagerBase* smb = new serviceManagerBase(_xml);
+            connect(smb, SIGNAL(merged()), this, SIGNAL(merged()));
             smb->merge();
         }
 
-        void serviceManagerBase::run(){
+        void serviceManagerBase::run()
+        {
             if (xmlDocument->mergeServices(xml))
                 emit merged();
         }
 
         serviceManagerBase::serviceManagerBase(const QString &_xml) :
-                xml(_xml),
-                xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(""))
+            xml(_xml),
+            xmlDocument(new libJackSMS::xmlParserApi::xmlParserLocalApiTicpp(""))
         {
         }
 
-        void serviceManagerBase::merge(){
+        void serviceManagerBase::merge()
+        {
             start();
         }
 
         cookieManager::cookieManager(const QString &_currentUserDirectory) :
-                userDir(_currentUserDirectory)
+            userDir(_currentUserDirectory)
         {
         }
 
-        bool cookieManager::deleteCookies(){
-            bool r=true;
+        bool cookieManager::deleteCookies()
+        {
+            bool r = true;
             QDir d(libJackSMS::directories::CookiesDirectory());
-            QStringList l=d.entryList(QStringList("*.cookie"),QDir::Files);
-            for(QStringList::const_iterator i=l.begin();i!=l.end();++i){
-                r=r && d.remove(*i);
+            QStringList l = d.entryList(QStringList("*.cookie"), QDir::Files);
+            for (QStringList::const_iterator i = l.begin(); i != l.end(); ++i)
+            {
+                r = r && d.remove(*i);
             }
+
             return r;
         }
 
     }
 
 }
-

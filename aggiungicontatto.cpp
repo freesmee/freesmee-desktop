@@ -45,6 +45,8 @@ AggiungiContatto::AggiungiContatto(QWidget *parent, libJackSMS::dataTypes::confi
     m_ui->nuovogruppo->hide();
     m_ui->radioEsistente->hide();
     m_ui->radioNuovo->hide();
+    m_ui->autoDetectButton->hide();
+
     {
         for (libJackSMS::dataTypes::configuredServicesType::const_iterator i = ElencoServiziConfigurati.begin(); i != ElencoServiziConfigurati.end(); ++i) {
             if (i.value().getId() != "1") {
@@ -63,7 +65,7 @@ AggiungiContatto::AggiungiContatto(QWidget *parent, libJackSMS::dataTypes::confi
     }
 }
 
-//questo è il costruttore per quando si usa il "Salva contatto"
+//questo Ã¨ il costruttore per quando si usa il "Salva contatto"
 AggiungiContatto::AggiungiContatto(QWidget *parent, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::optionsType &_opzioni, QString _current_login_id, libJackSMS::dataTypes::phoneNumber numero) :
         QDialog(parent),
         m_ui(new Ui::AggiungiContatto),
@@ -145,7 +147,7 @@ void AggiungiContatto::on_salva_clicked()
         bool numeroValido;
         numeroValido = num.parse((m_ui->intPref->text().isEmpty() ? "" : m_ui->intPref->text() + ".") + m_ui->pref->text() + "." + m_ui->num->text());
         if(!numeroValido){
-            QMessageBox::critical(this,"Attenzione","Il numero inserito non è valido, ricontrollalo, oppure se trovi che questo sia un errore segnalalo, grazie.");
+            QMessageBox::critical(this,"Attenzione","Il numero inserito non Ã¨ valido, ricontrollalo, oppure se trovi che questo sia un errore segnalalo, grazie.");
             return;
         }
 
@@ -181,20 +183,24 @@ void AggiungiContatto::on_salva_clicked()
         m_ui->labelSpin->show();
 
         saver = new libJackSMS::serverApi::contactManager(current_login_id, opzioni);
-        connect(saver, SIGNAL(contactSaved(QString, bool)), this, SLOT(salvataggioOk(QString, bool)));
+        connect(saver, SIGNAL(contactSaved(QString, bool, int)), this, SLOT(salvataggioOk(QString, bool, int)));
         connect(saver, SIGNAL(contactNotSaved()), this, SLOT(salvataggioKo()));
         saver->addNewContact(contatto);
 }
 
-void AggiungiContatto::salvataggioOk(QString id, bool jms) {
+void AggiungiContatto::salvataggioOk(QString id, bool jms, int carrier)
+{
     contatto.setId(id);
     contatto.setCanReceiveJms(jms);
+    contatto.setCarrier(carrier);
+
     Rubrica.insert(id, contatto);
     emit contactAdded(id);
     close();
 }
 
-void AggiungiContatto::salvataggioKo() {
+void AggiungiContatto::salvataggioKo()
+{
     m_ui->salva->setEnabled(true);
     m_ui->annulla->setEnabled(true);
     m_ui->labelSpin->hide();

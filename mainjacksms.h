@@ -46,6 +46,10 @@
 #define TYPE_SMS 1
 #define TYPE_JMS 2
 
+#define IM_NOT_ACTIVE 0
+#define IM_ACTIVATING 1
+#define IM_ACTIVE     2
+
 namespace Ui
 {
     class MainJackSMS;
@@ -69,8 +73,6 @@ public:
     types::QMessageListType MessaggiRicevuti;
     void DisabilitaUi();
     void AbilitaUi();
-    void ReloadConfiguredServices();
-    void ReloadRubrica();
     QList<JackPluginInterface*> pluginsList;
     QString current_user_directory;
     QString current_user_username;
@@ -93,8 +95,10 @@ public slots:
     void anotherInstanceOpened(const QString &str);
 
 private:
+    bool servicesAlreadyUpdated;
+    bool firstStartFlag;
     bool useSSLtoServer;
-    int iterateSendSms(bool first,bool result=false,QString _text="");
+    int iterateSendSms(bool first, bool result = false, QString _text = "");
     int smsCount;
     RecipientCompleter *completer;
     void resizeRecipientBox();
@@ -103,18 +107,17 @@ private:
     QListWidgetItem *newRecipientWidget;
     bool usaAssociatiPresent;
     bool popupJms;
-    bool checkDoubleRecipients(libJackSMS::dataTypes::phoneNumber &_n) const;
     bool recipientAutoEdited;
     QList<QListWidgetItem*> multipleSendRecipients;
     bool invioMultiplo;
-    QPixmap icon_jack;
+    QPixmap icon_freesmee;
     QString lastJmsError;
     int errorSentCounter;
     //void resizeEvent ( QResizeEvent * );
     int messageType;
     void countdownToGui();
     int countdownToGuiCount;
-    bool imServiceActive;
+    int imServiceStatus;
     void setTrayIcon();
     int countReceivedUnreaded;
     bool invioInCorso;
@@ -182,8 +185,8 @@ private:
     void addServiceToServiceComboBox(accountWidget *acc, bool isJacksmsMessenger = false);
     void checkSalvaButtonStatusToSet();
     void elaboraRecipientLine(bool StealFocus = true);
+    void pulisciRecipientLine(bool StealFocus = true);
 
-    QList<QString> JMSServicesDropped;
     void caricaUtenti();
     void ricaricaUtenti();
     void manageUserPassAutoLogin();
@@ -191,7 +194,7 @@ private:
 
     void refreshCompleter();
 
-    // Funzioni per la pubblicità
+    // Funzioni per la pubblicitÃ 
     void showAdvPanel(QString url);
     void showTestoSmsPanel();
 
@@ -214,7 +217,6 @@ private slots:
     void on_ServiziCercaButton_clicked();
     void on_RicercaButton_clicked();
     void on_RicercaImButton_clicked();
-    void on_smsListWidget_itemPressed(QListWidgetItem* item);
     void on_listSmsNames_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void addRecipients(QList<QRecipientWidget*> l);
     void on_buttonAddContacts_clicked();
@@ -235,6 +237,7 @@ private slots:
     //void resized();
     void on_buttonNoAccount_clicked();
     void on_buttonLostPassword_clicked();
+    void abortLogin();
 
     void on_actionElimina_cookies_triggered();
     void servicesReLoaded(libJackSMS::dataTypes::servicesType);
@@ -275,20 +278,14 @@ private slots:
     void on_EliminaServizioButton_clicked();
     void on_AggiungiServizioButton_clicked();
     void on_actionEsci_triggered();
-    void on_RubricaVeloce_itemClicked(QListWidgetItem* item);
     void on_RubricaModifica_clicked();
     void on_InviaSMS_clicked();
     void on_RubricaAggiungi_clicked();
-    void ReadStdoutReloadRubrica();
     void ClickBaloon();
-
-
-    bool eventFilter( QObject *obj, QEvent *ev );
     void TrayClicked();
 
     void displayCaptcha(QByteArray data/*,QSemaphore* sem*/);
-    void eseguiPassoInvio();
-    void invioSuccesso(QString _text);
+    void invioSuccesso(QString _text, int n);
     void invioFallito(QString _text);
     void sleepBeforeFound(int _seconds);
     void checkInstantMessengerReceived(libJackSMS::dataTypes::logImType);
@@ -314,7 +311,7 @@ private slots:
     //void initialOptionsLoaded(libJackSMS::dataTypes::optionsType);
     void serverPinged();
     void messagesLoaded(QList<QMyMessage>);
-    void errorUpdates(QString);
+    void errorUpdates(QString err);
 
     void username_returnPressed();
     void testoSmsRichiestoInvio();
@@ -326,6 +323,12 @@ private slots:
     void advLoaded(bool);
     void slotAdv(QString);
     void on_actionVai_al_Sito_triggered();
+
+    void firstStart();
+    void checkServicesUpdate();
+    void continueLoadServices();
+    void on_RubricaVeloce_itemClicked(QListWidgetItem *item);
+    void RubricaVeloceSelected(QListWidgetItem *item);
 };
 
 #endif // MAINJACKSMS_H

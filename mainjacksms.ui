@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1046</width>
-    <height>477</height>
+    <height>483</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -21,7 +21,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
-    <normaloff>:/resource/jacksms_logo_normal.png</normaloff>:/resource/jacksms_logo_normal.png</iconset>
+    <normaloff>:/resource/Freesmee-login.png</normaloff>:/resource/Freesmee-login.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -60,19 +60,9 @@
 	background-image: url(:/resource/background_new.png);
 	background-repeat:repeat-x;
 }
+
 QFrame#frame_2{
 	background-color: rgb(255, 255, 255);
-}
-
-QFrame#frame_2_old{
-	background-image: url(:/resource/bg_bottom.png);
-	background-repeat:no-repeat;
-	background-position:bottom left
-}
-
-QFrame#frame_old{
-	background-image: url(:/resource/bg_top.png);
-	background-repeat:repeat-x;
 }</string>
           </property>
           <property name="frameShape">
@@ -108,13 +98,31 @@ QFrame#frame_old{
               </property>
               <item>
                <layout class="QGridLayout" name="gridLayout_5">
-                <item row="0" column="1">
+                <item row="0" column="0" colspan="3">
                  <widget class="QLabel" name="label_20">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>100</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>100</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/resource/jacksms_logo_medium_light.png</pixmap>
+                   <pixmap resource="resources.qrc">:/resource/Freesmee-login.png</pixmap>
                   </property>
                   <property name="scaledContents">
                    <bool>false</bool>
@@ -125,16 +133,19 @@ QFrame#frame_old{
                   <property name="margin">
                    <number>5</number>
                   </property>
+                  <property name="textInteractionFlags">
+                   <set>Qt::NoTextInteraction</set>
+                  </property>
                  </widget>
                 </item>
-                <item row="2" column="1">
+                <item row="3" column="1">
                  <widget class="QComboBox" name="username">
                   <property name="editable">
                    <bool>true</bool>
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="0">
+                <item row="4" column="0">
                  <spacer name="horizontalSpacer_10">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -147,14 +158,14 @@ QFrame#frame_old{
                   </property>
                  </spacer>
                 </item>
-                <item row="3" column="1">
+                <item row="4" column="1">
                  <widget class="QLabel" name="label_18">
                   <property name="text">
                    <string>Password</string>
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="2">
+                <item row="4" column="2">
                  <spacer name="horizontalSpacer_11">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -167,14 +178,14 @@ QFrame#frame_old{
                   </property>
                  </spacer>
                 </item>
-                <item row="4" column="1">
+                <item row="5" column="1">
                  <widget class="QLineEdit" name="password">
                   <property name="echoMode">
                    <enum>QLineEdit::Password</enum>
                   </property>
                  </widget>
                 </item>
-                <item row="7" column="1">
+                <item row="8" column="1">
                  <spacer name="verticalSpacer_3">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
@@ -190,7 +201,7 @@ QFrame#frame_old{
                   </property>
                  </spacer>
                 </item>
-                <item row="8" column="1">
+                <item row="9" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout">
                   <item>
                    <spacer name="horizontalSpacer_8">
@@ -236,23 +247,7 @@ QFrame#frame_old{
                   </item>
                  </layout>
                 </item>
-                <item row="13" column="1">
-                 <spacer name="verticalSpacer">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="sizeType">
-                   <enum>QSizePolicy::Fixed</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>10</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="9" column="1">
+                <item row="10" column="1">
                  <spacer name="verticalSpacer_6">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
@@ -265,21 +260,21 @@ QFrame#frame_old{
                   </property>
                  </spacer>
                 </item>
-                <item row="1" column="1">
+                <item row="2" column="1">
                  <widget class="QLabel" name="label_10">
                   <property name="text">
                    <string>Username</string>
                   </property>
                  </widget>
                 </item>
-                <item row="5" column="1">
+                <item row="6" column="1">
                  <widget class="QCheckBox" name="ricordaPassword">
                   <property name="text">
                    <string>Ricorda la password</string>
                   </property>
                  </widget>
                 </item>
-                <item row="6" column="1">
+                <item row="7" column="1">
                  <widget class="QCheckBox" name="autoLogin">
                   <property name="enabled">
                    <bool>false</bool>
@@ -292,74 +287,7 @@ QFrame#frame_old{
                   </property>
                  </widget>
                 </item>
-                <item row="13" column="2">
-                 <layout class="QHBoxLayout" name="horizontalLayout_26">
-                  <item>
-                   <spacer name="horizontalSpacer_16">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>5</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="loginSSLIcon">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>16</horstretch>
-                      <verstretch>16</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>16</width>
-                      <height>16</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>16</width>
-                      <height>16</height>
-                     </size>
-                    </property>
-                    <property name="toolTip">
-                     <string>SSL in attivazione</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="pixmap">
-                     <pixmap resource="resources.qrc">:/resource/Lock-Grey.png</pixmap>
-                    </property>
-                    <property name="scaledContents">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_17">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                     <enum>QSizePolicy::Fixed</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>5</width>
-                      <height>5</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </item>
-                <item row="10" column="1">
+                <item row="11" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout_30">
                   <item>
                    <spacer name="horizontalSpacer_18">
@@ -409,7 +337,7 @@ QFrame#frame_old{
                   </item>
                  </layout>
                 </item>
-                <item row="11" column="1">
+                <item row="12" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout_31">
                   <item>
                    <spacer name="horizontalSpacer_20">
@@ -453,6 +381,112 @@ QFrame#frame_old{
                      <size>
                       <width>40</width>
                       <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item row="1" column="1">
+                 <spacer name="verticalSpacer_2">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="14" column="2">
+                 <layout class="QVBoxLayout" name="verticalLayout_10">
+                  <property name="spacing">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_26">
+                    <item>
+                     <spacer name="horizontalSpacer_16">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>5</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="loginSSLIcon">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>16</horstretch>
+                        <verstretch>16</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>16</width>
+                        <height>16</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>16</width>
+                        <height>16</height>
+                       </size>
+                      </property>
+                      <property name="toolTip">
+                       <string>SSL in attivazione</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="pixmap">
+                       <pixmap resource="resources.qrc">:/resource/Lock-Grey.png</pixmap>
+                      </property>
+                      <property name="scaledContents">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_17">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Fixed</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>10</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <spacer name="verticalSpacer_7">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>5</height>
                      </size>
                     </property>
                    </spacer>
@@ -531,7 +565,7 @@ QFrame#frame_3_old{
               </property>
               <item>
                <layout class="QGridLayout" name="gridLayout_6">
-                <item row="1" column="1">
+                <item row="2" column="1">
                  <widget class="QLabel" name="label_19">
                   <property name="text">
                    <string>Accesso in corso</string>
@@ -541,7 +575,7 @@ QFrame#frame_3_old{
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="1">
+                <item row="3" column="1">
                  <widget class="QLabel" name="labelSpinner">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -563,7 +597,7 @@ QFrame#frame_3_old{
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="1">
+                <item row="4" column="1">
                  <spacer name="verticalSpacer_4">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
@@ -576,7 +610,7 @@ QFrame#frame_3_old{
                   </property>
                  </spacer>
                 </item>
-                <item row="3" column="0">
+                <item row="4" column="0">
                  <spacer name="horizontalSpacer_12">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -589,7 +623,7 @@ QFrame#frame_3_old{
                   </property>
                  </spacer>
                 </item>
-                <item row="3" column="2">
+                <item row="4" column="2">
                  <spacer name="horizontalSpacer_13">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -602,7 +636,7 @@ QFrame#frame_3_old{
                   </property>
                  </spacer>
                 </item>
-                <item row="0" column="1">
+                <item row="1" column="1">
                  <spacer name="verticalSpacer_5">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
@@ -613,10 +647,41 @@ QFrame#frame_3_old{
                   <property name="sizeHint" stdset="0">
                    <size>
                     <width>20</width>
-                    <height>40</height>
+                    <height>50</height>
                    </size>
                   </property>
                  </spacer>
+                </item>
+                <item row="0" column="0" colspan="3">
+                 <widget class="QLabel" name="label_3">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>100</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>100</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="resources.qrc">:/resource/Freesmee-login.png</pixmap>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
@@ -1459,7 +1524,7 @@ QFrame#frame_3_old{
                 <item>
                  <widget class="ListNames" name="listSmsNames">
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
@@ -1472,7 +1537,7 @@ QFrame#frame_3_old{
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>220</width>
+                    <width>200</width>
                     <height>16777215</height>
                    </size>
                   </property>
@@ -2266,7 +2331,7 @@ ListNames::item:selected:active {
   <action name="actionInfo_su_JackSMS">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/resource/jacksms_logo_normal.png</normaloff>:/resource/jacksms_logo_normal.png</iconset>
+     <normaloff>:/resource/Freesmee-48.png</normaloff>:/resource/Freesmee-48.png</iconset>
    </property>
    <property name="text">
     <string>Informazioni</string>

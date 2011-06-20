@@ -51,12 +51,11 @@ namespace libJackSMS
 
         };
 
-        class netClientQHttp : public QObject,public netClientGeneric
+        class netClientQHttp : public QObject, public netClientGeneric
         {
             Q_OBJECT
 
         private:
-            
             QNetworkAccessManager request;
             QNetworkReply *reply;
             bool outputHeaders;

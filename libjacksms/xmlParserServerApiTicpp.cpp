@@ -165,33 +165,34 @@ namespace libJackSMS{
             return "Errore Generico";
         }
 
-        bool xmlParserServerApiTicpp::loadErrors(dataTypesApi::errorsType &_errors)
-        {
-            /*try{
-                ticpp::Node * subRoot=xmlResponse.FirstChild("Freesmee");
-                unsigned int codice=1;
-                bool last=false;
-                while(!last){
+//        bool xmlParserServerApiTicpp::loadErrors(dataTypesApi::errorsType &_errors)
+//        {
+//            try{
+//                ticpp::Node * subRoot=xmlResponse.FirstChild("Freesmee");
+//                unsigned int codice=1;
+//                bool last=false;
+//                while(!last){
 
-                    ticpp::Node * errNode=subRoot->FirstChild(("e"+utilities::toString(codice)),false);
-                    if (errNode==NULL){
-                        last=true;
+//                    ticpp::Node * errNode=subRoot->FirstChild(("e"+utilities::toString(codice)),false);
+//                    if (errNode==NULL){
+//                        last=true;
 
-                    }else{
+//                    }else{
 
-                        _errors.insert(utilities::toString(codice),errNode->ToElement()->GetText()));
-                        codice++;
-                    }
-                }
-            }catch(ticpp::Exception e){
-                throw libJackSMS::exceptionXmlError(e.what());
-            }*/
-            return true;
-        }
+//                        _errors.insert(utilities::toString(codice),errNode->ToElement()->GetText()));
+//                        codice++;
+//                    }
+//                }
+//            }catch(ticpp::Exception e){
+//                throw libJackSMS::exceptionXmlError(e.what());
+//            }
+//            return true;
+//        }
 
-        void xmlParserServerApiTicpp::loadPhoneBookBase(libJackSMS::dataTypes::phoneBookType &_rubrica,ticpp::Node *root)
+        void xmlParserServerApiTicpp::loadPhoneBookBase(libJackSMS::dataTypes::phoneBookType &_rubrica, ticpp::Node *root)
         {
             ticpp::Node *child = NULL;
+
             while((child = root->IterateChildren(child)))
             {
                 ticpp::Element *curElem = child->ToElement();
@@ -199,8 +200,16 @@ namespace libJackSMS{
                 std::string tmp = curElem->GetAttribute("name");
                 QString name = QString::fromUtf8(tmp.c_str(), tmp.length());
 
+                if (name.isEmpty())
+                    continue;
+
                 tmp = curElem->GetAttribute("number");
-                dataTypes::phoneNumber num;
+                QString number = QString::fromUtf8(tmp.c_str(), tmp.length());
+
+                if (number.isEmpty())
+                    continue;
+
+                dataTypes::phoneNumber num;                
                 num.parse(QString::fromUtf8(tmp.c_str(), tmp.length()));
 
                 tmp = curElem->GetAttribute("associated_account_id");
@@ -212,6 +221,14 @@ namespace libJackSMS{
                 if (curElem->GetAttributeOrDefault("jms", "0") == "1")
                     contatto.setCanReceiveJms(true);
 
+                tmp = curElem->GetAttributeOrDefault("carrier", "0");
+                QString carrierStr = QString::fromUtf8(tmp.c_str(), tmp.length());
+                bool ok;
+                int carrier = carrierStr.toInt(&ok);
+
+                if (ok)
+                    contatto.setCarrier(carrier);
+
                 _rubrica.insert(contatto.getId(), contatto);
             }
         }
@@ -220,7 +237,7 @@ namespace libJackSMS{
         {
             try
             {
-                ticpp::Node *subRoot=xmlResponse.FirstChild("Freesmee");
+                ticpp::Node *subRoot = xmlResponse.FirstChild("Freesmee");
                 loadPhoneBookBase(_rubrica, subRoot);
                 return true;
             } catch(ticpp::Exception e)
@@ -344,25 +361,60 @@ namespace libJackSMS{
 
         }
 
-        bool xmlParserServerApiTicpp::checkAddNewContact(QString &_resId,bool & canReceiveJms)
+        bool xmlParserServerApiTicpp::checkAddNewContact(QString &_resId, bool &_canReceiveJms, int &_crr)
         {
             ticpp::Node *root = xmlResponse.FirstChild("Freesmee");
-            ticpp::Node *child = root->FirstChild("id");
+
             ticpp::Node *childJms = root->FirstChild("jms");
+            _canReceiveJms = ((childJms->ToElement()->GetText() == "0") ? false : true);
 
-            if (childJms->ToElement()->GetText() == "0")
-                canReceiveJms = false;
-            else
-                canReceiveJms = true;
+            ticpp::Node *childCrr = root->FirstChild("crr");
+            _crr = QString::fromStdString(childCrr->ToElement()->GetText()).toInt();
 
+            ticpp::Node *child = root->FirstChild("id");
             _resId = QString::fromStdString(child->ToElement()->GetText());
+
             if(_resId == "0" || _resId == "-1")
                 return false;
             else
                 return true;
         }
 
-        bool xmlParserServerApiTicpp::checkUpdateContact()
+        bool xmlParserServerApiTicpp::checkUpdateContact(int &_crr)
+        {
+            ticpp::Node *root = xmlResponse.FirstChild("Freesmee");
+
+            ticpp::Node *childCrr = root->FirstChild("crr");
+            _crr = QString::fromStdString(childCrr->ToElement()->GetText()).toInt();
+
+            ticpp::Node *child = root->FirstChild("id");
+            QString _resId = QString::fromStdString(child->ToElement()->GetText());
+
+            if( _resId == "-1" || _resId == "0")
+                return false;
+            else
+                return true;
+        }
+
+        bool xmlParserServerApiTicpp::checkDeleteContact()
+        {
+            return true;
+        }
+
+        bool xmlParserServerApiTicpp::checkAddNewAccount(QString &_resId)
+        {
+            ticpp::Node *root = xmlResponse.FirstChild("Freesmee");
+
+            ticpp::Node *child = root->FirstChild("id");
+            _resId = QString::fromStdString(child->ToElement()->GetText());
+
+            if(_resId == "0" || _resId == "-1")
+                return false;
+            else
+                return true;
+        }
+
+        bool xmlParserServerApiTicpp::checkUpdateAccount()
         {
             ticpp::Node *root=xmlResponse.FirstChild("Freesmee");
             ticpp::Node *child=root->FirstChild("id");
@@ -372,64 +424,46 @@ namespace libJackSMS{
             else
                 return true;
         }
-        bool xmlParserServerApiTicpp::checkDeleteContact(){
+
+        bool xmlParserServerApiTicpp::checkDeleteAccount()
+        {
+            // TODO
             return true;
         }
-        bool xmlParserServerApiTicpp::checkAddNewAccount(QString &_resId){
-            ticpp::Node *root=xmlResponse.FirstChild("Freesmee");
-            ticpp::Node *child=root->FirstChild("id");
-            _resId=QString::fromStdString(child->ToElement()->GetText());
-            if(_resId=="0" || _resId=="-1")
-                return false;
-            else
-                return true;
-        }
-        bool xmlParserServerApiTicpp::checkUpdateAccount(){
-            ticpp::Node *root=xmlResponse.FirstChild("Freesmee");
-            ticpp::Node *child=root->FirstChild("id");
-            QString _resId=QString::fromStdString(child->ToElement()->GetText());
-            if( _resId=="-1" || _resId=="0")
-                return false;
-            else
-                return true;
-        }
-        bool xmlParserServerApiTicpp::checkDeleteAccount(){
-            return true;
-        }
-        bool xmlParserServerApiTicpp::parseConversation(libJackSMS::dataTypes::logSmsType & _logSms,libJackSMS::dataTypes::logImType & _logIm){
-            /*ticpp::Node *root=xmlResponse.FirstChild("Freesmee");
-            ticpp::Node *child=NULL;
-            int count=0;
 
-            while( child = root->IterateChildren( child ) ){
-                ticpp::Element *childElem=child->ToElement();
+//        bool xmlParserServerApiTicpp::parseConversation(libJackSMS::dataTypes::logSmsType & _logSms,libJackSMS::dataTypes::logImType & _logIm){
+//            ticpp::Node *root=xmlResponse.FirstChild("Freesmee");
+//            ticpp::Node *child=NULL;
+//            int count=0;
 
-                libJackSMS::dataTypes::phoneNumber nn;
-                try{
-                    nn.parse(childElem->GetAttribute("who"));
-                }catch(exceptionPhoneNumber e){
-                    nn.setAltName(childElem->GetAttribute("who"));
-                }
-                std::string id=childElem->GetAttribute("id");
-                std::string data=childElem->GetAttribute("sent_on");
-                libJackSMS::dataTypes::dateTime date(data.substr(8,2)+"/"+data.substr(5,2)+"/"+data.substr(0,4),data.substr(11,2)+":"+data.substr(14,2)+":"+data.substr(17,2));
-                std::string type=childElem->GetAttribute("type");
-                std::transform(type.begin(), type.end(), type.begin(), toupper);
-                if (type=="RECV"){
-                    libJackSMS::dataTypes::logImMessage imMsg(nn,date,id,childElem->GetAttribute("body"));
-                    _logIm.insert(std::make_pair(id,imMsg));
-                    count++;
-                }else{
-                    libJackSMS::dataTypes::logSmsMessage smsMsg(nn,"","",date,id,childElem->GetAttribute("body"));
-                    _logSms.insert(std::make_pair(id,smsMsg));
-                    count++;
-                }
+//            while( child = root->IterateChildren( child ) ){
+//                ticpp::Element *childElem=child->ToElement();
 
-            }
-            return ((count)==0)?false:true;*/
-            return false;
-        }
+//                libJackSMS::dataTypes::phoneNumber nn;
+//                try{
+//                    nn.parse(childElem->GetAttribute("who"));
+//                }catch(exceptionPhoneNumber e){
+//                    nn.setAltName(childElem->GetAttribute("who"));
+//                }
+//                std::string id=childElem->GetAttribute("id");
+//                std::string data=childElem->GetAttribute("sent_on");
+//                libJackSMS::dataTypes::dateTime date(data.substr(8,2)+"/"+data.substr(5,2)+"/"+data.substr(0,4),data.substr(11,2)+":"+data.substr(14,2)+":"+data.substr(17,2));
+//                std::string type=childElem->GetAttribute("type");
+//                std::transform(type.begin(), type.end(), type.begin(), toupper);
+//                if (type=="RECV"){
+//                    libJackSMS::dataTypes::logImMessage imMsg(nn,date,id,childElem->GetAttribute("body"));
+//                    _logIm.insert(std::make_pair(id,imMsg));
+//                    count++;
+//                }else{
+//                    libJackSMS::dataTypes::logSmsMessage smsMsg(nn,"","",date,id,childElem->GetAttribute("body"));
+//                    _logSms.insert(std::make_pair(id,smsMsg));
+//                    count++;
+//                }
 
+//            }
+//            return ((count)==0)?false:true;
+//            return false;
+//        }
 
         bool xmlParserServerApiTicpp::parseServices(libJackSMS::dataTypes::servicesType &_servizi)
         {
@@ -451,6 +485,7 @@ namespace libJackSMS{
                     servizio.setMaxLength(QString::fromStdString(thisService->GetAttribute("maxlen")));
                     servizio.setSingleLength(QString::fromStdString(thisService->GetAttribute("singlelen")));
                     servizio.setSmsDivisor(QString::fromStdString(thisService->GetAttribute("sms_divisor")));
+                    servizio.setServiceType(QString::fromStdString(thisService->GetAttributeOrDefault("service_type", "other")));
                     servizio.setIcon(QImage::fromData(utilities::Base64DecodeByte(QString::fromStdString(thisService->GetAttribute("icon")))));
 
                     {

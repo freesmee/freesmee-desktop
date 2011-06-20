@@ -26,7 +26,7 @@
 NameWidget::NameWidget(QString _name, libJackSMS::dataTypes::phoneNumber _numero, QString _lastMessage, QDateTime _lastTime, QString _lastId, int _unreadCount)
 {
     setStyleSheet("NameWidget{"
-                  "background-image: url(:/resource/bg_top.png);"
+                  "background-image: url(:/resource/bg_namewidget.png);"
                   "background-repeat:repeat-x;"
                   "}");
 
@@ -39,17 +39,17 @@ NameWidget::NameWidget(QString _name, libJackSMS::dataTypes::phoneNumber _numero
 
     labelName = new QLabel(_name);
     labelName->setFont(QFont(labelName->font().family(), -1, QFont::Bold, false));
-    labelName->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
-    labelName->setMaximumSize(150, 15);
+    labelName->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    labelName->setMinimumSize(170, 15);
 
     lastMessage = _lastMessage;
     if(_lastMessage.length() > 28)
         _lastMessage = _lastMessage.left(25) + "...";
 
     labelLastMessage = new QLabel(_lastMessage);
-    labelLastMessage->setFont(QFont(labelLastMessage->font().family(),-1,QFont::Normal,false));
-    labelLastMessage->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
-    labelLastMessage->setMaximumSize(150,15);
+    labelLastMessage->setFont(QFont(labelLastMessage->font().family(), -1, QFont::Normal, false));
+    labelLastMessage->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    labelLastMessage->setMaximumSize(180, 15);
 
     lastTime = _lastTime;
     lastId = _lastId;
@@ -62,8 +62,8 @@ NameWidget::NameWidget(QString _name, libJackSMS::dataTypes::phoneNumber _numero
         labelIconStatus->setPixmap(QPixmap(":/resource/arrow-unread.png"));
 
     labelIconStatus->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
-    labelIconStatus->setMaximumSize(16,16);
-    labelIconStatus->setMinimumSize(16,16);
+    labelIconStatus->setMaximumSize(16, 16);
+    labelIconStatus->setMinimumSize(16, 16);
 
     hLayout = new QHBoxLayout;
     hLayout->setMargin(5);
@@ -80,14 +80,17 @@ NameWidget::NameWidget(QString _name, libJackSMS::dataTypes::phoneNumber _numero
     hLayout->addWidget(labelIconStatus);
 
     setLayout(hLayout);
+    setFixedWidth(200);
     adjustSize();
 }
 
-QString NameWidget::getName() const{
+QString NameWidget::getName() const
+{
     return name;
 }
 
-void NameWidget::setName(QString newname) {
+void NameWidget::setName(QString newname)
+{
     name = newname;
 
     if(newname.length() > 16)
@@ -96,30 +99,36 @@ void NameWidget::setName(QString newname) {
     labelName->setText(newname);
 }
 
-libJackSMS::dataTypes::phoneNumber NameWidget::getPhoneNum() const{
+libJackSMS::dataTypes::phoneNumber NameWidget::getPhoneNum() const
+{
     return numero;
 }
 
-QString NameWidget::getId() const{
+QString NameWidget::getId() const
+{
     return lastId;
 }
 
-QDateTime NameWidget::getTime() const{
+QDateTime NameWidget::getTime() const
+{
     return lastTime;
 }
 
-int NameWidget::getUnreadCount() const{
+int NameWidget::getUnreadCount() const
+{
     return unreadCount;
 }
 
-void NameWidget::increaseUnreadCount(){
+void NameWidget::increaseUnreadCount()
+{
     if(unreadCount == 0)
         setIconUnread();
 
     unreadCount++;
 }
 
-void NameWidget::decreaseUnreadCount(){
+void NameWidget::decreaseUnreadCount()
+{
     if(unreadCount <= 0)
         return;
 

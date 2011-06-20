@@ -43,6 +43,7 @@ namespace libJackSMS
             QString account;
             QString id;
             bool canReceiveJms;
+            int carrier;
 
         public:
             contact();
@@ -104,6 +105,19 @@ namespace libJackSMS
                  */
             void setAccount(QString _account);
 
+            /**
+                 * Imposta il carrier per il contatto
+                 * \param _carrier il carrier del contatto
+                 */
+            void setCarrier(int _carrier);
+
+            /**
+                 * Preleva il carrier del contatto
+                 * \return il carrier del contatto
+                 */
+            int getCarrier() const;
+
+            QString getCarrierString() const;
         };
 
     }

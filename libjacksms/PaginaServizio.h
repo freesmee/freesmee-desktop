@@ -61,7 +61,7 @@ namespace libJackSMS
                 pageAccept currentAccept;
                 QPair<int, int> currentContentPosition;
                 bool ha_condizione;
-                //Nota: il parametro sleepbefore è in secondi (come passato dal server)
+                //Nota: il parametro sleepbefore Ã¨ in secondi (come passato dal server)
                 int sleepbefore;
 
                 QList<pageCommand> comandi;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>291</width>
-    <height>246</height>
+    <width>325</width>
+    <height>280</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
-    <normaloff>:/resource/jacksms_logo_normal.png</normaloff>:/resource/jacksms_logo_normal.png</iconset>
+    <normaloff>:/resource/Freesmee-48.png</normaloff>:/resource/Freesmee-48.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -34,7 +34,7 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
+     <item row="5" column="0">
       <widget class="QComboBox" name="comboaccount">
        <property name="insertPolicy">
         <enum>QComboBox::InsertAlphabetically</enum>
@@ -48,7 +48,7 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="0">
+     <item row="6" column="0">
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="1" column="0">
         <widget class="QComboBox" name="ComboGruppo"/>
@@ -143,6 +143,13 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item row="4" column="0">
+      <widget class="QPushButton" name="autoDetectButton">
+       <property name="text">
+        <string>suggerisci</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

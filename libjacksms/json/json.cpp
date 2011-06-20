@@ -7,8 +7,6 @@
  * \date 8/25/2010
  */
 
-#include <QDebug>
- 
 #include "json.h"
 
 /**
@@ -372,7 +370,7 @@ int Json::nextToken(const QString &json, int &index)
 
 	QChar c = json[index];
 	index++;
-	switch(c.toAscii())
+        switch(c.toAscii())
 	{
 		case '{': return JsonTokenCurlyOpen;
 		case '}': return JsonTokenCurlyClose;

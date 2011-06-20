@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
-    <normaloff>:/resource/jacksms_logo_medium.png</normaloff>:/resource/jacksms_logo_medium.png</iconset>
+    <normaloff>:/resource/Freesmee-48.png</normaloff>:/resource/Freesmee-48.png</iconset>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_3">
    <item>
@@ -74,7 +74,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>TextLabel</string>
+          <string>captcha</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>

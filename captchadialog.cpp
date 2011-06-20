@@ -30,33 +30,38 @@
 #include "ui_captchadialog.h"
 //#include "JackUtils.h"
 
-CaptchaDialog::CaptchaDialog(const QByteArray &_imgData,QString zoomFactor,QWidget *parent ):
+CaptchaDialog::CaptchaDialog(const QByteArray &_imgData, QString zoomFactor, QWidget *parent) :
     QDialog(parent, Qt::WindowStaysOnTopHint),
     m_ui(new Ui::CaptchaDialog)
 {
+    Q_UNUSED(zoomFactor);
+
     m_ui->setupUi(this);
 
-    QImage im=QImage::fromData(_imgData,"png");
-    bool errorImage=false;
-    if (im.isNull()){
-        im=QImage::fromData(_imgData,"jpg");
-        if (im.isNull()){
-            im=QImage::fromData(_imgData,"gif");
-            if (im.isNull()){
-                errorImage=true;
-            }
+    QImage im = QImage::fromData(_imgData, "png");
+    bool errorImage = false;
+    if (im.isNull())
+    {
+        im = QImage::fromData(_imgData, "jpg");
+        if (im.isNull())
+        {
+            im = QImage::fromData(_imgData, "gif");
+            if (im.isNull())
+                errorImage = true;
         }
     }
-    if(errorImage){
+
+    if(errorImage)
+    {
         throw QString("captcha");
-    }else{
-        m_ui->captchalabel->setPixmap(QPixmap::fromImage(im));
-        original=im;
-        dim=im.size();
     }
-
+    else
+    {
+        m_ui->captchalabel->setPixmap(QPixmap::fromImage(im));
+        original = im;
+        dim = im.size();
+    }
 }
-
 
 CaptchaDialog::~CaptchaDialog()
 {
@@ -79,7 +84,7 @@ void CaptchaDialog::changeEvent(QEvent *e)
 
 void CaptchaDialog::on_pushButton_clicked()
 {
-    result=m_ui->TextCaptcha->text();
+    result = m_ui->TextCaptcha->text();
     if (result.isEmpty())
            result="captcha_non_decodificato";
 /*

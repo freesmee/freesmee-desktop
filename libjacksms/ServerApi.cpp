@@ -31,7 +31,6 @@
 #include "VariabileServizio.h"
 #include "LogSmsMessage.h"
 #include <QTimer>
-#include "EncodingPercent.h"
 #include "Exceptions.h"
 #include <QFile>
 
@@ -49,19 +48,23 @@ namespace libJackSMS {
             qRegisterMetaType<libJackSMS::dataTypes::configuredServicesType>("libJackSMS::dataTypes::configuredServicesType");
         }
 
-        login::~login() {
+        login::~login()
+        {
             if (l != NULL)
                 l->~loginBase();
         }
 
-        void login::doLogin() {
+        void login::doLogin()
+        {
             start();
         }
 
-        void login::abort() {
+        void login::abort()
+        {
         }
 
-        void login::run() {
+        void login::run()
+        {
             emit loginStarted();
             l = new loginBase(username, password, ps);
             //connect(this,SIGNAL(abortSignal()),&man,SLOT(abort()));
@@ -81,21 +84,25 @@ namespace libJackSMS {
         {
         }
 
-        loginBase::~loginBase() {
+        loginBase::~loginBase()
+        {
             xmlResponse->~xmlParserServerApiGeneric();
         }
 
-        void loginBase::doLogin() {
+        void loginBase::doLogin()
+        {
             webClient = new netClient::netClientQHttp();
 
-            if (ps.useProxy()) {
+            if (ps.useProxy())
+            {
                 webClient->setProxyServer(ps.getServer(), ps.getPort(), ps.getType());
                 if (ps.useAuth())
                     webClient->setProxyAuthentication(ps.getUsername(), ps.getPassword());
             }
 
-            webClient->insertFormData("user", username);
-            webClient->insertFormData("password", password);
+            webClient->insertFormData("user",     username.toUtf8().toPercentEncoding());
+            webClient->insertFormData("password", password.toUtf8().toPercentEncoding());
+
             QString xml = webClient->submitPost("http://api.freesmee.com/desktopLogin?desktop=" + QString(FREESMEE_VERSION) + "&o=xml", true);
 
             try {
@@ -287,12 +294,12 @@ namespace libJackSMS {
                     webClient.setProxyAuthentication(ps.getUsername(),ps.getPassword());
             }
 
-            libJackSMS::encodingPercent pEncoder;
-            webClient.insertFormData("message", pEncoder.getEncodedString(msg.getText()));
-            webClient.insertFormData("recipient", msg.getPhoneNumber().toString());
-            webClient.insertFormData("service_id", msg.getServiceId());
-            webClient.insertFormData("account_id", msg.getAccountId());
-            webClient.insertFormData("fail_reason", error);
+            webClient.insertFormData("message",     msg.getText().toUtf8().toPercentEncoding());
+            webClient.insertFormData("recipient",   msg.getPhoneNumber().toString().toUtf8().toPercentEncoding());
+            webClient.insertFormData("service_id",  msg.getServiceId());
+            webClient.insertFormData("account_id",  msg.getAccountId());
+            webClient.insertFormData("fail_reason", error.toUtf8().toPercentEncoding());
+
             QString xml = webClient.submitPost("http://api.freesmee.com/desktopSyncFail?desktop=" + QString(FREESMEE_VERSION) + "&token=" + loginId + "&o=xml", true);
 
             if (xml.isEmpty())
@@ -321,21 +328,23 @@ namespace libJackSMS {
             start();
         }
 
-        void smsLogSaver::run() {
+        void smsLogSaver::run()
+        {
             xmlParserApi::xmlParserServerApiTicpp xmlResponse;
             netClient::netClientQHttp webClient;
 
-            if (ps.useProxy()) {
+            if (ps.useProxy())
+            {
                 webClient.setProxyServer(ps.getServer(),ps.getPort(),ps.getType());
                 if (ps.useAuth())
                     webClient.setProxyAuthentication(ps.getUsername(),ps.getPassword());
             }
 
-            libJackSMS::encodingPercent pEncoder;
-            webClient.insertFormData("message", pEncoder.getEncodedString(msg.getText()));
-            webClient.insertFormData("recipient", msg.getPhoneNumber().toString());
+            webClient.insertFormData("message",    msg.getText().toUtf8().toPercentEncoding());
+            webClient.insertFormData("recipient",  msg.getPhoneNumber().toString().toUtf8().toPercentEncoding());
             webClient.insertFormData("service_id", msg.getServiceId());
             webClient.insertFormData("account_id", msg.getAccountId());
+
             QString xml = webClient.submitPost("http://api.freesmee.com/desktopSync?desktop=" + QString(FREESMEE_VERSION) + "&token=" + loginId + "&o=xml", true);
 
             if (xml.isEmpty())
@@ -363,7 +372,7 @@ namespace libJackSMS {
         void contactManager::addNewContact(libJackSMS::dataTypes::contact _contatto)
         {
             manAdd=new contactManagerAdd(loginId,ps);
-            connect(manAdd, SIGNAL(contactAdded(QString, bool)), this, SIGNAL(contactSaved(QString, bool)));
+            connect(manAdd, SIGNAL(contactAdded(QString, bool, int)), this, SIGNAL(contactSaved(QString, bool, int)));
             connect(manAdd, SIGNAL(errorAdd()), this, SIGNAL(contactNotSaved()));
             manAdd->addNewContact(_contatto);
         }
@@ -390,14 +399,15 @@ namespace libJackSMS {
         {
             netClient::netClientQHttp webClient;
             libJackSMS::xmlParserApi::xmlParserServerApiTicpp xmlDocument;
-            if (ps.useProxy()) {
-                webClient.setProxyServer(ps.getServer(),ps.getPort(),ps.getType());
+            if (ps.useProxy())
+            {
+                webClient.setProxyServer(ps.getServer(),ps.getPort(), ps.getType());
                 if (ps.useAuth())
-                    webClient.setProxyAuthentication(ps.getUsername(),ps.getPassword());
+                    webClient.setProxyAuthentication(ps.getUsername(), ps.getPassword());
             }
 
-            libJackSMS::encodingPercent pEncoder;
-            webClient.insertFormData("ids", pEncoder.getEncodedString(id));
+            webClient.insertFormData("ids", id.toUtf8().toPercentEncoding());
+
             QString xml = webClient.submitPost("http://api.freesmee.com/delAbook?desktop=" + QString(FREESMEE_VERSION) + "&token=" + loginId + "&o=xml", true);
 
             if (xml.isEmpty())
@@ -439,8 +449,8 @@ namespace libJackSMS {
                     webClient.setProxyAuthentication(ps.getUsername(),ps.getPassword());
             }
 
-            libJackSMS::encodingPercent pEncoder;
-            webClient.insertFormData("ids", pEncoder.getEncodedString(id));
+            webClient.insertFormData("ids", id.toUtf8().toPercentEncoding());
+
             QString xml = webClient.submitPost("http://api.freesmee.com/delService?desktop=" + QString(FREESMEE_VERSION) + "&token=" + loginId + "&o=xml", true);
 
             if (xml.isEmpty())
@@ -479,19 +489,20 @@ namespace libJackSMS {
 
             if (ps.useProxy())
             {
-                webClient.setProxyServer(ps.getServer(),ps.getPort(),ps.getType());
+                webClient.setProxyServer(ps.getServer(),ps.getPort(), ps.getType());
                 if (ps.useAuth())
-                    webClient.setProxyAuthentication(ps.getUsername(),ps.getPassword());
+                    webClient.setProxyAuthentication(ps.getUsername(), ps.getPassword());
             }
 
-            libJackSMS::encodingPercent pEncoder;
-            webClient.insertFormData("service_id", pEncoder.getEncodedString(account.getService()));
-            webClient.insertFormData("account_name", pEncoder.getEncodedString(account.getName()));
+            webClient.insertFormData("service_id",   account.getService().toUtf8().toPercentEncoding());
+            webClient.insertFormData("account_name", account.getName().toUtf8().toPercentEncoding());
+
             int c = 0;
 
-            while(service.nextVar()) {
+            while(service.nextVar())
+            {
                    c++;
-                   webClient.insertFormData("data_" + service.currentVar().getProgressive(), pEncoder.getEncodedString(account.getData(service.currentVar().getName())));
+                   webClient.insertFormData("data_" + service.currentVar().getProgressive(), account.getData(service.currentVar().getName()).toUtf8().toPercentEncoding());
             }
 
             for (int x = c + 1; x < 5; ++x) {
@@ -527,25 +538,24 @@ namespace libJackSMS {
         }
 
         /********************************/
-        /*********************************/
 
         void contactManagerAdd::run()
         {
             libJackSMS::xmlParserApi::xmlParserServerApiTicpp xmlDocument;
             netClient::netClientQHttp webClient;
 
-            libJackSMS::encodingPercent pEncoder;
-
-            if (ps.useProxy()){
-                webClient.setProxyServer(ps.getServer(),ps.getPort(),ps.getType());
+            if (ps.useProxy())
+            {
+                webClient.setProxyServer(ps.getServer(), ps.getPort(), ps.getType());
                 if (ps.useAuth())
-                    webClient.setProxyAuthentication(ps.getUsername(),ps.getPassword());
+                    webClient.setProxyAuthentication(ps.getUsername(), ps.getPassword());
             }
 
-            webClient.insertFormData("contact_name",pEncoder.getEncodedString(contatto.getName()));
-            webClient.insertFormData("contact_number",pEncoder.getEncodedString(contatto.getPhone().toString()));
-            webClient.insertFormData("account_id",pEncoder.getEncodedString(contatto.getAccount()));
-            webClient.insertFormData("preferred","1");
+            webClient.insertFormData("contact_name",   contatto.getName().toUtf8().toPercentEncoding());
+            webClient.insertFormData("contact_number", contatto.getPhone().toString().toUtf8().toPercentEncoding());
+            webClient.insertFormData("account_id",     contatto.getAccount().toUtf8().toPercentEncoding());
+            webClient.insertFormData("preferred",      "1");
+
             QString xml = webClient.submitPost("http://api.freesmee.com/addAbook?desktop=" + QString(FREESMEE_VERSION) + "&token=" + loginId + "&o=xml", true);
 
             if (xml.isEmpty())
@@ -556,9 +566,10 @@ namespace libJackSMS {
                 xmlDocument.setXml(xml);
                 QString resultId;
                 bool canReceiveJms;
+                int carrier;
 
-                if(xmlDocument.checkAddNewContact(resultId,canReceiveJms))
-                    emit contactAdded(resultId,canReceiveJms);
+                if(xmlDocument.checkAddNewContact(resultId, canReceiveJms, carrier))
+                    emit contactAdded(resultId, canReceiveJms, carrier);
                 else
                     emit errorAdd();
             }
@@ -577,28 +588,35 @@ namespace libJackSMS {
         }
 
         /***********************************/
-        /*********************************/
+
         void contactManagerUpdate::run()
         {
             libJackSMS::xmlParserApi::xmlParserServerApiTicpp xmlDocument;
             netClient::netClientQHttp webClient;
 
-            libJackSMS::encodingPercent pEncoder;
-            webClient.insertFormData("id",contatto.getId());
-            webClient.insertFormData("contact_name",pEncoder.getEncodedString(contatto.getName()));
-            webClient.insertFormData("contact_number",pEncoder.getEncodedString(contatto.getPhone().toString()));
-            webClient.insertFormData("account_id",contatto.getAccount());
-            QString xml=webClient.submitPost("http://api.freesmee.com/editAbook?desktop=" + QString(FREESMEE_VERSION) + "&token=" + loginId + "&o=xml", true);
-            if (xml.isEmpty())
-                emit errorUpdate();
-            else if (webClient.hasError())
-                emit errorUpdate();
-            else{
-                xmlDocument.setXml(xml);
+            webClient.insertFormData("id",             contatto.getId());
+            webClient.insertFormData("contact_name",   contatto.getName().toUtf8().toPercentEncoding());
+            webClient.insertFormData("contact_number", contatto.getPhone().toString().toUtf8().toPercentEncoding());
+            webClient.insertFormData("account_id",     contatto.getAccount());
 
-                if(xmlDocument.checkUpdateContact()){
+            QString xml = webClient.submitPost("http://api.freesmee.com/editAbook?desktop=" + QString(FREESMEE_VERSION) + "&token=" + loginId + "&o=xml", true);
+
+            if (xml.isEmpty() || webClient.hasError())
+            {
+                emit errorUpdate();
+            }
+            else
+            {
+                xmlDocument.setXml(xml);
+                int carrier;
+
+                if(xmlDocument.checkUpdateContact(carrier))
+                {
+                    contatto.setCarrier(carrier);
                     emit contactUpdated(contatto);
-                }else{
+                }
+                else
+                {
                     emit errorUpdate();
                 }
             }
@@ -624,30 +642,37 @@ namespace libJackSMS {
             libJackSMS::xmlParserApi::xmlParserServerApiTicpp xmlDocument;
             netClient::netClientQHttp webClient;
 
-            libJackSMS::encodingPercent pEncoder;
-            webClient.insertFormData("id", account.getId());
-            webClient.insertFormData("account_name",pEncoder.getEncodedString(account.getName()));
+            webClient.insertFormData("id",           account.getId());
+            webClient.insertFormData("account_name", account.getName().toUtf8().toPercentEncoding());
             int i = 0;
-            while (s.nextVar()) {
+
+            while (s.nextVar())
+            {
                 i++;
-                libJackSMS::dataTypes::variabileServizio var=s.currentVar();
-                QString prog=var.getProgressive();
-                QString name=var.getName();
-                webClient.insertFormData("data_"+prog,pEncoder.getEncodedString(account.getData(name)));
+                libJackSMS::dataTypes::variabileServizio var = s.currentVar();
+                QString prog = var.getProgressive();
+                QString name = var.getName();
+                webClient.insertFormData("data_" + prog, account.getData(name).toUtf8().toPercentEncoding());
             }
 
-            if (i < 4) {
+            if (i < 4)
+            {
                 for (int x = i + 1; x <= 4; ++x)
                     webClient.insertFormData("data_" + QString::number(x), "");
             }
 
             QString xml = webClient.submitPost("http://api.freesmee.com/editService?desktop=" + QString(FREESMEE_VERSION) + "&token=" + loginId + "&o=xml", true);
 
-            if (xml.isEmpty()) {
+            if (xml.isEmpty())
+            {
                 emit errorUpdate();
-            } else if (webClient.hasError()) {
+            }
+            else if (webClient.hasError())
+            {
                 emit errorUpdate();
-            } else {
+            }
+            else
+            {
                 xmlDocument.setXml(xml);
 
                 if(xmlDocument.checkUpdateAccount())
@@ -734,27 +759,27 @@ namespace libJackSMS {
 
         }
 
-        /*conversationManager::conversationManager(const QString &_loginId, dataTypes::proxySettings _ps) :
-                xmlDocument(new libJackSMS::xmlParserApi::xmlParserServerApiTicpp()),
-                loginId(_loginId),
-                webClient(new netClient::netClientQHttp()),
-                ps(_ps)
-        {
-        }
+//        conversationManager::conversationManager(const QString &_loginId, dataTypes::proxySettings _ps) :
+//                xmlDocument(new libJackSMS::xmlParserApi::xmlParserServerApiTicpp()),
+//                loginId(_loginId),
+//                webClient(new netClient::netClientQHttp()),
+//                ps(_ps)
+//        {
+//        }
 
-        bool conversationManager::downloadLastMessages(libJackSMS::dataTypes::logSmsType & _logSms, libJackSMS::dataTypes::logImType &_logIm)
-        {
-            if (ps.useProxy()) {
-                webClient->setProxyServer(ps.getServer(),ps.getPort(),ps.getType());
-                if (ps.useAuth())
-                    webClient->setProxyAuthentication(ps.getUsername(),ps.getPassword());
-            }
-            webClient->setUrl("http://api.freesmee.com/getConversation?desktop=" + QString(FREESMEE_VERSION) + "&token=" + idsessione + "&o=xml");
-            QString xml=webClient->readPage(true);
+//        bool conversationManager::downloadLastMessages(libJackSMS::dataTypes::logSmsType & _logSms, libJackSMS::dataTypes::logImType &_logIm)
+//        {
+//            if (ps.useProxy()) {
+//                webClient->setProxyServer(ps.getServer(),ps.getPort(),ps.getType());
+//                if (ps.useAuth())
+//                    webClient->setProxyAuthentication(ps.getUsername(),ps.getPassword());
+//            }
+//            webClient->setUrl("http://api.freesmee.com/getConversation?desktop=" + QString(FREESMEE_VERSION) + "&token=" + idsessione + "&o=xml");
+//            QString xml=webClient->readPage(true);
 
-            xmlDocument->setXml(xml);
-            return xmlDocument->parseConversation(_logSms,_logIm);
-        }*/
+//            xmlDocument->setXml(xml);
+//            return xmlDocument->parseConversation(_logSms,_logIm);
+//        }
 
         void updateServicesManager::run()
         {
@@ -762,10 +787,10 @@ namespace libJackSMS {
                 updateServicesManagerBase man(loginId, ps);
                 connect(this, SIGNAL(abortSignal()), &man, SLOT(abort()));
 
-                if (man.downloadUpdates(servizi)) {
+                if (man.downloadUpdates(servizi))
                     if (!aborted)
                         emit updatesAvailable(servizi, man.getXml(), man.getMessage());
-                }
+
             } catch(libJackSMS::exceptionXmlError e) {
                 emit criticalError(e.what());
             } catch(...) {
@@ -841,36 +866,37 @@ namespace libJackSMS {
             webClient->interrupt();
         }
 
-        bool updateServicesManagerBase::downloadUpdates(libJackSMS::dataTypes::servicesType  _servizi)
+        bool updateServicesManagerBase::downloadUpdates(libJackSMS::dataTypes::servicesType &_servizi)
         {
-            if (ps.useProxy()) {
+            if (ps.useProxy())
+            {
                 webClient->setProxyServer(ps.getServer(), ps.getPort(), ps.getType());
                 if (ps.useAuth())
                     webClient->setProxyAuthentication(ps.getUsername(), ps.getPassword());
             }
 
             bool result = false;
-            for(libJackSMS::dataTypes::servicesType::iterator i = _servizi.begin(); i != _servizi.end(); ++i) {
+            for(libJackSMS::dataTypes::servicesType::iterator i = _servizi.begin(); i != _servizi.end(); ++i)
                 webClient->insertFormData(i.value().getId(), i.value().getVersion());
-            }
 
             QString xml = webClient->submitPost("http://api.freesmee.com/servicesFullXML?desktop=" + QString(FREESMEE_VERSION), true);
 
-            if (xml.isEmpty()) {
-
-            } else if (webClient->hasError()) {
-
-            } else {
-
-                if (!aborted) {
+            if (!xml.isEmpty() && !webClient->hasError())
+            {
+                if (!aborted)
+                {
                     xmlDocument->setXml(xml);
                     servXml = xml;
                     libJackSMS::dataTypes::servicesType  nuoviServizi;
                     xmlDocument->parseServices(nuoviServizi);
+
                     {
-                        for (libJackSMS::dataTypes::servicesType::iterator i = nuoviServizi.begin(); i != nuoviServizi.end(); ++i) {
+                        for (libJackSMS::dataTypes::servicesType::iterator i = nuoviServizi.begin(); i != nuoviServizi.end(); ++i)
+                        {
                             libJackSMS::dataTypes::servicesType::iterator x = _servizi.find(i.value().getId());
-                            if (x == _servizi.end()) {
+
+                            if (x == _servizi.end())
+                            {
                                 result = true;
                                 _servizi.insert(i.value().getId(), i.value());
                                 updateResults.push_back(qMakePair(QString("a"), i.value().getName() + " (v" + i.value().getVersion() + ")"));
@@ -885,7 +911,6 @@ namespace libJackSMS {
                     }
 
                     return result;
-
                 }
             }
 
@@ -895,8 +920,9 @@ namespace libJackSMS {
         }
 
         void cyclicMessengerChecker::run() {
-            qDebug() << "cyclicMessengerChecker!!!!!!!!!!!!!!!!!!!!!!!";
-            try {
+            //qDebug() << "cyclicMessengerChecker";
+            try
+            {
                 libJackSMS::serverApi::instantMessenger im(loginString, ps);
 
                 if (im.checkMessages()) {
@@ -937,31 +963,40 @@ namespace libJackSMS {
 
         void gmailAddressBookImporter::run()
         {
-            libJackSMS::xmlParserApi::xmlParserServerApiTicpp xmlDocument;
-            netClient::netClientQHttp webClient;
+            libJackSMS::xmlParserApi::xmlParserServerApiTicpp *xmlDocument = new libJackSMS::xmlParserApi::xmlParserServerApiTicpp();
+            netClient::netClientQHttp *webClient = new netClient::netClientQHttp();
 
-            libJackSMS::encodingPercent pEncoder;
-            webClient.insertFormData("email", pEncoder.getEncodedString(gmailuser));
-            webClient.insertFormData("password", pEncoder.getEncodedString(gmailpsw));
-            QString xml = webClient.submitPost("http://api.freesmee.com/importAbookFromGoogle?desktop=" + QString(FREESMEE_VERSION) + "&token=" + loginId + "&o=xml", true);
+            if (ps.useProxy())
+            {
+                webClient->setProxyServer(ps.getServer(), ps.getPort(), ps.getType());
+                if (ps.useAuth())
+                    webClient->setProxyAuthentication(ps.getUsername(), ps.getPassword());
+            }
+
+            webClient->setUserAgent("Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.3) Gecko/20070309 Firefox/2.0.0.3");
+
+            webClient->insertFormData("email",    gmailuser.toUtf8().toPercentEncoding());
+            webClient->insertFormData("password", gmailpsw.toUtf8().toPercentEncoding());
+
+            QString xml = webClient->submitPost("http://api.freesmee.com/importAbookFromGoogle?desktop=" + QString(FREESMEE_VERSION) + "&token=" + loginId + "&o=xml", true);
 
             if (xml.isEmpty())
             {
                 emit importError("Empty response");
             }
-            else if (webClient.hasError())
+            else if (webClient->hasError())
             {
                 emit importError("Unexpected response");
             }
             else
             {
-                xmlDocument.setXml(xml);
+                xmlDocument->setXml(xml);
                 int count;
-                if (xmlDocument.checkGmailImport(count))
+                if (xmlDocument->checkGmailImport(count))
                 {
                     emit importDone(count);
                 } else {
-                    QString e = xmlDocument.gmailError();
+                    QString e = xmlDocument->gmailError();
                     if (e == "1")
                         emit wrongCredentials();
                     else
@@ -971,9 +1006,7 @@ namespace libJackSMS {
         }
 
         gmailAddressBookImporter::gmailAddressBookImporter(QString _loginId, dataTypes::proxySettings _ps) :
-                xmlDocument(new libJackSMS::xmlParserApi::xmlParserServerApiTicpp()),
                 loginId(_loginId),
-                webClient(new netClient::netClientQHttp()),
                 ps(_ps)
         {
         }
@@ -988,27 +1021,33 @@ namespace libJackSMS {
         /**********************adv checker***********************/
 
         advChecker::advChecker(QString _loginId, QString _messaggio, dataTypes::proxySettings _ps) :
-                xmlDocument(new libJackSMS::xmlParserApi::xmlParserServerApiTicpp()),
                 loginId(_loginId),
                 messaggio(_messaggio),
-                webClient(new netClient::netClientQHttp()),
                 ps(_ps)
         {
         }
 
         void advChecker::run()
         {
-            libJackSMS::xmlParserApi::xmlParserServerApiTicpp xmlDocument;
-            netClient::netClientQHttp webClient;
+            libJackSMS::xmlParserApi::xmlParserServerApiTicpp *xmlDocument = new libJackSMS::xmlParserApi::xmlParserServerApiTicpp();
+            netClient::netClientQHttp *webClient = new netClient::netClientQHttp();
 
-            QString requestUrl ="http://api.freesmee.com/getAd?desktop=" + QString(FREESMEE_VERSION) + "&token=" + loginId + "&o=xml&text=" + messaggio;
-            QString xml = webClient.submitPost(requestUrl.toAscii().toPercentEncoding(), true);
-
-            if (!xml.isEmpty() && !webClient.hasError())
+            if (ps.useProxy())
             {
-                xmlDocument.setXml(xml);
-                QString url = xmlDocument.getAdvUrl();
-                if (url != "")
+                webClient->setProxyServer(ps.getServer(), ps.getPort(), ps.getType());
+                if (ps.useAuth())
+                    webClient->setProxyAuthentication(ps.getUsername(), ps.getPassword());
+            }
+
+            webClient->setUserAgent("Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.3) Gecko/20070309 Firefox/2.0.0.3");
+
+            QString xml = webClient->submitPost("http://api.freesmee.com/getAd?desktop=" + QString(FREESMEE_VERSION) + "&token=" + loginId + "&o=xml&text=" + messaggio.toUtf8().toPercentEncoding(), true);
+
+            if (!xml.isEmpty() && !webClient->hasError())
+            {
+                xmlDocument->setXml(xml);
+                QString url = xmlDocument->getAdvUrl();
+                if (!url.isEmpty())
                     emit adv(url);
             }
         }

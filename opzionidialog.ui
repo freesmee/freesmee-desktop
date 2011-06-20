@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>624</width>
-    <height>322</height>
+    <width>640</width>
+    <height>337</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -97,7 +97,7 @@
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="generali">
           <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -126,7 +126,7 @@
              <item>
               <widget class="QCheckBox" name="checkShowAdv">
                <property name="text">
-                <string>Visualizza Pubblicità e ottieni tanti sms gratis!</string>
+                <string>Visualizza Pubblicità e ottieni tanti sms gratis!</string>
                </property>
                <property name="checked">
                 <bool>true</bool>
@@ -378,7 +378,7 @@
              <item>
               <widget class="QCheckBox" name="checkUseCaptcha">
                <property name="text">
-                <string>Attiva riconoscimento CAPTCHA se è disponibile un plugin
+                <string>Attiva riconoscimento CAPTCHA se ï¿½ disponibile un plugin
 appropriato</string>
                </property>
               </widget>

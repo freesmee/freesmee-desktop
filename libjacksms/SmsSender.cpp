@@ -65,41 +65,36 @@ namespace libJackSMS
     {
         try
         {
-            smsSenderBase sndr(loginId, servizi, ps);
+            sndr = new smsSenderBase(loginId, servizi, ps);
             connect(&sleepClockTimer, SIGNAL(timeout()), this, SLOT(slotTimerClocked()));
-            connect(this, SIGNAL(abortSignal()), &sndr, SLOT(abort()));
+            connect(this, SIGNAL(abortSignal()), sndr, SLOT(abort()));
 
-            sndr.setSalvaCookies(SalvaCookies);
-            sndr.setRecipient(destinatario);
-            sndr.setMessage(messaggio);
-            sndr.setAccount(account);
-            sndr.setGetAdv(getAdv);
+            sndr->setSalvaCookies(SalvaCookies);
+            sndr->setRecipient(destinatario);
+            sndr->setMessage(messaggio);
+            sndr->setAccount(account);
+            sndr->setGetAdv(getAdv);
 
-            connect(&sndr, SIGNAL(operation()), this, SLOT(slotOperation()));
-            connect(&sndr, SIGNAL(operation(QString)), this, SLOT(slotError(QString)));
-            connect(&sndr, SIGNAL(error(QString)), this, SLOT(slotError(QString)));
-            connect(&sndr, SIGNAL(success(QString)), this, SLOT(slotSuccess(QString)));
-            connect(&sndr, SIGNAL(captcha(QByteArray)), this, SLOT(slotCaptcha(QByteArray)));
-            connect(&sndr, SIGNAL(sleepBeforeFound(int)), this, SLOT(slotSleepBeforeFound(int)));
-            connect(&sndr, SIGNAL(adv(QString)), this, SIGNAL(adv(QString)));
+            connect(sndr, SIGNAL(operation()), this, SLOT(slotOperation()));
+            connect(sndr, SIGNAL(operation(QString)), this, SLOT(slotError(QString)));
+            connect(sndr, SIGNAL(error(QString)), this, SLOT(slotError(QString)));
+            connect(sndr, SIGNAL(success(QString, int)), this, SLOT(slotSuccess(QString, int)));
+            connect(sndr, SIGNAL(captcha(QByteArray)), this, SLOT(slotCaptcha(QByteArray)));
+            connect(sndr, SIGNAL(sleepBeforeFound(int)), this, SLOT(slotSleepBeforeFound(int)));
+            connect(sndr, SIGNAL(adv(QString)), this, SIGNAL(adv(QString)));
 
             if (!continueSendFlag)
             {
-                sndr.send();
-                if (sndr.isInterruptedByCaptcha()) {
-                    continueSendFlag = true;
-                    pageIndex = sndr.getCaptchaPageIndex();
-                    contenuti = sndr.getContents();
-                }
+                sndr->send();
 
             } else {
 
-                sndr.setContents(contenuti);
-                sndr.setNumberOfFirstPage(pageIndex);
-                sndr.send(captchaValue);
+                sndr->setContents(contenuti);
+                sndr->setNumberOfFirstPage(pageIndex);
+                sndr->send(captchaValue);
             }
 
-            sndr.disconnect(this);
+            sndr->disconnect(this);
 
         } catch(libJackSMS::netClient::abortedException e) {
         } catch(libJackSMS::exceptionSharedMemory e) {
@@ -126,18 +121,22 @@ namespace libJackSMS
 
     void smsSender::slotError(QString s)
     {
-        emit error(s);
         connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
+        emit error(s);
     }
 
-    void smsSender::slotSuccess(QString s)
+    void smsSender::slotSuccess(QString s, int n)
     {
-        emit success(s);
         connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
+        emit success(s, n);
     }
 
     void smsSender::slotCaptcha(QByteArray a)
     {
+        continueSendFlag = true;
+        pageIndex = sndr->getCaptchaPageIndex();
+        contenuti = sndr->getContents();
+
         emit captcha(a);
     }
 
@@ -230,7 +229,7 @@ namespace libJackSMS
         {
             QString code = "%%" + i->getName() + "%%";
             /*if (i->getToEncode())
-                _input=_input.replace(code,QString(i->getValue().toAscii().toPercentEncoding()));
+                _input=_input.replace(code,QString(i->getValue().toUtf8().toPercentEncoding()));
             else*/
             _input = _input.replace(code,i->getValue());
         }
@@ -270,15 +269,14 @@ namespace libJackSMS
             if (account.getId() == "1")
             {
                 // JMS
-
-                if (getAdv) {
+                if (getAdv)
+                {
                     libJackSMS::serverApi::advChecker *advcheck = new libJackSMS::serverApi::advChecker(loginId, messaggio.getText(), ps);
                     connect(advcheck, SIGNAL(adv(QString)), this, SIGNAL(adv(QString)));
                     advcheck->start();
                 }
 
                 webClient = new netClient::netClientQHttp();
-                webClient->setUseCookie(true);
 
                 if (ps.useProxy()) {
                     webClient->setProxyServer(ps.getServer(), ps.getPort(), ps.getType());
@@ -287,8 +285,9 @@ namespace libJackSMS
                 }
 
                 webClient->insertFormData("account_id", "1");
-                webClient->insertFormData("recipient", destinatario.toString().toAscii().toPercentEncoding());
-                webClient->insertFormData("message", messaggio.getText().toAscii().toPercentEncoding());
+                webClient->insertFormData("recipient", destinatario.toString().toUtf8().toPercentEncoding());
+                webClient->insertFormData("message", messaggio.getText().toUtf8().toPercentEncoding());
+
 
                 QString resultOfApi = webClient->submitPost("http://stream.freesmee.com/send?desktop=" + QString(FREESMEE_VERSION) + "&token=" + loginId, true);
 
@@ -344,7 +343,7 @@ namespace libJackSMS
                                 int res = result["result"].toInt();
 
                                 if (res == 1)
-                                    emit success(result["message"].toString().isEmpty() ? "" : result["message"].toString());
+                                    emit success((result["message"].toString().isEmpty() ? "" : result["message"].toString()), result["sent"].toInt());
                                 else if (res == 0)
                                     emit error(result["message"].toString().isEmpty() ? "Errore durante l'invio" : result["message"].toString());
 
@@ -374,7 +373,8 @@ namespace libJackSMS
 
                 } else {
 
-                    if (getAdv) {
+                    if (getAdv)
+                    {
                         libJackSMS::serverApi::advChecker *advcheck = new libJackSMS::serverApi::advChecker(loginId, messaggio.getText(), ps);
                         connect(advcheck, SIGNAL(adv(QString)), this, SIGNAL(adv(QString)));
                         advcheck->start();
@@ -427,17 +427,20 @@ namespace libJackSMS
                     QString resultString = "";
                     bool forceDeleteCookies = false;
 
-                    while (servizioDaUsare.nextPage() || isPostprocedurePage) {
-
+                    while (servizioDaUsare.nextPage() || isPostprocedurePage)
+                    {
                         if (webClient->getAborted())
                             throw netClient::abortedException();
 
                         dataTypes::paginaServizio paginaCorrente;
 
-                        if (isPostprocedurePage) {
+                        if (isPostprocedurePage)
+                        {
                             log.addNotice("Fine Procedure - Inizio Postprocedure");
                             paginaCorrente = servizioDaUsare.getPostprocedurePage();
-                        } else {
+                        }
+                        else
+                        {
                             pageCounter++;
                             paginaCorrente = servizioDaUsare.currentPage();
                         }
@@ -446,7 +449,7 @@ namespace libJackSMS
                         if (paginaCorrente.getSleepbefore() > 0) {
                             mutex.lock();
 
-                            // ricordando che lo sleepbefore è espresso in secondi si moltiplica per 1000 per ottenere i millisecondi
+                            // ricordando che lo sleepbefore Ã¨ espresso in secondi si moltiplica per 1000 per ottenere i millisecondi
                             int secs = paginaCorrente.getSleepbefore();
                             emit sleepBeforeFound(secs);
                             waitOnSleepBefore.wait(&mutex, secs*1000);
@@ -490,7 +493,8 @@ namespace libJackSMS
                             }
                         }
 
-                        if (doPage){
+                        if (doPage)
+                        {
                             QString parsedCurrentUrlPage = paginaCorrente.getUrl();
 
                             parsedCurrentUrlPage = substitute(parsedCurrentUrlPage, elenco_credenziali);
@@ -499,7 +503,8 @@ namespace libJackSMS
 
                             log.addNotice("Pagina: " + parsedCurrentUrlPage);
                             emit operation();
-                            if (paginaCorrente.getIsCaptcha()) {
+                            if (paginaCorrente.getIsCaptcha())
+                            {
                                 log.addNotice("Eseguita come pagina captcha");
 
                                 while (paginaCorrente.nextHeader()) {
@@ -621,7 +626,7 @@ namespace libJackSMS
                                                     isPostprocedurePage = true;
                                                     continue;
                                                 } else {
-                                                    emit success(resultString);
+                                                    emit success(resultString, -1);
                                                     optionalDeleteCookies();
                                                     break;
                                                 }
@@ -666,7 +671,7 @@ namespace libJackSMS
                                             var_name = substitute(var_name, elenco_contenuti);
 
                                             if (var.getToEncode())
-                                                var_value = QString(var_value.toAscii().toPercentEncoding());
+                                                var_value = QString(var_value.toUtf8().toPercentEncoding());
 
                                             webClient->insertFormData(var_name, var_value);
                                             log.addNotice("Aggiunta variabile: " + var_name + " - " + var_value);
@@ -749,7 +754,7 @@ namespace libJackSMS
                                                 isPostprocedurePage = true;
                                                 continue;
                                             } else {
-                                                emit success(resultString);
+                                                emit success(resultString, -1);
                                                 optionalDeleteCookies();
                                                 break;
                                             }
@@ -774,7 +779,7 @@ namespace libJackSMS
             if (!hasAborted)
                 emit error("Errore Generico. Verificare la Connessione.");
 
-            //cancello il webclient se è già stato creato
+            //cancello il webclient se Ã¨ giÃ  stato creato
             if(webClient != NULL)
                 webClient->~netClientGeneric();
         }
@@ -791,7 +796,7 @@ namespace libJackSMS
             else
                 optionalDeleteCookies();
         } else if (resultSend) {
-            emit success(resultString);
+            emit success(resultString, -1);
             optionalDeleteCookies();
         }
     }

@@ -43,7 +43,7 @@ public:
     void clear();
     void refreshAll(MainJackSMS* main, QListWidget* smslist, bool clean = true);
     void refreshOneBottom(MainJackSMS* main, SmsWidget* sms);
-    bool checkNeedRefresh(QString _id, QListWidget* smslist);
+    bool checkNeedRefresh(QString _id);
     void itemAdded(SmsWidget* sms, bool unread);
     NameWidget* findNameWidget(libJackSMS::dataTypes::phoneNumber numero);
     NameWidget* findNameWidget(libJackSMS::dataTypes::contact c);

@@ -48,6 +48,7 @@ editcontattodialog::editcontattodialog(QWidget *parent, const libJackSMS::dataTy
     m_ui->radioNuovo->hide();
     m_ui->ComboGruppo->hide();
     m_ui->nuovogruppo->hide();
+    m_ui->autoDetectButton->hide();
 
     libJackSMS::dataTypes::contact contatto(Rubrica[contactId]);
 
@@ -101,7 +102,7 @@ void editcontattodialog::on_salva_clicked()
     numeroValido = num.parse( (m_ui->intPref->text().isEmpty() ? "" : m_ui->intPref->text() + ".") + m_ui->pref->text() + "." + m_ui->num->text());
 
     if (!numeroValido) {
-        QMessageBox::critical(this, "Attenzione", "Il numero inserito non è valido, ricontrollalo, oppure se trovi che questo sia un errore segnalalo, grazie.");
+        QMessageBox::critical(this, "Attenzione", "Il numero inserito non Ã¨ valido, ricontrollalo, oppure se trovi che questo sia un errore segnalalo, grazie.");
         return;
     }
 
@@ -130,7 +131,8 @@ void editcontattodialog::on_salva_clicked()
     saver->updateContact(contatto);
 }
 
-void editcontattodialog::salvataggioOk(libJackSMS::dataTypes::contact c) {
+void editcontattodialog::salvataggioOk(libJackSMS::dataTypes::contact c)
+{
     Rubrica[c.getId()] = c;
     emit contactEdited(c.getId());
     close();

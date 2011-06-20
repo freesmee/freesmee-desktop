@@ -70,6 +70,16 @@ namespace libJackSMS {
             return versione;
         }
 
+        void service::setServiceType(QString _service_type)
+        {
+            service_type = _service_type;
+        }
+
+        QString service::getServiceType() const
+        {
+            return service_type;
+        }
+
         void service::setMaxSms(QString _maxSms) {
             smsMassimi = _maxSms;
         }
