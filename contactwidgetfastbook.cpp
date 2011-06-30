@@ -26,27 +26,6 @@
 #include <QLabel>
 #include <QCheckBox>
 
-/*contactWidgetFastBook::contactWidgetFastBook(QString _id,QString _nome,QString _numero,QPixmap _icoServ,QString _accountId):id(_id),nomeContatto(_nome),accountId(_accountId),numero(_numero)
-{
-       hLayout = new QHBoxLayout;
-       hLayout->setMargin(2);
-
-       nome=new QLabel(_nome);
-       //icon->setMaximumSize(1000,16);
-       //nome->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-       icon=new QLabel;
-       icon->setMaximumSize(16,16);
-       //icon->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Minimum);
-       icon->setPixmap(_icoServ);
-       hLayout->addWidget(icon);
-       hLayout->addWidget(nome);
-       setLayout(hLayout);
-       labelIconInfo=new QLabel;
-       setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-       adjustSize();
-
-}*/
-
 contactWidgetFastBook::contactWidgetFastBook(const libJackSMS::dataTypes::contact &_c, QPixmap _icoServ, bool addCheckBox) :
         id(_c.getId()),
         nomeContatto(_c.getName()),
@@ -104,16 +83,6 @@ void contactWidgetFastBook::showIcon(bool value) {
     else
         icon->hide();
     return;
-}
-
-void contactWidgetFastBook::setInfoIcon(QPixmap _infoicon, const QString &_tooltip) {
-    labelIconInfo->deleteLater();
-    labelIconInfo = new QLabel;
-    labelIconInfo->setMaximumSize(16,16);
-    labelIconInfo->setPixmap(_infoicon);
-    labelIconInfo->setToolTip(_tooltip);
-    labelIconInfo->setCursor(Qt::WhatsThisCursor);
-    hLayout->addWidget(labelIconInfo);
 }
 
 QString contactWidgetFastBook:: getName() const {

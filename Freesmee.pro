@@ -32,6 +32,9 @@ TARGET = Freesmee
 TEMPLATE = app
 INCLUDEPATH += "./include"
 
+# Togliere il commento dalla riga seguente per creare una versione portable di Freesmee
+# DEFINES += PORTABLE
+
 macx { 
     SOURCES += MacOSspecific.cpp
     LIBS += /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation
@@ -44,14 +47,8 @@ win32 {
     RC_FILE = Freesmee.rc
 }
 
-#CONFIG(debug, debug|release):LIBS += -lticppd
-#CONFIG(release, debug|release):LIBS += -lticpp
 LIBS += -lticpp
-
 DEFINES += TIXML_USE_TICPP
-
-# Togliere il commento per creare una versione Portable
-# DEFINES += PORTABLE
 
 SOURCES += main.cpp \
     mainjacksms.cpp \

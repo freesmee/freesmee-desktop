@@ -266,14 +266,15 @@ namespace libJackSMS
     {
         try
         {
+            libJackSMS::serverApi::advChecker *advcheck = NULL;
             if (account.getId() == "1")
             {
                 // JMS
                 if (getAdv)
                 {
-                    libJackSMS::serverApi::advChecker *advcheck = new libJackSMS::serverApi::advChecker(loginId, messaggio.getText(), ps);
+                    advcheck = new libJackSMS::serverApi::advChecker(loginId, messaggio.getText(), ps);
                     connect(advcheck, SIGNAL(adv(QString)), this, SIGNAL(adv(QString)));
-                    advcheck->start();
+                    advcheck->getAdv();
                 }
 
                 webClient = new netClient::netClientQHttp();
@@ -287,7 +288,6 @@ namespace libJackSMS
                 webClient->insertFormData("account_id", "1");
                 webClient->insertFormData("recipient", destinatario.toString().toUtf8().toPercentEncoding());
                 webClient->insertFormData("message", messaggio.getText().toUtf8().toPercentEncoding());
-
 
                 QString resultOfApi = webClient->submitPost("http://stream.freesmee.com/send?desktop=" + QString(FREESMEE_VERSION) + "&token=" + loginId, true);
 
@@ -375,9 +375,9 @@ namespace libJackSMS
 
                     if (getAdv)
                     {
-                        libJackSMS::serverApi::advChecker *advcheck = new libJackSMS::serverApi::advChecker(loginId, messaggio.getText(), ps);
+                        advcheck = new libJackSMS::serverApi::advChecker(loginId, messaggio.getText(), ps);
                         connect(advcheck, SIGNAL(adv(QString)), this, SIGNAL(adv(QString)));
-                        advcheck->start();
+                        advcheck->getAdv();
                     }
 
                     bool resultSend = false;

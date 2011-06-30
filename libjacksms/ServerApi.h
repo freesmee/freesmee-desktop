@@ -647,7 +647,8 @@ namespace libJackSMS
                 void run();
 
             public:
-                advChecker(QString _loginId, QString _messaggio, dataTypes::proxySettings _ps=dataTypes::proxySettings() );
+                advChecker(QString _loginId, QString _messaggio, dataTypes::proxySettings _ps = dataTypes::proxySettings());
+                void getAdv();
 
             signals:
                 void adv(QString url);

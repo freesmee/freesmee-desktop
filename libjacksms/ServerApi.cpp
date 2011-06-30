@@ -1027,6 +1027,11 @@ namespace libJackSMS {
         {
         }
 
+        void advChecker::getAdv()
+        {
+            run();
+        }
+
         void advChecker::run()
         {
             libJackSMS::xmlParserApi::xmlParserServerApiTicpp *xmlDocument = new libJackSMS::xmlParserApi::xmlParserServerApiTicpp();
@@ -1050,6 +1055,8 @@ namespace libJackSMS {
                 if (!url.isEmpty())
                     emit adv(url);
             }
+
+            deleteLater();
         }
 
     }
