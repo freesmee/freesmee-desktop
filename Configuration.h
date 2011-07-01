@@ -28,11 +28,10 @@
 #include <QByteArray>
 
 #ifdef __APPLE__
-
 QString getMacJackPath();
 QString getJackPluginsPath();
 #endif
 
-#define FREESMEE_VERSION "0.6-b2"
+#define FREESMEE_VERSION "0.6-b3"
 
 #endif // CONFIGURATION_H

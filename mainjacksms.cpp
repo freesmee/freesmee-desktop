@@ -201,6 +201,12 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     ui->ricordaPassword->setChecked(false);
     ui->autoLogin->setChecked(false);
 
+    int xpos = 80;
+    int ypos = 80;
+    int width = 560;
+    int height = 400;
+    bool maximize = false;
+
     /*questo carica le opzioni globali*/
     libJackSMS::localApi::synchronousOptionLoader l("");
     if(l.load(GlobalOptions)) {
@@ -215,11 +221,6 @@ MainJackSMS::MainJackSMS(QWidget *parent)
 
 //        if (!geometryRestored)
 //            setGeometry(80, 80, 560, 400);
-
-        int xpos = 80;
-        int ypos = 80;
-        int width = 560;
-        int height = 400;
 
         libJackSMS::dataTypes::optionsType::const_iterator i = GlobalOptions.find("xpos");
         if (i != GlobalOptions.end())
@@ -245,18 +246,20 @@ MainJackSMS::MainJackSMS(QWidget *parent)
 
         }
 
-        setGeometry(xpos, ypos, width, height);
-
         i = GlobalOptions.find("window-maximized");
         if (i != GlobalOptions.end())
             if (i.value() == "yes")
-                showMaximized();
+                maximize = true;
     }
+
+    setGeometry(xpos, ypos, width, height);
+    if (maximize)
+        showMaximized();
 
     connect(ui->username->lineEdit(), SIGNAL(returnPressed()), this, SLOT(username_returnPressed()));
 
     QDateTime midnight;
-    midnight.setTime(QTime(23,59,59,999));
+    midnight.setTime(QTime(23, 59, 59, 999));
     midnight.setDate(QDate::currentDate());
     int secToMidnight=QDateTime::currentDateTime().secsTo(midnight);  //directly from the Maiden Album "powerslave"....2 minutes to midnight! :P
     resetCounterTimer.singleShot(secToMidnight*1000,this,SLOT(resetCounters()));
@@ -3095,7 +3098,10 @@ void MainJackSMS::checkSalvaButtonStatusToSet()
 void MainJackSMS::elaboraRecipientLine(bool StealFocus)
 {
     if (invioInCorso)
+    {
+        QMessageBox::information(this, "Freesmee", "Non si possono modificare i destinatari durante l'invio.");
         return;
+    }
 
     QListWidgetItem* item = new QListWidgetItem;
     libJackSMS::dataTypes::phoneNumber n;
@@ -3119,11 +3125,36 @@ void MainJackSMS::elaboraRecipientLine(bool StealFocus)
 
     // Controllo se il numero e' valido
     if (!n.getIsValid())
+    {
+        QMessageBox::information(this, "Freesmee", "Il numero inserito non e' valido.");
         return;
+    }
 
     // Controllo se è già presente nella lista
     if (isInRecipients(n))
     {
+        // se e' l'unico selezionato comunque controllo se settare il suo account
+        for (libJackSMS::dataTypes::phoneBookType::const_iterator i = Rubrica.begin(); i != Rubrica.end(); ++i)
+        {
+            if (name.toUpper() == i->getName().toUpper() || i->getPhone() == n)
+            {
+                libJackSMS::dataTypes::configuredServicesType::const_iterator serv = ElencoServiziConfigurati.find(i->getAccount());
+                if (ui->recipientListWidget->count() == 1)
+                {
+                    if (Opzioni["set-account"] != "no" && messageType == TYPE_SMS)
+                    {
+                        if (serv != ElencoServiziConfigurati.end())
+                        {
+                            int index = ui->comboServizio->findData(serv.value().getName(), Qt::UserRole);
+                            if (index >= 0 && index != ui->comboServizio->currentIndex())
+                                ui->comboServizio->setCurrentIndex(index);
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
         pulisciRecipientLine(StealFocus);
         return;
     }
@@ -3159,8 +3190,7 @@ void MainJackSMS::elaboraRecipientLine(bool StealFocus)
                         if (serv != ElencoServiziConfigurati.end())
                         {
                             int index = ui->comboServizio->findData(serv.value().getName(), Qt::UserRole);
-
-                            if (index >= 0)
+                            if (index >= 0 && index != ui->comboServizio->currentIndex())
                                 ui->comboServizio->setCurrentIndex(index);
                         }
                     }
@@ -3431,16 +3461,32 @@ void MainJackSMS::on_RubricaVeloce_itemClicked(QListWidgetItem *item)
 
 void MainJackSMS::RubricaVeloceSelected(QListWidgetItem *item)
 {
-    if (invioInCorso)
-        return;
-
     if (item == NULL)
         return;
+
+    if (invioInCorso)
+    {
+        QMessageBox::information(this, "Freesmee", "Non si possono modificare i destinatari durante l'invio.");
+        return;
+    }
 
     contactWidgetFastBook *it = static_cast<contactWidgetFastBook*>(ui->RubricaVeloce->itemWidget(item));
 
     if (isInRecipients(it->getContact().getPhone()))
+    {
+        if (Opzioni["set-account"] != "no" && messageType == TYPE_SMS)
+        {
+            libJackSMS::dataTypes::configuredServicesType::const_iterator i = ElencoServiziConfigurati.find(it->getContact().getAccount());
+
+            if (i != ElencoServiziConfigurati.end())
+            {
+                int index = ui->comboServizio->findData(i.value().getName(), Qt::UserRole);
+                if (index >= 0 && index != ui->comboServizio->currentIndex())
+                    ui->comboServizio->setCurrentIndex(index);
+            }
+        }
         return;
+    }
 
     ui->recipientListWidget->clear();
 
@@ -3470,7 +3516,7 @@ void MainJackSMS::RubricaVeloceSelected(QListWidgetItem *item)
         if (i != ElencoServiziConfigurati.end())
         {
             int index = ui->comboServizio->findData(i.value().getName(), Qt::UserRole);
-            if (index >= 0)
+            if (index >= 0 && index != ui->comboServizio->currentIndex())
                 ui->comboServizio->setCurrentIndex(index);
         }
     }
