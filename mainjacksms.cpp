@@ -1129,6 +1129,7 @@ int MainJackSMS::iterateSendSms(bool first, bool result, QString _text) {
 
 void MainJackSMS::on_InviaSMS_clicked()
 {
+    invioInCorso = true;
     ui->listSmsNames->clearSelection();
     ui->smsListWidget->clearSelection();
     if (ui->RicercaVeloceIM->text() != "")
@@ -1142,16 +1143,18 @@ void MainJackSMS::on_InviaSMS_clicked()
     if (ui->TestoSMS->toPlainText().isEmpty()) {
         QMessageBox::information(this, "Freesmee", "Il testo del messaggio e' vuoto");
         ui->TestoSMS->setFocus();
+        invioInCorso = false;
         return;
     }
 
     if (ui->recipientListWidget->count() == 0) {
         QMessageBox::information(this, "Freesmee", "Il destinatario non e' stato specificato.");
         ui->recipientLine->setFocus();
+        invioInCorso = false;
         return;
     }
 
-    invioInCorso = true;
+
     DisabilitaUi();
 
     QString idAccount = "1";
@@ -3098,10 +3101,7 @@ void MainJackSMS::checkSalvaButtonStatusToSet()
 void MainJackSMS::elaboraRecipientLine(bool StealFocus)
 {
     if (invioInCorso)
-    {
-        QMessageBox::information(this, "Freesmee", "Non si possono modificare i destinatari durante l'invio.");
         return;
-    }
 
     QListWidgetItem* item = new QListWidgetItem;
     libJackSMS::dataTypes::phoneNumber n;
@@ -3465,10 +3465,7 @@ void MainJackSMS::RubricaVeloceSelected(QListWidgetItem *item)
         return;
 
     if (invioInCorso)
-    {
-        QMessageBox::information(this, "Freesmee", "Non si possono modificare i destinatari durante l'invio.");
         return;
-    }
 
     contactWidgetFastBook *it = static_cast<contactWidgetFastBook*>(ui->RubricaVeloce->itemWidget(item));
 

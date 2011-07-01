@@ -21,7 +21,6 @@
 
 */
 
-
 #include "streamer.h"
 #include "Configuration.h"
 #include "json/json.h"
@@ -54,14 +53,8 @@ namespace libJackSMS
             connect(&sock, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(state(QAbstractSocket::SocketState)));
             connect(&pingTimer, SIGNAL(timeout()), this, SLOT(ping()));
             connect(&pingTimeout, SIGNAL(timeout()), this, SLOT(pingTimeoutError()));
-            //connect(&sock,SIGNAL(aboutToClose()),this,SLOT(relaunchDisconnected()));
-            //connect(&reconnectTimer,SIGNAL(timeout()),this,SLOT(tryReconnect()));
-            //connect(&sendSock,SIGNAL(readyRead()),this,SLOT(sendDataReceived()));
-            //connect(&sendSock,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(sendErrorDisconnected(QAbstractSocket::SocketError)));
 
             pingTimeout.setSingleShot(true);
-            //reconnectTimer.setSingleShot(true);
-            //multiplier=0;
         }
 
         void Streamer::relaunchDisconnected()
@@ -80,15 +73,12 @@ namespace libJackSMS
 
         void Streamer::errorDisconnected(QAbstractSocket::SocketError e)
         {
-            //if (e!=QAbstractSocket::RemoteHostClosedError){
             pingTimer.stop();
             pingTimeout.stop();
             sock.abort();
             buffer.clear();
-            //multiplier++;
 
             emit serviceNotActive(true, QString::number(e) + ": " + sock.errorString());
-            //}
         }
 
         void Streamer::state(QAbstractSocket::SocketState)
@@ -104,8 +94,6 @@ namespace libJackSMS
             try
             {
                 sock.abort();
-                //multiplier++;
-                //reconnectTimer.start(20 * 1000);
                 emit serviceNotActive(true, "Timeout");
             } catch(...) {
                 emit serviceNotActive(true, "Errore sconosciuto: section 3");
@@ -331,7 +319,6 @@ namespace libJackSMS
                 sock.write(sn.toUtf8());
 
                 pingTimer.start(1000 * 60);
-                //reconnectTimer.stop();
 
             } catch(...) {
                 emit serviceNotActive(true, "Errore sconosciuto: section 6");
@@ -381,7 +368,6 @@ namespace libJackSMS
 
                 stopped = false;
                 sock.connectToHost("stream.freesmee.com", 80);
-                //reconnectTimer.start(40*1000);
 
             } catch(...) {
                 emit serviceNotActive(true,"Errore sconosciuto: section 4");
