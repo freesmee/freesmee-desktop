@@ -54,12 +54,14 @@ editcontattodialog::editcontattodialog(QWidget *parent, const libJackSMS::dataTy
 
     {
         for (libJackSMS::dataTypes::configuredServicesType::const_iterator i = ElencoServiziConfigurati.begin(); i != ElencoServiziConfigurati.end(); ++i) {
-            if (i.value().getId() != "1") {
+            if ((i.value().getId() != "1") && (i.value().getId() != "2"))
                 m_ui->comboaccount->addItem(ElencoServizi[i.value().getService()].getIcon(),i.value().getName());
-            }
         }
+
         m_ui->comboaccount->model()->sort(0);
+
         m_ui->comboaccount->insertItem(0, ElencoServizi[ElencoServiziConfigurati["1"].getService()].getIcon(), ElencoServiziConfigurati["1"].getName());
+        m_ui->comboaccount->insertItem(1, ElencoServizi[ElencoServiziConfigurati["2"].getService()].getIcon(), ElencoServiziConfigurati["2"].getName());
     }
 
     m_ui->nome->setText(contatto.getName());
@@ -68,7 +70,6 @@ editcontattodialog::editcontattodialog(QWidget *parent, const libJackSMS::dataTy
     m_ui->num->setText(contatto.getPhone().getNum());
     //m_ui->ComboGruppo->setCurrentIndex(m_ui->ComboGruppo->findText(Rubrica[nameContact].gruppo));
     m_ui->comboaccount->setCurrentIndex(m_ui->comboaccount->findText(ElencoServiziConfigurati[contatto.getAccount()].getName()));
-
 }
 
 editcontattodialog::~editcontattodialog()

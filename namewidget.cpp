@@ -40,7 +40,7 @@ NameWidget::NameWidget(QString _name, libJackSMS::dataTypes::phoneNumber _numero
     labelName = new QLabel(_name);
     labelName->setFont(QFont(labelName->font().family(), -1, QFont::Bold, false));
     labelName->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    labelName->setMinimumSize(170, 15);
+    labelName->setFixedSize(180, 15);
 
     lastMessage = _lastMessage;
     if(_lastMessage.length() > 28)
@@ -49,7 +49,7 @@ NameWidget::NameWidget(QString _name, libJackSMS::dataTypes::phoneNumber _numero
     labelLastMessage = new QLabel(_lastMessage);
     labelLastMessage->setFont(QFont(labelLastMessage->font().family(), -1, QFont::Normal, false));
     labelLastMessage->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    labelLastMessage->setMaximumSize(180, 15);
+    labelLastMessage->setFixedSize(180, 15);
 
     lastTime = _lastTime;
     lastId = _lastId;
@@ -61,9 +61,8 @@ NameWidget::NameWidget(QString _name, libJackSMS::dataTypes::phoneNumber _numero
     else
         labelIconStatus->setPixmap(QPixmap(":/resource/arrow-unread.png"));
 
-    labelIconStatus->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
-    labelIconStatus->setMaximumSize(16, 16);
-    labelIconStatus->setMinimumSize(16, 16);
+    labelIconStatus->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    labelIconStatus->setFixedSize(16, 16);
 
     hLayout = new QHBoxLayout;
     hLayout->setMargin(5);

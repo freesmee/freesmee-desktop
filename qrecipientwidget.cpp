@@ -26,15 +26,14 @@
 #include "faderwidget.h"
 #include "qlabelresult.h"
 
-QRecipientWidget::QRecipientWidget(const QString & _contactName, const QString & accId, const libJackSMS::dataTypes::phoneNumber &_number, QPixmap Icon, QWidget *parent) :
+QRecipientWidget::QRecipientWidget(const QString &_contactName, const QString &accId, const libJackSMS::dataTypes::phoneNumber &_number, QPixmap Icon, QWidget *parent) :
     QWidget(parent),
-     contactName(_contactName),
-     accountId(accId),
-     number(_number),
-     nameStr(contactName)
+    contactName(_contactName),
+    accountId(accId),
+    number(_number),
+    nameStr(contactName)
  {
     original = Icon;
-
     hLayout = new QHBoxLayout;
     hLayout->setMargin(3);
     iconLabel = new QLabel;
@@ -42,7 +41,6 @@ QRecipientWidget::QRecipientWidget(const QString & _contactName, const QString &
     iconLabel->setMaximumSize(16, 16);
     iconStatus = new QLabel;
     iconStatus->setFixedSize(16, 16);
-    //name = new QLabel(contactName + " <" + number.toString() + ">");
     name = new QLabel(contactName);
     name->setCursor(Qt::WhatsThisCursor);
     name->setToolTip(number.toString());
@@ -67,50 +65,62 @@ QRecipientWidget::QRecipientWidget(const QString & _contactName, const QString &
     faderWidget->start();
 }
 
-void QRecipientWidget::setParentItem(QListWidgetItem * it) {
+void QRecipientWidget::setParentItem(QListWidgetItem * it)
+{
     pIt = it;
 }
 
-void QRecipientWidget::remove() {
+void QRecipientWidget::remove()
+{
     emit removed(pIt);
 }
 
-void QRecipientWidget::setStatusFailed(QString message) {
+void QRecipientWidget::setStatusFailed(QString message)
+{
     iconStatus->setPixmap(QIcon(":/resource/jms-not-active.png").pixmap(16, 16));
     iconStatus->setToolTip(message);
     iconStatus->setCursor(Qt::WhatsThisCursor);
 }
 
-void QRecipientWidget::restoreOriginalIcon() {
+void QRecipientWidget::restoreOriginalIcon()
+{
     iconLabel->setPixmap(original);
 }
 
-void QRecipientWidget::setStatusWorking() {
+void QRecipientWidget::setStatusWorking()
+{
     iconStatus->setPixmap(QIcon(":/resource/jms-activating.png").pixmap(16, 16));
     iconStatus->setCursor(Qt::WhatsThisCursor);
 }
 
-void QRecipientWidget::clearStatus(){
+void QRecipientWidget::clearStatus()
+{
     iconStatus->clear();
 }
 
-void QRecipientWidget::setStatusSuccess(QString message) {
+void QRecipientWidget::setStatusSuccess(QString message)
+{
     iconStatus->setPixmap(QIcon(":/resource/jms-active.png").pixmap(16, 16));
     iconStatus->setToolTip(message);
     iconStatus->setCursor(Qt::WhatsThisCursor);
 }
 
-libJackSMS::dataTypes::phoneNumber QRecipientWidget::getPhone() const {
+libJackSMS::dataTypes::phoneNumber QRecipientWidget::getPhone() const
+{
     return number;
 }
 
-void QRecipientWidget::setIcon(QPixmap Icon) {
+void QRecipientWidget::setIcon(QPixmap Icon)
+{
     iconLabel->setPixmap(Icon);
 }
-QString QRecipientWidget::getAccountId() const {
+
+QString QRecipientWidget::getAccountId() const
+{
     return accountId;
 }
 
-QString QRecipientWidget::getName() const {
+QString QRecipientWidget::getName() const
+{
     return nameStr;
 }

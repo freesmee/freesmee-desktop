@@ -26,14 +26,17 @@
 
 #include <QtGui/QDialog>
 #include "libjacksms/libJackSMS.h"
-namespace Ui {
+
+namespace Ui
+{
     class StatsDialog;
 }
 
-class StatsDialog : public QDialog {
+class StatsDialog : public QDialog
+{
     Q_OBJECT
 public:
-    StatsDialog(const libJackSMS::dataTypes::optionsType & _opzioni,const libJackSMS::dataTypes::configuredServicesType & _servizi,const libJackSMS::dataTypes::servicesType &_ElencoServizi,QWidget *parent = 0);
+    StatsDialog(const libJackSMS::dataTypes::optionsType & _opzioni, const libJackSMS::dataTypes::configuredServicesType &_servizi, const libJackSMS::dataTypes::servicesType &_ElencoServizi, QWidget *parent = 0);
     ~StatsDialog();
 
 protected:
@@ -41,9 +44,11 @@ protected:
 
 private:
     Ui::StatsDialog *m_ui;
-    const libJackSMS::dataTypes::optionsType & opzioni;
-    const libJackSMS::dataTypes::configuredServicesType & servizi;
+    const libJackSMS::dataTypes::optionsType &opzioni;
+    const libJackSMS::dataTypes::configuredServicesType &servizi;
     const libJackSMS::dataTypes::servicesType &ElencoServizi;
+    int addServiceToList(libJackSMS::dataTypes::configuredServicesType::const_iterator i);
+
 };
 
 #endif // STATSDIALOG_H

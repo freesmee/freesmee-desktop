@@ -267,9 +267,9 @@ namespace libJackSMS
         try
         {
             libJackSMS::serverApi::advChecker *advcheck = NULL;
-            if (account.getId() == "1")
+            if ((account.getId() == "1") || (account.getId() == "2"))
             {
-                // JMS
+                // Free+ or SMS+
                 if (getAdv)
                 {
                     advcheck = new libJackSMS::serverApi::advChecker(loginId, messaggio.getText(), ps);
@@ -285,7 +285,7 @@ namespace libJackSMS
                         webClient->setProxyAuthentication(ps.getUsername(), ps.getPassword());
                 }
 
-                webClient->insertFormData("account_id", "1");
+                webClient->insertFormData("account_id", account.getId());
                 webClient->insertFormData("recipient", destinatario.toString().toUtf8().toPercentEncoding());
                 webClient->insertFormData("message", messaggio.getText().toUtf8().toPercentEncoding());
 

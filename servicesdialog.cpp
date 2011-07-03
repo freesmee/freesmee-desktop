@@ -50,7 +50,7 @@ ServicesDialog::ServicesDialog(QWidget *parent, MainJackSMS *_padre, libJackSMS:
 
     for (libJackSMS::dataTypes::servicesType::const_iterator i = ElencoServizi.begin(); i != ElencoServizi.end(); ++i)
     {
-        if (i.value().getName() == "Free+" || i.value().getName() == "Freesmee")
+        if ((i.value().getName() == "Free+") || (i.value().getName() == "Freesmee") || (i.value().getName() == "SMS+"))
             continue;
 
         QListWidgetItem *it = new QListWidgetItem();
