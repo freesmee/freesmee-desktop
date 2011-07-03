@@ -35,20 +35,21 @@ QRecipientWidget::QRecipientWidget(const QString &_contactName, const QString &a
  {
     original = Icon;
     hLayout = new QHBoxLayout;
-    hLayout->setMargin(3);
+    //hLayout->setMargin(3);
     iconLabel = new QLabel;
     iconLabel->setPixmap(Icon);
-    iconLabel->setMaximumSize(16, 16);
+    iconLabel->setFixedSize(16, 16);
     iconStatus = new QLabel;
     iconStatus->setFixedSize(16, 16);
     name = new QLabel(contactName);
     name->setCursor(Qt::WhatsThisCursor);
     name->setToolTip(number.toString());
-    name->setMinimumHeight(16);
+    name->setFixedHeight(16);
     name->adjustSize();
-    name->setFixedWidth(name->width() + 10);
+    //name->setFixedWidth(name->width());
+    name->setContentsMargins(0, 0, 5, 0);
     removeLabel = new QLabelResult(this);
-    removeLabel->setMaximumSize(10, 10);
+    removeLabel->setFixedSize(16, 16);
     removeLabel->setPixmap(QIcon(":/resource/rimuovi.png").pixmap(10, 10));
     removeLabel->setCursor(Qt::PointingHandCursor);
     connect(removeLabel, SIGNAL(clicked()), this, SLOT(remove()));
@@ -56,11 +57,12 @@ QRecipientWidget::QRecipientWidget(const QString &_contactName, const QString &a
     hLayout->addWidget(iconLabel);
     hLayout->addWidget(name);
     hLayout->addWidget(iconStatus);
-    QFrame *fr = new QFrame;
-    fr->setLayout(hLayout);
+    hLayout->setContentsMargins(3, 0, 3, 0);
     setLayout(hLayout);
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
+    setFixedHeight(22);
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     adjustSize();
+
     FaderWidget *faderWidget = new FaderWidget(this, Qt::white);
     faderWidget->start();
 }
