@@ -114,16 +114,6 @@
               </widget>
              </item>
              <item>
-              <widget class="QCheckBox" name="checkAccountDefault">
-               <property name="text">
-                <string>Imposta l'account associato quando selezioni un contatto</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
               <widget class="QCheckBox" name="checkShowAdv">
                <property name="text">
                 <string>Visualizza Pubblicità e ottieni tanti sms gratis!</string>

@@ -182,7 +182,7 @@ private:
 
     void rubricaBarTutti();
     void rubricaBarJMS();
-    void addServiceToServiceComboBox(accountWidget *acc, bool isJacksmsMessenger = false);
+    void addServiceToServiceComboBox(accountWidget *acc, bool isFreesmeeService = false);
     void checkSalvaButtonStatusToSet();
     void elaboraRecipientLine(bool StealFocus = true);
     void pulisciRecipientLine(bool StealFocus = true);
@@ -194,7 +194,7 @@ private:
 
     void refreshCompleter();
 
-    // Funzioni per la pubblicitÃ 
+    // Funzioni per la pubblicità
     void showAdvPanel(QString url);
     void showTestoSmsPanel();
 

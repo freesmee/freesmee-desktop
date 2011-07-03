@@ -52,13 +52,13 @@ namespace libJackSMS
 
     void smsSender::send()
     {
-        run();
+        start();
     }
 
     void smsSender::continueSend(QString captcha_value)
     {
         captchaValue = captcha_value;
-        run();
+        start();
     }
 
     void smsSender::run()
@@ -460,32 +460,44 @@ namespace libJackSMS
 
                         if (pageCounter >= pageIndex)
                             doPage = true;
-                        if (doPage && paginaCorrente.hasCondition()) {
+
+                        if (doPage && paginaCorrente.hasCondition())
+                        {
                             doPage = false;
-                            QString condizione=paginaCorrente.getCondition();
+                            QString condizione = paginaCorrente.getCondition();
 
                             if (!doPage) {
-                                for (dataTypes::contentType::const_iterator i = elenco_contenuti.begin();i != elenco_contenuti.end(); ++i) {
+                                for (dataTypes::contentType::const_iterator i = elenco_contenuti.begin(); i != elenco_contenuti.end(); ++i)
+                                {
                                     QString code = "%%" + i->getName() + "%%";
-                                    if (condizione == code && i->getFound()) {
+                                    if (condizione == code && i->getFound())
+                                    {
                                         doPage = true;
                                         break;
                                     }
                                 }
                             }
-                            if (!doPage) {
-                                for (dataTypes::variousType::const_iterator i = elenco_dati_vari.begin(); i != elenco_dati_vari.end(); ++i) {
+
+                            if (!doPage)
+                            {
+                                for (dataTypes::variousType::const_iterator i = elenco_dati_vari.begin(); i != elenco_dati_vari.end(); ++i)
+                                {
                                     QString code = "%%" + i.key() + "%%";
-                                    if (condizione == code && (!i.value().isEmpty())) {
+                                    if (condizione == code && (!i.value().isEmpty()))
+                                    {
                                         doPage = true;
                                         break;
                                     }
                                 }
                             }
-                            if (!doPage) {
-                                for (dataTypes::creditsType::const_iterator i = elenco_credenziali.begin(); i != elenco_credenziali.end(); ++i) {
+
+                            if (!doPage)
+                            {
+                                for (dataTypes::creditsType::const_iterator i = elenco_credenziali.begin(); i != elenco_credenziali.end(); ++i)
+                                {
                                     QString code = "%%" + i.key() + "%%";
-                                    if (condizione == code && (!i.value().isEmpty())) {
+                                    if (condizione == code && (!i.value().isEmpty()))
+                                    {
                                         doPage = true;
                                         break;
                                     }

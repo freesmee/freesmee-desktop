@@ -57,7 +57,6 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType &_opt, libJackSM
 
         setCheckboxStatusFromYesNoOption(globopt, m_ui->opzAutoLogin, "auto-login");
 
-        setCheckboxStatusFromYesNoOption(opt, m_ui->checkAccountDefault, "set-account");
         setCheckboxStatusFromYesNoOption(opt, m_ui->checkSalvalocale, "save-local");
         setCheckboxStatusFromYesNoOption(opt, m_ui->checkShowAdv, "show-adv");
         setCheckboxStatusFromYesNoOption(opt, m_ui->successSmsPopup, "successfull-send-popup");
@@ -203,7 +202,6 @@ void OpzioniDialog::on_applicaButton_clicked() {
         if (globopt["auto-login"] == "yes")
             opt["password"] = pass;
 
-        opt["set-account"] = m_ui->checkAccountDefault->isChecked() ? "yes" : "no";
         opt["show-adv"] = m_ui->checkShowAdv->isChecked() ? "yes" : "no";
         opt["save-local"] = m_ui->checkSalvalocale->isChecked() ? "yes" : "no";
         opt["successfull-send-popup"] = m_ui->successSmsPopup->isChecked() ? "yes" : "no";
