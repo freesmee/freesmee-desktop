@@ -65,36 +65,42 @@ namespace libJackSMS
     {
         try
         {
-            sndr = new smsSenderBase(loginId, servizi, ps);
+            smsSenderBase sndr(loginId, servizi, ps);
             connect(&sleepClockTimer, SIGNAL(timeout()), this, SLOT(slotTimerClocked()));
-            connect(this, SIGNAL(abortSignal()), sndr, SLOT(abort()));
+            connect(this, SIGNAL(abortSignal()), &sndr, SLOT(abort()));
 
-            sndr->setSalvaCookies(SalvaCookies);
-            sndr->setRecipient(destinatario);
-            sndr->setMessage(messaggio);
-            sndr->setAccount(account);
-            sndr->setGetAdv(getAdv);
+            sndr.setSalvaCookies(SalvaCookies);
+            sndr.setRecipient(destinatario);
+            sndr.setMessage(messaggio);
+            sndr.setAccount(account);
+            sndr.setGetAdv(getAdv);
 
-            connect(sndr, SIGNAL(operation()), this, SLOT(slotOperation()));
-            connect(sndr, SIGNAL(operation(QString)), this, SLOT(slotError(QString)));
-            connect(sndr, SIGNAL(error(QString)), this, SLOT(slotError(QString)));
-            connect(sndr, SIGNAL(success(QString, int)), this, SLOT(slotSuccess(QString, int)));
-            connect(sndr, SIGNAL(captcha(QByteArray)), this, SLOT(slotCaptcha(QByteArray)));
-            connect(sndr, SIGNAL(sleepBeforeFound(int)), this, SLOT(slotSleepBeforeFound(int)));
-            connect(sndr, SIGNAL(adv(QString)), this, SIGNAL(adv(QString)));
+            connect(&sndr, SIGNAL(operation()), this, SIGNAL(operation()));
+            connect(&sndr, SIGNAL(operation(QString)), this, SLOT(slotError(QString)));
+            connect(&sndr, SIGNAL(error(QString)), this, SLOT(slotError(QString)));
+            connect(&sndr, SIGNAL(success(QString, int)), this, SLOT(slotSuccess(QString, int)));
+            connect(&sndr, SIGNAL(captcha(QByteArray)), this, SIGNAL(captcha(QByteArray)));
+            connect(&sndr, SIGNAL(sleepBeforeFound(int)), this, SLOT(slotSleepBeforeFound(int)));
+            connect(&sndr, SIGNAL(adv(QString)), this, SIGNAL(adv(QString)));
 
             if (!continueSendFlag)
             {
-                sndr->send();
-
-            } else {
-
-                sndr->setContents(contenuti);
-                sndr->setNumberOfFirstPage(pageIndex);
-                sndr->send(captchaValue);
+                sndr.send();
+                if (sndr.isInterruptedByCaptcha())
+                {
+                    continueSendFlag = true;
+                    pageIndex = sndr.getCaptchaPageIndex();
+                    contenuti = sndr.getContents();
+                }
+            }
+            else
+            {
+                sndr.setContents(contenuti);
+                sndr.setNumberOfFirstPage(pageIndex);
+                sndr.send(captchaValue);
             }
 
-            sndr->disconnect(this);
+            sndr.disconnect(this);
 
         } catch(libJackSMS::netClient::abortedException e) {
         } catch(libJackSMS::exceptionSharedMemory e) {
@@ -109,16 +115,6 @@ namespace libJackSMS
         emit abortSignal();
     }
 
-    void smsSender::slotOperation()
-    {
-        emit operation();
-    }
-
-    void smsSender::slotOperation(QString s)
-    {
-        emit operation(s);
-    }
-
     void smsSender::slotError(QString s)
     {
         connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
@@ -129,15 +125,6 @@ namespace libJackSMS
     {
         connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
         emit success(s, n);
-    }
-
-    void smsSender::slotCaptcha(QByteArray a)
-    {
-        continueSendFlag = true;
-        pageIndex = sndr->getCaptchaPageIndex();
-        contenuti = sndr->getContents();
-
-        emit captcha(a);
     }
 
     void smsSender::slotSleepBeforeFound(int i)
@@ -248,8 +235,12 @@ namespace libJackSMS
     void smsSenderBase::abort()
     {
         hasAborted = true;
-        webClient->interrupt();
-        webClient->clearCookies();
+
+        if (webClient != NULL)
+        {
+            webClient->interrupt();
+            webClient->clearCookies();
+        }
     }
 
     dataTypes::contentType smsSenderBase::getContents() const

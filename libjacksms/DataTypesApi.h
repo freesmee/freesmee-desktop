@@ -32,8 +32,10 @@ namespace libJackSMS
     namespace dataTypesApi
     {
         //typedef QString sessionId;
-        typedef QMap<QString,QString> errorsType;
-        class clientVersion {
+        typedef QMap<QString, QString> errorsType;
+
+        class clientVersion
+        {
             protected:
                 int major;
                 int minor;
@@ -42,7 +44,7 @@ namespace libJackSMS
 
             public:
                 clientVersion(QString _v);
-                bool  operator< ( const clientVersion & client);
+                bool  operator< ( const clientVersion &client);
         };
     }
 }

@@ -452,8 +452,12 @@ namespace libJackSMS{
         bool netClientQHttp::interrupt()
         {
             aborted = true;
+
             emit pageDownloaded();
-            reply->abort();
+
+            if (reply != NULL)
+                reply->abort();
+
             return true;
         }
 

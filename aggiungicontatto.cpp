@@ -84,6 +84,8 @@ AggiungiContatto::AggiungiContatto(QWidget *parent, libJackSMS::dataTypes::confi
     m_ui->nuovogruppo->hide();
     m_ui->radioEsistente->hide();
     m_ui->radioNuovo->hide();
+    m_ui->autoDetectButton->hide();
+
     {
         if (numero.getVirtual()) {
 

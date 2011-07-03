@@ -48,6 +48,55 @@
 
 namespace libJackSMS
 {
+    class smsSender : public QThread
+    {
+        Q_OBJECT
+
+        private:
+            dataTypes::phoneNumber destinatario;
+            dataTypes::shortMessage messaggio;
+            const QString loginId;
+            const dataTypes::servicesType &servizi;
+            dataTypes::configuredAccount account;
+            dataTypes::proxySettings ps;
+            void run();
+            int pageIndex;
+            bool continueSendFlag;
+            QString captchaValue;
+            dataTypes::contentType contenuti;
+            bool SalvaCookies;
+            QTimer sleepClockTimer;
+            int secondsToGo;
+            bool getAdv;
+
+        public:
+            smsSender(const QString &_loginId, const dataTypes::servicesType &_services, const dataTypes::proxySettings &_ps = dataTypes::proxySettings());
+            void setRecipient(const dataTypes::phoneNumber &_dest);
+            void setMessage(const dataTypes::shortMessage &_message);
+            void setAccount(const dataTypes::configuredAccount &_account);
+            void send();
+            void continueSend(QString captcha_value);
+            void abort();
+            void setSalvaCookies(bool value);
+            void setGetAdv(bool value);
+
+        private slots:
+            void slotError(QString);
+            void slotSuccess(QString, int);
+            void slotSleepBeforeFound(int);
+            void slotTimerClocked();
+
+        signals:
+            void abortSignal();
+            void operation();
+            void operation(QString);
+            void error(QString);
+            void success(QString, int);
+            void captcha(QByteArray);
+            void sleepBeforeFound(int);
+            void adv(QString);
+    };
+
     class smsSenderBase : public QObject
     {
         Q_OBJECT
@@ -99,59 +148,6 @@ namespace libJackSMS
         void captcha(QByteArray);
         void sleepBeforeFound(int);
         void adv(QString);
-    };
-
-    class smsSender : public QThread
-    {
-        Q_OBJECT
-
-        private:
-            smsSenderBase *sndr;
-            dataTypes::phoneNumber destinatario;
-            dataTypes::shortMessage messaggio;
-            const QString loginId;
-            const dataTypes::servicesType &servizi;
-            dataTypes::configuredAccount account;
-            dataTypes::proxySettings ps;
-            void run();
-            int pageIndex;
-            bool continueSendFlag;
-            QString captchaValue;
-            dataTypes::contentType contenuti;
-            bool SalvaCookies;
-            QTimer sleepClockTimer;
-            int secondsToGo;
-            bool getAdv;
-
-        public:
-            smsSender(const QString &_loginId, const dataTypes::servicesType &_services, const dataTypes::proxySettings &_ps = dataTypes::proxySettings());
-            void setRecipient(const dataTypes::phoneNumber &_dest);
-            void setMessage(const dataTypes::shortMessage &_message);
-            void setAccount(const dataTypes::configuredAccount &_account);
-            void send();
-            void continueSend(QString captcha_value);
-            void abort();
-            void setSalvaCookies(bool value);
-            void setGetAdv(bool value);
-
-        private slots:
-            void slotOperation();
-            void slotOperation(QString);
-            void slotError(QString);
-            void slotSuccess(QString, int);
-            void slotCaptcha(QByteArray);
-            void slotSleepBeforeFound(int);
-            void slotTimerClocked();
-
-        signals:
-            void abortSignal();
-            void operation();
-            void operation(QString);
-            void error(QString);
-            void success(QString, int);
-            void captcha(QByteArray);
-            void sleepBeforeFound(int);
-            void adv(QString);
     };
 }
 

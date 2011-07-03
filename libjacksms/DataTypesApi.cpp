@@ -53,6 +53,8 @@ namespace libJackSMS {
                     if (regExp.exactMatch(version)) {
                         major = regExp.cap(1).toInt(&ok,10);
                         minor = regExp.cap(2).toInt(&ok,10);
+                        release = 'g';
+                        build = 0;
                     }
 
                 }
@@ -77,12 +79,7 @@ namespace libJackSMS {
             else if (build > client.build)
                 return false;
 
-            if (release == 'a' && client.release == 'b')
-                return true;
-            else if (release == 'b' && client.release == 'g')
-                return true;
-            else
-                return false;
+            return false;
         }
 
     }

@@ -65,7 +65,11 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType &_opt, libJackSM
         setCheckboxStatusFromYesNoOption(opt, m_ui->opzSvuotaInvioCorretto, "svuota-invio-corretto");
         setCheckboxStatusFromYesNoOption(opt, m_ui->nonSalvaCookies, "dont-cookies");
         setCheckboxStatusFromYesNoOption(opt, m_ui->hideServiceUpdate, "hide-service-update");
+#ifndef __APPLE__
         setCheckboxStatusFromYesNoOption(opt, m_ui->suonoJMS, "suono-free");
+#else
+        m_ui->suonoJMS->hide();
+#endif
         setCheckboxStatusFromYesNoOption(opt, m_ui->showPopupJmsStatus, "show-popup-jms-status");
         setCheckboxStatusFromYesNoOption(opt, m_ui->showPopupNewJms, "show-popup-new-free");
 
@@ -210,7 +214,9 @@ void OpzioniDialog::on_applicaButton_clicked() {
         opt["svuota-invio-corretto"] = m_ui->opzSvuotaInvioCorretto->isChecked() ? "yes" : "no";
         opt["dont-cookies"] = m_ui->nonSalvaCookies->isChecked() ? "yes" : "no";
         opt["hide-service-update"] = m_ui->hideServiceUpdate->isChecked() ? "yes" : "no";
+#ifndef __APPLE__
         opt["suono-free"] = m_ui->suonoJMS->isChecked() ? "yes" : "no";
+#endif
         opt["show-popup-jms-status"] = m_ui->showPopupJmsStatus->isChecked() ? "yes" : "no";
         opt["show-popup-new-free"] = m_ui->showPopupNewJms->isChecked() ? "yes" : "no";
 

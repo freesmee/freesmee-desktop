@@ -1980,7 +1980,18 @@ void MainJackSMS::checkInstantMessengerReceived(libJackSMS::dataTypes::logImType
         section++;
 
         if (Opzioni["suono-free"] == "yes")
+        {
+#ifdef WIN32
             QSound::play("sounds/newjms.wav");
+#endif
+
+#ifdef __unix__
+            QSound::play("/usr/share/freesmee/newjms.wav");
+#endif
+
+#ifdef __APPLE__
+#endif
+        }
 
     }catch(...){
         QMessageBox::critical(this, "Freesmee", "Freesmee ha rilevato un errore grave durante la procedura di aggiornamento dei messaggi JMS ricevuti.\nDettagli: unknown error, section: "+QString::number(section));
@@ -3484,9 +3495,9 @@ void MainJackSMS::continueLoadServices()
     smsPlus.setVersion("100");
     smsPlus.setMaxSms("20");
     smsPlus.setReset("daily");
-    smsPlus.setMaxLength("640");
+    smsPlus.setMaxLength("160");
     smsPlus.setSingleLength("160");
-    smsPlus.setSmsDivisor("152");
+    smsPlus.setSmsDivisor("160");
     smsPlus.setIcon(QImage(":/resource/sms-plus.png"));
     ElencoServizi.insert(smsPlus.getId(), smsPlus);
 
