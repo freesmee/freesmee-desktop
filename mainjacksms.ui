@@ -46,7 +46,7 @@
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="login">
        <layout class="QHBoxLayout" name="horizontalLayout_18">
@@ -263,7 +263,7 @@ QFrame#frame_2{
                 <item row="2" column="1">
                  <widget class="QLabel" name="label_10">
                   <property name="text">
-                   <string>Username</string>
+                   <string>Numero</string>
                   </property>
                  </widget>
                 </item>
@@ -704,7 +704,7 @@ QFrame#frame_3_old{
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <property name="iconSize">
            <size>

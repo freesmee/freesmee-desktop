@@ -198,6 +198,8 @@ private:
     void showAdvPanel(QString url);
     void showTestoSmsPanel();
 
+    void manageSmsReaded(SmsWidget *sms);
+
 public slots:
     void ReWriteAddressBookToGui();
 
