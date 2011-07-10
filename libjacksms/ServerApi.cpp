@@ -609,10 +609,13 @@ namespace libJackSMS {
             {
                 xmlDocument.setXml(xml);
                 int carrier;
+                bool canReceiveJms;
 
-                if(xmlDocument.checkUpdateContact(carrier))
+                if(xmlDocument.checkUpdateContact(canReceiveJms, carrier))
                 {
                     contatto.setCarrier(carrier);
+                    contatto.setCanReceiveJms(canReceiveJms);
+
                     emit contactUpdated(contatto);
                 }
                 else

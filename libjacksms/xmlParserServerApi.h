@@ -76,7 +76,7 @@ namespace libJackSMS
                  * Controlla se l'xml di risposta dell'api di aggiornamento contatto online contiene il valore di successo o meno
                  * \return \b true se il contatto e' stato aggiornato, false altrimenti
                  */
-            virtual bool checkUpdateContact(int &_crr) = 0;
+            virtual bool checkUpdateContact(bool &_canReceiveJms, int &_crr) = 0;
 
             /**
                  * Controlla se l'xml di risposta dell'api di eliminazione di un contatto online contiene il valore di successo o meno

@@ -57,7 +57,7 @@ namespace libJackSMS
                 bool checkSaved(QString &_id,QString &totalForAccount);
                 bool checkReport();
                 bool checkAddNewContact(QString &_resId, bool &_canReceiveJms, int &_crr);
-                bool checkUpdateContact(int &_crr);
+                bool checkUpdateContact(bool &_canReceiveJms, int &_crr);
                 bool checkDeleteContact();
                 bool checkAddNewAccount(QString &_resId);
                 bool checkUpdateAccount();

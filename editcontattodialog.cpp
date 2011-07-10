@@ -81,10 +81,12 @@ void editcontattodialog::changeEvent(QEvent *e)
 {
     QDialog::changeEvent(e);
 
-    switch (e->type()) {
+    switch (e->type())
+    {
     case QEvent::LanguageChange:
         m_ui->retranslateUi(this);
         break;
+
     default:
         break;
     }

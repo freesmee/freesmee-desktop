@@ -374,23 +374,26 @@ namespace libJackSMS{
             ticpp::Node *child = root->FirstChild("id");
             _resId = QString::fromStdString(child->ToElement()->GetText());
 
-            if(_resId == "0" || _resId == "-1")
+            if (_resId == "0" || _resId == "-1")
                 return false;
             else
                 return true;
         }
 
-        bool xmlParserServerApiTicpp::checkUpdateContact(int &_crr)
+        bool xmlParserServerApiTicpp::checkUpdateContact(bool &_canReceiveJms, int &_crr)
         {
             ticpp::Node *root = xmlResponse.FirstChild("Freesmee");
 
             ticpp::Node *childCrr = root->FirstChild("crr");
             _crr = QString::fromStdString(childCrr->ToElement()->GetText()).toInt();
 
+            ticpp::Node *childJms = root->FirstChild("jms");
+            _canReceiveJms = ((childJms->ToElement()->GetText() == "0") ? false : true);
+
             ticpp::Node *child = root->FirstChild("id");
             QString _resId = QString::fromStdString(child->ToElement()->GetText());
 
-            if( _resId == "-1" || _resId == "0")
+            if (_resId == "0" || _resId == "-1")
                 return false;
             else
                 return true;
