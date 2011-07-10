@@ -28,13 +28,12 @@
 #include <libjacksms/libJackSMS.h>
 #include <QMessageBox>
 
-editAccountDialog::editAccountDialog(libJackSMS::dataTypes::configuredServicesType &_acc, libJackSMS::dataTypes::servicesType &_services, QString _id, QString _current_login_id, libJackSMS::dataTypes::optionsType &_opzioni, QWidget *parent) :
+editAccountDialog::editAccountDialog(libJackSMS::dataTypes::configuredServicesType &_acc, libJackSMS::dataTypes::servicesType &_services, QString _id, QString _current_login_id, QWidget *parent) :
     QDialog(parent),
     accounts(_acc),
     services(_services),
     id(_id),
     current_login_id(_current_login_id),
-    opzioni(_opzioni),
     ui(new Ui::editAccountDialog)
 {
     ui->setupUi(this);
@@ -153,7 +152,7 @@ void editAccountDialog::on_pushButton_clicked()
         ui->pushButton->setEnabled(false);
         ui->labelSpin->show();
 
-        saver = new libJackSMS::serverApi::accountManager(current_login_id, opzioni);
+        saver = new libJackSMS::serverApi::accountManager(current_login_id);
         connect(saver,SIGNAL(accountUpdated(libJackSMS::dataTypes::configuredAccount)),this,SLOT(updateOk(libJackSMS::dataTypes::configuredAccount)));
         connect(saver,SIGNAL(accountNotUpdated()),this,SLOT(accountNotUpdated()));
         saver->updateAccount(currentAccount,services[currentAccount.getService()]);

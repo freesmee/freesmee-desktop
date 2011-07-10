@@ -23,7 +23,6 @@
 
 #include "netclientqhttp.h"
 #include <QEventLoop>
-#include <QNetworkProxy>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
@@ -36,8 +35,7 @@
 
 namespace libJackSMS{
 
-    namespace netClient
-    {
+    namespace netClient{
 
         void QMyNetworkCookieJar::saveToDisk(QString filename)
         {
@@ -109,7 +107,6 @@ namespace libJackSMS{
                 userAgentSetted(false),
                 useCookies(false),
                 //lastSocketIsSsl(false),
-                proxyConfigured(false),
                 aborted(false),
                 error(false),
                 errorPage(false)
@@ -144,57 +141,63 @@ namespace libJackSMS{
             {
                 _lastReadedUrlCode = reply->readAll();
                 error = false;
-            }else{
-                _lastReadedUrlCode=reply->errorString().toUtf8();
-
-                error=true;
             }
-            emit pageDownloaded();
+            else
+            {
+                _lastReadedUrlCode = reply->errorString().toUtf8();
+                error = true;
+            }
 
+            emit pageDownloaded();
         }
 
         bool netClientQHttp::setTimeout(int timeout)
         {
+            Q_UNUSED(timeout)
             //todo
             return false;
         }
-
         void netClientQHttp::IncludeHeaders()
         {
             //todo
-            outputHeaders=true;
-
+            outputHeaders = true;
         }
 
         bool netClientQHttp::setCookieFile(const QString &_filename)
         {
-            cookieFilename=_filename;
-            if (QFile::exists(_filename)){
-                cookies=new QMyNetworkCookieJar;
+            cookieFilename = _filename;
+            if (QFile::exists(_filename))
+            {
+                cookies = new QMyNetworkCookieJar;
                 cookies->loadFromDisk(_filename);
             }
             return false;
         }
-        bool netClientQHttp::setUseCookie(bool _useCookie){
-            useCookies=_useCookie;
+
+        bool netClientQHttp::setUseCookie(bool _useCookie)
+        {
+            useCookies = _useCookie;
             return true;
         }
-        bool netClientQHttp::setUrl(const QString &_url){
-            url=QUrl(QString::fromUtf8(_url.toStdString().c_str(),_url.length()));
+
+        bool netClientQHttp::setUrl(const QString &_url)
+        {
+            url = QUrl(QString::fromUtf8(_url.toStdString().c_str(), _url.length()));
             return true;
         }
-        void netClientQHttp::setUserAgent(const QString &_useragent){
+
+        void netClientQHttp::setUserAgent(const QString &_useragent)
+        {
             ua=_useragent;
             userAgentSetted=true;
         }
-        QString netClientQHttp::readPage(bool _ret){
 
+        QString netClientQHttp::readPage(bool _ret)
+        {
             QNetworkRequest r(url);
             QSslConfiguration config = r.sslConfiguration();
             config.setPeerVerifyMode(QSslSocket::VerifyNone);
             r.setSslConfiguration(config);
-            if (proxyConfigured)
-                request.setProxy(proxy);
             if (useCookies && cookies!=NULL){
                 request.setCookieJar(cookies);
             }
@@ -260,11 +263,10 @@ namespace libJackSMS{
             QSslConfiguration config = r.sslConfiguration();
             config.setPeerVerifyMode(QSslSocket::VerifyNone);
             r.setSslConfiguration(config);
-            if (proxyConfigured)
-                request.setProxy(proxy);
-            if (useCookies && cookies!=NULL){
+
+            if (useCookies && cookies!=NULL)
                 request.setCookieJar(cookies);
-            }
+
             QList<QPair<QByteArray, QByteArray> >::const_iterator i=headers.begin();
             bool overwrite=false;
             for (;i!=headers.end();++i){
@@ -343,11 +345,8 @@ namespace libJackSMS{
             config.setPeerVerifyMode(QSslSocket::VerifyNone);
             r.setSslConfiguration(config);
 
-            if (proxyConfigured)
-                request.setProxy(proxy);
-            if (useCookies && cookies!=NULL){
+            if (useCookies && cookies != NULL)
                 request.setCookieJar(cookies);
-            }
 
             QList<QPair<QByteArray, QByteArray> >::const_iterator i=headers.begin();
             bool overwrite=false;
@@ -425,27 +424,6 @@ namespace libJackSMS{
         bool netClientQHttp::addHeader(const QString &_name, const QString &_value)
         {
             headers.push_back(qMakePair(_name.toUtf8(), _value.toUtf8()));
-            return true;
-        }
-
-        bool netClientQHttp::setProxyServer(const QString & _proxyServer, const QString &_port, const QString &_proxyType)
-        {
-            proxyConfigured = true;
-            proxy.setHostName(_proxyServer);
-            bool ok;
-            proxy.setPort(_port.toInt(&ok, 10));
-            if (_proxyType.toUpper() == "HTTP")
-                proxy.setType(QNetworkProxy::HttpProxy);
-            else if (_proxyType.toUpper() == "SOCKS5")
-                proxy.setType(QNetworkProxy::Socks5Proxy);
-
-            return true;
-        }
-
-        bool netClientQHttp::setProxyAuthentication(const QString &_proxyUsername, const QString &_proxyPassword)
-        {
-            proxy.setUser(_proxyUsername);
-            proxy.setPassword(_proxyPassword);
             return true;
         }
 

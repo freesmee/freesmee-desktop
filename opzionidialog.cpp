@@ -31,29 +31,36 @@
 #include <QTimer>
 
 OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType &_opt, libJackSMS::dataTypes::optionsType &_globopt, QString _userDirectory, QWidget *parent, const bool _loggedIn, QString _pass) :
-        QDialog(parent),
-        opt(_opt),
-        globopt(_globopt),
-        userDirectory(_userDirectory),
-        loggedIn(_loggedIn),
-        pass(_pass),
-        m_ui(new Ui::OpzioniDialog)
+    QDialog(parent),
+    opt(_opt),
+    globopt(_globopt),
+    userDirectory(_userDirectory),
+    loggedIn(_loggedIn),
+    pass(_pass),
+    m_ui(new Ui::OpzioniDialog)
 {
     m_ui->setupUi(this);
     // disabilito momentaneamente la scheda "lingua"
     m_ui->listOpzioni->item(4)->~QListWidgetItem();
 
-    if (!loggedIn) {
+    if (!loggedIn)
+    {
+        // tolgo tutto e lascio solo il tab Rete
         //m_ui->listOpzioni->item(4)->~QListWidgetItem();
         m_ui->listOpzioni->item(3)->~QListWidgetItem();
         m_ui->listOpzioni->item(2)->~QListWidgetItem();
         m_ui->listOpzioni->item(0)->~QListWidgetItem();
         m_ui->stackedWidget->setCurrentIndex(1);
-    } else {
-        m_ui->stackedWidget->setCurrentIndex(0);
-
+    }
+    else
+    {
         // rimuovo momentaneamente il widget. in versioni superiori verrà reintrodotto
         m_ui->listOpzioni->item(3)->~QListWidgetItem();
+
+        // tolgo il tab Rete
+        m_ui->listOpzioni->item(1)->~QListWidgetItem();
+
+        m_ui->stackedWidget->setCurrentIndex(0);
 
         setCheckboxStatusFromYesNoOption(globopt, m_ui->opzAutoLogin, "auto-login");
 
@@ -92,12 +99,15 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType &_opt, libJackSM
 
     libJackSMS::dataTypes::optionsType::const_iterator iter;
     iter = globopt.find("proxy-type");
-    if (iter != globopt.end()) {
+    if (iter != globopt.end())
+    {
         if (globopt["proxy-type"] == "http")
             m_ui->RadioHttp->setChecked(true);
         else if (globopt["proxy-type"] == "socks5")
             m_ui->RadioSocks5->setChecked(true);
     }
+
+    enableProxyFields(m_ui->CheckUsaProxy->isChecked());
 
     // rimuovo intanto che non sono ancora implementate
     /*libJackSMS::LanguageManager *lm = libJackSMS::LanguageManager::getIstance();
@@ -146,7 +156,7 @@ void OpzioniDialog::on_listOpzioni_currentItemChanged(QListWidgetItem* current, 
 
     if (ss.contains("Generali"))
         m_ui->stackedWidget->setCurrentIndex(0);
-    else if (ss.contains("Rete"))
+    else if (ss.contains("Proxy"))
         m_ui->stackedWidget->setCurrentIndex(1);
     else if (ss.contains("Free+"))
         m_ui->stackedWidget->setCurrentIndex(2);
@@ -158,8 +168,8 @@ void OpzioniDialog::on_listOpzioni_currentItemChanged(QListWidgetItem* current, 
         m_ui->stackedWidget->setCurrentIndex(5);
 }
 
-void OpzioniDialog::on_applicaButton_clicked() {
-
+void OpzioniDialog::on_okButton_clicked()
+{
     globopt["use-proxy"] = m_ui->CheckUsaProxy->isChecked() ? "yes" : "no";
     globopt["use-proxy-auth"] = m_ui->usaAutenticazione->isChecked() ? "yes" : "no";
     globopt["proxy-port"] = m_ui->TextPort->text();
@@ -190,18 +200,22 @@ void OpzioniDialog::on_applicaButton_clicked() {
     }
     */
 
-    libJackSMS::localApi::optionManager op("", globopt);
+    libJackSMS::localApi::optionManager globOptMan("", globopt);
 
     try {
-        op.save();
+        globOptMan.save();
     } catch (libJackSMS::exceptionXmlError e) {
         QMessageBox::critical(this, "Freesmee", "Errore durante il salvataggio delle opzioni\n" + QString(e.what()));
     } catch (...) {
         QMessageBox::critical(this, "Freesmee", "Errore sconosciuto");
     }
 
-    if (loggedIn) {
-
+    if (!loggedIn)
+    {
+        emit updateProxy();
+    }
+    else
+    {
         // se autologin è su si allora dobbiamo anche salvare la password nelle opzioni
         if (globopt["auto-login"] == "yes")
             opt["password"] = pass;
@@ -214,9 +228,11 @@ void OpzioniDialog::on_applicaButton_clicked() {
         opt["svuota-invio-corretto"] = m_ui->opzSvuotaInvioCorretto->isChecked() ? "yes" : "no";
         opt["dont-cookies"] = m_ui->nonSalvaCookies->isChecked() ? "yes" : "no";
         opt["hide-service-update"] = m_ui->hideServiceUpdate->isChecked() ? "yes" : "no";
+
 #ifndef __APPLE__
         opt["suono-free"] = m_ui->suonoJMS->isChecked() ? "yes" : "no";
 #endif
+
         opt["show-popup-jms-status"] = m_ui->showPopupJmsStatus->isChecked() ? "yes" : "no";
         opt["show-popup-new-free"] = m_ui->showPopupNewJms->isChecked() ? "yes" : "no";
 
@@ -224,21 +240,17 @@ void OpzioniDialog::on_applicaButton_clicked() {
         //opt["captcha-zoom"] = m_ui->comboZoomCaptcha->currentText();
         //opt["use-captcha"] = (m_ui->checkUseCaptcha->isChecked()) ? "yes" : "no";
 
-        libJackSMS::localApi::optionManager op2(userDirectory, opt);
+        libJackSMS::localApi::optionManager optMan(userDirectory, opt);
 
         try {
-            op2.save();
+            optMan.save();
         } catch (libJackSMS::exceptionXmlError e) {
             QMessageBox::critical(this, "Freesmee", "Errore durante il salvataggio delle opzioni\n"+QString(e.what()));
         } catch (...) {
             QMessageBox::critical(this, "Freesmee", "Errore sconosciuto");
         }
     }
-}
 
-void OpzioniDialog::on_okButton_clicked()
-{
-    on_applicaButton_clicked();
     close();
 }
 
@@ -255,4 +267,25 @@ void OpzioniDialog::setTextFromOption(libJackSMS::dataTypes::optionsType &curren
     libJackSMS::dataTypes::optionsType::const_iterator iter = currentWorkingOpt.find(optionName);
     if (iter != currentWorkingOpt.end())
         lineedit->setText(iter.value());
+}
+
+void OpzioniDialog::on_CheckUsaProxy_stateChanged(int state)
+{
+    enableProxyFields((state == 0) ? false : true);
+}
+
+void OpzioniDialog::enableProxyFields(bool enable)
+{
+    m_ui->TextServer->setEnabled(enable);
+    m_ui->TextPort->setEnabled(enable);
+    m_ui->RadioHttp->setEnabled(enable);
+    m_ui->RadioSocks5->setEnabled(enable);
+    m_ui->usaAutenticazione->setEnabled(enable);
+    m_ui->proxyUsername->setEnabled(enable);
+    m_ui->proxyPassword->setEnabled(enable);
+    m_ui->label_2->setEnabled(enable);
+    m_ui->label_3->setEnabled(enable);
+    m_ui->label_4->setEnabled(enable);
+    m_ui->label_5->setEnabled(enable);
+    m_ui->label_6->setEnabled(enable);
 }

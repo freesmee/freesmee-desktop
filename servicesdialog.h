@@ -42,7 +42,7 @@ class ServicesDialog : public QDialog
     Q_OBJECT
 
 public:
-    ServicesDialog(QWidget *parent,MainJackSMS * _padre,libJackSMS::dataTypes::servicesType &_ElencoServizi,libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati,const libJackSMS::dataTypes::optionsType &_opzioni);
+    ServicesDialog(QWidget *parent, MainJackSMS *_padre, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati);
     ~ServicesDialog();
 
 protected:
@@ -54,25 +54,19 @@ private:
     libJackSMS::dataTypes::servicesType &ElencoServizi;
     libJackSMS::dataTypes::configuredServicesType &ElencoServiziConfigurati;
     QString currentId;
-
     QMovie *spinner;
     libJackSMS::serverApi::accountManager *saver;
     libJackSMS::dataTypes::configuredAccount newAcc;
-    const libJackSMS::dataTypes::optionsType &opzioni;
 
 private slots:
     void on_Salva_clicked();
     void addAccountKo();
     void addAccountOk(QString);
-
     void on_listServiziFree_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void on_listServiziLowCost_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void on_listServiziAltri_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
-
     void serviceChanged(QListWidgetItem *item);
-
     void on_linkButton_clicked();
-
     void on_tabServiceType_currentChanged(int index);
 
 signals:

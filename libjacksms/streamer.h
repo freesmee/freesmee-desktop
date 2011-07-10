@@ -31,7 +31,6 @@
 #include <QTcpSocket>
 #include <QStringList>
 #include "DataTypes.h"
-#include "ProxyConfig.h"
 #include "SocketClient.h"
 #include "json/json.h"
 #include "ServerApi.h"
@@ -52,8 +51,6 @@ namespace libJackSMS
                 QTimer pingTimeout;
                 QTimer dataTimeout;
                 QTcpSocket sock;
-                QNetworkProxy proxy;
-                dataTypes::proxySettings ps;
                 libJackSMS::dataTypes::logImType imLog;
                 libJackSMS::dataTypes::logSmsMessage _msg;
                 int id;
@@ -68,7 +65,7 @@ namespace libJackSMS
                 bool stopped;
 
             public:
-                Streamer(QString _loginId, dataTypes::proxySettings _ps);
+                Streamer(QString _loginId);
                 ~Streamer();
                 void activateServ();
                 void stop();

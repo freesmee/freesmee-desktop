@@ -9,7 +9,6 @@
 #include "ShortMessage.h"
 #include "NetClient.h"
 #include "netclientqhttp.h"
-#include "ProxyConfig.h"
 #include "EncodingUrl.h"
 #include "SocketClient.h"
 #include "FilesDirectory.h"
@@ -25,10 +24,9 @@ namespace libJackSMS
 
     /********************smsSender****************/
 
-    smsSender::smsSender(const QString &_loginId, const dataTypes::servicesType &_services, const dataTypes::proxySettings &_ps) :
+    smsSender::smsSender(const QString &_loginId, const dataTypes::servicesType &_services) :
             loginId(_loginId),
             servizi(_services),
-            ps(_ps),
             continueSendFlag(false),
             SalvaCookies(true),
             getAdv(false)
@@ -65,7 +63,7 @@ namespace libJackSMS
     {
         try
         {
-            smsSenderBase sndr(loginId, servizi, ps);
+            smsSenderBase sndr(loginId, servizi);
             connect(&sleepClockTimer, SIGNAL(timeout()), this, SLOT(slotTimerClocked()));
             connect(this, SIGNAL(abortSignal()), &sndr, SLOT(abort()));
 
@@ -158,10 +156,9 @@ namespace libJackSMS
 
     /********************smsSenderBase****************/
 
-    smsSenderBase::smsSenderBase(const QString &_loginId, const dataTypes::servicesType &_services, const dataTypes::proxySettings &_ps) :
+    smsSenderBase::smsSenderBase(const QString &_loginId, const dataTypes::servicesType &_services) :
             loginId(_loginId),
             servizi(_services),
-            ps(_ps),
             pageIndex(-1),
             captchaInterrupt(false),
             hasAborted(false),
@@ -263,18 +260,12 @@ namespace libJackSMS
                 // Free+ or SMS+
                 if (getAdv)
                 {
-                    advcheck = new libJackSMS::serverApi::advChecker(loginId, messaggio.getText(), ps);
+                    advcheck = new libJackSMS::serverApi::advChecker(loginId, messaggio.getText());
                     connect(advcheck, SIGNAL(adv(QString)), this, SIGNAL(adv(QString)));
                     advcheck->getAdv();
                 }
 
                 webClient = new netClient::netClientQHttp();
-
-                if (ps.useProxy()) {
-                    webClient->setProxyServer(ps.getServer(), ps.getPort(), ps.getType());
-                    if (ps.useAuth())
-                        webClient->setProxyAuthentication(ps.getUsername(), ps.getPassword());
-                }
 
                 webClient->insertFormData("account_id", account.getId());
                 webClient->insertFormData("recipient", destinatario.toString().toUtf8().toPercentEncoding());
@@ -366,7 +357,7 @@ namespace libJackSMS
 
                     if (getAdv)
                     {
-                        advcheck = new libJackSMS::serverApi::advChecker(loginId, messaggio.getText(), ps);
+                        advcheck = new libJackSMS::serverApi::advChecker(loginId, messaggio.getText());
                         connect(advcheck, SIGNAL(adv(QString)), this, SIGNAL(adv(QString)));
                         advcheck->getAdv();
                     }
@@ -375,12 +366,6 @@ namespace libJackSMS
                     bool resultError = false;
                     dataTypes::service servizioDaUsare = service_iter.value();
                     webClient = new netClient::netClientQHttp();
-
-                    if (ps.useProxy()) {
-                        webClient->setProxyServer(ps.getServer(), ps.getPort(), ps.getType());
-                        if (ps.useAuth())
-                            webClient->setProxyAuthentication(ps.getUsername(), ps.getPassword());
-                    }
 
                     webClient->setUserAgent("Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.3) Gecko/20070309 Firefox/2.0.0.3");
                     //webClient->SetCookie(directories::CookiesDirectory() + "cookie");
@@ -575,12 +560,6 @@ namespace libJackSMS
                                     }
 
                                     rawClient->setHost(host, port);
-                                    if (ps.useProxy()) {
-                                        rawClient->setProxyServer(ps.getServer(), ps.getPort(), ps.getType());
-                                        if (ps.useAuth())
-                                            rawClient->setProxyAuthentication(ps.getUsername(), ps.getPassword());
-                                    }
-
                                     rawClient->connectToServer();
 
                                     int commandCount = 0;

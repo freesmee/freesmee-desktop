@@ -37,7 +37,6 @@
 #include <QWaitCondition>
 #include "DataTypes.h"
 #include "ShortMessage.h"
-#include "ProxyConfig.h"
 #include "Encoding.h"
 #include "NetClient.h"
 #include "Logger.h"
@@ -58,7 +57,6 @@ namespace libJackSMS
             const QString loginId;
             const dataTypes::servicesType &servizi;
             dataTypes::configuredAccount account;
-            dataTypes::proxySettings ps;
             void run();
             int pageIndex;
             bool continueSendFlag;
@@ -70,7 +68,7 @@ namespace libJackSMS
             bool getAdv;
 
         public:
-            smsSender(const QString &_loginId, const dataTypes::servicesType &_services, const dataTypes::proxySettings &_ps = dataTypes::proxySettings());
+            smsSender(const QString &_loginId, const dataTypes::servicesType &_services);
             void setRecipient(const dataTypes::phoneNumber &_dest);
             void setMessage(const dataTypes::shortMessage &_message);
             void setAccount(const dataTypes::configuredAccount &_account);
@@ -110,7 +108,6 @@ namespace libJackSMS
         dataTypes::configuredAccount account;
         QString substitute(QString _input, const dataTypes::contentType &_cont);
         QString substitute(QString _input, const dataTypes::creditsType &_cont);
-        const dataTypes::proxySettings &ps;
         netClient::netClientGeneric *webClient;
         int pageIndex;
         bool captchaInterrupt;
@@ -123,7 +120,7 @@ namespace libJackSMS
         bool getAdv;
 
     public:
-        smsSenderBase(const QString &_loginId, const dataTypes::servicesType &_services, const dataTypes::proxySettings &_ps = dataTypes::proxySettings());
+        smsSenderBase(const QString &_loginId, const dataTypes::servicesType &_services);
         void setNumberOfFirstPage(int _pn);
         void setRecipient(const dataTypes::phoneNumber &_dest);
         void setMessage(const dataTypes::shortMessage &_message);

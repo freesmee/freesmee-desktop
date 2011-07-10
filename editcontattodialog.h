@@ -35,7 +35,7 @@ namespace Ui {
 class editcontattodialog : public QDialog {
     Q_OBJECT
 public:
-    editcontattodialog(QWidget *parent, const libJackSMS::dataTypes::servicesType & _ElencoServizi, const libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, QString contactId, const libJackSMS::dataTypes::optionsType _Opzioni, QString _current_login_id);
+    editcontattodialog(QWidget *parent, const libJackSMS::dataTypes::servicesType &_ElencoServizi, const libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, QString contactId, QString _current_login_id);
     ~editcontattodialog();
 
 protected:
@@ -48,7 +48,6 @@ private:
     libJackSMS::dataTypes::phoneBookType &Rubrica;
     libJackSMS::serverApi::contactManager *saver;
     QMovie *spinner;
-    const libJackSMS::dataTypes::optionsType Opzioni;
     QString id;
     QString current_login_id;
 

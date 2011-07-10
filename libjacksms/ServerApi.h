@@ -34,7 +34,6 @@
 #include "xmlParserServerApi.h"
 #include "NetClient.h"
 #include "DataTypes.h"
-#include "ProxyConfig.h"
 #include "SocketClient.h"
 #include <QObject>
 #include <QTimer>
@@ -53,12 +52,11 @@ namespace libJackSMS
                 QString username;
                 QString password;
                 QString idsessione;
-                dataTypes::proxySettings ps;
                 xmlParserApi::xmlParserServerApiGeneric *xmlResponse;
                 netClient::netClientGeneric *webClient;
 
             public:
-                loginBase(const QString &_username,const QString &_password,dataTypes::proxySettings _ps );
+                loginBase(const QString &_username, const QString &_password);
                 ~loginBase();
                 void doLogin();
 
@@ -75,7 +73,7 @@ namespace libJackSMS
             Q_OBJECT
 
             public:
-                login(const QString &_username, const QString &_password, dataTypes::proxySettings _ps);
+                login(const QString &_username, const QString &_password);
                 ~login();
                 void doLogin();
                 void abort();
@@ -84,7 +82,6 @@ namespace libJackSMS
                 void run();
                 QString username;
                 QString password;
-                dataTypes::proxySettings ps;
                 loginBase *l;
 
             signals:
@@ -122,13 +119,12 @@ namespace libJackSMS
 
             private:
                 QString idsessione;
-                dataTypes::proxySettings ps;
                 void run();
                 int minutes;
                 QTimer timer;
 
             public:
-                pingator(const QString &_idsessione,dataTypes::proxySettings _ps);
+                pingator(const QString &_idsessione);
                 ~pingator();
                 void setPingInterval(int minutes);
 
@@ -151,17 +147,14 @@ namespace libJackSMS
             private:
                 QString loginId;
                 libJackSMS::dataTypes::logImType messages;
-                dataTypes::proxySettings ps;
                 netClient::netClientGeneric *webClient;
 
             public:
                 /*! instantMessenger
 
                    \param _loginId id della sessione corrente
-                   \param _ps oggetto di tipo dataTypes::proxySettings che mantiene le impostazioni del proxy
-
                   */
-                instantMessenger(const QString & _loginId,dataTypes::proxySettings _ps );
+                instantMessenger(const QString &_loginId);
 
                 /*! checkMessages
 
@@ -190,11 +183,10 @@ namespace libJackSMS
             private:
                 QString loginId;
                 dataTypes::logSmsMessage msg;
-                dataTypes::proxySettings ps;
                 void run();
 
             public:
-                smsLogSaver(QString _loginId,dataTypes::proxySettings _ps );
+                smsLogSaver(QString _loginId);
                 void save(dataTypes::logSmsMessage _msg);
 
             signals:
@@ -210,11 +202,10 @@ namespace libJackSMS
                 QString loginId;
                 dataTypes::logSmsMessage msg;
                 QString error;
-                dataTypes::proxySettings ps;
                 void run();
 
             public:
-                smsLogFailed(QString _loginId,dataTypes::proxySettings _ps );
+                smsLogFailed(QString _loginId);
                 void reportFail(dataTypes::logSmsMessage _msg,QString _error);
 
             signals:
@@ -228,12 +219,11 @@ namespace libJackSMS
 
             private:
                 QString loginId;
-                dataTypes::proxySettings ps;
                 void run();
                 libJackSMS::dataTypes::contact contatto;
 
             public:
-                contactManagerAdd(const QString &_loginId,dataTypes::proxySettings _ps );
+                contactManagerAdd(const QString &_loginId);
                 void addNewContact(libJackSMS::dataTypes::contact _contatto);
 
             signals:
@@ -247,12 +237,11 @@ namespace libJackSMS
 
             private:
                 QString loginId;
-                dataTypes::proxySettings ps;
                 void run();
                 libJackSMS::dataTypes::contact contatto;
 
             public:
-                contactManagerUpdate(const QString & _loginId,dataTypes::proxySettings _ps );
+                contactManagerUpdate(const QString & _loginId);
                 void updateContact(libJackSMS::dataTypes::contact _contatto);
 
             signals:
@@ -266,12 +255,11 @@ namespace libJackSMS
 
             private:
                 QString loginId;
-                dataTypes::proxySettings ps;
                 QString id;
                 void run();
 
             public:
-                contactManagerDelete(const QString & _loginId,dataTypes::proxySettings _ps );
+                contactManagerDelete(const QString &_loginId);
                 void deleteContact(QString _id);
 
             signals:
@@ -285,13 +273,12 @@ namespace libJackSMS
 
             private:
                 QString loginId;
-                dataTypes::proxySettings ps;
                 contactManagerAdd* manAdd;
                 contactManagerDelete *manDel;
                 contactManagerUpdate * manUp;
 
             public:
-                contactManager(const QString & _loginId,dataTypes::proxySettings _ps );
+                contactManager(const QString &_loginId);
                 void addNewContact(libJackSMS::dataTypes::contact _contatto);
                 void updateContact(libJackSMS::dataTypes::contact _contatto);
                 void deleteContact(QString _id);
@@ -312,12 +299,11 @@ namespace libJackSMS
             private:
                 QString loginId;
                 libJackSMS::dataTypes::service s;
-                dataTypes::proxySettings ps;
                 void run();
                 libJackSMS::dataTypes::configuredAccount account;
 
             public:
-                accountManagerUpdate(const QString & _loginId,libJackSMS::dataTypes::service _s,dataTypes::proxySettings _ps );
+                accountManagerUpdate(const QString & _loginId, libJackSMS::dataTypes::service _s);
                 void updateAccount(libJackSMS::dataTypes::configuredAccount _account);
 
             signals:
@@ -331,12 +317,11 @@ namespace libJackSMS
 
             private:
                 QString loginId;
-                dataTypes::proxySettings ps;
                 QString id;
                 void run();
 
             public:
-                accountManagerDelete(const QString & _loginId,dataTypes::proxySettings _ps );
+                accountManagerDelete(const QString &_loginId);
                 void deleteAccount(const QString &_id);
 
             signals:
@@ -350,14 +335,13 @@ namespace libJackSMS
 
             private:
                 QString loginId;
-                dataTypes::proxySettings ps;
                 void run();
                 libJackSMS::dataTypes::service service;
                 libJackSMS::dataTypes::configuredAccount account;
 
             public:
-                accountManagerAdd(const QString & _loginId,dataTypes::proxySettings _ps );
-                void addNewAccount(libJackSMS::dataTypes::service _service,libJackSMS::dataTypes::configuredAccount & _account);
+                accountManagerAdd(const QString &_loginId);
+                void addNewAccount(libJackSMS::dataTypes::service _service,libJackSMS::dataTypes::configuredAccount &_account);
 
             signals:
                 void accountAdded(QString);
@@ -370,15 +354,14 @@ namespace libJackSMS
 
             private:
                 QString loginId;
-                dataTypes::proxySettings ps;
                 accountManagerDelete *manDel;
                 accountManagerAdd *manAdd;
                 accountManagerUpdate *manUp;
 
             public:
-                accountManager(const QString & _loginId,dataTypes::proxySettings _ps );
-                void addNewAccount(libJackSMS::dataTypes::service _service,libJackSMS::dataTypes::configuredAccount & _account);
-                void updateAccount(libJackSMS::dataTypes::configuredAccount & _account,libJackSMS::dataTypes::service s);
+                accountManager(const QString &_loginId);
+                void addNewAccount(libJackSMS::dataTypes::service _service, libJackSMS::dataTypes::configuredAccount &_account);
+                void updateAccount(libJackSMS::dataTypes::configuredAccount &_account, libJackSMS::dataTypes::service s);
                 void deleteAccount(QString _id);
 
             signals:
@@ -397,17 +380,12 @@ namespace libJackSMS
         //       xmlParserApi::xmlParserServerApiGeneric *xmlDocument;
         //       QString loginId;
         //       netClient::netClientGeneric *webClient;
-        //       dataTypes::proxySettings ps;
-        //
-        //
         //
         //   public:
         //       /*!
         //          \param _loginId id della sessione corrente
-        //          \param _ps oggetto di tipo dataTypes::proxySettings che mantiene le impostazioni del proxy
-        //
         //         */
-        //       conversationManager(const QString & _loginId,dataTypes::proxySettings _ps );
+        //       conversationManager(const QString & _loginId);
         //       /*!
         //          \param _logSms Struttura dati dove verranno salvati gli sms inviati( JMS compresi)
         //          \param _logIm Struttura dati dove verranno salvati i JMS ricevuti
@@ -416,7 +394,7 @@ namespace libJackSMS
         //          Riceve dal server gli ultimi 100 messaggi inviati e ricevuti
         //
         //         */
-        //       bool downloadLastMessages(libJackSMS::dataTypes::logSmsType & _logSms,libJackSMS::dataTypes::logImType & _logIm);
+        //       bool downloadLastMessages(libJackSMS::dataTypes::logSmsType &_logSms, libJackSMS::dataTypes::logImType &_logIm);
         //};
 
         class updateServicesManager : public QThread
@@ -425,13 +403,12 @@ namespace libJackSMS
 
             private:
                 QString loginId;
-                dataTypes::proxySettings ps;
                 libJackSMS::dataTypes::servicesType servizi;
                 void run();
                 bool aborted;
 
             public:
-                updateServicesManager(const QString &_loginId, dataTypes::proxySettings _ps, libJackSMS::dataTypes::servicesType _servizi);
+                updateServicesManager(const QString &_loginId, libJackSMS::dataTypes::servicesType _servizi);
                 void checkUpdates();
                 void abort();
 
@@ -452,14 +429,13 @@ namespace libJackSMS
                 netClient::netClientGeneric *webClient;
                 QList<QPair<QString,QString> > updateResults;
                 QString servXml;
-                dataTypes::proxySettings ps;
                 bool aborted;
 
             public slots:
                 void abort();
 
             public:
-                updateServicesManagerBase(const QString &_loginId, dataTypes::proxySettings _ps);
+                updateServicesManagerBase(const QString &_loginId);
                 bool downloadUpdates(libJackSMS::dataTypes::servicesType &_servizi);
                 QString getMessage() const;
                 QString getXml() const;
@@ -474,15 +450,12 @@ namespace libJackSMS
                 xmlParserApi::xmlParserServerApiGeneric *xmlDocument;
                 QString loginId;
                 netClient::netClientGeneric *webClient;
-                dataTypes::proxySettings ps;
 
             public:
                 /*!
                    \param _loginId id della sessione corrente
-                   \param _ps oggetto di tipo dataTypes::proxySettings che mantiene le impostazioni del proxy
-
                   */
-                reloader(const QString & _loginId,dataTypes::proxySettings _ps );
+                reloader(const QString & _loginId);
                 bool reloadPhoneBook();
         signals:
                 void errorReload();
@@ -505,14 +478,12 @@ namespace libJackSMS
             QTimer reconnectTimer;
             QTimer dataTimeout;
             QTcpSocket sock;
-            QNetworkProxy proxy;
-            dataTypes::proxySettings ps;
             libJackSMS::dataTypes::logImType imLog;
             int id;
             QByteArray buffer;
 
         public:
-            permanentInstantMessenger(QString _username, QString _password, dataTypes::proxySettings _ps);
+            permanentInstantMessenger(QString _username, QString _password);
             ~permanentInstantMessenger();
             void activateServ();
             void stop();
@@ -543,11 +514,10 @@ namespace libJackSMS
 
         private:
             QString loginString;
-            dataTypes::proxySettings ps;
             QTimer timeout;
 
         public:
-            cyclicMessengerChecker(QString _loginString, dataTypes::proxySettings _ps);
+            cyclicMessengerChecker(QString _loginString);
             ~cyclicMessengerChecker();
             void activateServ();
             void stop();
@@ -561,73 +531,18 @@ namespace libJackSMS
             void serviceNotActive();
         };
 
-//        class Streamer :
-//                public QObject
-//        {
-//            Q_OBJECT
-
-//        private:
-//            QString username;
-//            QString password;
-//            QString error;
-//            QString  userDir;
-//            QTimer pingTimer;
-//            QTimer signalCountdown;
-//            QTimer pingTimeout;
-//            QTimer reconnectTimer;
-//            QTimer dataTimeout;
-//            QTcpSocket sock;
-//            QNetworkProxy proxy;
-//            dataTypes::proxySettings ps;
-//            libJackSMS::dataTypes::logImType imLog;
-//            int id;
-//            QByteArray buffer;
-//            QString loginString;
-//            QStringList idList;
-//            enum streamerState{waitConnResponse=1,receivingQueue=2,queueProcessed=3,waitForMessages=4};
-//            //waitformessages e' solo un nome mnemonico.. 3 e 4 indicano la stessa cosa.
-//            streamerState status;
-//            int queueCount;
-
-//        public:
-//            Streamer(QString _username,QString _password,QString _loginString,dataTypes::proxySettings _ps );
-//            ~Streamer();
-//            void activateServ();
-//            void stop();
-
-//        private slots:
-//            void launchSignal();
-//            void connectDone();
-//            void parseLine();
-//            void relaunchDisconnected();
-//            void errorDisconnected(QAbstractSocket::SocketError);
-//            void state(QAbstractSocket::SocketState e);
-//            void ping();
-//            void pingTimeoutError();
-//            void tryReconnect();
-//            void dataReceived();
-
-//        signals:
-//            void newJMS(libJackSMS::dataTypes::logImType);
-//            void serviceActive();
-//            void serviceNotActive(bool err = false, QString errStr = "");
-//            void serviceActivating();
-//        };
-
-
         class gmailAddressBookImporter : public QThread
         {
             Q_OBJECT
 
             private:
                 QString loginId;
-                dataTypes::proxySettings ps;
                 QString gmailuser;
                 QString gmailpsw;
                 void run();
 
             public:
-                gmailAddressBookImporter(QString _loginId, dataTypes::proxySettings _ps = dataTypes::proxySettings());
+                gmailAddressBookImporter(QString _loginId);
                 void import(QString _user, QString _psw);
 
             signals:
@@ -643,11 +558,10 @@ namespace libJackSMS
             private:
                 QString loginId;
                 QString messaggio;
-                dataTypes::proxySettings ps;
                 void run();
 
             public:
-                advChecker(QString _loginId, QString _messaggio, dataTypes::proxySettings _ps = dataTypes::proxySettings());
+                advChecker(QString _loginId, QString _messaggio);
                 void getAdv();
 
             signals:

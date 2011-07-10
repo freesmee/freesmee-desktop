@@ -38,10 +38,9 @@ namespace libJackSMS {
 
     namespace serverApi {
 
-        login::login(const QString &_username, const QString &_password, dataTypes::proxySettings _ps) :
+        login::login(const QString &_username, const QString &_password) :
                 username(_username),
                 password(_password),
-                ps(_ps),
                 l(NULL)
         {
             qRegisterMetaType<libJackSMS::dataTypes::phoneBookType>("libJackSMS::dataTypes::phoneBookType");
@@ -66,7 +65,7 @@ namespace libJackSMS {
         void login::run()
         {
             emit loginStarted();
-            l = new loginBase(username, password, ps);
+            l = new loginBase(username, password);
             //connect(this,SIGNAL(abortSignal()),&man,SLOT(abort()));
             connect(l, SIGNAL(accountsReceived(libJackSMS::dataTypes::configuredServicesType)), this, SIGNAL(accountsReceived(libJackSMS::dataTypes::configuredServicesType)));
             connect(l, SIGNAL(loginFailed(QString)), this, SIGNAL(loginFailed(QString)));
@@ -76,10 +75,9 @@ namespace libJackSMS {
             l->doLogin();
         }
 
-        loginBase::loginBase(const QString &_username, const QString &_password, dataTypes::proxySettings _ps) :
+        loginBase::loginBase(const QString &_username, const QString &_password) :
                 username(_username),
                 password(_password),
-                ps(_ps),
                 xmlResponse(new xmlParserApi::xmlParserServerApiTicpp())
         {
         }
@@ -92,14 +90,6 @@ namespace libJackSMS {
         void loginBase::doLogin()
         {
             webClient = new netClient::netClientQHttp();
-
-            if (ps.useProxy())
-            {
-                webClient->setProxyServer(ps.getServer(), ps.getPort(), ps.getType());
-                if (ps.useAuth())
-                    webClient->setProxyAuthentication(ps.getUsername(), ps.getPassword());
-            }
-
             webClient->insertFormData("user",     username.toUtf8().toPercentEncoding());
             webClient->insertFormData("password", password.toUtf8().toPercentEncoding());
 
@@ -138,9 +128,8 @@ namespace libJackSMS {
             }
         }
 
-        pingator::pingator(const QString &_idsessione, dataTypes::proxySettings _ps) :
+        pingator::pingator(const QString &_idsessione) :
                 idsessione(_idsessione),
-                ps(_ps),
                 minutes(30)
         {
         }
@@ -175,12 +164,6 @@ namespace libJackSMS {
 
                 netClient::netClientQHttp webClient;
 
-                if (ps.useProxy()) {
-                    webClient.setProxyServer(ps.getServer(), ps.getPort(), ps.getType());
-                    if (ps.useAuth())
-                        webClient.setProxyAuthentication(ps.getUsername(), ps.getPassword());
-                }
-
                 webClient.setUrl("http://api.freesmee.com/ping?desktop=" + QString(FREESMEE_VERSION) + "&token=" + idsessione + "&o=xml");
                 QString xml = webClient.readPage(true);
                 emit pinged();
@@ -208,9 +191,8 @@ namespace libJackSMS {
             }
         }
 
-        instantMessenger::instantMessenger(const QString &_loginId, dataTypes::proxySettings _ps) :
+        instantMessenger::instantMessenger(const QString &_loginId) :
             loginId(_loginId),
-            ps(_ps),
             webClient(new netClient::netClientQHttp())
         {
         }
@@ -219,13 +201,6 @@ namespace libJackSMS {
         {
             try
             {
-                if (ps.useProxy())
-                {
-                    webClient->setProxyServer(ps.getServer(), ps.getPort(), ps.getType());
-                    if (ps.useAuth())
-                        webClient->setProxyAuthentication(ps.getUsername(), ps.getPassword());
-                }
-
                 webClient->setUrl("http://api.freesmee.com/getDeleteQueue?desktop=" + QString(FREESMEE_VERSION) + "&token=" + loginId + "&o=xml");
                 QString xml = webClient->readPage(true);
 
@@ -269,9 +244,8 @@ namespace libJackSMS {
             return true;
         }
 
-        smsLogFailed::smsLogFailed(const QString _loginId, dataTypes::proxySettings _ps) :
-            loginId(_loginId),
-            ps(_ps)
+        smsLogFailed::smsLogFailed(const QString _loginId) :
+            loginId(_loginId)
         {
         }
 
@@ -286,13 +260,6 @@ namespace libJackSMS {
         {
             xmlParserApi::xmlParserServerApiTicpp xmlResponse;
             netClient::netClientQHttp webClient;
-
-            if (ps.useProxy())
-            {
-                webClient.setProxyServer(ps.getServer(), ps.getPort(),ps.getType());
-                if (ps.useAuth())
-                    webClient.setProxyAuthentication(ps.getUsername(),ps.getPassword());
-            }
 
             webClient.insertFormData("message",     msg.getText().toUtf8().toPercentEncoding());
             webClient.insertFormData("recipient",   msg.getPhoneNumber().toString().toUtf8().toPercentEncoding());
@@ -316,9 +283,8 @@ namespace libJackSMS {
             }
         }
 
-        smsLogSaver::smsLogSaver(const QString _loginId, dataTypes::proxySettings _ps) :
-            loginId(_loginId),
-            ps(_ps)
+        smsLogSaver::smsLogSaver(const QString _loginId) :
+            loginId(_loginId)
         {
             qRegisterMetaType<libJackSMS::dataTypes::logSmsMessage>("libJackSMS::dataTypes::logSmsMessage");
         }
@@ -332,13 +298,6 @@ namespace libJackSMS {
         {
             xmlParserApi::xmlParserServerApiTicpp xmlResponse;
             netClient::netClientQHttp webClient;
-
-            if (ps.useProxy())
-            {
-                webClient.setProxyServer(ps.getServer(),ps.getPort(),ps.getType());
-                if (ps.useAuth())
-                    webClient.setProxyAuthentication(ps.getUsername(),ps.getPassword());
-            }
 
             webClient.insertFormData("message",    msg.getText().toUtf8().toPercentEncoding());
             webClient.insertFormData("recipient",  msg.getPhoneNumber().toString().toUtf8().toPercentEncoding());
@@ -363,15 +322,14 @@ namespace libJackSMS {
             }
         }
 
-        contactManager::contactManager(const QString &_loginId, dataTypes::proxySettings _ps) :
-                loginId(_loginId),
-                ps(_ps)
+        contactManager::contactManager(const QString &_loginId) :
+                loginId(_loginId)
         {
         }
 
         void contactManager::addNewContact(libJackSMS::dataTypes::contact _contatto)
         {
-            manAdd=new contactManagerAdd(loginId,ps);
+            manAdd = new contactManagerAdd(loginId);
             connect(manAdd, SIGNAL(contactAdded(QString, bool, int)), this, SIGNAL(contactSaved(QString, bool, int)));
             connect(manAdd, SIGNAL(errorAdd()), this, SIGNAL(contactNotSaved()));
             manAdd->addNewContact(_contatto);
@@ -379,7 +337,7 @@ namespace libJackSMS {
 
         void contactManager::updateContact(libJackSMS::dataTypes::contact _contatto)
         {
-            manUp = new contactManagerUpdate(loginId, ps);
+            manUp = new contactManagerUpdate(loginId);
             connect(manUp, SIGNAL(contactUpdated(libJackSMS::dataTypes::contact)), this, SIGNAL(contactUpdated(libJackSMS::dataTypes::contact)));
             connect(manUp, SIGNAL(errorUpdate()), this, SIGNAL(contactNotUpdated()));
             manUp->updateContact(_contatto);
@@ -387,7 +345,7 @@ namespace libJackSMS {
 
         void contactManager::deleteContact(QString _id)
         {
-            manDel = new contactManagerDelete(loginId, ps);
+            manDel = new contactManagerDelete(loginId);
             connect(manDel, SIGNAL(contactDeleted(QString)), this, SIGNAL(contactDeleted(QString)));
             connect(manDel, SIGNAL(errorDelete()), this, SIGNAL(contactNotDeleted()));
             manDel->deleteContact(_id);
@@ -399,12 +357,6 @@ namespace libJackSMS {
         {
             netClient::netClientQHttp webClient;
             libJackSMS::xmlParserApi::xmlParserServerApiTicpp xmlDocument;
-            if (ps.useProxy())
-            {
-                webClient.setProxyServer(ps.getServer(),ps.getPort(), ps.getType());
-                if (ps.useAuth())
-                    webClient.setProxyAuthentication(ps.getUsername(), ps.getPassword());
-            }
 
             webClient.insertFormData("ids", id.toUtf8().toPercentEncoding());
 
@@ -423,9 +375,8 @@ namespace libJackSMS {
             }
         }
 
-        contactManagerDelete::contactManagerDelete(const QString &_loginId, dataTypes::proxySettings _ps) :
-                loginId(_loginId),
-                ps(_ps)
+        contactManagerDelete::contactManagerDelete(const QString &_loginId) :
+                loginId(_loginId)
         {
         }
 
@@ -442,12 +393,6 @@ namespace libJackSMS {
         {
             netClient::netClientQHttp webClient;
             libJackSMS::xmlParserApi::xmlParserServerApiTicpp xmlDocument;
-
-            if (ps.useProxy()) {
-                webClient.setProxyServer(ps.getServer(),ps.getPort(),ps.getType());
-                if (ps.useAuth())
-                    webClient.setProxyAuthentication(ps.getUsername(),ps.getPassword());
-            }
 
             webClient.insertFormData("ids", id.toUtf8().toPercentEncoding());
 
@@ -467,9 +412,8 @@ namespace libJackSMS {
             }
         }
 
-        accountManagerDelete::accountManagerDelete(const QString &_loginId, dataTypes::proxySettings _ps) :
-                loginId(_loginId),
-                ps(_ps)
+        accountManagerDelete::accountManagerDelete(const QString &_loginId) :
+                loginId(_loginId)
         {
         }
 
@@ -486,13 +430,6 @@ namespace libJackSMS {
         {
             netClient::netClientQHttp webClient;
             libJackSMS::xmlParserApi::xmlParserServerApiTicpp xmlDocument;
-
-            if (ps.useProxy())
-            {
-                webClient.setProxyServer(ps.getServer(),ps.getPort(), ps.getType());
-                if (ps.useAuth())
-                    webClient.setProxyAuthentication(ps.getUsername(), ps.getPassword());
-            }
 
             webClient.insertFormData("service_id",   account.getService().toUtf8().toPercentEncoding());
             webClient.insertFormData("account_name", account.getName().toUtf8().toPercentEncoding());
@@ -524,9 +461,8 @@ namespace libJackSMS {
             }
         }
 
-        accountManagerAdd::accountManagerAdd(const QString &_loginId, dataTypes::proxySettings _ps) :
-                loginId(_loginId),
-                ps(_ps)
+        accountManagerAdd::accountManagerAdd(const QString &_loginId) :
+                loginId(_loginId)
         {
         }
 
@@ -543,13 +479,6 @@ namespace libJackSMS {
         {
             libJackSMS::xmlParserApi::xmlParserServerApiTicpp xmlDocument;
             netClient::netClientQHttp webClient;
-
-            if (ps.useProxy())
-            {
-                webClient.setProxyServer(ps.getServer(), ps.getPort(), ps.getType());
-                if (ps.useAuth())
-                    webClient.setProxyAuthentication(ps.getUsername(), ps.getPassword());
-            }
 
             webClient.insertFormData("contact_name",   contatto.getName().toUtf8().toPercentEncoding());
             webClient.insertFormData("contact_number", contatto.getPhone().toString().toUtf8().toPercentEncoding());
@@ -575,9 +504,8 @@ namespace libJackSMS {
             }
         }
 
-        contactManagerAdd::contactManagerAdd(const QString &_loginId, dataTypes::proxySettings _ps) :
-                loginId(_loginId),
-                ps(_ps)
+        contactManagerAdd::contactManagerAdd(const QString &_loginId) :
+                loginId(_loginId)
         {
         }
 
@@ -625,9 +553,8 @@ namespace libJackSMS {
             }
         }
 
-        contactManagerUpdate::contactManagerUpdate(const QString & _loginId,dataTypes::proxySettings _ps )
-            :loginId(_loginId),
-            ps(_ps)
+        contactManagerUpdate::contactManagerUpdate(const QString &_loginId)
+            :loginId(_loginId)
         {
             qRegisterMetaType<libJackSMS::dataTypes::contact>("libJackSMS::dataTypes::contact");
         }
@@ -685,10 +612,9 @@ namespace libJackSMS {
             }
         }
 
-        accountManagerUpdate::accountManagerUpdate(const QString &_loginId, libJackSMS::dataTypes::service _s, dataTypes::proxySettings _ps) :
+        accountManagerUpdate::accountManagerUpdate(const QString &_loginId, libJackSMS::dataTypes::service _s) :
                 loginId(_loginId),
-                s(_s),
-                ps(_ps)
+                s(_s)
         {
             qRegisterMetaType<libJackSMS::dataTypes::configuredAccount>("libJackSMS::dataTypes::configuredAccount");
         }
@@ -701,14 +627,13 @@ namespace libJackSMS {
 
         /***********************************/
 
-        accountManager::accountManager(const QString &_loginId, dataTypes::proxySettings _ps) :
-                loginId(_loginId),
-                ps(_ps)
+        accountManager::accountManager(const QString &_loginId) :
+                loginId(_loginId)
         {
         }
 
         void accountManager::addNewAccount(libJackSMS::dataTypes::service _service,libJackSMS::dataTypes::configuredAccount & _account){
-            manAdd = new accountManagerAdd(loginId, ps);
+            manAdd = new accountManagerAdd(loginId);
             connect(manAdd,SIGNAL(accountAdded(QString)),this,SIGNAL(accountSaved(QString)));
             connect(manAdd,SIGNAL(errorAdd()),this,SIGNAL(accountNotSaved()));
             manAdd->addNewAccount(_service,_account);
@@ -716,7 +641,7 @@ namespace libJackSMS {
 
         void accountManager::updateAccount(libJackSMS::dataTypes::configuredAccount &_account, libJackSMS::dataTypes::service s)
         {
-            manUp = new accountManagerUpdate(loginId, s, ps);
+            manUp = new accountManagerUpdate(loginId, s);
             connect(manUp, SIGNAL(accountUpdated(libJackSMS::dataTypes::configuredAccount)), this, SIGNAL(accountUpdated(libJackSMS::dataTypes::configuredAccount)));
             connect(manUp, SIGNAL(errorUpdate()), this, SIGNAL(accountNotUpdated()));
             manUp->updateAccount(_account);
@@ -724,30 +649,22 @@ namespace libJackSMS {
 
         void accountManager::deleteAccount(QString _id)
         {
-            manDel = new accountManagerDelete(loginId, ps);
+            manDel = new accountManagerDelete(loginId);
             connect(manDel, SIGNAL(accountDeleted(QString)), this, SIGNAL(accountDeleted(QString)));
             connect(manDel, SIGNAL(errorDelete()), this, SIGNAL(accountNotDeleted()));
             manDel->deleteAccount(_id);
         }
 
-        reloader::reloader(const QString &_loginId, dataTypes::proxySettings _ps) :
+        reloader::reloader(const QString &_loginId) :
                 xmlDocument(new libJackSMS::xmlParserApi::xmlParserServerApiTicpp()),
                 loginId(_loginId),
-                webClient(new netClient::netClientQHttp()),
-                ps(_ps)
+                webClient(new netClient::netClientQHttp())
         {
             qRegisterMetaType<libJackSMS::dataTypes::phoneBookType>("libJackSMS::dataTypes::phoneBookType");
         }
 
         bool reloader::reloadPhoneBook()
         {
-            if (ps.useProxy())
-            {
-                webClient->setProxyServer(ps.getServer(), ps.getPort(), ps.getType());
-                if (ps.useAuth())
-                    webClient->setProxyAuthentication(ps.getUsername(), ps.getPassword());
-            }
-
             webClient->setUrl("http://api.freesmee.com/getAbookFullJMS?desktop=" + QString(FREESMEE_VERSION) + "&token=" + loginId + "&o=xml");
             QString xml = webClient->readPage(true);
             xmlDocument->setXml(xml);
@@ -762,21 +679,15 @@ namespace libJackSMS {
 
         }
 
-//        conversationManager::conversationManager(const QString &_loginId, dataTypes::proxySettings _ps) :
+//        conversationManager::conversationManager(const QString &_loginId) :
 //                xmlDocument(new libJackSMS::xmlParserApi::xmlParserServerApiTicpp()),
 //                loginId(_loginId),
-//                webClient(new netClient::netClientQHttp()),
-//                ps(_ps)
+//                webClient(new netClient::netClientQHttp())
 //        {
 //        }
 
 //        bool conversationManager::downloadLastMessages(libJackSMS::dataTypes::logSmsType & _logSms, libJackSMS::dataTypes::logImType &_logIm)
 //        {
-//            if (ps.useProxy()) {
-//                webClient->setProxyServer(ps.getServer(),ps.getPort(),ps.getType());
-//                if (ps.useAuth())
-//                    webClient->setProxyAuthentication(ps.getUsername(),ps.getPassword());
-//            }
 //            webClient->setUrl("http://api.freesmee.com/getConversation?desktop=" + QString(FREESMEE_VERSION) + "&token=" + idsessione + "&o=xml");
 //            QString xml=webClient->readPage(true);
 
@@ -787,7 +698,7 @@ namespace libJackSMS {
         void updateServicesManager::run()
         {
             try {
-                updateServicesManagerBase man(loginId, ps);
+                updateServicesManagerBase man(loginId);
                 connect(this, SIGNAL(abortSignal()), &man, SLOT(abort()));
 
                 if (man.downloadUpdates(servizi))
@@ -801,9 +712,8 @@ namespace libJackSMS {
             }
         }
 
-        updateServicesManager::updateServicesManager(const QString &_loginId, dataTypes::proxySettings _ps, libJackSMS::dataTypes::servicesType _servizi) :
+        updateServicesManager::updateServicesManager(const QString &_loginId, libJackSMS::dataTypes::servicesType _servizi) :
                 loginId(_loginId),
-                ps(_ps),
                 servizi(_servizi),
                 aborted(false)
         {
@@ -821,40 +731,38 @@ namespace libJackSMS {
             aborted = true;
         }
 
-        updateServicesManagerBase::updateServicesManagerBase(const QString &_loginId, dataTypes::proxySettings _ps) :
+        updateServicesManagerBase::updateServicesManagerBase(const QString &_loginId) :
                 xmlDocument(new libJackSMS::xmlParserApi::xmlParserServerApiTicpp()),
                 loginId(_loginId),
                 webClient(new netClient::netClientQHttp()),
-                ps(_ps),
                 aborted(false)
         {
         }
 
         QString updateServicesManagerBase::getMessage() const
         {
-            QString resUp;
-            QString resAdd;
+            QString resAdd, resUp, resDel;
 
-            for (QList< QPair<QString,QString> >::const_iterator i = updateResults.begin(); i != updateResults.end(); ++i) {
-                if (i->first == "a") {
-                    if (resAdd.isEmpty())
-                        resAdd = i->second;
-                    else
-                        resAdd = resAdd + ", " + i->second;
-                } else {
-                    if (resUp.isEmpty())
-                        resUp = i->second;
-                    else
-                        resUp = resUp + ", " + i->second;
-                }
+            for (QList< QPair<QString,QString> >::const_iterator i = updateResults.begin(); i != updateResults.end(); ++i)
+            {
+                if (i->first == "a")
+                    resAdd = (resAdd.isEmpty() ? "" : ", ") + i->second;
+
+                else if (i->first == "u")
+                    resUp = (resUp.isEmpty() ? "" : ", ") + i->second;
+
+                else if (i->first == "d")
+                    resDel = (resDel.isEmpty() ? "" : ", ") + i->second;
             }
 
             QString final;
 
             if (!resAdd.isEmpty())
                 final = "Aggiunti i seguenti servizi:\n" + resAdd + "\n\n";
+
             if (!resUp.isEmpty())
                 final = final + "Aggiornati i seguenti servizi:\n" + resUp;
+
             return final;
         }
 
@@ -871,16 +779,15 @@ namespace libJackSMS {
 
         bool updateServicesManagerBase::downloadUpdates(libJackSMS::dataTypes::servicesType &_servizi)
         {
-            if (ps.useProxy())
-            {
-                webClient->setProxyServer(ps.getServer(), ps.getPort(), ps.getType());
-                if (ps.useAuth())
-                    webClient->setProxyAuthentication(ps.getUsername(), ps.getPassword());
-            }
-
             bool result = false;
-            for(libJackSMS::dataTypes::servicesType::iterator i = _servizi.begin(); i != _servizi.end(); ++i)
-                webClient->insertFormData(i.value().getId(), i.value().getVersion());
+            for (libJackSMS::dataTypes::servicesType::iterator i = _servizi.begin(); i != _servizi.end(); ++i)
+            {
+                QString id = i.value().getId();
+
+                // gli id oltre il mille sono per usi custom
+                if (id.toInt() <= 1000)
+                    webClient->insertFormData(id, i.value().getVersion());
+            }
 
             QString xml = webClient->submitPost("http://api.freesmee.com/servicesFullXML?desktop=" + QString(FREESMEE_VERSION), true);
 
@@ -903,14 +810,19 @@ namespace libJackSMS {
                                 result = true;
                                 _servizi.insert(i.value().getId(), i.value());
                                 updateResults.push_back(qMakePair(QString("a"), i.value().getName() + " (v" + i.value().getVersion() + ")"));
-                            } else {
-                                if (i.value().getVersion() != x.value().getVersion()) {
+                            }
+                            else
+                            {
+                                if (i.value().getVersion() != x.value().getVersion())
+                                {
                                     updateResults.push_back(qMakePair(QString("u"), i.value().getName()));
                                     x.value() = i.value();
                                     result = true;
                                 }
                             }
                         }
+
+                        // TODO: controllare se il servizio è stato cancellato
                     }
 
                     return result;
@@ -922,11 +834,12 @@ namespace libJackSMS {
             return false;
         }
 
-        void cyclicMessengerChecker::run() {
+        void cyclicMessengerChecker::run()
+        {
             //qDebug() << "cyclicMessengerChecker";
             try
             {
-                libJackSMS::serverApi::instantMessenger im(loginString, ps);
+                libJackSMS::serverApi::instantMessenger im(loginString);
 
                 if (im.checkMessages()) {
                     libJackSMS::dataTypes::logImType msgs;
@@ -941,9 +854,8 @@ namespace libJackSMS {
             }
         }
 
-        cyclicMessengerChecker::cyclicMessengerChecker(QString _loginString, dataTypes::proxySettings _ps) :
-                loginString(_loginString),
-                ps(_ps)
+        cyclicMessengerChecker::cyclicMessengerChecker(QString _loginString) :
+                loginString(_loginString)
         {
             qRegisterMetaType<libJackSMS::dataTypes::logImType>("libJackSMS::dataTypes::logImType");
             connect(&timeout, SIGNAL(timeout()), this, SLOT(run()));
@@ -968,13 +880,6 @@ namespace libJackSMS {
         {
             libJackSMS::xmlParserApi::xmlParserServerApiTicpp *xmlDocument = new libJackSMS::xmlParserApi::xmlParserServerApiTicpp();
             netClient::netClientQHttp *webClient = new netClient::netClientQHttp();
-
-            if (ps.useProxy())
-            {
-                webClient->setProxyServer(ps.getServer(), ps.getPort(), ps.getType());
-                if (ps.useAuth())
-                    webClient->setProxyAuthentication(ps.getUsername(), ps.getPassword());
-            }
 
             webClient->setUserAgent("Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.3) Gecko/20070309 Firefox/2.0.0.3");
 
@@ -1008,9 +913,8 @@ namespace libJackSMS {
             }
         }
 
-        gmailAddressBookImporter::gmailAddressBookImporter(QString _loginId, dataTypes::proxySettings _ps) :
-                loginId(_loginId),
-                ps(_ps)
+        gmailAddressBookImporter::gmailAddressBookImporter(QString _loginId) :
+                loginId(_loginId)
         {
         }
 
@@ -1023,10 +927,9 @@ namespace libJackSMS {
 
         /**********************adv checker***********************/
 
-        advChecker::advChecker(QString _loginId, QString _messaggio, dataTypes::proxySettings _ps) :
+        advChecker::advChecker(QString _loginId, QString _messaggio) :
                 loginId(_loginId),
-                messaggio(_messaggio),
-                ps(_ps)
+                messaggio(_messaggio)
         {
         }
 
@@ -1039,13 +942,6 @@ namespace libJackSMS {
         {
             libJackSMS::xmlParserApi::xmlParserServerApiTicpp *xmlDocument = new libJackSMS::xmlParserApi::xmlParserServerApiTicpp();
             netClient::netClientQHttp *webClient = new netClient::netClientQHttp();
-
-            if (ps.useProxy())
-            {
-                webClient->setProxyServer(ps.getServer(), ps.getPort(), ps.getType());
-                if (ps.useAuth())
-                    webClient->setProxyAuthentication(ps.getUsername(), ps.getPassword());
-            }
 
             webClient->setUserAgent("Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.3) Gecko/20070309 Firefox/2.0.0.3");
 

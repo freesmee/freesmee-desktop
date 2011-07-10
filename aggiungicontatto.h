@@ -38,8 +38,8 @@ class AggiungiContatto : public QDialog
 {
     Q_OBJECT
 public:
-    AggiungiContatto(QWidget *parent, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati,libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::optionsType &_opzioni, QString _current_login_id);
-    AggiungiContatto(QWidget *parent, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati,libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::optionsType &_opzioni, QString _current_login_id, libJackSMS::dataTypes::phoneNumber numero);
+    AggiungiContatto(QWidget *parent, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, QString _current_login_id);
+    AggiungiContatto(QWidget *parent, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, QString _current_login_id, libJackSMS::dataTypes::phoneNumber numero);
     ~AggiungiContatto();
 
 protected:
@@ -52,7 +52,6 @@ private:
     libJackSMS::dataTypes::phoneBookType &Rubrica;
     libJackSMS::dataTypes::servicesType &ElencoServizi;
     QMovie *spinner;
-    libJackSMS::dataTypes::optionsType &opzioni;
     QString current_login_id;
     libJackSMS::dataTypes::contact contatto;
 

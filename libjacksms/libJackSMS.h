@@ -83,7 +83,6 @@
 #include "xmlParserLocalApiTicpp.h"
 #include "xmlParserServerApi.h"
 #include "xmlParserServerApiTicpp.h"
-#include "ProxyConfig.h"
 #include "LanguageManager.h"
 #endif //LIBJACKSMS_H
 

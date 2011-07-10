@@ -36,7 +36,7 @@ namespace Ui
 class editAccountDialog : public QDialog {
     Q_OBJECT
 public:
-    editAccountDialog(libJackSMS::dataTypes::configuredServicesType &_acc, libJackSMS::dataTypes::servicesType &_services ,QString id,QString current_login_id,libJackSMS::dataTypes::optionsType &_opzioni,QWidget *parent = 0);
+    editAccountDialog(libJackSMS::dataTypes::configuredServicesType &_acc, libJackSMS::dataTypes::servicesType &_services, QString id, QString current_login_id, QWidget *parent = 0);
     ~editAccountDialog();
 
 protected:
@@ -48,7 +48,6 @@ private:
     libJackSMS::dataTypes::servicesType &services;
     QString id;
     QString current_login_id;
-    libJackSMS::dataTypes::optionsType &opzioni;
     libJackSMS::dataTypes::configuredAccount currentAccount;
     Ui::editAccountDialog *ui;
     libJackSMS::serverApi::accountManager *saver;

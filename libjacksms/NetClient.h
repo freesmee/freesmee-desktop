@@ -55,8 +55,6 @@ namespace libJackSMS
                 virtual bool findCaptcha(const QString &_left,const QString &_right)=0;
                 virtual bool getFile(const QString &_url,QByteArray &_fileBytes)=0;
                 virtual bool addHeader(const QString &_name,const QString &_value)=0;
-                virtual bool setProxyServer(const QString & _proxyServer,const QString &_port,const QString &_proxyType)=0;
-                virtual bool setProxyAuthentication(const QString &_proxyUsername, const QString &_proxyPassword)=0;
                 virtual bool interrupt()=0;
                 virtual bool getAborted()=0;
                 virtual void clearCookies()=0;

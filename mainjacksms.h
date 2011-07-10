@@ -26,6 +26,7 @@
 
 #include <QListWidgetItem>
 #include <QtGui/QMainWindow>
+#include <QNetworkProxy>
 #include <list>
 #include "Types.h"
 #include <QSystemTrayIcon>
@@ -91,10 +92,13 @@ public:
     void updateSmsListAfterContactAdded(libJackSMS::dataTypes::contact c);
     void updateSmsListAfterContactRemoved(libJackSMS::dataTypes::contact c);
 
+    QNetworkProxy applicationProxy;
+
 public slots:
     void anotherInstanceOpened(const QString &str);
 
 private:
+    void resetClientStatusToStart();
     bool servicesAlreadyUpdated;
     bool firstStartFlag;
     bool useSSLtoServer;
@@ -256,6 +260,7 @@ private slots:
 
     void startIm();
     void stopIm();
+    void restartIm();
     void on_password_returnPressed();
     void on_actionLogout_triggered();
     void on_RubricaVeloce_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
@@ -331,6 +336,8 @@ private slots:
     void continueLoadServices();
     void on_RubricaVeloce_itemClicked(QListWidgetItem *item);
     void RubricaVeloceSelected(QListWidgetItem *item);
+
+    void updateApplicationProxy();
 };
 
 #endif // MAINJACKSMS_H

@@ -34,14 +34,12 @@
 #include "mainjacksms.h"
 #include "avvisoaccentidialog.h"
 
-ServicesDialog::ServicesDialog(QWidget *parent, MainJackSMS *_padre, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, const libJackSMS::dataTypes::optionsType &_opzioni) :
+ServicesDialog::ServicesDialog(QWidget *parent, MainJackSMS *_padre, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati) :
     QDialog(parent),
     padre(_padre),
     m_ui(new Ui::ServicesDialog),
     ElencoServizi(_ElencoServizi),
-    ElencoServiziConfigurati(_ElencoServiziConfigurati),
-
-    opzioni(_opzioni)
+    ElencoServiziConfigurati(_ElencoServiziConfigurati)
 {
     m_ui->setupUi(this);
     m_ui->linkButton->setVisible(false);
@@ -164,7 +162,7 @@ void ServicesDialog::on_Salva_clicked()
         m_ui->Salva->hide();
         m_ui->labelSpinAddAccount->show();
 
-        saver = new libJackSMS::serverApi::accountManager(padre->current_login_id, opzioni);
+        saver = new libJackSMS::serverApi::accountManager(padre->current_login_id);
         connect(saver, SIGNAL(accountSaved(QString)), this, SLOT(addAccountOk(QString)));
         connect(saver, SIGNAL(accountNotSaved()), this, SLOT(addAccountKo()));
         saver->addNewAccount(ElencoServizi[currentId], newAcc);

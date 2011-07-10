@@ -38,7 +38,7 @@ class cambiaaccount : public QDialog
     Q_OBJECT
 
 public:
-    cambiaaccount(QWidget *parent, MainJackSMS * _padre, const libJackSMS::dataTypes::servicesType & _ElencoServizi, const libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, const libJackSMS::dataTypes::optionsType _Opzioni, QString _id, int _found);
+    cambiaaccount(QWidget *parent, MainJackSMS * _padre, const libJackSMS::dataTypes::servicesType & _ElencoServizi, const libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, QString _id, int _found);
     ~cambiaaccount();
 
 protected:
@@ -51,7 +51,6 @@ private:
     const libJackSMS::dataTypes::servicesType & ElencoServizi;
     const libJackSMS::dataTypes::configuredServicesType &ElencoServiziConfigurati;
     libJackSMS::dataTypes::phoneBookType &Rubrica;
-    const libJackSMS::dataTypes::optionsType Opzioni;
     libJackSMS::serverApi::contactManager *saver;
     QMovie *spinner;
     QString id;

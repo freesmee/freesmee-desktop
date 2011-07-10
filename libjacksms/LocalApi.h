@@ -222,7 +222,7 @@ namespace libJackSMS
                 dataTypes::optionsType &opzioni;
 
             public:
-                optionManager(const QString & _currentUserDirectory,dataTypes::optionsType &_opzioni);
+                optionManager(const QString &_currentUserDirectory, dataTypes::optionsType &_opzioni);
                 bool save();
                 bool increaseTotalSent();
         };

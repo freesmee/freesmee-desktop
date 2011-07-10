@@ -30,7 +30,6 @@
 #include <QUrl>
 #include <QEventLoop>
 #include <QList>
-#include <QNetworkProxy>
 #include <QNetworkReply>
 #include <QNetworkCookieJar>
 #include <QNetworkCookie>
@@ -71,8 +70,6 @@ namespace libJackSMS
             void setSocket();
             QString lastQueryString;
             void makeQueryString(bool urlenc);
-            QNetworkProxy proxy;
-            bool proxyConfigured;
             bool aborted;
             bool error;
 
@@ -96,8 +93,6 @@ namespace libJackSMS
             bool findCaptcha(const QString &_left,const QString &_right);
             bool getFile(const QString &_url,QByteArray &_fileBytes);
             bool addHeader(const QString &_name,const QString &_value);
-            bool setProxyServer(const QString & _proxyServer,const QString &_port,const QString &_proxyType);
-            bool setProxyAuthentication(const QString &_proxyUsername, const QString &_proxyPassword);
             bool interrupt();
             bool getAborted();
             void clearCookies();

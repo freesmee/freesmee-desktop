@@ -36,7 +36,7 @@ class importGmailDialog : public QDialog {
     Q_OBJECT
 
 public:
-    importGmailDialog(QString _lid,const libJackSMS::dataTypes::optionsType &o,libJackSMS::dataTypes::phoneBookType &_phoneBook,QWidget *parent = 0);
+    importGmailDialog(QString _lid, libJackSMS::dataTypes::phoneBookType &_phoneBook, QWidget *parent = 0);
     ~importGmailDialog();
 
 protected:
@@ -45,7 +45,6 @@ protected:
 private:
     Ui::importGmailDialog *ui;
     QString logid;
-    const libJackSMS::dataTypes::optionsType &opt;
     libJackSMS::serverApi::gmailAddressBookImporter *importer;
     libJackSMS::serverApi::reloader *reloader;
     libJackSMS::dataTypes::phoneBookType &phoneBook;

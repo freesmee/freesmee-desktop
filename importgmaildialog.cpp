@@ -24,11 +24,10 @@
 #include "importgmaildialog.h"
 #include "ui_importgmaildialog.h"
 
-importGmailDialog::importGmailDialog(QString _lid,const libJackSMS::dataTypes::optionsType &o,libJackSMS::dataTypes::phoneBookType &_phoneBook,QWidget *parent) :
+importGmailDialog::importGmailDialog(QString _lid, libJackSMS::dataTypes::phoneBookType &_phoneBook, QWidget *parent) :
         QDialog(parent),
         ui(new Ui::importGmailDialog),
         logid(_lid),
-        opt(o),
         phoneBook(_phoneBook)
 {
     ui->setupUi(this);
@@ -73,7 +72,7 @@ void importGmailDialog::errorReload(){
 void importGmailDialog::importDone(int count){
     ui->labelCount->setText(QString::number(count)+" contatti importati");
     ui->labelImport->setPixmap(QPixmap(":/resource/jms-active.png","png"));
-    reloader = new libJackSMS::serverApi::reloader(logid, opt);
+    reloader = new libJackSMS::serverApi::reloader(logid);
     connect(reloader,SIGNAL(phoneBookReloaded(libJackSMS::dataTypes::phoneBookType)),this,SLOT(phoneBookReloaded(libJackSMS::dataTypes::phoneBookType)));
     connect(reloader,SIGNAL(errorReload()),this,SLOT(errorReload()));
     ui->labelUpdateBook->setMovie(spinner);
@@ -93,7 +92,7 @@ void importGmailDialog::on_importButton_clicked()
     ui->labelImport->setPixmap(QPixmap(":/resource/ball-grey.png","png"));
     ui->labelUpdateBook->setPixmap(QPixmap(":/resource/ball-grey.png","png"));
     ui->labelCount->setText("");
-    importer = new libJackSMS::serverApi::gmailAddressBookImporter(logid, opt);
+    importer = new libJackSMS::serverApi::gmailAddressBookImporter(logid);
 
     connect(importer,SIGNAL(importDone(int)),this,SLOT(importDone(int)));
     connect(importer,SIGNAL(importError(QString)),this,SLOT(importError(QString)));

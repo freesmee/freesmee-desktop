@@ -58,7 +58,7 @@
          </item>
          <item>
           <property name="text">
-           <string>Rete</string>
+           <string>Proxy</string>
           </property>
           <property name="icon">
            <iconset resource="resources.qrc">
@@ -97,7 +97,7 @@
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="generali">
           <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -198,14 +198,14 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="rete">
+         <widget class="QWidget" name="proxy">
           <layout class="QHBoxLayout" name="horizontalLayout_5">
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
               <widget class="QCheckBox" name="CheckUsaProxy">
                <property name="text">
-                <string>Utilizza un server proxy</string>
+                <string>Utilizza un Proxy Server</string>
                </property>
               </widget>
              </item>
@@ -236,7 +236,7 @@
              <item>
               <widget class="QLabel" name="label_6">
                <property name="text">
-                <string>Tipo server</string>
+                <string>Tipo di Proxy</string>
                </property>
               </widget>
              </item>
@@ -264,7 +264,7 @@
              <item>
               <widget class="QCheckBox" name="usaAutenticazione">
                <property name="text">
-                <string>Abilita l'autenticazione proxy</string>
+                <string>Il Proxy richiede autenticazione</string>
                </property>
               </widget>
              </item>
@@ -543,23 +543,6 @@ appropriato</string>
         <widget class="QPushButton" name="okButton">
          <property name="text">
           <string>Ok</string>
-         </property>
-         <property name="icon">
-          <iconset resource="resources.qrc">
-           <normaloff>:/resource/salva.png</normaloff>:/resource/salva.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>16</width>
-           <height>16</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="applicaButton">
-         <property name="text">
-          <string>Applica</string>
          </property>
          <property name="icon">
           <iconset resource="resources.qrc">

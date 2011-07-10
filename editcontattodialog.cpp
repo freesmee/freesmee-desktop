@@ -27,13 +27,12 @@
 #include <Configuration.h>
 #include <QMessageBox>
 
-editcontattodialog::editcontattodialog(QWidget *parent, const libJackSMS::dataTypes::servicesType &_ElencoServizi, const libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, QString contactId, const libJackSMS::dataTypes::optionsType _Opzioni, QString _current_login_id) :
+editcontattodialog::editcontattodialog(QWidget *parent, const libJackSMS::dataTypes::servicesType &_ElencoServizi, const libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, QString contactId, QString _current_login_id) :
         QDialog(parent),
         m_ui(new Ui::editcontattodialog),
         ElencoServizi(_ElencoServizi),
         ElencoServiziConfigurati(_ElencoServiziConfigurati),
         Rubrica(_Rubrica),
-        Opzioni(_Opzioni),
         id(contactId),
         current_login_id(_current_login_id)
 {
@@ -128,7 +127,7 @@ void editcontattodialog::on_salva_clicked()
     m_ui->annulla->setEnabled(false);
     m_ui->labelSpin->show();
 
-    saver = new libJackSMS::serverApi::contactManager(current_login_id, Opzioni);
+    saver = new libJackSMS::serverApi::contactManager(current_login_id);
     connect(saver, SIGNAL(contactUpdated(libJackSMS::dataTypes::contact)), this, SLOT(salvataggioOk(libJackSMS::dataTypes::contact)));
     connect(saver, SIGNAL(contactNotUpdated()), this, SLOT(salvataggioKo()));
     saver->updateContact(contatto);

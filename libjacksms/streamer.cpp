@@ -30,9 +30,8 @@ namespace libJackSMS
 {
     namespace serverApi
     {
-        Streamer::Streamer(QString _loginId, dataTypes::proxySettings _ps):
+        Streamer::Streamer(QString _loginId):
                 loginString(_loginId),
-                ps(_ps),
                 id(0),
                 status(waitConnResponse),
                 queueCount(0),
@@ -347,24 +346,6 @@ namespace libJackSMS
                 id = 0;
                 status = waitConnResponse;
                 emit serviceActivating();
-                if (ps.useProxy())
-                {
-                    proxy.setHostName(ps.getServer());
-                    bool ok;
-                    proxy.setPort(ps.getPort().toInt(&ok, 10));
-
-                    if (ps.getType().toUpper() == "HTTP")
-                        proxy.setType(QNetworkProxy::HttpProxy);
-                    else if (ps.getType().toUpper() == "SOCKS5")
-                        proxy.setType(QNetworkProxy::Socks5Proxy);
-
-                    if (ps.useAuth()){
-                        proxy.setUser(ps.getUsername());
-                        proxy.setPassword(ps.getPassword());
-                    }
-
-                    sock.setProxy(proxy);
-                }
 
                 stopped = false;
                 sock.connectToHost("stream.freesmee.com", 80);

@@ -25,14 +25,13 @@
 #include "ui_cambiaaccount.h"
 #include <libjacksms/libJackSMS.h>
 
-cambiaaccount::cambiaaccount(QWidget *parent, MainJackSMS *_padre, const libJackSMS::dataTypes::servicesType &_ElencoServizi, const libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, const libJackSMS::dataTypes::optionsType _Opzioni, QString _id, int _found) :
+cambiaaccount::cambiaaccount(QWidget *parent, MainJackSMS *_padre, const libJackSMS::dataTypes::servicesType &_ElencoServizi, const libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, QString _id, int _found) :
     QDialog(parent),
     m_ui(new Ui::cambiaaccount),
     padre(_padre),
     ElencoServizi(_ElencoServizi),
     ElencoServiziConfigurati(_ElencoServiziConfigurati),
     Rubrica(_Rubrica),
-    Opzioni(_Opzioni),
     id(_id),
     found(_found)
 {
@@ -86,7 +85,7 @@ void cambiaaccount::on_buttonSalva_clicked()
             }
         }
 
-        saver = new libJackSMS::serverApi::contactManager(padre->current_login_id, Opzioni);
+        saver = new libJackSMS::serverApi::contactManager(padre->current_login_id);
         connect(saver, SIGNAL(contactUpdated(libJackSMS::dataTypes::contact)), this, SLOT(salvataggioOk(libJackSMS::dataTypes::contact)));
         connect(saver, SIGNAL(contactNotUpdated()), this, SLOT(salvataggioKo()));
 

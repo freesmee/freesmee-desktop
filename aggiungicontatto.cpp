@@ -31,13 +31,12 @@
 #include "mainjacksms.h"
 #include <QTextCursor>
 
-AggiungiContatto::AggiungiContatto(QWidget *parent, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::optionsType &_opzioni, QString _current_login_id) :
+AggiungiContatto::AggiungiContatto(QWidget *parent, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, QString _current_login_id) :
     QDialog(parent),
     m_ui(new Ui::AggiungiContatto),
     ElencoServiziConfigurati(_ElencoServiziConfigurati),
     Rubrica(_Rubrica),
     ElencoServizi(_ElencoServizi),
-    opzioni(_opzioni),
     current_login_id(_current_login_id)
 {
     m_ui->setupUi(this);
@@ -70,13 +69,12 @@ AggiungiContatto::AggiungiContatto(QWidget *parent, libJackSMS::dataTypes::confi
 }
 
 //questo è il costruttore per quando si usa il "Salva contatto"
-AggiungiContatto::AggiungiContatto(QWidget *parent, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, libJackSMS::dataTypes::optionsType &_opzioni, QString _current_login_id, libJackSMS::dataTypes::phoneNumber numero) :
+AggiungiContatto::AggiungiContatto(QWidget *parent, libJackSMS::dataTypes::configuredServicesType &_ElencoServiziConfigurati, libJackSMS::dataTypes::phoneBookType &_Rubrica, libJackSMS::dataTypes::servicesType &_ElencoServizi, QString _current_login_id, libJackSMS::dataTypes::phoneNumber numero) :
         QDialog(parent),
         m_ui(new Ui::AggiungiContatto),
         ElencoServiziConfigurati(_ElencoServiziConfigurati),
         Rubrica(_Rubrica),
         ElencoServizi(_ElencoServizi),
-        opzioni(_opzioni),
         current_login_id(_current_login_id)
 {
     m_ui->setupUi(this);
@@ -191,7 +189,7 @@ void AggiungiContatto::on_salva_clicked()
         m_ui->annulla->setEnabled(false);
         m_ui->labelSpin->show();
 
-        saver = new libJackSMS::serverApi::contactManager(current_login_id, opzioni);
+        saver = new libJackSMS::serverApi::contactManager(current_login_id);
         connect(saver, SIGNAL(contactSaved(QString, bool, int)), this, SLOT(salvataggioOk(QString, bool, int)));
         connect(saver, SIGNAL(contactNotSaved()), this, SLOT(salvataggioKo()));
         saver->addNewContact(contatto);

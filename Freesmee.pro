@@ -95,7 +95,6 @@ SOURCES += main.cpp \
     accountwidget.cpp \
     qcontact.cpp \
     qmymessage.cpp \
-    libjacksms/ProxyConfig.cpp \
     libjacksms/DataTypesApi.cpp \
     statsdialog.cpp \
     plugindialog.cpp \
@@ -189,7 +188,6 @@ HEADERS += mainjacksms.h \
     accountwidget.h \
     qcontact.h \
     qmymessage.h \
-    libjacksms/ProxyConfig.h \
     statsdialog.h \
     plugindialog.h \
     libjacksms/PageCommand.h \
