@@ -230,19 +230,19 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     int secToMidnight = QDateTime::currentDateTime().secsTo(midnight);  //directly from the Maiden Album "powerslave"....2 minutes to midnight! :P
     resetCounterTimer.singleShot(secToMidnight * 1000, this, SLOT(resetCounters()));
 
-    if (!QSslSocket::supportsSsl())
-    {
-        QMessageBox::critical(this, "Freesmee", "Il sistema in uso non supporta la modalità di connessione sicura (SSL).\nVerra' utilizzata una sessione non criptata, alcuni servizi potrebbero non funzionare correttamente.");
-        ui->loginSSLIcon->setToolTip("SSL non disponibile");
-        ui->loginSSLIcon->setPixmap(QIcon(":/resource/Lock-Open.png").pixmap(16, 16));
-        useSSLtoServer = false;
-    }
-    else
-    {
-        ui->loginSSLIcon->setToolTip("SSL attivato");
-        ui->loginSSLIcon->setPixmap(QIcon(":/resource/Lock.png").pixmap(16, 16));
-        useSSLtoServer = true;
-    }
+//    if (!QSslSocket::supportsSsl())
+//    {
+//        QMessageBox::critical(this, "Freesmee", "Il sistema in uso non supporta la modalità di connessione sicura (SSL).\nVerra' utilizzata una sessione non criptata, alcuni servizi potrebbero non funzionare correttamente.");
+//        ui->loginSSLIcon->setToolTip("SSL non disponibile");
+//        ui->loginSSLIcon->setPixmap(QIcon(":/resource/Lock-Open.png").pixmap(16, 16));
+//        useSSLtoServer = false;
+//    }
+//    else
+//    {
+//        ui->loginSSLIcon->setToolTip("SSL attivato");
+//        ui->loginSSLIcon->setPixmap(QIcon(":/resource/Lock.png").pixmap(16, 16));
+//        useSSLtoServer = true;
+//    }
 
     updateApplicationProxy();
 }

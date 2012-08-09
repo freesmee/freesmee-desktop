@@ -529,7 +529,7 @@ namespace libJackSMS
                                         elenco_credenziali.insert(n, aa);
                                     }
 
-                                    netClient::SocketClient *rawClient = new netClient::SocketClient(false);
+                                    netClient::SocketClient *rawClient = new netClient::SocketClient(NULL);
                                     QString server = parsedCurrentUrlPage;
                                     server = substitute(server, elenco_credenziali);
                                     server = substitute(server, elenco_dati_vari);

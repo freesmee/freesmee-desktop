@@ -124,7 +124,7 @@ namespace libJackSMS{
              {
                  throw libJackSMS::exceptionXmlError(e.what());
              }
-             return false;
+            return "";
         }
 
         QString xmlParserServerApiTicpp::getSessionId()
@@ -143,7 +143,7 @@ namespace libJackSMS{
             {
                 throw libJackSMS::exceptionXmlError(e.what());
             }
-            return false;
+            return "";
         }
 
         QString xmlParserServerApiTicpp::getError()

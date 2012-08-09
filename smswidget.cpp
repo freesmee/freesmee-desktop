@@ -104,7 +104,6 @@ SmsWidget::SmsWidget(QMyMessage _sms, QPixmap _ico, bool received) :
         readed(_sms.getReaded()),
         caricaAltri(false)
 {
-
     id = _sms.getId();
     name = _sms.getParsedName();
 
@@ -133,7 +132,6 @@ SmsWidget::SmsWidget(QMyMessage _sms, QPixmap _ico, bool received) :
     labelTime->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     labelTime->setMaximumSize(10000, 18);
     QString _txt = msg.getMessage();
-    int l = _txt.length();
 
     _txt = _txt.replace("<","&lt;");
     _txt = _txt.replace(">","&gt;");
@@ -142,7 +140,6 @@ SmsWidget::SmsWidget(QMyMessage _sms, QPixmap _ico, bool received) :
     _txt = parseAts(_txt);
 
     labelTxt = new QLabel(_txt);
-    l = _txt.length();
     labelTxt->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
     labelTxt->setWordWrap(true);
     labelTxt->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -195,6 +192,7 @@ SmsWidget::SmsWidget(QString _txt) :
                   "margin-right: 5px;"
                   "margin-bottom: 5px;"
                   "}");
+
     setContentsMargins(5, 10, 5, 5);
     setCursor(Qt::PointingHandCursor);
     vLayout = new QVBoxLayout;

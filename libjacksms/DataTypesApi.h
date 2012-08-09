@@ -37,10 +37,10 @@ namespace libJackSMS
         class clientVersion
         {
             protected:
-                int major;
-                int minor;
-                char release;
-                int build;
+                int client_major;
+                int client_minor;
+                char client_release;
+                int client_build;
 
             public:
                 clientVersion(QString _v);

@@ -278,6 +278,7 @@ namespace libJackSMS{
             if (userAgentSetted && !overwrite)
                 r.setRawHeader("User-Agent",ua.toUtf8());
             makeQueryString(false);
+            r.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
             reply=request.post(r, lastQueryString.toUtf8());
             loop->exec(QEventLoop::ExcludeUserInputEvents);
             errorPage=error;

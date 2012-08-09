@@ -30,10 +30,10 @@ namespace libJackSMS {
     namespace dataTypesApi {
 
         clientVersion::clientVersion(QString version) :
-                major(0),
-                minor(0),
-                release('a'),
-                build(0)
+                client_major(0),
+                client_minor(0),
+                client_release('a'),
+                client_build(0)
         {
             if (!version.isEmpty()) {
                 QRegExp regExp;
@@ -42,19 +42,19 @@ namespace libJackSMS {
                 regExp.setPattern(QString("^([0-9]{1,})\\.([0-9]{1,})\\-([abg]{1})([0-9]{1,})$"));
                 if (regExp.exactMatch(version)) {
 
-                    major = regExp.cap(1).toInt(&ok,10);
-                    minor = regExp.cap(2).toInt(&ok,10);
-                    release = regExp.cap(3).toStdString()[0];
-                    build = regExp.cap(4).toInt(&ok,10);
+                    client_major = regExp.cap(1).toInt(&ok,10);
+                    client_minor = regExp.cap(2).toInt(&ok,10);
+                    client_release = regExp.cap(3).toStdString()[0];
+                    client_build = regExp.cap(4).toInt(&ok,10);
 
                 } else {
 
                     regExp.setPattern(QString("^([0-9]{1,})\\.([0-9]{1,})$"));
                     if (regExp.exactMatch(version)) {
-                        major = regExp.cap(1).toInt(&ok,10);
-                        minor = regExp.cap(2).toInt(&ok,10);
-                        release = 'g';
-                        build = 0;
+                        client_major = regExp.cap(1).toInt(&ok,10);
+                        client_minor = regExp.cap(2).toInt(&ok,10);
+                        client_release = 'g';
+                        client_build = 0;
                     }
 
                 }
@@ -64,19 +64,19 @@ namespace libJackSMS {
         bool clientVersion::operator< (const clientVersion &client)
         {
 
-            if (major < client.major)
+            if (client_major < client.client_major)
                 return true;
-            else if (major > client.major)
+            else if (client_major > client.client_major)
                 return false;
 
-            if (minor < client.minor)
+            if (client_minor < client.client_minor)
                 return true;
-            else if (minor > client.minor)
+            else if (client_minor > client.client_minor)
                 return false;
 
-            if (build < client.build)
+            if (client_build < client.client_build)
                 return true;
-            else if (build > client.build)
+            else if (client_build > client.client_build)
                 return false;
 
             return false;
