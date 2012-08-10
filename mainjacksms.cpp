@@ -89,6 +89,8 @@ MainJackSMS::MainJackSMS(QWidget *parent)
 
     icon_freesmee = QPixmap(":/resource/Freesmee-48.png");
     trayIco = new QSystemTrayIcon(this);
+    trayIco->setContextMenu(menuBar()->actions().takeFirst()->menu());
+
     ui->verticalLayout_12->setAlignment(ui->comboServizio,Qt::AlignTop);
 
     /*imposto lo spinner nella schermata di caricamento*/
@@ -128,7 +130,7 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     connect(ui->smsListWidget, SIGNAL(smsListCanc()), this, SLOT(catchSmsListCanc()));
     connect(ui->recipientLine, SIGNAL(tabKeyPressed()), this, SLOT(RecipientTabPressed()));
 
-    connect(trayIco, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(TrayClicked()));
+    connect(trayIco, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(TrayClicked(QSystemTrayIcon::ActivationReason)));
     connect(trayIco, SIGNAL(messageClicked()), this, SLOT(ClickBaloon()));
 
     resetClientStatusToStart();
@@ -151,7 +153,7 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     if (!man->initializeDirectory())
     {
         QMessageBox::critical(this, "Freesmee", "Non posso inizializzare Freesmee: Impossibile creare le cartelle necessarie.\nJacksms verrà chiuso.\n\nErrore: " + man->getError());
-        exit(-1);
+        exit(EXIT_FAILURE);
     }
 
     menu = new QMenu(this);
@@ -1754,14 +1756,23 @@ void MainJackSMS::AbilitaUi()
     ui->recipientLine->setFocus();
 }
 
-void MainJackSMS::TrayClicked(){
-    if ((isHidden())||(isMinimized())){
-        raise();
-        activateWindow();
-        showNormal();
+void MainJackSMS::TrayClicked(QSystemTrayIcon::ActivationReason reason) {
+    switch(reason) {
+    case QSystemTrayIcon::Trigger:
+        if (isHidden() || isMinimized()) {
+            raise();
+            activateWindow();
+            showNormal();
+        } else
+            hide();
+        break;
 
-    }else{
-        hide();
+    case QSystemTrayIcon::MiddleClick:
+        exit(EXIT_SUCCESS);
+        break;
+
+    default:
+        break;
     }
 }
 

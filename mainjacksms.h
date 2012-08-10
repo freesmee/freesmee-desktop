@@ -150,6 +150,7 @@ private:
     libJackSMS::serverApi::cyclicMessengerChecker *backupImChecker;
     QMyMessage ultimoSms;
     QSystemTrayIcon *trayIco;
+    QMenu *trayMenu;
     QStringList stringList;
     QString selectedService;
     void WriteAddressBookToGui();
@@ -289,7 +290,7 @@ private slots:
     void on_InviaSMS_clicked();
     void on_RubricaAggiungi_clicked();
     void ClickBaloon();
-    void TrayClicked();
+    void TrayClicked(QSystemTrayIcon::ActivationReason reason);
 
     void displayCaptcha(QByteArray data/*,QSemaphore* sem*/);
     void invioSuccesso(QString _text, int n);
