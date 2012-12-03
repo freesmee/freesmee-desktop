@@ -57,12 +57,15 @@ namespace libJackSMS
                 QByteArray buffer;
 
                 QStringList idList;
-                enum streamerState{waitConnResponse=1,connected=2};
+                enum streamerState{waitConnResponse = 1,connected = 2};
 
                 streamerState status;
                 int queueCount;
                 bool waitResponseOfSend;
                 bool stopped;
+
+                qint64 streamAPI(QString api, QString params = "");
+                QString callAPI(QString api, QString params = "");
 
             public:
                 Streamer(QString _loginId);

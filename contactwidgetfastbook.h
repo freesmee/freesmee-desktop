@@ -54,6 +54,7 @@ public:
     void setIcon(QPixmap _pix);
     void showIcon(bool value);
     bool isChecked() const;
+    void setChecked(bool value);
     bool searchMatch(QString _txt) const;
 };
 

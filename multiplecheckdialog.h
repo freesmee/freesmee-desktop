@@ -54,6 +54,8 @@ private slots:
     void on_pushButton_2_clicked();
     void on_lineEdit_textEdited(QString );
     void on_pushButton_clicked();
+    void on_button_all_clicked();
+
 signals:
     void addRecipients(QList<QRecipientWidget *>);
 };

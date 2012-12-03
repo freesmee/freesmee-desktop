@@ -836,7 +836,6 @@ namespace libJackSMS {
 
         void cyclicMessengerChecker::run()
         {
-            //qDebug() << "cyclicMessengerChecker";
             try
             {
                 libJackSMS::serverApi::instantMessenger im(loginString);

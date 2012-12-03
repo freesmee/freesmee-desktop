@@ -123,6 +123,7 @@ private:
     int countdownToGuiCount;
     int imServiceStatus;
     void setTrayIcon();
+    void buildTrayMenu();
     int countReceivedUnreaded;
     bool invioInCorso;
 
@@ -339,6 +340,7 @@ private slots:
     void RubricaVeloceSelected(QListWidgetItem *item);
 
     void updateApplicationProxy();
+    void UpdateGuiFromOptions();
 };
 
 #endif // MAINJACKSMS_H

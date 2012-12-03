@@ -56,17 +56,20 @@ private:
     Ui::OpzioniDialog *m_ui;
     void setCheckboxStatusFromYesNoOption(libJackSMS::dataTypes::optionsType &currentWorkingOpt, QCheckBox* checkbox, QString optionName);
     void setTextFromOption(libJackSMS::dataTypes::optionsType &currentWorkingOpt, QLineEdit* lineedit, QString optionName);
+    void enableFreePlusFields(bool enable);
     void enableProxyFields(bool enable);
 
 private slots:
     void on_okButton_clicked();
     void on_listOpzioni_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void on_annullaButton_clicked();
+    void on_enableJmsService_stateChanged(int state);
     void on_CheckUsaProxy_stateChanged(int state);
 
 signals:
     void translate();
     void updateProxy();
+    void UpdateGuiFromOptions();
 
 };
 

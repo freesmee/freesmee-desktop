@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
+    <width>679</width>
     <height>337</height>
    </rect>
   </property>
@@ -97,7 +97,7 @@
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>1</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="generali">
           <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -317,6 +317,16 @@
           <layout class="QVBoxLayout" name="verticalLayout_7">
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_6">
+             <item>
+              <widget class="QCheckBox" name="enableJmsService">
+               <property name="text">
+                <string>Attiva la ricezione dei messaggi Free+</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
              <item>
               <widget class="QCheckBox" name="suonoJMS">
                <property name="text">

@@ -102,6 +102,10 @@ bool contactWidgetFastBook::isChecked() const {
     return chbox->isChecked();
 }
 
+void contactWidgetFastBook::setChecked(bool value) {
+    chbox->setChecked(value);
+}
+
 bool contactWidgetFastBook:: searchMatch(QString _txt) const {
     return (!(-1 == nomeContatto.indexOf(_txt, 0, Qt::CaseInsensitive))) || (!(-1 == numero.indexOf(_txt, 0, Qt::CaseInsensitive))) ;
 }

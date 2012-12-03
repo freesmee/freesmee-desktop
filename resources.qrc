@@ -59,5 +59,6 @@
         <file>resource/go-down-notify.png</file>
         <file>resource/Freesmee.ico</file>
         <file>resource/sms-plus.png</file>
+        <file>resource/Mail-icon.png</file>
     </qresource>
 </RCC>

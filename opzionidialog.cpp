@@ -72,11 +72,14 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType &_opt, libJackSM
         setCheckboxStatusFromYesNoOption(opt, m_ui->opzSvuotaInvioCorretto, "svuota-invio-corretto");
         setCheckboxStatusFromYesNoOption(opt, m_ui->nonSalvaCookies, "dont-cookies");
         setCheckboxStatusFromYesNoOption(opt, m_ui->hideServiceUpdate, "hide-service-update");
+
 #ifndef __APPLE__
         setCheckboxStatusFromYesNoOption(opt, m_ui->suonoJMS, "suono-free");
 #else
         m_ui->suonoJMS->hide();
 #endif
+
+        setCheckboxStatusFromYesNoOption(opt, m_ui->enableJmsService, "enable-jms-service");
         setCheckboxStatusFromYesNoOption(opt, m_ui->showPopupJmsStatus, "show-popup-jms-status");
         setCheckboxStatusFromYesNoOption(opt, m_ui->showPopupNewJms, "show-popup-new-free");
 
@@ -107,6 +110,7 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType &_opt, libJackSM
             m_ui->RadioSocks5->setChecked(true);
     }
 
+    enableFreePlusFields(m_ui->enableJmsService->isChecked());
     enableProxyFields(m_ui->CheckUsaProxy->isChecked());
 
     // rimuovo intanto che non sono ancora implementate
@@ -229,6 +233,8 @@ void OpzioniDialog::on_okButton_clicked()
         opt["dont-cookies"] = m_ui->nonSalvaCookies->isChecked() ? "yes" : "no";
         opt["hide-service-update"] = m_ui->hideServiceUpdate->isChecked() ? "yes" : "no";
 
+        opt["enable-jms-service"] = m_ui->enableJmsService->isChecked() ? "yes" : "no";
+
 #ifndef __APPLE__
         opt["suono-free"] = m_ui->suonoJMS->isChecked() ? "yes" : "no";
 #endif
@@ -251,6 +257,7 @@ void OpzioniDialog::on_okButton_clicked()
         }
     }
 
+    emit UpdateGuiFromOptions();
     close();
 }
 
@@ -269,9 +276,22 @@ void OpzioniDialog::setTextFromOption(libJackSMS::dataTypes::optionsType &curren
         lineedit->setText(iter.value());
 }
 
+
+void OpzioniDialog::on_enableJmsService_stateChanged(int state)
+{
+    enableFreePlusFields((state == 0) ? false : true);
+}
+
 void OpzioniDialog::on_CheckUsaProxy_stateChanged(int state)
 {
     enableProxyFields((state == 0) ? false : true);
+}
+
+void OpzioniDialog::enableFreePlusFields(bool enable)
+{
+    m_ui->suonoJMS->setEnabled(enable);
+    m_ui->showPopupJmsStatus->setEnabled(enable);
+    m_ui->showPopupNewJms->setEnabled(enable);
 }
 
 void OpzioniDialog::enableProxyFields(bool enable)

@@ -56,6 +56,14 @@ namespace libJackSMS
             pingTimeout.setSingleShot(true);
         }
 
+        qint64 Streamer::streamAPI(QString api, QString params) {
+            QString fullapi = "GET /" + api + "?" + params + "&token=" + loginString + "&desktop=" + FREESMEE_VERSION + " HTTP/1.1\n\n";
+            // qDebug() << fullapi;
+            qint64 result = sock.write(fullapi.toUtf8());
+            sock.flush();
+            return result;
+        }
+
         void Streamer::relaunchDisconnected()
         {
             pingTimer.stop();
@@ -117,7 +125,7 @@ namespace libJackSMS
 
         void Streamer::ping()
         {
-            if (sock.write((QString("GET /ping HTTP/1.1\n\n")).toUtf8()) != -1)
+            if (streamAPI("ping") != -1)
                 pingTimeout.start(100 * 1000);
             else {
                 pingTimer.stop();
@@ -131,6 +139,7 @@ namespace libJackSMS
             dataTimeout.stop();
             buffer = buffer.append(sock.readAll());
             dataTimeout.singleShot(500, this, SLOT(parseLine()));
+            // qDebug() << buffer;
         }
 
         void  Streamer::parseLine()
@@ -151,151 +160,102 @@ namespace libJackSMS
 
                 while (!finalLines.isEmpty())
                 {
-                    QString line = QString(finalLines.first()).trimmed();
-                    if (line.startsWith("HTTP/1.1"))
-                    {
-                        while (true)
-                        {
-                            finalLines.removeFirst();
-                            line = QString(finalLines.first()).trimmed();
-
-                            if (line.isEmpty())
-                            {
-                                //remove empty line
-                                finalLines.removeFirst();
-
-                                //skip length
-                                line = QString(finalLines.first()).trimmed();
-                                finalLines.removeFirst();
-                                //get interesting line :D
-
-                                if (finalLines.count() > 0)
-                                    line = QString(finalLines.first()).trimmed();
-                                else
-                                    line = "";
-
-                                break;
-                            }
-                        }
-                    }
-
-                    finalLines.removeFirst();
-
-                    if (status == waitConnResponse)
-                    {
+                    QString line = QString(finalLines.takeFirst()).trimmed();
+                    if (line.startsWith('{') && line.endsWith('}')) {
                         bool ok;
-                        line.toInt(&ok, 16);
-
-                        if (ok)
-                        {
-                            line = QString(finalLines.first()).trimmed();
-                            finalLines.removeFirst();
-                        }
-
                         QVariantMap result = Json::parse(line, ok).toMap();
                         if (ok)
                         {
-                            if (result["status"].toInt() == 1)
+                            if (status == waitConnResponse)
                             {
-                                emit serviceActive();
-                                status = connected;
-                            } else {
-                                emit serviceNotActive(true, result["message"].toString());
+                                if (result["status"].toInt() == 1) {
+                                    emit serviceActive();
+                                    status = connected;
+                                } else {
+                                    emit serviceNotActive(true, result["message"].toString());
+                                }
                             }
-
-                        } else {
-                            emit serviceNotActive(true, "Unexpected response");
-                        }
-
-                    } else if (status == connected){
-                        bool ok;
-                        line.toInt(&ok, 16);
-
-                        if (ok)
-                        {
-                            line = QString(finalLines.first()).trimmed();
-                            finalLines.removeFirst();
-                        }
-
-                        QVariantMap result = Json::parse(line, ok).toMap();
-                        if (ok)
-                        {
-                            if (result["status"].toString() == "1" && result["type"].toString() == "Q")
+                            else if (status == connected)
                             {
-                                idList.clear();
-                                QVariantList messages = result["queue"].toList();
-
-                                foreach (QVariant m, messages)
+                                if (result["status"].toString() == "1" && result["type"].toString() == "Q")
                                 {
-                                    QVariantMap mm = m.toMap();
+                                    idList.clear();
+                                    QVariantList messages = result["queue"].toList();
 
-                                    QString text = mm["message"].toString();
+                                    foreach (QVariant m, messages)
+                                    {
+                                        QVariantMap mm = m.toMap();
+
+                                        QString text = mm["message"].toString();
+                                        text = QString::fromUtf8(text.toStdString().c_str());
+
+                                        QString id = mm["msg_id"].toString();
+                                        idList.push_back(id);
+
+                                        QString timediff = mm["timediff"].toString();
+                                        int timediffInt = (-1) * timediff.toInt();
+                                        QDateTime dt = QDateTime::currentDateTime().addSecs(timediffInt);
+
+                                        QString recipNumber = mm["sender"].toString();
+                                        libJackSMS::dataTypes::phoneNumber num;
+                                        num.parse(recipNumber);
+                                        if (!num.getIsValid())
+                                            num.parse("2727");
+
+                                        libJackSMS::dataTypes::dateTime dat(dt);
+                                        libJackSMS::dataTypes::logImMessage im(num, dat, "", text);
+                                        signalCountdown.stop();
+                                        im.setId(id);
+                                        imLog.insert(im.getId(), im);
+                                        signalCountdown.start(1500);
+                                    }
+
+                                    streamAPI("queueAck", "id=" + idList.join(","));
+
+                                }
+                                else if (result["status"].toString() == "1" && result["type"].toString() == "R")
+                                {
+                                    signalCountdown.stop();
+
+                                    QString ackid = result["ack"].toString();
+                                    streamAPI("ack", "id=" + ackid);
+
+                                    QString text = result["message"].toString();
                                     text = QString::fromUtf8(text.toStdString().c_str());
+                                    QString recipNumber = result["sender"].toString();
+                                    QDateTime dt = QDateTime::currentDateTime();
 
-                                    QString id = mm["msg_id"].toString();
-                                    idList.push_back(id);
-
-                                    QString timediff = mm["timediff"].toString();
-                                    int timediffInt = (-1) * timediff.toInt();
-                                    QDateTime dt = QDateTime::currentDateTime().addSecs(timediffInt);
-
-                                    QString recipNumber = mm["sender"].toString();
                                     libJackSMS::dataTypes::phoneNumber num;
                                     num.parse(recipNumber);
+
                                     if (!num.getIsValid())
                                         num.parse("2727");
 
                                     libJackSMS::dataTypes::dateTime dat(dt);
                                     libJackSMS::dataTypes::logImMessage im(num, dat, "", text);
-                                    signalCountdown.stop();
-                                    im.setId(id);
+                                    im.setId(QString::number(id++));
                                     imLog.insert(im.getId(), im);
                                     signalCountdown.start(1500);
+
                                 }
-
-                                QString idl = idList.join(",");
-                                QString sn = QString("GET /queueAck?id=") + idl + QString(" HTTP/1.1\n\n");
-                                sock.write(sn.toUtf8());
-
-                            } else if (result["status"].toString() == "1" && result["type"].toString() == "R") {
-                                signalCountdown.stop();
-
-                                QString text = result["message"].toString();
-                                text = QString::fromUtf8(text.toStdString().c_str());
-
-                                QString ackid = result["ack"].toString();
-
-                                QString recipNumber = result["sender"].toString();
-
-                                QDateTime dt = QDateTime::currentDateTime();
-
-                                QString sn = QString("GET /ack?id=") + ackid + QString(" HTTP/1.1\n\n");
-                                sock.write(sn.toUtf8());
-
-                                libJackSMS::dataTypes::phoneNumber num;
-                                num.parse(recipNumber);
-                                if (!num.getIsValid())
-                                    num.parse("2727");
-
-                                libJackSMS::dataTypes::dateTime dat(dt);
-                                libJackSMS::dataTypes::logImMessage im(num, dat, "", text);
-                                im.setId(QString::number(id++));
-                                imLog.insert(im.getId(), im);
-                                signalCountdown.start(1500);
-
-                            } else if (result["status"].toString() == "1" && result["type"].toString() == "P") {
-                                pingTimeout.stop();
-                            } else if (result["status"].toString() == "0" && result["type"].toString() == "P") {
-                                pingTimer.stop();
-                                pingTimeout.stop();
-                                buffer.clear();
-                                sock.close();
-                                emit serviceNotActive(true, "Pong failed");
+                                else if (result["status"].toString() == "1" && result["type"].toString() == "P")
+                                {
+                                    pingTimeout.stop();
+                                }
+                                else if (result["status"].toString() == "0" && result["type"].toString() == "P")
+                                {
+                                    pingTimer.stop();
+                                    pingTimeout.stop();
+                                    buffer.clear();
+                                    sock.close();
+                                    emit serviceNotActive(true, "Pong failed");
+                                }
                             }
-                        }
+
+                        } else
+                            emit serviceNotActive(true, "Unexpected response");
                     }
                 }
-
             } catch (...) {
                 pingTimer.stop();
                 pingTimeout.stop();
@@ -314,11 +274,8 @@ namespace libJackSMS
         {
             try
             {
-                QString sn = QString("GET /stream?token=" + loginString + "&desktop=") + QString(FREESMEE_VERSION) + QString(" HTTP/1.1\n\n");
-                sock.write(sn.toUtf8());
-
+                streamAPI("stream");
                 pingTimer.start(1000 * 60);
-
             } catch(...) {
                 emit serviceNotActive(true, "Errore sconosciuto: section 6");
             }
@@ -332,7 +289,7 @@ namespace libJackSMS
                 emit newJMS(imLog);
                 imLog.clear();
                 id = 0;
-            }catch(...){
+            } catch(...) {
                 pingTimer.stop();
                 pingTimeout.stop();
                 emit serviceNotActive(true, "Errore sconosciuto: section 5");
@@ -348,10 +305,16 @@ namespace libJackSMS
                 emit serviceActivating();
 
                 stopped = false;
+
+                sock.setSocketOption(QAbstractSocket::KeepAliveOption, 1);
+                sock.setSocketOption(QAbstractSocket::LowDelayOption, 1);
                 sock.connectToHost("stream.freesmee.com", 80);
+                sock.waitForConnected();
+                sock.setSocketOption(QAbstractSocket::KeepAliveOption, 1);
+                sock.setSocketOption(QAbstractSocket::LowDelayOption, 1);
 
             } catch(...) {
-                emit serviceNotActive(true,"Errore sconosciuto: section 4");
+                emit serviceNotActive(true, "Errore sconosciuto: section 4");
             }
         }
     }

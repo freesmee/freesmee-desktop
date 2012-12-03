@@ -121,16 +121,21 @@ void multipleCheckDialog::on_lineEdit_textEdited(QString text)
 void multipleCheckDialog::on_pushButton_2_clicked()
 {
     QList<QRecipientWidget*> l;
-    int c=ui->listWidget->count();
-    for(int x=0;x<c;x++){
-        QListWidgetItem *item=ui->listWidget->item(x);
-        contactWidgetFastBook *w=static_cast<contactWidgetFastBook*>(ui->listWidget->itemWidget(item));
-        if (w->isChecked()){
-            QRecipientWidget *wi=new QRecipientWidget(w->getContact().getName(),w->getContact().getAccount(),w->getContact().getPhone(),w->getIcon());
+    for(int x = 0; x < ui->listWidget->count(); x++) {
+        contactWidgetFastBook *w = static_cast<contactWidgetFastBook*>(ui->listWidget->itemWidget(ui->listWidget->item(x)));
+        if (w->isChecked()) {
+            QRecipientWidget *wi = new QRecipientWidget(w->getContact().getName(), w->getContact().getAccount(), w->getContact().getPhone(), w->getIcon());
             l.push_back(wi);
         }
     }
     emit addRecipients(l);
     close();
 
+}
+
+void multipleCheckDialog::on_button_all_clicked()
+{
+    for(int x = 0; x < ui->listWidget->count(); x++) {
+        dynamic_cast<contactWidgetFastBook*>(ui->listWidget->itemWidget(ui->listWidget->item(x)))->setChecked(true);
+    }
 }

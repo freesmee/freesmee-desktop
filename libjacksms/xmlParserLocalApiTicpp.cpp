@@ -255,7 +255,11 @@ namespace libJackSMS {
                     servizio.setSingleLength(QString::fromStdString(thisService->GetAttribute("singlelen")));
                     servizio.setSmsDivisor(QString::fromStdString(thisService->GetAttribute("sms_divisor")));
                     servizio.setServiceType(QString::fromStdString(thisService->GetAttributeOrDefault("service_type", "other")));
-                    servizio.setIcon(QImage::fromData(utilities::Base64DecodeByte(QString::fromStdString(thisService->GetAttribute("icon")))));
+
+                    if (thisService->GetAttributeOrDefault("icon", "") != "")
+                        servizio.setIcon(QImage::fromData(utilities::Base64DecodeByte(QString::fromStdString(thisService->GetAttribute("icon")))));
+                    else
+                        servizio.setIcon(QImage(":/resource/Mail-icon.png"));
 
                     {
                         ticpp::Node *descriptionNode = child->FirstChild("description");

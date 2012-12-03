@@ -35,21 +35,21 @@ NameWidget::NameWidget(QString _name, libJackSMS::dataTypes::phoneNumber _numero
     numero = _numero;
 
     if(_name.length() > 20)
-        _name = _name.left(17) + "...";
+        _name = _name.left(18) + "...";
 
     labelName = new QLabel(_name);
     labelName->setFont(QFont(labelName->font().family(), -1, QFont::Bold, false));
     labelName->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    labelName->setFixedSize(180, 15);
+    labelName->setFixedSize(150, 15);
 
     lastMessage = _lastMessage;
-    if(_lastMessage.length() > 28)
-        _lastMessage = _lastMessage.left(25) + "...";
+    if(_lastMessage.length() > 22)
+        _lastMessage = _lastMessage.left(20) + "...";
 
     labelLastMessage = new QLabel(_lastMessage);
     labelLastMessage->setFont(QFont(labelLastMessage->font().family(), -1, QFont::Normal, false));
     labelLastMessage->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    labelLastMessage->setFixedSize(180, 15);
+    labelLastMessage->setFixedSize(150, 15);
 
     lastTime = _lastTime;
     lastId = _lastId;
@@ -79,7 +79,7 @@ NameWidget::NameWidget(QString _name, libJackSMS::dataTypes::phoneNumber _numero
     hLayout->addWidget(labelIconStatus);
 
     setLayout(hLayout);
-    setFixedWidth(200);
+    setFixedWidth(185);
     adjustSize();
 }
 

@@ -89,7 +89,9 @@ MainJackSMS::MainJackSMS(QWidget *parent)
 
     icon_freesmee = QPixmap(":/resource/Freesmee-48.png");
     trayIco = new QSystemTrayIcon(this);
-    trayIco->setContextMenu(menuBar()->actions().takeFirst()->menu());
+
+    buildTrayMenu();
+    trayIco->setContextMenu(trayMenu);
 
     ui->verticalLayout_12->setAlignment(ui->comboServizio,Qt::AlignTop);
 
@@ -377,7 +379,7 @@ void MainJackSMS::translateGui()
             ui->ModificaServizioButton->setText(lm->getString("24"));
             ui->EliminaServizioButton->setText(lm->getString("25"));
             ui->label_15->setText(lm->getString("26"));
-            ui->label_9->setText(lm->getString("27"));
+            ui->labelJMSStatus->setText(lm->getString("27"));
         }
     }
     */
@@ -1211,6 +1213,7 @@ void MainJackSMS::on_actionOpzioni_triggered()
     OpzioniDialog *dial = new OpzioniDialog(Opzioni, GlobalOptions, current_user_directory, this, loggedIn, current_user_password);
     connect(dial, SIGNAL(updateProxy()), this, SLOT(updateApplicationProxy()));
     connect(dial, SIGNAL(translate()), this, SLOT(translateGui()));
+    connect(dial, SIGNAL(UpdateGuiFromOptions()), this, SLOT(UpdateGuiFromOptions()));
     dial->exec();
     dial->deleteLater();
 }
@@ -1778,14 +1781,13 @@ void MainJackSMS::TrayClicked(QSystemTrayIcon::ActivationReason reason) {
 
 void MainJackSMS::stopIm()
 {
-    imChecker->stop();
+    if (imServiceStatus != IM_NOT_ACTIVE)
+        imChecker->stop();
 }
 
 void MainJackSMS::restartIm()
 {
-    if (imServiceStatus != IM_NOT_ACTIVE)
-        stopIm();
-
+    stopIm();
     startIm();
 }
 
@@ -2035,7 +2037,7 @@ void MainJackSMS::countdownToGui()
         usaAssociatiPresent = false;
         gestiscimenuSingolo();
 
-        startIm();
+        UpdateGuiFromOptions();
 
         ui->smsListWidget->hideCaricaAltri(true);
         stopWriteMessagesToGui = false;
@@ -2052,6 +2054,12 @@ void MainJackSMS::setTrayIcon()
         trayIco->setIcon(QIcon(":/resource/Freesmee-48-notify.png"));
     else
         trayIco->setIcon(QIcon(":/resource/Freesmee-48.png"));
+}
+
+void MainJackSMS::buildTrayMenu()
+{
+    trayMenu = new QMenu(this);
+    trayMenu->addActions(menuBar()->actions().first()->menu()->actions());
 }
 
 void MainJackSMS::messagesLoaded(QList<QMyMessage> msgs)
@@ -3645,6 +3653,16 @@ void MainJackSMS::updateApplicationProxy()
     {
         QNetworkProxy::setApplicationProxy(QNetworkProxy::NoProxy);
     }
+}
+
+void MainJackSMS::UpdateGuiFromOptions()
+{
+    bool jmsenabled = Opzioni["enable-jms-service"] != "no";
+    ui->labelJMSStatus->setVisible(jmsenabled);
+    ui->buttonStatusJms->setVisible(jmsenabled);
+
+    if (jmsenabled) restartIm();
+    else stopIm();
 }
 
 void MainJackSMS::resetClientStatusToStart()

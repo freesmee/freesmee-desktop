@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1046</width>
-    <height>483</height>
+    <height>493</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -46,7 +46,7 @@
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="login">
        <layout class="QHBoxLayout" name="horizontalLayout_18">
@@ -1709,7 +1709,7 @@ ListNames::item:selected:active {
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QLabel" name="label_9">
+                 <widget class="QLabel" name="labelJMSStatus">
                   <property name="text">
                    <string>Stato ricezione:</string>
                   </property>
@@ -2231,7 +2231,7 @@ ListNames::item:selected:active {
      <x>0</x>
      <y>0</y>
      <width>1046</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
