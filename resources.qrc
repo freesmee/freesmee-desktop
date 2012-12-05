@@ -52,14 +52,18 @@
         <file>resource/Lock.png</file>
         <file>resource/Lock-Open.png</file>
         <file>resource/Lock-Grey.png</file>
-        <file>resource/Freesmee-48.png</file>
+        <file>resource/Freesmee-48-classic.png</file>
         <file>resource/Freesmee-login.png</file>
         <file>resource/bg_namewidget.png</file>
-        <file>resource/Freesmee-48-notify.png</file>
+        <file>resource/Freesmee-48-notify-classic.png</file>
         <file>resource/go-down-notify.png</file>
         <file>resource/Freesmee.ico</file>
         <file>resource/sms-plus.png</file>
         <file>resource/Mail-icon.png</file>
         <file>resource/info.png</file>
+        <file>resource/Freesmee-48-dark.png</file>
+        <file>resource/Freesmee-48-light.png</file>
+        <file>resource/Freesmee-48-notify-dark.png</file>
+        <file>resource/Freesmee-48-notify-light.png</file>
     </qresource>
 </RCC>

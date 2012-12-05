@@ -87,7 +87,7 @@ MainJackSMS::MainJackSMS(QWidget *parent)
 
     setWindowTitle(title);
 
-    icon_freesmee = QPixmap(":/resource/Freesmee-48.png");
+    icon_freesmee = QPixmap(":/resource/Freesmee-48-classic.png");
     trayIco = new QSystemTrayIcon(this);
 
     buildTrayMenu();
@@ -136,7 +136,6 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     connect(trayIco, SIGNAL(messageClicked()), this, SLOT(ClickBaloon()));
 
     resetClientStatusToStart();
-    trayIco->show();
 
     /////////nascondo alcune cose che ancora non sono state implementate... da rimuovere poi...
     ui->tabWidget->removeTab(5);
@@ -2050,10 +2049,14 @@ void MainJackSMS::countdownToGui()
 
 void MainJackSMS::setTrayIcon()
 {
-    if (countReceivedUnreaded > 0)
-        trayIco->setIcon(QIcon(":/resource/Freesmee-48-notify.png"));
+    QString trayStyle = Opzioni.value("tray-style", "classic");
+
+    if (countReceivedUnreaded <= 0)
+        trayIco->setIcon(QIcon(":/resource/Freesmee-48-" + trayStyle + ".png"));
     else
-        trayIco->setIcon(QIcon(":/resource/Freesmee-48.png"));
+        trayIco->setIcon(QIcon(":/resource/Freesmee-48-notify-" + trayStyle + ".png"));
+
+    trayIco->show();
 }
 
 void MainJackSMS::buildTrayMenu()
@@ -3657,6 +3660,8 @@ void MainJackSMS::updateApplicationProxy()
 
 void MainJackSMS::UpdateGuiFromOptions()
 {
+    setTrayIcon();
+
     bool jmsenabled = Opzioni["enable-jms-service"] != "no";
     ui->labelJMSStatus->setVisible(jmsenabled);
     ui->buttonStatusJms->setVisible(jmsenabled);
@@ -3687,8 +3692,6 @@ void MainJackSMS::resetClientStatusToStart()
     //nascondo alcuni bottoni nella schermata dei messaggi
     ui->InoltraButton->setVisible(false);
     ui->CitaButton->setVisible(false);
-
-    trayIco->setIcon(QIcon(":/resource/Freesmee-48.png"));
 
     ui->widgetSchermate->setCurrentIndex(0);
     ui->tabWidget->setCurrentIndex(0);

@@ -72,6 +72,7 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType &_opt, libJackSM
         setCheckboxStatusFromYesNoOption(opt, m_ui->opzSvuotaInvioCorretto, "svuota-invio-corretto");
         setCheckboxStatusFromYesNoOption(opt, m_ui->nonSalvaCookies, "dont-cookies");
         setCheckboxStatusFromYesNoOption(opt, m_ui->hideServiceUpdate, "hide-service-update");
+        setComboBoxStatusFromOption(opt, m_ui->trayStyleCombo, "tray-style");
 
 #ifndef __APPLE__
         setCheckboxStatusFromYesNoOption(opt, m_ui->suonoJMS, "suono-free");
@@ -232,6 +233,7 @@ void OpzioniDialog::on_okButton_clicked()
         opt["svuota-invio-corretto"] = m_ui->opzSvuotaInvioCorretto->isChecked() ? "yes" : "no";
         opt["dont-cookies"] = m_ui->nonSalvaCookies->isChecked() ? "yes" : "no";
         opt["hide-service-update"] = m_ui->hideServiceUpdate->isChecked() ? "yes" : "no";
+        opt["tray-style"] = m_ui->trayStyleCombo->currentText();
 
         opt["enable-jms-service"] = m_ui->enableJmsService->isChecked() ? "yes" : "no";
 
@@ -261,21 +263,31 @@ void OpzioniDialog::on_okButton_clicked()
     close();
 }
 
-void OpzioniDialog::setCheckboxStatusFromYesNoOption(libJackSMS::dataTypes::optionsType &currentWorkingOpt, QCheckBox *checkbox, QString optionName)
+void OpzioniDialog::setCheckboxStatusFromYesNoOption(libJackSMS::dataTypes::optionsType &Options, QCheckBox *checkbox, QString optionName)
 {
-    if (currentWorkingOpt[optionName] == "yes")
+    if (Options[optionName] == "yes")
         checkbox->setChecked(true);
-    else if (currentWorkingOpt[optionName] == "no")
+    else if (Options[optionName] == "no")
         checkbox->setChecked(false);
 }
 
-void OpzioniDialog::setTextFromOption(libJackSMS::dataTypes::optionsType &currentWorkingOpt, QLineEdit *lineedit, QString optionName)
+void OpzioniDialog::setTextFromOption(libJackSMS::dataTypes::optionsType &Options, QLineEdit *lineedit, QString optionName)
 {
-    libJackSMS::dataTypes::optionsType::const_iterator iter = currentWorkingOpt.find(optionName);
-    if (iter != currentWorkingOpt.end())
+    libJackSMS::dataTypes::optionsType::const_iterator iter = Options.find(optionName);
+    if (iter != Options.end())
         lineedit->setText(iter.value());
 }
 
+void OpzioniDialog::setComboBoxStatusFromOption(libJackSMS::dataTypes::optionsType &Options, QComboBox *combobox, QString optionName)
+{
+    libJackSMS::dataTypes::optionsType::const_iterator iter = Options.find(optionName);
+    if (iter != Options.end())
+    {
+        int index = combobox->findText(iter.value());
+        if (index >= 0)
+            combobox->setCurrentIndex(index);
+    }
+}
 
 void OpzioniDialog::on_enableJmsService_stateChanged(int state)
 {

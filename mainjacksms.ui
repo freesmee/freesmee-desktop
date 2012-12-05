@@ -2331,7 +2331,7 @@ ListNames::item:selected:active {
   <action name="actionInfo_su_JackSMS">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/resource/Freesmee-48.png</normaloff>:/resource/Freesmee-48.png</iconset>
+     <normaloff>:/resource/Freesmee-48-classic.png</normaloff>:/resource/Freesmee-48-classic.png</iconset>
    </property>
    <property name="text">
     <string>Informazioni</string>

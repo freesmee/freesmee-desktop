@@ -31,6 +31,7 @@
 #include <QtGui/QDialog>
 #include <QCheckBox>
 #include <QLineEdit>
+#include <QComboBox>
 
 namespace Ui {
     class OpzioniDialog;
@@ -54,8 +55,9 @@ private:
     const bool loggedIn;
     QString pass;
     Ui::OpzioniDialog *m_ui;
-    void setCheckboxStatusFromYesNoOption(libJackSMS::dataTypes::optionsType &currentWorkingOpt, QCheckBox* checkbox, QString optionName);
-    void setTextFromOption(libJackSMS::dataTypes::optionsType &currentWorkingOpt, QLineEdit* lineedit, QString optionName);
+    void setCheckboxStatusFromYesNoOption(libJackSMS::dataTypes::optionsType &Options, QCheckBox* checkbox, QString optionName);
+    void setTextFromOption(libJackSMS::dataTypes::optionsType &Options, QLineEdit* lineedit, QString optionName);
+    void setComboBoxStatusFromOption(libJackSMS::dataTypes::optionsType &Options, QComboBox* combobox, QString optionName);
     void enableFreePlusFields(bool enable);
     void enableProxyFields(bool enable);
 
