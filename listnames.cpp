@@ -9,8 +9,6 @@
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    You can't modify the adv system, to cheat it.
-
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -82,7 +80,7 @@ void ListNames::refreshAll(MainJackSMS* main, QListWidget* smslist, bool clean)
     SmsWidget* sms;
     NameWidget* namewid;
 
-    for (int j = 0; j < smslist->count(); j++) {
+    for (int j = 0; j < smslist->count(); ++j) {
         sms = static_cast<SmsWidget*>(smslist->itemWidget(smslist->item(j)));
         if (!sms->isCaricaAltri()) {
             nameToInsert = main->phone2name(sms->getPhoneNum());
@@ -130,7 +128,7 @@ void ListNames::refreshOneBottom(MainJackSMS* main, SmsWidget *sms)
 bool ListNames::checkNeedRefresh(QString _id)
 {
     // scorro la listanomi (il primo no perchè è "Tutti i contatti")
-    for (int i = 1; i < count(); i++)
+    for (int i = 1; i < count(); ++i)
     {
         NameWidget* namewid = static_cast<NameWidget*>(itemWidget(item(i)));
 
@@ -154,7 +152,7 @@ void ListNames::itemAdded(SmsWidget* sms, bool unread){
 
             unreadToSet = namewid->getUnreadCount();
             if(unread)
-                unreadToSet++;
+                ++unreadToSet;
 
             it = item(i);
             wid = itemWidget(it);

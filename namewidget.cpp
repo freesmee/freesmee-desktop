@@ -9,8 +9,6 @@
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    You can't modify the adv system, to cheat it.
-
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -123,7 +121,7 @@ void NameWidget::increaseUnreadCount()
     if(unreadCount == 0)
         setIconUnread();
 
-    unreadCount++;
+    ++unreadCount;
 }
 
 void NameWidget::decreaseUnreadCount()

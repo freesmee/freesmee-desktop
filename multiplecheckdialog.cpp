@@ -9,8 +9,6 @@
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    You can't modify the adv system, to cheat it.
-
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -108,7 +106,7 @@ void multipleCheckDialog::on_pushButton_clicked()
 void multipleCheckDialog::on_lineEdit_textEdited(QString text)
 {
     int c=ui->listWidget->count();
-    for(int x=0;x<c;x++){
+    for(int x=0;x<c;++x){
         QListWidgetItem *item=ui->listWidget->item(x);
         contactWidgetFastBook *w=static_cast<contactWidgetFastBook*>(ui->listWidget->itemWidget(item));
         if (w->getName().contains(text,Qt::CaseInsensitive))
@@ -121,7 +119,7 @@ void multipleCheckDialog::on_lineEdit_textEdited(QString text)
 void multipleCheckDialog::on_pushButton_2_clicked()
 {
     QList<QRecipientWidget*> l;
-    for(int x = 0; x < ui->listWidget->count(); x++) {
+    for(int x = 0; x < ui->listWidget->count(); ++x) {
         contactWidgetFastBook *w = static_cast<contactWidgetFastBook*>(ui->listWidget->itemWidget(ui->listWidget->item(x)));
         if (w->isChecked()) {
             QRecipientWidget *wi = new QRecipientWidget(w->getContact().getName(), w->getContact().getAccount(), w->getContact().getPhone(), w->getIcon());
@@ -135,7 +133,7 @@ void multipleCheckDialog::on_pushButton_2_clicked()
 
 void multipleCheckDialog::on_button_all_clicked()
 {
-    for(int x = 0; x < ui->listWidget->count(); x++) {
+    for(int x = 0; x < ui->listWidget->count(); ++x) {
         dynamic_cast<contactWidgetFastBook*>(ui->listWidget->itemWidget(ui->listWidget->item(x)))->setChecked(true);
     }
 }

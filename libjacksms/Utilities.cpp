@@ -9,8 +9,6 @@
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    You can't modify the adv system, to cheat it.
-
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -51,12 +49,12 @@ namespace libJackSMS {
 
             //First delete any files in the current directory
             QFileInfoList files = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files);
-            for(int file = 0; file < files.count(); file++)
+            for(int file = 0; file < files.count(); ++file)
                 dir.remove(files.at(file).fileName());
 
             //Now recursively delete any child directories
             QFileInfoList dirs = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs);
-            for(int subdir = 0; subdir < dirs.count(); subdir++)
+            for(int subdir = 0; subdir < dirs.count(); ++subdir)
                 deleteDirectory(dirs.at(subdir).absoluteFilePath(), true);
 
             //Finally, remove empty parent directory

@@ -114,16 +114,6 @@
               </widget>
              </item>
              <item>
-              <widget class="QCheckBox" name="checkShowAdv">
-               <property name="text">
-                <string>Visualizza Pubblicità e ottieni tanti sms gratis!</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
               <widget class="QCheckBox" name="errorSmsPopup">
                <property name="text">
                 <string>Segnala con un popup l'errore sull'invio di un SMS o di un Free+</string>

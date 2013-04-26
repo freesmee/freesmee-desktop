@@ -12,7 +12,6 @@
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
-#    You can't modify the adv system, to cheat it.
 #    This License extends all the files in the project (exclude the ones
 #    with theri own license), even to the .ui form files.
 #
@@ -26,7 +25,6 @@
 #
 
 QT += network
-QT += webkit
 
 TARGET = freesmee
 TEMPLATE = app

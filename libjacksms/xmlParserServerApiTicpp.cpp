@@ -9,8 +9,6 @@
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    You can't modify the adv system, to cheat it.
-
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -180,7 +178,7 @@ namespace libJackSMS{
 //                    }else{
 
 //                        _errors.insert(utilities::toString(codice),errNode->ToElement()->GetText()));
-//                        codice++;
+//                        ++codice;
 //                    }
 //                }
 //            }catch(ticpp::Exception e){
@@ -281,7 +279,7 @@ namespace libJackSMS{
                             QString stringa = "data" + QString::number(counter);
                             if (curElem->HasAttribute(stringa.toStdString())) {
                                 account.setData(stringa, utilities::Base64Decode(QString::fromStdString(curElem->GetAttribute(stringa.toStdString()))));
-                                counter++;
+                                ++counter;
                             } else {
                                 attributeNotFound = true;
                             }
@@ -350,7 +348,7 @@ namespace libJackSMS{
                     tmp = childElem->GetAttribute("sms");
                     libJackSMS::dataTypes::logImMessage imMsg(nn, date, QString::number(tmpId), QString::fromUtf8(tmp.c_str(), tmp.length()));
                     _logIm.insert(QString::number(tmpId), imMsg);
-                    tmpId++;
+                    ++tmpId;
                 }
 
                 return (tmpId == 0) ? false : true;
@@ -456,11 +454,11 @@ namespace libJackSMS{
 //                if (type=="RECV"){
 //                    libJackSMS::dataTypes::logImMessage imMsg(nn,date,id,childElem->GetAttribute("body"));
 //                    _logIm.insert(std::make_pair(id,imMsg));
-//                    count++;
+//                    ++count;
 //                }else{
 //                    libJackSMS::dataTypes::logSmsMessage smsMsg(nn,"","",date,id,childElem->GetAttribute("body"));
 //                    _logSms.insert(std::make_pair(id,smsMsg));
-//                    count++;
+//                    ++count;
 //                }
 
 //            }
@@ -519,7 +517,7 @@ namespace libJackSMS{
                                 servizio.setVariable(var);
 
                             }
-                            c++;
+                            ++c;
                         }
                     }
 
@@ -811,26 +809,6 @@ namespace libJackSMS{
             }
 
             return true;
-        }
-
-        QString xmlParserServerApiTicpp::getAdvUrl()
-        {
-            try
-            {
-                ticpp::Node *subRoot = xmlResponse.FirstChild("Freesmee");
-                ticpp::Node *urlNode = subRoot->FirstChild("url", false);
-
-                if (urlNode == NULL)
-                    return "";
-                else
-                    return QString::fromStdString(urlNode->ToElement()->GetText());
-
-            }catch(ticpp::Exception e)
-            {
-                return "";
-            }
-
-            return "";
         }
 
     }

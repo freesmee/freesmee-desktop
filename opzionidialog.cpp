@@ -9,8 +9,6 @@
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    You can't modify the adv system, to cheat it.
-
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -65,7 +63,6 @@ OpzioniDialog::OpzioniDialog(libJackSMS::dataTypes::optionsType &_opt, libJackSM
         setCheckboxStatusFromYesNoOption(globopt, m_ui->opzAutoLogin, "auto-login");
 
         setCheckboxStatusFromYesNoOption(opt, m_ui->checkSalvalocale, "save-local");
-        setCheckboxStatusFromYesNoOption(opt, m_ui->checkShowAdv, "show-adv");
         setCheckboxStatusFromYesNoOption(opt, m_ui->successSmsPopup, "successfull-send-popup");
         setCheckboxStatusFromYesNoOption(opt, m_ui->captchaPopup, "display-captcha-popup");
         setCheckboxStatusFromYesNoOption(opt, m_ui->errorSmsPopup, "error-send-popup");
@@ -225,7 +222,6 @@ void OpzioniDialog::on_okButton_clicked()
         if (globopt["auto-login"] == "yes")
             opt["password"] = pass;
 
-        opt["show-adv"] = m_ui->checkShowAdv->isChecked() ? "yes" : "no";
         opt["save-local"] = m_ui->checkSalvalocale->isChecked() ? "yes" : "no";
         opt["successfull-send-popup"] = m_ui->successSmsPopup->isChecked() ? "yes" : "no";
         opt["display-captcha-popup"] = m_ui->captchaPopup->isChecked() ? "yes" : "no";

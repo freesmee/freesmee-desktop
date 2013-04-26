@@ -9,8 +9,6 @@
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    You can't modify the adv system, to cheat it.
-
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -438,7 +436,7 @@ namespace libJackSMS {
 
             while(service.nextVar())
             {
-                   c++;
+                   ++c;
                    webClient.insertFormData("data_" + service.currentVar().getProgressive(), account.getData(service.currentVar().getName()).toUtf8().toPercentEncoding());
             }
 
@@ -578,7 +576,7 @@ namespace libJackSMS {
 
             while (s.nextVar())
             {
-                i++;
+                ++i;
                 libJackSMS::dataTypes::variabileServizio var = s.currentVar();
                 QString prog = var.getProgressive();
                 QString name = var.getName();
@@ -922,39 +920,6 @@ namespace libJackSMS {
             gmailuser = _user;
             gmailpsw = _psw;
             start();
-        }
-
-        /**********************adv checker***********************/
-
-        advChecker::advChecker(QString _loginId, QString _messaggio) :
-                loginId(_loginId),
-                messaggio(_messaggio)
-        {
-        }
-
-        void advChecker::getAdv()
-        {
-            run();
-        }
-
-        void advChecker::run()
-        {
-            libJackSMS::xmlParserApi::xmlParserServerApiTicpp *xmlDocument = new libJackSMS::xmlParserApi::xmlParserServerApiTicpp();
-            netClient::netClientQHttp *webClient = new netClient::netClientQHttp();
-
-            webClient->setUserAgent("Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.3) Gecko/20070309 Firefox/2.0.0.3");
-
-            QString xml = webClient->submitPost("http://api.freesmee.com/getAd?desktop=" + QString(FREESMEE_VERSION) + "&token=" + loginId + "&o=xml&text=" + messaggio.toUtf8().toPercentEncoding(), true);
-
-            if (!xml.isEmpty() && !webClient->hasError())
-            {
-                xmlDocument->setXml(xml);
-                QString url = xmlDocument->getAdvUrl();
-                if (!url.isEmpty())
-                    emit adv(url);
-            }
-
-            deleteLater();
         }
 
     }

@@ -9,8 +9,6 @@
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    You can't modify the adv system, to cheat it.
-
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -65,7 +63,6 @@ namespace libJackSMS
             bool SalvaCookies;
             QTimer sleepClockTimer;
             int secondsToGo;
-            bool getAdv;
 
         public:
             smsSender(const QString &_loginId, const dataTypes::servicesType &_services);
@@ -76,7 +73,6 @@ namespace libJackSMS
             void continueSend(QString captcha_value);
             void abort();
             void setSalvaCookies(bool value);
-            void setGetAdv(bool value);
 
         private slots:
             void slotError(QString);
@@ -92,7 +88,6 @@ namespace libJackSMS
             void success(QString, int);
             void captcha(QByteArray);
             void sleepBeforeFound(int);
-            void adv(QString);
     };
 
     class smsSenderBase : public QObject
@@ -117,7 +112,6 @@ namespace libJackSMS
         bool hasAborted;
         void managePostProcedureSignals(QString resultString, bool resultError, bool resultSend, bool forceDeleteCookies, bool &isPostprocedurePage);
         bool manageErrorBreak(QString resultString, bool resultError, bool resultSend, bool forceDeleteCookies, bool &isPostprocedurePage, bool hasPostprocedurePage, logger &log);
-        bool getAdv;
 
     public:
         smsSenderBase(const QString &_loginId, const dataTypes::servicesType &_services);
@@ -132,7 +126,6 @@ namespace libJackSMS
         void setContents(dataTypes::contentType contents);
         void setSalvaCookies(bool value);
         void optionalDeleteCookies();
-        void setGetAdv(bool value);
 
     public slots:
         void abort();
@@ -144,7 +137,6 @@ namespace libJackSMS
         void success(QString, int);
         void captcha(QByteArray);
         void sleepBeforeFound(int);
-        void adv(QString);
     };
 }
 

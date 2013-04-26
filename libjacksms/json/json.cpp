@@ -322,7 +322,7 @@ int Json::lastIndexOfNumber(const QString &json, int index)
 {
 	int lastIndex;
 
-	for(lastIndex = index; lastIndex < json.size(); lastIndex++)
+    for(lastIndex = index; lastIndex < json.size(); ++lastIndex)
 	{
 		if(QString("0123456789+-.eE").indexOf(json[lastIndex]) == -1)
 		{
@@ -338,7 +338,7 @@ int Json::lastIndexOfNumber(const QString &json, int index)
  */
 void Json::eatWhitespace(const QString &json, int &index)
 {
-	for(; index < json.size(); index++)
+    for(; index < json.size(); ++index)
 	{
 		if(QString(" \t\n\r").indexOf(json[index]) == -1)
 		{
@@ -369,7 +369,7 @@ int Json::nextToken(const QString &json, int &index)
 	}
 
 	QChar c = json[index];
-	index++;
+    ++index;
         switch(c.toAscii())
 	{
 		case '{': return JsonTokenCurlyOpen;

@@ -9,8 +9,6 @@
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    You can't modify the adv system, to cheat it.
-
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -158,8 +156,11 @@ private:
     void WriteConfiguredServicesToGui();
     void WriteMessagesToGui();
     void loadPlugins();
+
+    void login(QString username, QString password);
     void disableUibeforeLogin();
     void enableUiAfterLogin();
+
     bool loggedIn;
     bool stopWriteMessagesToGui;
 
@@ -195,14 +196,10 @@ private:
 
     void caricaUtenti();
     void ricaricaUtenti();
-    void manageUserPassAutoLogin();
-    void managePassword(QString _user);
+    void manageUserPass(bool autologin = false);
+    void managePassword(QString user, bool autologin = false);
 
     void refreshCompleter();
-
-    // Funzioni per la pubblicità
-    void showAdvPanel(QString url);
-    void showTestoSmsPanel();
 
     void manageSmsReaded(SmsWidget *sms);
 
@@ -210,7 +207,6 @@ public slots:
     void ReWriteAddressBookToGui();
 
 private slots:
-    void on_closeADVButton_clicked();
     void on_actionApri_Log_triggered();
     void on_actionApri_cartella_impostazioni_triggered();
     void on_actionApri_cartella_utente_triggered();
@@ -329,8 +325,6 @@ private slots:
     void stepWriteMessageToGui();
     void rubricaBarCurrentChanged(int index);
 
-    void advLoaded(bool);
-    void slotAdv(QString);
     void on_actionVai_al_Sito_triggered();
 
     void firstStart();

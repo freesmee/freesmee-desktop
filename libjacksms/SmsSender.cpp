@@ -28,8 +28,7 @@ namespace libJackSMS
             loginId(_loginId),
             servizi(_services),
             continueSendFlag(false),
-            SalvaCookies(true),
-            getAdv(false)
+            SalvaCookies(true)
     {
     }
 
@@ -71,7 +70,6 @@ namespace libJackSMS
             sndr.setRecipient(destinatario);
             sndr.setMessage(messaggio);
             sndr.setAccount(account);
-            sndr.setGetAdv(getAdv);
 
             connect(&sndr, SIGNAL(operation()), this, SIGNAL(operation()));
             connect(&sndr, SIGNAL(operation(QString)), this, SLOT(slotError(QString)));
@@ -79,7 +77,6 @@ namespace libJackSMS
             connect(&sndr, SIGNAL(success(QString, int)), this, SLOT(slotSuccess(QString, int)));
             connect(&sndr, SIGNAL(captcha(QByteArray)), this, SIGNAL(captcha(QByteArray)));
             connect(&sndr, SIGNAL(sleepBeforeFound(int)), this, SLOT(slotSleepBeforeFound(int)));
-            connect(&sndr, SIGNAL(adv(QString)), this, SIGNAL(adv(QString)));
 
             if (!continueSendFlag)
             {
@@ -149,11 +146,6 @@ namespace libJackSMS
         SalvaCookies = value;
     }
 
-    void smsSender::setGetAdv(bool value)
-    {
-        getAdv = value;
-    }
-
     /********************smsSenderBase****************/
 
     smsSenderBase::smsSenderBase(const QString &_loginId, const dataTypes::servicesType &_services) :
@@ -161,8 +153,7 @@ namespace libJackSMS
             servizi(_services),
             pageIndex(-1),
             captchaInterrupt(false),
-            hasAborted(false),
-            getAdv(false)
+            hasAborted(false)
     {
     }
 
@@ -254,17 +245,9 @@ namespace libJackSMS
     {
         try
         {
-            libJackSMS::serverApi::advChecker *advcheck = NULL;
             if ((account.getId() == "1") || (account.getId() == "2"))
             {
                 // Free+ or SMS+
-                if (getAdv)
-                {
-                    advcheck = new libJackSMS::serverApi::advChecker(loginId, messaggio.getText());
-                    connect(advcheck, SIGNAL(adv(QString)), this, SIGNAL(adv(QString)));
-                    advcheck->getAdv();
-                }
-
                 webClient = new netClient::netClientQHttp();
 
                 webClient->insertFormData("account_id", account.getId());
@@ -355,13 +338,6 @@ namespace libJackSMS
 
                 } else {
 
-                    if (getAdv)
-                    {
-                        advcheck = new libJackSMS::serverApi::advChecker(loginId, messaggio.getText());
-                        connect(advcheck, SIGNAL(adv(QString)), this, SIGNAL(adv(QString)));
-                        advcheck->getAdv();
-                    }
-
                     bool resultSend = false;
                     bool resultError = false;
                     dataTypes::service servizioDaUsare = service_iter.value();
@@ -417,7 +393,7 @@ namespace libJackSMS
                         }
                         else
                         {
-                            pageCounter++;
+                            ++pageCounter;
                             paginaCorrente = servizioDaUsare.currentPage();
                         }
 
@@ -570,10 +546,10 @@ namespace libJackSMS
                                         comando = substitute(comando, elenco_contenuti);
                                         rawClient->writeLine(comando);
                                         log.addNotice("Inviato Comando: " + comando);
-                                        commandCount++;
+                                        ++commandCount;
                                     }
 
-                                    for (int c = 0; c < commandCount; c++) {
+                                    for (int c = 0; c < commandCount; ++c) {
                                         QString receivedData = rawClient->readLine();
                                         log.addNotice("Ricevuto: " + receivedData);
                                         paginaCorrente.setRetreivedHtml(receivedData);
@@ -679,7 +655,7 @@ namespace libJackSMS
 
                                         logger l(libJackSMS::directories::DumpDirectory() + "pagina_" + QString::number(pageCounter) + ".html");
                                         l.addNotice(html);
-                                        pageNumber++;
+                                        ++pageNumber;
                                     }
 
                                     while (paginaCorrente.nextContent()) {
@@ -801,11 +777,6 @@ namespace libJackSMS
                 return true;
             }
         }
-    }
-
-    void smsSenderBase::setGetAdv(bool value)
-    {
-        getAdv = value;
     }
 
 }
