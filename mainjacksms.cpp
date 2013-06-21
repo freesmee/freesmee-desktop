@@ -120,7 +120,7 @@ MainJackSMS::MainJackSMS(QWidget *parent)
     ui->rubricaBar->setMovable(false);
     connect(ui->rubricaBar, SIGNAL(currentChanged(int)), this, SLOT(rubricaBarCurrentChanged(int)));
 
-    ui->LabelEsito->~QWidget();
+    ui->LabelEsito->~QLabel();
     ui->LabelEsito = new QLabelResult(this);
     ui->horizontalLayout_16->addWidget(ui->LabelEsito);
     ui->LabelEsito->setText("");
