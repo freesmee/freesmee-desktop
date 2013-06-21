@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Freesmee
+GenericName=Freesmee
+Type=Application
+Comment=Send and receive SMS using the web
+Exec=freesmee
+TryExec=freesmee
+Icon=freesmee
+Categories=Network;
